@@ -1,0 +1,26 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "admin",
+            "email": "test@test.com"
+        }
+    },
+    {
+        "model": "content.Content",
+        "pk": 1,
+        "fields": {
+            "date": "2010-01-01",
+            "content_type": "HelloWorld",
+            "author": 1
+        }
+    },
+    {
+        "model": "helloworld.HelloWorld",
+        "pk": 1,
+        "fields": {
+        }
+    }
+]
