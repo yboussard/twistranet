@@ -3,6 +3,8 @@
 {% block title %}Wall{% endblock %}
 
 {% block content %}
+    {% include "content_form.html" %}
+
     {% if latest_content_list %}
         <ul>
         {% for content in latest_content_list %}

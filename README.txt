@@ -25,8 +25,10 @@ See Requirements.
 Design considerations
 =====================
 
-Most things with TwistraNet are Content objects.
+Most things with TwistraNet are derivated from Content objects.
+Stuff which can produce content are Account objects. Thus, user profiles (but not only) are derivated account objects.
 
+This inheritance stuff is there in case we one day move data into a cassandra-like DB.
 
 Hot topics
 ==========

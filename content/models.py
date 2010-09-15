@@ -8,10 +8,15 @@ class Content(models.Model):
     """
     Abstract content representation class.
     """
-    text = models.TextField()
-    date = models.DateTimeField()
+    # Usual metadata
+    date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
     author = models.ForeignKey(User)        # Informative; diffuser is what's interesting there
+
+    # The default text displayed for this content
+    text = models.TextField()
+    
+    # Security stuff
     diffuser = models.ForeignKey(Account)
     public = models.BooleanField()          # If false, reader must be approved for the diffuser to access it
 
@@ -20,6 +25,16 @@ class Content(models.Model):
         Override this to not use the 'text' attribute of the super class
         """
         return self.text
+
+    
+    def preSave(self, account):
+        """
+        Populate special content information before saving it.
+        """
+        self.content_type = self.__class__.__name__
+        self.author = account.user
+        self.diffuser = account
+        self.public = True
     
     # Shortcut for the 'secured' wrapper
     def secured(self, account):
@@ -46,6 +61,10 @@ class Content(models.Model):
 
     
 class StatusUpdate(Content):
+    """
+    StatusUpdate is the most simple content available (except maybe helloworld).
+    It provides a good example of what you can do with a content type.
+    """
     pass
     
     
