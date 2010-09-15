@@ -12,14 +12,37 @@
             {% block topbar %}
                 <h1><a href="/">TwistraNet</a></h1>
             {% endblock %}
+            {% block actions %}
+                {% if user.is_authenticated %}
+                  <a href="/logout">Log out {{ user.username }}</a>
+                {% else %}
+                  <a href="/login">Log in</a>
+                {% endif %}
+            {% endblock %}
         </div>
     </div>
     <div id="columnwrap">
         <div id="sidebar">
             {% block sidebar %}
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/blog/">Blog</a></li>
+                <li>My Network</li>
+                <ul>
+                    {% for a in user.account.getMyNetwork %}
+                        <li><a href="/">{{ a }}</a></li>
+                    {% endfor %}
+                </ul>
+                <li>Who I follow</li>
+                <ul>
+                    {% for a in user.account.getMyFollowed %}
+                        <li><a href="/">{{ a }}</a></li>
+                    {% endfor %}
+                </ul>
+                <li>Who follow me</li>
+                <ul>
+                    {% for a in user.account.getMyFollowers %}
+                        <li><a href="/">{{ a }}</a></li>
+                    {% endfor %}
+                </ul>
             </ul>
             {% endblock %}
         </div>

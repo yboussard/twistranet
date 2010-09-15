@@ -1,20 +1,114 @@
 [
+
+
     {
         "model": "auth.User",
         "pk": 1,
         "fields": {
-            "username": "admin",
-            "password": "admin",
+            "username": "pjgrizel",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
             "email": "test@test.com"
         }
     },
+    {
+        "model": "account.Account",
+        "pk":   1,
+        "fields":   {        
+        }
+    },
+    {
+        "model": "account.UserAccount",
+        "pk":   1,
+        "fields":   {
+            "user":  1
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 2,
+        "fields": {
+            "username": "A",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com"
+        }
+    },
+    {
+        "model": "account.Account",
+        "pk":   2,
+        "fields":   {        
+        }
+    },
+    {
+        "model": "account.UserAccount",
+        "pk":   2,
+        "fields":   {
+            "user":  2
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 3,
+        "fields": {
+            "username": "B",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com"
+        }
+    },
+    {
+        "model": "account.Account",
+        "pk":   3,
+        "fields":   {        
+        }
+    },
+    {
+        "model": "account.UserAccount",
+        "pk":   3,
+        "fields":   {
+            "user":  3
+        }
+    },
+    
+    
+    
+    {
+        "model": "relation.Relation",
+        "pk":   0,
+        "fields": {
+            "initiator":    2,
+            "target":       1,
+            "approved":     1
+        }
+    },
+    {
+        "model": "relation.Relation",
+        "pk":   1,
+        "fields": {
+            "initiator":    1,
+            "target":       2,
+            "approved":     1
+        }
+    },
+    {
+        "model": "relation.Relation",
+        "pk":   2,
+        "fields": {
+            "initiator":    3,
+            "target":       1,
+            "approved":     0
+        }
+    },
+    
+    
+    
     {
         "model": "content.Content",
         "pk": 1,
         "fields": {
             "date": "2010-01-01",
             "content_type": "HelloWorld",
-            "author": 1
+            "diffuser": 1,
+            "author": 1,
+            "public": 0
         }
     },
     {
@@ -22,5 +116,30 @@
         "pk": 1,
         "fields": {
         }
+    },
+    
+    
+    
+    
+    {
+        "model": "content.Content",
+        "pk": 2,
+        "fields": {
+            "date": "2010-02-01",
+            "content_type": "HelloWorld",
+            "diffuser": 1,
+            "author": 1,
+            "public": 1
+        }
+    },
+    {
+        "model": "helloworld.HelloWorld",
+        "pk": 2,
+        "fields": {
+        }
     }
+    
+    
+    
+    
 ]

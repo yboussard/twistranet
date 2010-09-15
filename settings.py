@@ -76,6 +76,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+AUTH_PROFILE_MODULE = "account.UserAccount"
+
 ROOT_URLCONF = 'TwistraNet.urls'
 
 TEMPLATE_DIRS = (
@@ -84,6 +86,9 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     "%s/templates" % (os.path.dirname(__file__), )
 )
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -95,7 +100,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     
     # TwistraNet core stuff
+    'TwistraNet.account',
     'TwistraNet.content',
+    'TwistraNet.relation',
     
     # TwistraNet additional content classes
     'TwistraNet.helloworld',

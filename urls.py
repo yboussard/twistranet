@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from django.contrib.auth.views import login, logout
 import os.path
 
 # Uncomment the next two lines to enable the admin:
@@ -10,7 +11,12 @@ urlpatterns = patterns('',
     # (r'^TwistraNet/', include('TwistraNet.foo.urls')),
 
     # The wall page for currently logged-in user
-    (r'^wall$', 'TwistraNet.content.views.index'),
+    (r'^$',                                     'TwistraNet.content.views.wall'),
+    (r'^account/(?P<account_id>\d+)/$',        'TwistraNet.content.views.account'),
+
+    # Login / Logout / Register stuff
+    (r'^login/$', login),
+    (r'^logout/$', logout),
 
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',

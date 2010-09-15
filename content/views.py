@@ -1,17 +1,50 @@
 # Create your views here.
-from django.template import Context, loader
+from django.template import Context, RequestContext, loader
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.contrib.auth.decorators import login_required
 
 from TwistraNet.content.models import Content
+from TwistraNet.account.models import Account
 
-def index(request):
-    latest_list = Content.objects.all().order_by('-date')[:5]
+
+@login_required
+def account(request, account_id):
+    """
+    Account (user/profile) page.
+    We just diplay posts of any given account.
+    XXX TODO:
+        - Check if account is listed and permit only if approved
+    """
+    account = Account.objects.get(id = account_id)
+    latest_list = Content.secured(account).filter(account = account)
+    latest_content_viewlets = [ HtmlContentViewlet(content) for content in latest_list ]
+    t = loader.get_template('account.html')
+    t = RequestContext(
+        request,
+        {
+            "latest_content_list": latest_content_viewlets,
+        },
+        )
+    return HttpResponse(t.render(c))
+    
+    
+
+@login_required
+def wall(request):
+    """
+    The WALL page.
+    """
+    account = request.user.get_profile()
+    latest_list = Content.secured(account).all().order_by('-date')[:5]
     latest_content_viewlets = [ HtmlContentViewlet(content) for content in latest_list ]
     t = loader.get_template('wall.html')
-    c = Context({
-        'latest_content_list': latest_content_viewlets,
-    })
+    c = RequestContext(
+        request,
+        {
+            'latest_content_list': latest_content_viewlets,
+        },
+        )
     return HttpResponse(t.render(c))
     # Or can do:
     # return render_to_response('wall.html', {'latest_content_list': latest_content_list})
