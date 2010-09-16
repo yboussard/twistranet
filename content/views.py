@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from TwistraNet.content.models import Content, StatusUpdate
 from TwistraNet.account.models import Account
 
-from TwistraNet.content.forms import getContentFormClass
+from TwistraNet.content.models import ContentRegistry
 
 
 @login_required
@@ -39,19 +39,34 @@ def wall(request):
     # Account information used to build the wall view
     account = request.user.get_profile()
     
-    # Wall edition form if user has the right to write on it
-    form_class = getContentFormClass(account, account)
-    if request.method == 'POST':                        # If the form has been submitted...
-        # Should use some method to determine the form to render here
-        form = form_class(request.POST)           # A form bound to the POST data
-        if form.is_valid():                             # All validation rules pass
-            # Process the data in form.cleaned_data
-            c = form.save(commit = False)
-            c.preSave(account)
-            c.save()
-            return HttpResponseRedirect('/') # Redirect after POST
-    else:
-        form = form_class() # An unbound form
+    # Wall edition forms if user has the right to write on it
+    # This return a list of forms as each content type can define its own tab+form
+    form_classes = ContentRegistry.getContentFormClasses(account, account)
+    forms = []
+    for form_class in form_classes:
+        content_type = form_class.Meta.model.__name__
+        if request.method == 'POST':                        # If the form has been submitted...
+            form = form_class(request.POST)           # A form bound to the POST data
+            
+            # We skip validation for forms of other content types,
+            # BUT we ensure that data is bound anyway
+            if not form.data['content_type'] == content_type:
+                forms.append(form_class(request.POST))
+                continue
+
+            # Validate stuff
+            if form.is_valid():                             # All validation rules pass
+                # Process the data in form.cleaned_data
+                c = form.save(commit = False)
+                c.preSave(account)
+                c.save()
+                return HttpResponseRedirect('/') # Redirect after POST
+        else:
+            form = form_class({
+                # Keep track of the content_type to ensure proper validation
+                'content_type': content_type,
+                })
+        forms.append(form)
 
     # Content displayed on the wall
     latest_list = Content.secured(account).all().order_by('-date')[:5]
@@ -62,7 +77,7 @@ def wall(request):
         request,
         {
             'latest_content_list': latest_list,
-            'form': form,
+            'forms': forms,
         },
         )
     return HttpResponse(t.render(c))

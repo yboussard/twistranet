@@ -18,4 +18,5 @@ class Relation(models.Model):
     def __unicode__(self):
         return "%s => %s (approved=%s)" % (self.initiator, self.target, self.approved, )
 
-    
+    class Meta:
+        unique_together = ("initiator", "target", )

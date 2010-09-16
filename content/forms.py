@@ -1,14 +1,23 @@
 from django import forms
-
+from django.db import models
+from django.forms.widgets import HiddenInput
 
 class ContentForm(forms.ModelForm):
     """
     Abstract class to describe the basic content form
-    """
-    text = forms.CharField(max_length = 255)
+    """    
+    def getName(self):
+        """
+        Return a friendly name for this form, usually used as the tab label
+        """
+        return self.Meta.model.__name__
 
+    class Meta:
+        fields = ('content_type', 'public', )
+        widgets = {
+            "content_type": HiddenInput,
+            }
 
-from TwistraNet.content.models import StatusUpdate
 class StatusUpdateForm(ContentForm):
     """
     The famous status update.
@@ -17,18 +26,8 @@ class StatusUpdateForm(ContentForm):
     # message = forms.CharField()
     # sender = forms.EmailField()
     # cc_myself = forms.BooleanField(required=False)
-    class Meta:
+    
+    class Meta(ContentForm.Meta):
+        from TwistraNet.content.models import StatusUpdate
         model = StatusUpdate
-        fields = ('text', )
-
-
-def getContentFormClass(user_account, wall_account):
-    """
-    This method returns the appropriate content form for a user seeing an account page.
-    The form itself can be complex if many content types are enabled.
-    """
-    # Anyway, now we return the status update form without any question.
-    return StatusUpdateForm
-    
-    
-    
+        fields = ContentForm.Meta.fields + ('text', )

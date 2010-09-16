@@ -1,5 +1,5 @@
 from django.db import models
-from TwistraNet.content.models import Content
+from TwistraNet.content.models import Content, ContentRegistry
 
 
 class HelloWorld(Content):
@@ -13,5 +13,4 @@ class HelloWorld(Content):
         """This always return the same boring text.
         """
         return "Hello, World"
-
 

@@ -3,6 +3,35 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from TwistraNet.account.models import Account
 
+class ContentRegistryManager:
+    """
+    Content registry for content types.
+    Maybe we should find some better way to register content,
+    to avoid calling ContentRegistry.register(...)
+    """
+    # This holds a classname: (model, form) dictionnary
+    _registry_ = {}
+    
+    def register(self, model_class, form_class):
+        """
+        Register a model class into the TwistraNet application.
+        Will bind the form to the model.
+        XXX TODO: Provide a way of ordering forms?
+        """
+        self._registry_[model_class.__name__]  = (model_class, form_class, )
+    
+    
+    def getContentFormClasses(self, user_account, wall_account):
+        """
+        This method returns the appropriate content forms for a user seeing an account page.
+        This returns a list of Form classes
+        """
+        # XXX Temporary. Should perform security checks one day ;)
+        return [ r[1] for r in self._registry_.values() ]
+        
+    
+ContentRegistry = ContentRegistryManager()
+    
 
 class Content(models.Model):
     """
@@ -26,7 +55,6 @@ class Content(models.Model):
         """
         return self.text
 
-    
     def preSave(self, account):
         """
         Populate special content information before saving it.
@@ -66,7 +94,7 @@ class StatusUpdate(Content):
     It provides a good example of what you can do with a content type.
     """
     pass
-    
+
     
 class Link(Content):
     pass

@@ -1,3 +1,6 @@
+{% for form in forms %}
+<fieldset id="form-{{form.getName}}">
+<label>{{ form.getName }}</label>
 <form action="/" method="post">
 {% csrf_token %}
 {% for field in form %}
@@ -10,3 +13,5 @@
 <p><input type="submit" value="Send message" /></p>
 
 </form>
+</fieldset>
+{% endfor %}
