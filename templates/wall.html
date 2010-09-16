@@ -8,7 +8,9 @@
     {% if latest_content_list %}
         <ul>
         {% for content in latest_content_list %}
-            <li><a href="/contents/{{ content.id }}/">{{ content.htmlSummary }}</a></li>
+            <li>
+                {%include "content/summary.part.html" %}
+            </li>
         {% endfor %}
         </ul>
     {% else %}
