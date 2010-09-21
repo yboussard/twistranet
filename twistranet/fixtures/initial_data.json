@@ -11,7 +11,7 @@
         }
     },
     {
-        "model": "account.Account",
+        "model": "twistranet.Account",
         "pk":   1,
         "fields":   {        
         }
