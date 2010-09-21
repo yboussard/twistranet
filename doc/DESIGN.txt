@@ -1,0 +1,18 @@
+Design considerations for TwistraNet
+
+
+Database consistancy
+=====================
+
+The model is not a rdbm-normal one, THIS IS ON PURPOSE:
+1/ for read performance reasons
+2/ to allow the model to be quite easily migrated to a nosql backend someday
+
+The framework normally takes care of keeping it straight. But it may be broken in some way (fixture not correct, updates or bugs, crashes, ...)
+Here are some clues to ensure that the schema is ok:
+
+1/ Content types
+
+Content are typed, but the 'content' table holds generic information. Check every content type object and check that content.content_type field is set to the right type.
+
+

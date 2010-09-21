@@ -13,12 +13,3 @@ class WallTest(TestCase):
         """
         We check a sample wall object creation.
         """
-
-
-# __test__ = {"doctest": """
-# Another way to test that 1 + 1 is equal to 2.
-# 
-# >>> 1 + 1 == 3
-# True
-# """}
-

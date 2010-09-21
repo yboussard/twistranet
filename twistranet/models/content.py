@@ -33,14 +33,38 @@ class ContentRegistryManager:
 ContentRegistry = ContentRegistryManager()
     
 
+class ContentManager(models.Manager):
+    """
+    This manager is used for secured content (via the secured()) method.
+    Methods are useable if the _account attribute is set.
+    """
+
+    
+
+class PublicContentManager(ContentManager):
+    """
+    This manager used for content only fetches strictly public content.
+    XXX TODO !!!
+    """
+    def get_query_set(self):
+        # XXX TODO: Filter only public content
+        return super(PublicContentManager, self).get_query_set().filter(text = "qlmkdsfjqmlksdjq")
+
+
 class Content(models.Model):
     """
     Abstract content representation class.
+    
+    API warriors: always use the getFiltered(account) method to fetch content for a given account.
+    When you use the 'objects' manager, only PUBLIC content is retrieved.
+    
+    The _unsecured manager is the only way of accessing all objects, but never use it in your app.
     """
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
-    author = models.ForeignKey(User)        # Informative; diffuser is what's interesting there
+    author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
+                                                                # not necessarily the diffuser (esp. for auto producers or communities)
 
     # The default text displayed for this content
     text = models.TextField()
@@ -48,6 +72,13 @@ class Content(models.Model):
     # Security stuff
     diffuser = models.ForeignKey(Account)
     public = models.BooleanField()          # If false, reader must be approved for the diffuser to access it
+    
+    # Custom Managers. Never never never use the __unsecured manager!
+    objects = PublicContentManager()
+    __unsecured = ContentManager()
+    
+    def __unicode__(self):
+        return "Content %d of type %s" % (self.id, self.content_type, )
     
     class Meta:
         app_label = 'twistranet'
@@ -61,21 +92,42 @@ class Content(models.Model):
     def preSave(self, account):
         """
         Populate special content information before saving it.
+        XXX TODO: Use a trigger to automate this!
         """
         self.content_type = self.__class__.__name__
-        self.author = account.user
+        self.author = account
         self.diffuser = account
-        self.public = True
     
-    # Shortcut for the 'secured' wrapper
-    def secured(self, account):
+    def getFiltered(self, account):
         """
-        Return a pre-filtered list of objects available for given user account.
-        This is where the main security stuff happens and this is THE QUERY TO OPTIMIZE!
+        Return a query set holding only visible content for a given account.
+        """
+        # my_followed = account.getMyFollowed()
+        my_network = account.getMyNetwork()
+        return self.__unsecured.filter(
+            (
+                # Public stuff by the people I follow
+                Q(public = True)
+            ) | (
+                # Public AND private stuff from the people in my network
+                Q(diffuser__in = my_network)
+            ) | (
+                # And, of course, what I wrote !
+                Q(author = account)
+            )
+        )
+        filtered._account = account
+    filtered = classmethod(getFiltered)
+        
+    
+    def getFollowedContent(self, account):
+        """
+        Return content that is specifically address to the given account,
+        ie. content the account actually follows.
         """
         my_followed = account.getMyFollowed()
         my_network = account.getMyNetwork()
-        return self.objects.filter(
+        return self.__unsecured.filter(
             (
                 # Public stuff by the people I follow
                 Q(diffuser__in = my_followed) & Q(public = True)
@@ -84,11 +136,10 @@ class Content(models.Model):
                 Q(diffuser__in = my_network)
             ) | (
                 # And, of course, what I wrote !
-                Q(author = account.user)
+                Q(author = account)
             )
         )
-        
-    secured = classmethod(secured)
+    followed = classmethod(getFollowedContent)
 
     
 class StatusUpdate(Content):
