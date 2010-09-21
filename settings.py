@@ -78,7 +78,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
-ROOT_URLCONF = 'TwistraNet.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -100,8 +100,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     
     # TwistraNet core stuff
-    'TwistraNet.twistranet',
+    'twistranet',
     
     # TwistraNet additional content classes
-    'TwistraNet.helloworld',
+    'helloworld',
 )
