@@ -17,7 +17,7 @@
         }
     },
     {
-        "model": "account.UserAccount",
+        "model": "twistranet.UserAccount",
         "pk":   1,
         "fields":   {
             "user":  1
@@ -33,13 +33,13 @@
         }
     },
     {
-        "model": "account.Account",
+        "model": "twistranet.Account",
         "pk":   2,
         "fields":   {        
         }
     },
     {
-        "model": "account.UserAccount",
+        "model": "twistranet.UserAccount",
         "pk":   2,
         "fields":   {
             "user":  2
@@ -55,13 +55,13 @@
         }
     },
     {
-        "model": "account.Account",
+        "model": "twistranet.Account",
         "pk":   3,
         "fields":   {        
         }
     },
     {
-        "model": "account.UserAccount",
+        "model": "twistranet.UserAccount",
         "pk":   3,
         "fields":   {
             "user":  3
@@ -71,7 +71,7 @@
     
     
     {
-        "model": "relation.Relation",
+        "model": "twistranet.Relation",
         "pk":   0,
         "fields": {
             "initiator":    2,
@@ -80,7 +80,7 @@
         }
     },
     {
-        "model": "relation.Relation",
+        "model": "twistranet.Relation",
         "pk":   1,
         "fields": {
             "initiator":    1,
@@ -89,7 +89,7 @@
         }
     },
     {
-        "model": "relation.Relation",
+        "model": "twistranet.Relation",
         "pk":   2,
         "fields": {
             "initiator":    3,
@@ -101,7 +101,7 @@
     
     
     {
-        "model": "content.Content",
+        "model": "twistranet.Content",
         "pk": 1,
         "fields": {
             "date": "2010-01-01",
@@ -122,7 +122,7 @@
     
     
     {
-        "model": "content.Content",
+        "model": "twistranet.Content",
         "pk": 2,
         "fields": {
             "date": "2010-02-01",
