@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     # (r'^TwistraNet/', include('TwistraNet.foo.urls')),
 
     # The wall page for currently logged-in user
-    (r'^$',                                     'TwistraNet.content.views.wall'),
-    (r'^account/(?P<account_id>\d+)/$',        'TwistraNet.content.views.account'),
+    (r'^$',                                     'twistranet.views.wall'),
+    (r'^account/(?P<account_id>\d+)/$',         'twistranet.views.account'),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': "%s/templates/static" % (os.path.dirname(__file__))}),
+            {'document_root': "%s/twistranet/templates/static" % (os.path.dirname(__file__))}),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

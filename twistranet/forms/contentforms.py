@@ -28,6 +28,6 @@ class StatusUpdateForm(BaseContentForm):
     # cc_myself = forms.BooleanField(required=False)
     
     class Meta(BaseContentForm.Meta):
-        from twistranet.models.contentmodels import StatusUpdate
+        from twistranet.models import StatusUpdate
         model = StatusUpdate
         fields = BaseContentForm.Meta.fields + ('text', )

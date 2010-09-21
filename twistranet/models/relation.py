@@ -19,4 +19,5 @@ class Relation(models.Model):
         return "%s => %s (approved=%s)" % (self.initiator, self.target, self.approved, )
 
     class Meta:
+        app_label = 'twistranet'
         unique_together = ("initiator", "target", )

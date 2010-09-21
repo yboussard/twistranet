@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from accountmodels import Account
+from account import Account
 
 class ContentRegistryManager:
     """
@@ -48,6 +48,9 @@ class Content(models.Model):
     # Security stuff
     diffuser = models.ForeignKey(Account)
     public = models.BooleanField()          # If false, reader must be approved for the diffuser to access it
+    
+    class Meta:
+        app_label = 'twistranet'
 
     def getText(self):
         """
@@ -93,11 +96,13 @@ class StatusUpdate(Content):
     StatusUpdate is the most simple content available (except maybe helloworld).
     It provides a good example of what you can do with a content type.
     """
-    pass
+    class Meta:
+        app_label = 'twistranet'
 
     
 class Link(Content):
-    pass
+    class Meta:
+        app_label = 'twistranet'
     
     
 class File(Content):

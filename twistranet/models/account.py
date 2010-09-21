@@ -47,5 +47,7 @@ class UserAccount(Account):
     """
     user = models.OneToOneField(User, unique=True, related_name = "account")
 
+    class Meta:
+        app_label = 'twistranet'
 
 

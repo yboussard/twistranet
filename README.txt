@@ -30,6 +30,15 @@ Stuff which can produce content are Account objects. Thus, user profiles (but no
 
 This inheritance stuff is there in case we one day move data into a cassandra-like DB.
 
+Caveats
+-------
+
+The directory structure is nonstandard for a regular django project. This is ok for everything but models.
+If you want your additional models to work, you have to:
+- import them from models.__init__
+- add a Meta attribute "app_label = 'twistranet'" in your model class
+
+
 Hot topics
 ==========
 

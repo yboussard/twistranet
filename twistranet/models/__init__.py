@@ -1,6 +1,6 @@
 # Importing all models from submodules
 
-from accountmodels import *
-from contentmodels import *
-from relationmodels import *
-from statusupdatemodels import *
+from account import Account
+from content import Content, StatusUpdate, ContentRegistry
+from relation import Relation
+# from statusupdate import StatusUpdate
