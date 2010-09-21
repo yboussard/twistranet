@@ -14,6 +14,9 @@ class Account(models.Model):
     # A picture
     # A friendly name
 
+    class Meta:
+        app_label = 'twistranet'
+
     def __unicode__(self):
         return self.useraccount.user.username
 
