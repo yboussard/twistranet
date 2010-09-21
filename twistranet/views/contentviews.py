@@ -4,10 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
 
-from TwistraNet.content.models import Content, StatusUpdate
-from TwistraNet.account.models import Account
+from twistranet.models import Content, StatusUpdate
+from twistranet.models import Account
 
-from TwistraNet.content.models import ContentRegistry
+from twistranet.models import ContentRegistry
 
 
 @login_required

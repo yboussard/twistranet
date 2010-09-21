@@ -1,9 +1,9 @@
 from django import forms
 
-from TwistraNet.content.forms import ContentForm
-from TwistraNet.helloworld.models import HelloWorld
+from twistranet.forms import BaseContentForm
+from helloworld.models import HelloWorld
 
-class HelloWorldForm(ContentForm):
+class HelloWorldForm(BaseContentForm):
     """
     The famous "Hello, World!" example.
     """
@@ -11,7 +11,7 @@ class HelloWorldForm(ContentForm):
     # message = forms.CharField()
     # sender = forms.EmailField()
     # cc_myself = forms.BooleanField(required=False)
-    class Meta(ContentForm.Meta):
+    class Meta(BaseContentForm.Meta):
         model = HelloWorld
-        fields = ContentForm.Meta.fields
+        fields = BaseContentForm.Meta.fields
     

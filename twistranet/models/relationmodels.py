@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from TwistraNet.content.models import Content
-from TwistraNet.account.models import Account
+from twistranet.models import Content
+from twistranet.models import Account
 
 class Relation(models.Model):
     """

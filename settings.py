@@ -76,7 +76,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-AUTH_PROFILE_MODULE = "account.UserAccount"
+AUTH_PROFILE_MODULE = "TwistraNet.twistranet.models.accountmodels.UserAccount"
 
 ROOT_URLCONF = 'TwistraNet.urls'
 
@@ -100,9 +100,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     
     # TwistraNet core stuff
-    'TwistraNet.account',
-    'TwistraNet.content',
-    'TwistraNet.relation',
+    'TwistraNet.twistranet',
     
     # TwistraNet additional content classes
     'TwistraNet.helloworld',

@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.forms.widgets import HiddenInput
 
-class ContentForm(forms.ModelForm):
+class BaseContentForm(forms.ModelForm):
     """
     Abstract class to describe the basic content form
     """    
@@ -18,7 +18,7 @@ class ContentForm(forms.ModelForm):
             "content_type": HiddenInput,
             }
 
-class StatusUpdateForm(ContentForm):
+class StatusUpdateForm(BaseContentForm):
     """
     The famous status update.
     """
@@ -27,7 +27,7 @@ class StatusUpdateForm(ContentForm):
     # sender = forms.EmailField()
     # cc_myself = forms.BooleanField(required=False)
     
-    class Meta(ContentForm.Meta):
-        from TwistraNet.content.models import StatusUpdate
+    class Meta(BaseContentForm.Meta):
+        from twistranet.models.contentmodels import StatusUpdate
         model = StatusUpdate
-        fields = ContentForm.Meta.fields + ('text', )
+        fields = BaseContentForm.Meta.fields + ('text', )
