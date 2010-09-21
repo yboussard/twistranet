@@ -68,15 +68,12 @@ def wall(request):
                 })
         forms.append(form)
 
-    # Content displayed on the wall
-    latest_list = Content.secured(account).all().order_by('-date')[:5]
-    
     # Render the template
     t = loader.get_template('wall.html')
     c = RequestContext(
         request,
         {
-            'latest_content_list': latest_list,
+            'latest_content_list': account.followed_content[:5],
             'forms': forms,
         },
         )

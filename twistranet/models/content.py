@@ -38,7 +38,8 @@ class ContentManager(models.Manager):
     This manager is used for secured content (via the secured()) method.
     Methods are useable if the _account attribute is set.
     """
-
+    def get_query_set(self):
+        return super(ContentManager, self).get_query_set().order_by("-date")
     
 
 class PublicContentManager(ContentManager):
