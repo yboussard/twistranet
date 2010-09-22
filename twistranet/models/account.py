@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class Account(models.Model):
     """
@@ -38,24 +39,16 @@ class Account(models.Model):
         # Both calls must return the same (normally...)
         return Account.objects.filter(initiator_whose__target = self, initiator_whose__approved = True)
         return Account.objects.filter(target_whose__initiator = self, target_whose__approved = True)
-        
+ 
     @property
     def content(self):
         """
-        Return the queryset representing content available for this user.
+        return bound content mgr
         """
-        from content import Content
-        return Content.filtered(self)
-    
-    @property
-    def followed_content(self):
-        """
-        Return the queryset representing content specifically followed by this user.
-        """
-        from content import Content
-        return Content.followed(self)
+        from contentwrapper import ContentWrapper
+        return ContentWrapper(self)
         
-
+        
 class UserAccount(Account):
     """
     Generic User account.

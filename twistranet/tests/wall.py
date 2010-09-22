@@ -41,7 +41,7 @@ class SimpleTest(TestCase):
         # A creates a private content. B shouldn't see it.
         from twistranet.models import StatusUpdate
         b_initial_list = self.B.content.all()
-        b_initial_followed = self.B.followed_content.all()
+        b_initial_followed = self.B.content.followed.all()
         
         s = StatusUpdate()
         s.text = "Hello, this is A speaking"
@@ -62,7 +62,7 @@ class SimpleTest(TestCase):
         # ...but that shouldn't change anything for followed content
         self.failUnless(self.A not in self.B.getMyFollowed())
         self.failUnless(self.PJ in self.B.getMyFollowed())
-        b_final_followed = self.B.followed_content.all()
+        b_final_followed = self.B.content.followed
         self.failUnlessEqual(len(b_initial_followed), len(b_final_followed))
 
     def test_my_content(self):
@@ -75,8 +75,8 @@ class SimpleTest(TestCase):
         s.preSave(self.B)
         s.public = False
         s.save()
-        self.failUnless(s.content_ptr in self.B.content)
-        self.failUnless(s.content_ptr in self.B.followed_content)
+        self.failUnless(s.content_ptr in self.B.content.authorized)
+        self.failUnless(s.content_ptr in self.B.content.followed)
         
         
         

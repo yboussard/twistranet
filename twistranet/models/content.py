@@ -51,7 +51,7 @@ class PublicContentManager(ContentManager):
         # XXX TODO: Filter only public content
         return super(PublicContentManager, self).get_query_set().filter(text = "qlmkdsfjqmlksdjq")
 
-
+    
 class Content(models.Model):
     """
     Abstract content representation class.
@@ -60,6 +60,7 @@ class Content(models.Model):
     When you use the 'objects' manager, only PUBLIC content is retrieved.
     
     The _unsecured manager is the only way of accessing all objects, but never use it in your app.
+    You'll usually call methods from the ContentFromAccountMixin class to access content objects.
     """
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
@@ -76,7 +77,7 @@ class Content(models.Model):
     
     # Custom Managers. Never never never use the __unsecured manager!
     objects = PublicContentManager()
-    __unsecured = ContentManager()
+    _unsecured = ContentManager()
     
     def __unicode__(self):
         return "Content %d of type %s" % (self.id, self.content_type, )
@@ -98,7 +99,8 @@ class Content(models.Model):
         self.content_type = self.__class__.__name__
         self.author = account
         self.diffuser = account
-    
+
+    @classmethod
     def getFiltered(self, account):
         """
         Return a query set holding only visible content for a given account.
@@ -117,8 +119,7 @@ class Content(models.Model):
                 Q(author = account)
             )
         )
-        filtered._account = account
-    filtered = classmethod(getFiltered)
+
         
     
     def getFollowedContent(self, account):
