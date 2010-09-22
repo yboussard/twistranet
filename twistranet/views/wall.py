@@ -72,11 +72,11 @@ def wall(request):
     c = RequestContext(
         request,
         {
+            'account': account,
             'latest_content_list': account.content.followed[:5],
             'forms': forms,
         },
         )
-    print "forms:", forms
     return HttpResponse(t.render(c))
     # Or can do:
     # return render_to_response('wall.html', {'latest_content_list': latest_content_list})

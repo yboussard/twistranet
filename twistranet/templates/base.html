@@ -27,19 +27,19 @@
             <ul>
                 <li>My Network</li>
                 <ul>
-                    {% for a in user.account.getMyNetwork %}
+                    {% for a in account.getMyNetwork %}
                         <li><a href="/">{{ a }}</a></li>
                     {% endfor %}
                 </ul>
                 <li>Who I follow</li>
                 <ul>
-                    {% for a in user.account.getMyFollowed %}
+                    {% for a in account.getMyFollowed %}
                         <li><a href="/">{{ a }}</a></li>
                     {% endfor %}
                 </ul>
                 <li>Who follow me</li>
                 <ul>
-                    {% for a in user.account.getMyFollowers %}
+                    {% for a in account.getMyFollowers %}
                         <li><a href="/">{{ a }}</a></li>
                     {% endfor %}
                 </ul>
