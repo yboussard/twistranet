@@ -73,7 +73,7 @@ def wall(request):
     c = RequestContext(
         request,
         {
-            'latest_content_list': account.followed_content[:5],
+            'latest_content_list': account.content.followed[:5],
             'forms': forms,
         },
         )
