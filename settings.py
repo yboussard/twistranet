@@ -81,11 +81,15 @@ AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
 ROOT_URLCONF = 'urls'
 
+THEME_NAME = "default"
+
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "%s/twistranet/templates" % (os.path.dirname(__file__), )
+    "%s/twistranet/templates" % (os.path.dirname(__file__), ),
+    "%s/twistranet/themes/default" % (os.path.dirname(__file__), ),
+    "%s/twistranet/themes/%s" % (os.path.dirname(__file__), THEME_NAME, ),
 )
 
 LOGIN_URL = '/login/'

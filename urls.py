@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 import os.path
+import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -20,7 +21,9 @@ urlpatterns = patterns('',
 
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': "%s/twistranet/templates/static" % (os.path.dirname(__file__))}),
+            {'document_root': "%s/twistranet/themes/%s/static" % (os.path.dirname(__file__), settings.THEME_NAME)}),
+    # (r'^static/(?P<path>.*)$', 'django.views.static.serve',
+    #         {'document_root': "%s/twistranet/templates/static" % (os.path.dirname(__file__))}),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
