@@ -7,7 +7,8 @@
         "fields": {
             "username": "pjgrizel",
             "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
-            "email": "test@test.com"
+            "email": "test@test.com",
+            "is_superuser": "True"
         }
     },
     {

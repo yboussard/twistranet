@@ -76,11 +76,12 @@ class Content(models.Model):
     public = models.BooleanField()          # If false, reader must be approved for the diffuser to access it
     
     # Custom Managers. Never never never use the __unsecured manager!
+    # You should not use managers from your subclasses (they will return Content objects instead of your class objects)
     objects = PublicContentManager()
     _unsecured = ContentManager()
     
     def __unicode__(self):
-        return "Content %d of type %s" % (self.id, self.content_type, )
+        return "%s %d by %s" % (self.content_type, self.id, self.author)
     
     class Meta:
         app_label = 'twistranet'
@@ -119,29 +120,6 @@ class Content(models.Model):
                 Q(author = account)
             )
         )
-
-        
-    
-    def getFollowedContent(self, account):
-        """
-        Return content that is specifically address to the given account,
-        ie. content the account actually follows.
-        """
-        my_followed = account.getMyFollowed()
-        my_network = account.getMyNetwork()
-        return self.__unsecured.filter(
-            (
-                # Public stuff by the people I follow
-                Q(diffuser__in = my_followed) & Q(public = True)
-            ) | (
-                # Public AND private stuff from the people in my network
-                Q(diffuser__in = my_network)
-            ) | (
-                # And, of course, what I wrote !
-                Q(author = account)
-            )
-        )
-    followed = classmethod(getFollowedContent)
 
     
 class StatusUpdate(Content):

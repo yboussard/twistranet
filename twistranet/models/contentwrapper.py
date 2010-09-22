@@ -17,6 +17,9 @@ class ContentWrapper:
 
     @property
     def authorized(self):
+        """
+        Return a query set of authorized objects.
+        """
         my_network = self._account.getMyNetwork()
         return Content._unsecured.filter(
             (

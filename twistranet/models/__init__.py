@@ -2,7 +2,12 @@
 
 # Low-level stuff
 from content import Content, StatusUpdate, ContentRegistry
-from account import Account, UserAccount
+from account import Account, UserAccount, SystemAccount
+from community import Community, GlobalCommunity, AdminCommunity
 from relation import Relation
 
-# from statusupdate import StatusUpdate
+# Do the mandatory database checkup and initial buiding
+import dbsetup 
+dbsetup.load_initial_data()
+dbsetup.check_consistancy()
+

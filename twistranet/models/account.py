@@ -13,12 +13,23 @@ class Account(models.Model):
     # An unique ID
     # A picture
     # A friendly name
+    # name = models.CharField(max_length = 127)
+    account_type = models.CharField(max_length = 64)
+
+    def save(self, *args, **kw):
+        """
+        Populate special content information before saving it.
+        """
+        if self.__class__ == Account.__name__:
+            raise RuntimeError("You can't directly save an account object.")
+        self.account_type = self.__class__.__name__
+        super(Account, self).save(self, *args, **kw)
+    
+    def __unicode__(self):
+        return u"%s: %s" % (self.__class__.__name__, self.id, )
 
     class Meta:
         app_label = 'twistranet'
-
-    def __unicode__(self):
-        return self.useraccount.user.username
 
     def getMyFollowed(self):
         """
@@ -48,13 +59,37 @@ class Account(models.Model):
         from contentwrapper import ContentWrapper
         return ContentWrapper(self)
         
+    @property
+    def communities(self):
+        """
+        Return communities authorized for this account
+        """
+        from communitywrapper import CommunityWrapper
+        return CommunityWrapper(self)
+        
+class SystemAccount(Account):
+    """
+    The system accounts for TwistraNet.
+    There must be at least 1 system account called '_system'. It's its role to build initial content.
+    System accounts can reach ALL content from ALL communities.
+    """
+    class Meta:
+        app_label = "twistranet"
+    
+    @staticmethod
+    def getSystemAccount():
+        """Return main (and only) system account"""
+        return SystemAccount.objects.all()[0]
         
 class UserAccount(Account):
     """
     Generic User account.
     This holds user profile as well!
     """
-    user = models.OneToOneField(User, unique=True, related_name = "account")
+    user = models.OneToOneField(User, unique=True, related_name = "useraccount")
+
+    def __unicode__(self):
+        return self.useraccount.user.username
 
     class Meta:
         app_label = 'twistranet'

@@ -1,5 +1,6 @@
 # Django settings for TwistraNet project.
 import os.path
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = True
