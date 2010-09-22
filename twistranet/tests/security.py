@@ -2,6 +2,7 @@
 This is a basic wall test.
 """
 from django.test import TestCase
+from twistranet.models import *
 
 class SecurityTest(TestCase):
     
@@ -9,7 +10,6 @@ class SecurityTest(TestCase):
         """
         Get A and B users
         """
-        from twistranet.models import *
         dbsetup.load_initial_data()
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
@@ -20,7 +20,6 @@ class SecurityTest(TestCase):
         """
         Is system account created and working?
         """
-        from twistranet.models import *
         system_accounts = SystemAccount.objects.all()
         self.failUnlessEqual(len(system_accounts), 1)
     
@@ -29,7 +28,6 @@ class SecurityTest(TestCase):
         """
         Check if system account can access all communities
         """
-        from twistranet.models import *
         self.failUnlessEqual(
             len(Community._objects.all()),
             len(self._system.communities.all()),
@@ -40,7 +38,6 @@ class SecurityTest(TestCase):
         There should be one global com. and one member-only com.
         AND the system account must see them all.
         """
-        from twistranet.models import *
         self.failUnlessEqual(len(AdminCommunity._objects.filter(community_type = "AdminCommunity")), 1)
         self.failUnlessEqual(len(GlobalCommunity._objects.filter(community_type = "GlobalCommunity")), 1)
         self.failUnlessEqual(len(self._system.communities.admin), 1)
@@ -50,13 +47,12 @@ class SecurityTest(TestCase):
         """
         Check if system is in the two communities
         """
-        from twistranet.models import *
-        self.failUnlessEqual(len(self._system.communities.my), 2)
+        self.failUnlessEqual(len(self._system.communities.my), 1)
+        self.failUnlessEqual(len(self._system.communities), 2)
         self.failUnlessEqual(len(self.A.communities.my), 1)
         
     def test_membership(self):
-        from twistranet.models import *
-        self.failUnlessEqual(len(self.A.communities.my), 0)
+        self.failUnlessEqual(len(self.A.communities.my), 1)
         c = Community(
             name = "Test Community", 
             scope = "authenticated",
@@ -64,6 +60,6 @@ class SecurityTest(TestCase):
         c.save()
         c.join(self.A)
         self.failUnless(self.A in c.members.all())
-        self.failUnlessEqual(len(self.A.communities.my), 1)
+        self.failUnlessEqual(len(self.A.communities.my), 2)
         
 

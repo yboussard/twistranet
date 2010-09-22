@@ -29,13 +29,13 @@ def load_initial_data():
     
         # Create the global community if it doesn't exist.
         try:
-            g = _system.communities.global_
+            global_ = _system.communities.global_
         except ObjectDoesNotExist:
-            c = GlobalCommunity(
+            global_ = GlobalCommunity(
                 name = "All TwistraNet Members",
                 scope = "authenticated",
                 )
-            c.save()
+            global_.save()
     
         # Create the admin community if it doesn't exist.
         if not (_system.communities.admin):
@@ -52,6 +52,15 @@ def load_initial_data():
         for user in django_admins:
             # XXX Check if this fails
             account = user.useraccount
+            
+        # All accounts must (explicitly) belong to the global community.
+        # There should be a better way to do this ;)
+        if Account.objects.count() <> global_.members.count():
+            print "All accounts are not in the global comm. We manually add them"
+            for account in Account.objects.get_query_set():
+                if global_ not in account.communities.my:
+                    print "Force user %s to join global" % account
+                    account.communities.join(global_)
         
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."

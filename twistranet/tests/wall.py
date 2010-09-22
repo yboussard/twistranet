@@ -2,6 +2,7 @@
 This is a basic wall test.
 """
 from django.test import TestCase
+from twistranet.models import *
 
 class SimpleTest(TestCase):
     
@@ -9,9 +10,6 @@ class SimpleTest(TestCase):
         """
         Get A and B users
         """
-        from twistranet.models import UserAccount
-        from twistranet.models import Content
-        
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "pjgrizel").account_ptr
@@ -31,7 +29,7 @@ class SimpleTest(TestCase):
 
         # Check wall objects. First one should be older than, say, the third one.
         latest = self.B.content.all().order_by('-date')[:5]
-        self.failUnlessEqual(len(latest), 4)
+        self.failUnlessEqual(len(latest), 5)
         self.failUnless(latest[0].date >= latest[3].date, "Invalid date order for the wall")
         
     def test_wall_security(self):
@@ -43,18 +41,17 @@ class SimpleTest(TestCase):
         b_initial_list = self.B.content.all()
         b_initial_followed = self.B.content.followed.all()
         
-        s = StatusUpdate()
+        s = self.A.content.create(content_type = StatusUpdate)
         s.text = "Hello, this is A speaking"
-        s.preSave(self.A)
-        s.public = False
+        s.scope = "private"
         s.save()
         self.failUnlessEqual(s.author, self.A)
-        self.failUnlessEqual(s.diffuser, self.A)
+        self.failUnlessEqual(s.publisher, self.A)
         b_final_list = self.B.content.all()
         self.failUnlessEqual(len(b_initial_list), len(b_final_list))
         
         # A creates / edits public content. B should see it even if he doesn't follow A
-        s.public = True
+        s.scope = "public"
         s.save()
         b_final_list = self.B.content.all()
         self.failUnlessEqual(len(b_initial_list) + 1, len(b_final_list))
@@ -70,13 +67,13 @@ class SimpleTest(TestCase):
         Check if content I write is displayed
         """
         from twistranet.models import StatusUpdate
-        s = StatusUpdate()
+        s = self.A.content.create(StatusUpdate)
         s.text = "Hello, this is A speaking"
-        s.preSave(self.B)
-        s.public = False
+        s.scope = "private"
         s.save()
-        self.failUnless(s.content_ptr in self.B.content.authorized)
-        self.failUnless(s.content_ptr in self.B.content.followed)
+        self.failUnless(s.content_ptr in self.A.content.authorized)
+        self.failUnless(s.content_ptr not in self.B.content.authorized)
+        self.failUnless(s.content_ptr not in self.B.content.followed)
         
         
         

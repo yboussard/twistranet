@@ -21,12 +21,9 @@ class CommunityWrapper:
         Return a queryset of populated objects
         """
         # If system account, return all available communities
-        try:
+        if self._account.account_type == "SystemAccount":
             self._account.systemaccount
             return Community._objects.get_query_set()
-        except:
-            # Not a sytem account
-            pass
         
         return Community._objects.filter(
             (
@@ -39,7 +36,7 @@ class CommunityWrapper:
                 # Communities I'm a member of
                 Q(members = self._account)
             )
-        )
+        ).distinct()
 
     @property
     def my(self):
@@ -47,6 +44,18 @@ class CommunityWrapper:
         Return communities I'm a member of.
         """
         return Community._objects.filter(members = self._account)
+
+    def join(self, community):
+        """
+        Join a community (securely)
+        """
+        return community.join(self._account)
+        
+    def leave(self, community):
+        """
+        Leave a community (securely)
+        """
+        return community.leave(self._account)
 
     @property
     def global_(self):

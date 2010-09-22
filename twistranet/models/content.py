@@ -1,7 +1,16 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from account import Account
+
+CONTENT_SCOPES = (
+    ("public",      "This content is visible by anyone who has access to the publisher.", ),
+    ("network",     "This content is visible only by the publisher's network.", ),
+    ("private",     "This content is private, only the author can see it.", ),
+)
+
+CONTENT_SCOPE_IDS = [ t[0] for t in CONTENT_SCOPES ]
 
 class ContentRegistryManager:
     """
@@ -28,6 +37,12 @@ class ContentRegistryManager:
         """
         # XXX Temporary. Should perform security checks one day ;)
         return [ r[1] for r in self._registry_.values() ]
+        
+    def getModelClass(self, name):
+        """
+        Evident :)
+        """
+        return self._registry_[name][0]
         
     
 ContentRegistry = ContentRegistryManager()
@@ -66,15 +81,16 @@ class Content(models.Model):
     date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
-                                                                # not necessarily the diffuser (esp. for auto producers or communities)
+                                                                # not necessarily the publisher (esp. for auto producers or communities)
 
     # The default text displayed for this content
     text = models.TextField()
     
     # Security stuff
-    diffuser = models.ForeignKey(Account)
-    public = models.BooleanField()          # If false, reader must be approved for the diffuser to access it
-    
+    publisher = models.ForeignKey(Account)   # The account this content is published for.
+    scope = models.CharField(max_length = 16, choices = CONTENT_SCOPES, default = CONTENT_SCOPES[0])
+    _bound = False          # True if content is secured with a correct account
+        
     # Custom Managers. Never never never use the __unsecured manager!
     # You should not use managers from your subclasses (they will return Content objects instead of your class objects)
     objects = PublicContentManager()
@@ -92,36 +108,22 @@ class Content(models.Model):
         """
         return self.text
 
-    def preSave(self, account):
+    def save(self, *args, **kw):
         """
         Populate special content information before saving it.
-        XXX TODO: Use a trigger to automate this!
         """
+        if self.scope not in CONTENT_SCOPE_IDS:
+            raise ValidationError("Invalid community scope: '%s'" % self.scope)
         self.content_type = self.__class__.__name__
-        self.author = account
-        self.diffuser = account
+        if self.content_type == Content.__name__:
+            raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
+        if self.author_id is None or not self._bound:
+            raise ValidationError("Content author must be set before saving this. You should either use account.content.create() or content.bound() methods to set it.")
+        if self.publisher_id is None:
+            self.publisher = self.author
+        return super(Content, self).save(*args, **kw)
 
-    @classmethod
-    def getFiltered(self, account):
-        """
-        Return a query set holding only visible content for a given account.
-        """
-        # my_followed = account.getMyFollowed()
-        my_network = account.getMyNetwork()
-        return self.__unsecured.filter(
-            (
-                # Public stuff by the people I follow
-                Q(public = True)
-            ) | (
-                # Public AND private stuff from the people in my network
-                Q(diffuser__in = my_network)
-            ) | (
-                # And, of course, what I wrote !
-                Q(author = account)
-            )
-        )
 
-    
 class StatusUpdate(Content):
     """
     StatusUpdate is the most simple content available (except maybe helloworld).

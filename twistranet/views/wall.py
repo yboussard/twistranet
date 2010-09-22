@@ -57,8 +57,7 @@ def wall(request):
             # Validate stuff
             if form.is_valid():                             # All validation rules pass
                 # Process the data in form.cleaned_data
-                c = form.save(commit = False)
-                c.preSave(account)
+                c = account.content.bound(form.save(commit = False))
                 c.save()
                 return HttpResponseRedirect('/') # Redirect after POST
         else:
@@ -77,6 +76,7 @@ def wall(request):
             'forms': forms,
         },
         )
+    print "forms:", forms
     return HttpResponse(t.render(c))
     # Or can do:
     # return render_to_response('wall.html', {'latest_content_list': latest_content_list})

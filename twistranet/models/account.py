@@ -23,10 +23,14 @@ class Account(models.Model):
         if self.__class__ == Account.__name__:
             raise RuntimeError("You can't directly save an account object.")
         self.account_type = self.__class__.__name__
-        super(Account, self).save(self, *args, **kw)
+        super(Account, self).save(*args, **kw)
     
     def __unicode__(self):
-        return u"%s: %s" % (self.__class__.__name__, self.id, )
+        if self.account_type == "UserAccount":
+            name = self.useraccount.user.username
+        else:
+            name = self.id
+        return u"%s: %s" % (self.account_type, name, )
 
     class Meta:
         app_label = 'twistranet'

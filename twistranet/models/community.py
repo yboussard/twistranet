@@ -10,6 +10,7 @@ COMMUNITY_SCOPES = (
     ("authenticated", "A regular intranet community visible by logged-in users", ),
     ("anonymous", "Public community visible by anonymous users", ),
     )
+COMMUNITY_SCOPE_IDS = [ s[0] for s in COMMUNITY_SCOPES ]
 
 class CommunityManager(models.Manager):
     """
@@ -60,20 +61,21 @@ class Community(models.Model):
         """
         Populate special content information before saving it.
         """
-        if self.scope not in [ t[0] for t in COMMUNITY_SCOPES ]:
+        if self.scope not in COMMUNITY_SCOPE_IDS:
             raise ValidationError("Invalid community scope: '%s'" % self.scope)
         # if self.community_type == Community.__name__:
         #     raise ValidationError("You cannot save a community object. Use a derived class instead.")
         self.community_type = self.__class__.__name__
-        super(Community, self).save(self, *args, **kw)
+        return super(Community, self).save(*args, **kw)
 
-    def _can_see(self, account):
+    def _getAuthorizedWrapper(self, account):
         """
         Check if given account has access to this community. Raises if not.
         """
         from communitywrapper import CommunityWrapper
         wrapper = CommunityWrapper(account)
         wrapper.get(id = self.id)   # Will raise if unauthorized
+        return wrapper
     
     def join(self, account):
         """
@@ -81,7 +83,7 @@ class Community(models.Model):
         You can only join the communities you can 'see'
         """
         # Quick security check
-        self._can_see(account)
+        wrapper = self._getAuthorizedWrapper(account)
         
         # Don't add twice
         if self in wrapper.my:
@@ -98,7 +100,7 @@ class Community(models.Model):
         Fails silently is account is not a member of the community.
         """
         # Quick security check, then delete membership info
-        self._can_see(account)
+        wrapper = self._getAuthorizedWrapper(account)
         for mbr in CommunityMembership.objects.filter(account = account, community = self):
             mbr.delete()
 

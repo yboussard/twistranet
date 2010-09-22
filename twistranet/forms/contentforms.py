@@ -13,7 +13,7 @@ class BaseContentForm(forms.ModelForm):
         return self.Meta.model.__name__
 
     class Meta:
-        fields = ('content_type', 'public', )
+        fields = ('content_type', 'scope', )
         widgets = {
             "content_type": HiddenInput,
             }
