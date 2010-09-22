@@ -6,13 +6,11 @@
     {% include "content/content_forms.part.html" %}
 
     {% if latest_content_list %}
-        <ul>
         {% for content in latest_content_list %}
-            <li>
+            <div class="post" id="post-{{ content.id }}">
                 {%include "content/summary.part.html" %}
-            </li>
+            </div>
         {% endfor %}
-        </ul>
     {% else %}
         <p>No contents are available.</p>
     {% endif %}

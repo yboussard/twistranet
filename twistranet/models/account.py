@@ -25,12 +25,16 @@ class Account(models.Model):
         self.account_type = self.__class__.__name__
         super(Account, self).save(*args, **kw)
     
-    def __unicode__(self):
+    @property
+    def fullname(self,):
         if self.account_type == "UserAccount":
-            name = self.useraccount.user.username
+            return self.useraccount.user.username
         else:
-            name = self.id
-        return u"%s: %s" % (self.account_type, name, )
+            return self.id
+        
+    
+    def __unicode__(self):
+        return u"%s: %s" % (self.account_type, self.fullname, )
 
     class Meta:
         app_label = 'twistranet'

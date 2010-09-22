@@ -1,0 +1,364 @@
+/*  
+Theme Name: GEEX3M
+Theme URI: http://pax.mioritics.ro/repository/wp/
+Monospace txt only LoFi theme.
+Version: 1.0
+Author: Alexandru Popescu
+Author URI: http://pax.mioritics.ro/
+
+	GEEX3M v1.0
+	http://pax.mioritics.ro/repository/wp/
+
+	Minimalist design, monospace text only ASCII theme
+	homage to the ASCII console *NIX era
+
+
+*/
+
+
+
+/* Begin Typography & Colors */
+body {	color: #000;	font: 13px "Courier New", Courier, mono;	}
+
+.postTitle {background: url(H.gif) repeat-x top; margin:0; padding: 0;}
+	.postTitle h2 a{font-size: 16px; color:#111111; text-decoration: none; font-weight: bold; background-color: #FFFFE0}
+	.postTitle h2 { margin: 6px 4px 6px 2px;  display: inline;    }
+	.postTitle div {background: url(H.gif) repeat-x bottom;  margin:0; padding: 0;}
+
+.post small {font-size:13px; color: #CCCCCC;  padding-top:6px;}
+.postTitleHR {display: block; margin: -3px;}
+small {font-size: 12px;}
+
+
+#sidebar {margin-top: -70px;}
+#sidebar ul li h2 {font-size: 13px; margin-bottom:0px; margin-top:20px;}
+#sidebar ul {text-align: left; font-size:12px;}
+#sidebar a { text-decoration:none; color: #777777;}
+
+
+
+#sidebar a:hover, .post a:hover  { background-color:#000000; color:#FFFFFF;}
+
+#page {	background-color: white;	margin: 20px auto;	padding: 0;	width: 760px;	
+	}
+.post .entry img{ background-color:#FFFFFF; border: 1px solid #ced4ca; padding: 3px; margin: 5px 0 5px 0;}
+#header {padding: 0 0 20px 0;		}
+#header h1 a{ font-size: 14px;  
+background-color:#000000; color:#FFFFFF;
+ padding: 3px; text-decoration:none; font-weight: normal; }
+#header h1 {margin:0px; display: inline;}
+#header  .description { display: inline}
+#clearnavigation {clear: both;}
+
+.narrowcolumn {
+	float: left;
+	padding: 0 5 20px 45px;
+	margin: 0px 0 0;
+	width: 500px;
+	}
+
+.widecolumn {
+	padding: 10px 0 20px 0;
+	margin: 5px 0 0 150px;
+	width: 450px;
+	}
+
+.post {
+	margin: 0 0 40px;
+	text-align: left;
+	}
+
+.post hr {
+	display: block;
+	}
+
+.widecolumn .post {
+	margin: 0;
+	}
+
+h2.pagetitle { font-weight: normal} 
+
+
+.postmetadata a{ text-decoration:none; color: #999999;}
+
+.postmetadata { font-size:12px;
+	clear: left;
+}
+
+#footer {
+	padding: 0;
+	
+font-size: 12px; color: #999999;
+	
+	clear: both;
+	}
+	#footer a { text-decoration: none; color: #666666;}
+
+
+/* End Structure */
+
+
+
+
+/* Begin Images */
+p img {
+	padding: 0;
+	max-width: 100%;
+	}
+
+/*	Using 'class="alignright"' on an image will (who would've
+	thought?!) align the image to the right. And using 'class="centered',
+	will of course center the image. This is much better than using
+	align="center", being much more futureproof (and valid) */
+
+img.centered {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+img.alignright {
+	padding: 4px;
+	margin: 0 0 2px 7px;
+	display: inline;
+	}
+
+img.alignleft {
+	padding: 4px;
+	margin: 0 7px 2px 0;
+	display: inline;
+	}
+
+.alignright {
+	float: right;
+	}
+
+.alignleft {
+	float: left
+	}
+/* End Images */
+
+
+
+/* Begin Lists
+
+	Special stylized non-IE bullets
+	Do not work in Internet Explorer, which merely default to normal bullets. */
+
+html>body .entry ul {
+	margin-left: 0px;
+	padding: 0 0 0 30px;
+	list-style: none;
+	padding-left: 10px;
+	text-indent: -10px;
+	} 
+
+html>body .entry li {
+	margin: 7px 0 8px 10px;
+	}
+
+.entry ol {
+	padding: 0 0 0 35px;
+	margin: 0;
+	}
+
+.entry ol li {
+	margin: 0;
+	padding: 0;
+	}
+
+.postmetadata ul, .postmetadata li {
+	display: inline;
+	list-style-type: none;
+	list-style-image: none;
+	}
+
+#sidebar ul, #sidebar ul ol {
+	margin: 0;
+	padding: 0;
+	}
+
+#sidebar ul li {
+	list-style-type: none;
+	list-style-image: none;
+
+	}
+
+#sidebar ul p, #sidebar ul select {
+	margin: 5px 0 8px;
+	}
+
+#sidebar ul ul, #sidebar ul ol {
+	margin: 5px 0 0 10px;
+	}
+
+#sidebar ul ul ul, #sidebar ul ol {
+	margin: 0 0 0 10px;
+	}
+
+ol li, #sidebar ul ol li {
+	list-style: decimal outside;
+	}
+
+#sidebar ul ul li, #sidebar ul ol li {
+	margin: 0;
+	padding: 0;
+	}
+/* End Entry Lists */
+
+
+
+/* Begin Form Elements */
+
+input { border: 1px solid #666666; font-size: 12px;}
+#searchsubmit, #submit, #searchform div input { background-color: #333333; color:#FFFFFF; border: none; font-size: 12px}
+
+
+#searchform {	padding: 3px; }
+
+
+#searchform input#s { border: 1px solid #666666; font-size: 12px; background-color:#FFFFFF;	padding: 2px; color: #333333;}
+
+
+.entry form { /* This is mainly for password protected posts, makes them look better. */
+	text-align:center;
+	}
+
+select {
+	width: 130px;
+	}
+
+#commentform input {
+	width: 170px;
+	padding: 2px;
+	margin: 5px 5px 1px 0;
+	}
+
+#commentform textarea {
+width: 450px; border:1px solid #333333;
+	padding: 2px;
+	padding: 2px;
+	}
+
+/* End Form Elements */
+
+
+
+/* Begin Comments*/
+.alt {
+	margin: 0;
+	padding: 10px;
+	background-color: #FFFFEE;
+	}
+
+
+
+.commentlist li {
+	margin: 15px 0 3px;
+	padding: 5px 10px 3px 5px;
+	list-style: none;
+	font-size:12px;
+	}
+
+.commentlist p {
+	margin: 5px 5px 10px 0;
+	}
+
+#commentform p {
+	margin: 5px 0;
+	}
+
+.nocomments {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	}
+
+.commentmetadata {
+
+	display: block; float: right;
+	}
+	.commentmetadata a{ text-decoration: none; color: #999999; font-size:11px;}
+/* End Comments */
+
+
+
+/* Begin Sidebar */
+#sidebar
+{
+	padding: 20px 0 10px 0;
+	margin-left: 545px;
+	width: 190px;
+	}
+
+
+/* End Sidebar */
+
+
+
+/* Begin Calendar */
+#wp-calendar {
+	empty-cells: show;
+	margin: 10px auto 0;
+	width: 155px;
+	}
+
+#wp-calendar #next a {
+	padding-right: 10px;
+	text-align: right;
+	}
+
+#wp-calendar #prev a {
+	padding-left: 10px;
+	text-align: left;
+	}
+
+#wp-calendar a {
+	display: block;
+	}
+
+#wp-calendar caption {
+	text-align: center;
+	width: 100%;
+	}
+
+#wp-calendar td {
+	padding: 3px 0;
+	text-align: center;
+	}
+
+#wp-calendar td.pad:hover { /* Doesn't work in IE */
+	background-color: #fff; }
+/* End Calendar */
+
+
+
+/* Begin Various Tags & Classes */
+acronym, abbr, span.caps {
+	cursor: help;
+	}
+
+acronym, abbr {
+	border-bottom: 1px dashed #999;
+	}
+
+blockquote {
+	margin: 15px 20px 0 10px;
+	padding-left: 10px;
+	border-left: 1px solid #ccc;
+	}
+
+
+
+.center {
+	text-align: center;
+	}
+
+hr {
+	display: none;
+	}
+
+a img {
+	border: none;
+	}
+

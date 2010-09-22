@@ -108,6 +108,16 @@ class Content(models.Model):
         """
         return self.text
 
+    @property
+    def subclass(self):
+        """
+        Return the exact subclass this object belongs to.
+        Use this to display it.
+        """
+        obj = getattr(self, self.content_type.lower())
+        obj._bound = self._bound
+        return obj
+        
     def save(self, *args, **kw):
         """
         Populate special content information before saving it.

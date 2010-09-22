@@ -1,6 +1,10 @@
 {% for form in forms %}
-<fieldset id="form-{{form.getName}}">
-<label>{{ form.getName }}</label>
+<a href="javascript://" 
+    onclick="showhide('form-{{form.getName}}');">{{form.getName}}</a>
+{% endfor %}
+
+{% for form in forms %}
+<fieldset id="form-{{form.getName}}" style="display:none">
 <form action="/" method="post">
 {% csrf_token %}
 {% for field in form %}
