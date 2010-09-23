@@ -81,7 +81,7 @@ AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
 ROOT_URLCONF = 'urls'
 
-THEME_NAME = "ascii"
+THEME_NAME = "default"
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

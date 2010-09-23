@@ -1,8 +1,11 @@
 {# Generate a summary for 'content' object #}
-<div class="postTitle"><div>
-    <h2><a href="">{{ content.author.fullname }}</a> {{ content.subclass.getText }}</h2></div></div>
+<div class="post" id="post-{{content.id}}">
+    <h3><a href="">{{ content.author.fullname }}</a> {{ content.subclass.getText }}</h3>
 <div class="entry">
 (image) 
+</div>
+<div class="postmetadata">
 {{ content.content_type }}
 {{ content.date }}
+</div>
 </div>
