@@ -1,0 +1,48 @@
+/* Fieldset for form containment */
+
+fieldset {
+	padding: 1em 1em 1em 1em;
+	margin-bottom: 1em;
+	margin-left: 3em;
+	border: 1px dashed #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+fieldset legend {
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: -.25em 0 -.25em -3em;
+	padding: .25em 1em .25em 1em;
+	background-color: white;
+	border: 1px solid #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+fieldset legend a,
+fieldset legend span {
+  padding-right: 1em;
+}
+
+fieldset legend a:link {
+  font-weight: normal;
+}
+
+ul.inline-form {
+  margin: 0;
+  padding: 0;
+}
+
+ul.inline-form li {
+  list-style: none;
+  padding: 0;
+  margin: 1em 0 0 0;
+}
+
+ul.inline-form li label {
+  width: 50%;
+  vertical-align: top;
+  margin-top: 1em;
+  display: none;
+}
