@@ -9,29 +9,7 @@
 
     <meta name="generator" content="TwistraNet" />
     <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" />
-    <script language="javascript"> 
-    <!-- 
-    var state = 'none'; 
-    function showhide(layer_ref) { 
-        if (state == 'block') { 
-            state = 'none'; 
-        } 
-        else { 
-            state = 'block'; 
-        } 
-        if (document.all) { //IS IE 4 or 5 (or 6 beta) 
-            eval( "document.all." + layer_ref + ".style.display = state"); 
-        } 
-        if (document.layers) { //IS NETSCAPE 4 or below 
-            document.layers[layer_ref].display = state; 
-        } 
-        if (document.getElementById && !document.all) { 
-            maxwell_smart = document.getElementById(layer_ref); 
-            maxwell_smart.style.display = state; 
-        } 
-    } 
-    //--> 
-    </script>
+    <script type="text/javascript" src="/js/jquery.js" charset="utf-8"></script>
     <style type="text/css">
     body    { background: url(/static/styles/White/bg-page.png) 50% repeat; }
     #page   { background: url(/static/styles/White/bg-head.png) 50% 0 repeat-x; }
@@ -39,6 +17,8 @@
     #wrap   { background: url(/static/styles/Default/wrap-bg.png) 50% 0 repeat-y; }
     #bottom { background: url(/static/styles/Default/footer-bg.png) 50% 0 no-repeat;	}
     </style>
+    <script type="text/javascript" src="/js/includes/lib/include.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/includes/mad.jquery.js" charset="utf-8"></script>
 </head>
 <body>
     <div id="page">
@@ -133,7 +113,7 @@
             </div><!-- end #wrap -->
 
             <div id="bottom">
-                <div id="footer">Powered By TwistraNet</div>
+                <div id="footer">Powered By <a href="http://twitranet.numericube.com">TwistraNet</a></div>
             </div>
 
         </div><!-- end #wrapper -->
