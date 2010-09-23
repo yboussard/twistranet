@@ -6,6 +6,9 @@ class BaseContentForm(forms.ModelForm):
     """
     Abstract class to describe the basic content form
     """    
+    error_css_class = 'error'
+    required_css_class = 'required'
+
     def getName(self):
         """
         Return a friendly name for this form, usually used as the tab label
@@ -13,7 +16,7 @@ class BaseContentForm(forms.ModelForm):
         return self.Meta.model.__name__
 
     class Meta:
-        fields = ('content_type', 'scope', )
+        fields = ('text', 'scope', )
         widgets = {
             "content_type": HiddenInput,
             }
@@ -30,4 +33,4 @@ class StatusUpdateForm(BaseContentForm):
     class Meta(BaseContentForm.Meta):
         from twistranet.models import StatusUpdate
         model = StatusUpdate
-        fields = BaseContentForm.Meta.fields + ('text', )
+        fields = BaseContentForm.Meta.fields

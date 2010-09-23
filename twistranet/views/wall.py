@@ -44,14 +44,14 @@ def wall(request):
     form_classes = ContentRegistry.getContentFormClasses(account, account)
     forms = []
     for form_class in form_classes:
-        content_type = form_class.Meta.model.__name__
         if request.method == 'POST':                        # If the form has been submitted...
             form = form_class(request.POST)           # A form bound to the POST data
+            content_type = form.getName()
             
             # We skip validation for forms of other content types,
             # BUT we ensure that data is bound anyway
-            if not form.data['content_type'] == content_type:
-                forms.append(form_class(request.POST))
+            if not request.POST.get('validated_form', None) == content_type:
+                forms.append(form)
                 continue
 
             # Validate stuff
@@ -61,10 +61,7 @@ def wall(request):
                 c.save()
                 return HttpResponseRedirect('/') # Redirect after POST
         else:
-            form = form_class({
-                # Keep track of the content_type to ensure proper validation
-                'content_type': content_type,
-                })
+            form = form_class()
         forms.append(form)
 
     # Render the template
