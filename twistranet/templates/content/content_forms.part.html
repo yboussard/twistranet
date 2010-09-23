@@ -4,7 +4,7 @@
 {# {% endfor %} #}
 
 {% for form in forms %}
-<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="xdisplay: none;"{% endif %}>
+<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
     <legend>
         {% for formhandle in forms %}
             {% if formhandle.getName == form.getName %}
