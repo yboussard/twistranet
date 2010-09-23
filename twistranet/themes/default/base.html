@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head profile="http://gmpg.org/xfn/11">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>{% block title %}My amazing site{% endblock %}</title>
+
+    <meta name="generator" content="TwistraNet" />
+    <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" />
+    <script language="javascript"> 
+    <!-- 
+    var state = 'none'; 
+    function showhide(layer_ref) { 
+        if (state == 'block') { 
+            state = 'none'; 
+        } 
+        else { 
+            state = 'block'; 
+        } 
+        if (document.all) { //IS IE 4 or 5 (or 6 beta) 
+            eval( "document.all." + layer_ref + ".style.display = state"); 
+        } 
+        if (document.layers) { //IS NETSCAPE 4 or below 
+            document.layers[layer_ref].display = state; 
+        } 
+        if (document.getElementById && !document.all) { 
+            maxwell_smart = document.getElementById(layer_ref); 
+            maxwell_smart.style.display = state; 
+        } 
+    } 
+    //--> 
+    </script>
+    <style type="text/css">
+    body    { background: url(/static/styles/White/bg-page.png) 50% repeat; }
+    #page   { background: url(/static/styles/White/bg-head.png) 50% 0 repeat-x; }
+    #head   { background: url(/static/styles/Default/head-bg.png) 50% 0 no-repeat; }
+    #wrap   { background: url(/static/styles/Default/wrap-bg.png) 50% 0 repeat-y; }
+    #bottom { background: url(/static/styles/Default/footer-bg.png) 50% 0 no-repeat;	}
+    </style>
+</head>
+<body>
+    <div id="page">
+        <div id="wrapper">
+            <div id="header">
+                <div id="head">
+                    {% block topbar %}
+                    <div id="usermenu">
+                        <div class="caption">
+                            <ul>
+                                {% block actions %}
+                                {% if user.is_authenticated %}
+                                <li><a href="/logout">Log out {{ user.username }}</a></li>
+                                {% else %}
+                                <li><a href="/login">Log in</a></li>
+                                {% endif %}
+                                {% endblock %}
+                            </ul>
+                        </div>
+                        <div class="clear tab">
+                            <a href="#" title="<?php _e('Users', 'default'); ?>">
+                                <img src="/static/images/icons/arrow-dn.png" alt="btn" />
+                                <img src="/static/images/icons/arrow-up.png" alt="btn" style="display: none" />
+                            </a>
+                        </div>
+                    </div>
+                    {% endblock %}
+                    <div class="logotext">
+                        <a href="/">TwistraNet</a>
+                        <div class="description">A social content management system.</div>
+                    </div>
+                    <div id="menubar">
+                        <div id="mainmenu">
+                            <ul class="sf-menu">
+                                <li class="page_item"><a href="/">Home</a></li>
+                                <li class="page_item"><a href="#">Communities</a></li>
+                                <li class="page_last">&nbsp;</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="searchform">
+                    {% block searchform %}
+                    (Searchform)
+                    {% endblock %}
+                </div>
+
+                <div id="breadcrumb">
+                    {% block breadcrumb %}
+                    <a href="/">Home</a> > User
+                    {% endblock %}
+                </div>
+
+            </div><!-- End header --> 
+
+            <div id="wrap">
+                <div id="container">
+                    <div id="content">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+
+                    <div id="sidebar">
+                        <ul>		
+                            {% block sidebar %}
+                            <li>
+                                <h2>My Network</h2>
+                                {% for a in account.getMyNetwork %}
+                                <li><a href="/">{{ a.fullname }}</a></li>
+                                {% endfor %}
+                            </li>
+                            <li>
+                                <h2>Who I follow</h2>
+                                {% for a in account.getMyFollowed %}
+                                <li><a href="/">{{ a.fullname }}</a></li>
+                                {% endfor %}
+                            </li>
+                            <li><h2>Who follow me</h2>
+                                {% for a in account.getMyFollowers %}
+                                <li><a href="/">{{ a.fullname }}</a></li>
+                                {% endfor %}
+                            </li>
+                            {% endblock %}
+                        </ul>
+                    </div>
+                </div><!-- end #container -->
+                <div class="clear">&nbsp;</div>
+            </div><!-- end #wrap -->
+
+            <div id="bottom">
+                <div id="footer">Powered By TwistraNet</div>
+            </div>
+
+        </div><!-- end #wrapper -->
+    </div><!-- end #page -->
+
+</body>
+</html>
