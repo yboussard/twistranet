@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -50,11 +51,14 @@
                             <ul>
                                 {% block actions %}
                                 {% if user.is_authenticated %}
-                                <li><a href="/logout">Log out {{ user.username }}</a></li>
+                                <li>
+                                    <a href="/logout">{% blocktrans %}Log out {{ user }}{% endblocktrans %}</a>
+                                </li>
                                 {% else %}
                                 <li><a href="/login">Log in</a></li>
                                 {% endif %}
                                 {% endblock %}
+                                <li class="last">Ok</li>
                             </ul>
                         </div>
                         <div class="clear tab">
