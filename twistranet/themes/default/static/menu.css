@@ -156,7 +156,7 @@ ul.sf-menu li li li.sfHover ul {
 
 #usermenu div.caption {
 	float: right;
-	display: none;
+/*  display: none;*/
 	padding: .75em 1em;
 	background: url(../images/sys/black-opacity50.png) repeat;
 	-moz-border-radius-bottomleft: 5px;

@@ -4,7 +4,7 @@
 {% endfor %}
 
 {% for form in forms %}
-<fieldset id="form-{{form.getName}}" style="display:none">
+<fieldset id="form-{{form.getName}}">
 <form action="/" method="post">
 {% csrf_token %}
 {% for field in form %}

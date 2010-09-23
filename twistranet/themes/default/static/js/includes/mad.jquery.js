@@ -18,10 +18,10 @@ jQuery(document).ready(function(){
 
 	// User Menu
 	//
-	jQuery("#usermenu div.tab").click(function () {
-		jQuery("#usermenu div.caption").slideToggle("normal");
-		jQuery("#usermenu div.tab a img").toggle();
-	});
+    // jQuery("#usermenu div.tab").click(function () {
+    //  jQuery("#usermenu div.caption").slideToggle("normal");
+    //  jQuery("#usermenu div.tab a img").toggle();
+    // });
 
 	// Superfish mainmenu
 	//

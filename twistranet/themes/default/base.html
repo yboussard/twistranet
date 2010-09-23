@@ -29,24 +29,28 @@
                     <div id="usermenu">
                         <div class="caption">
                             <ul>
-                                {% block actions %}
                                 {% if user.is_authenticated %}
                                 <li>
-                                    <a href="/logout">{% blocktrans %}Log out {{ user }}{% endblocktrans %}</a>
+                                    <a href="/">{% blocktrans %}{{ user }}{% endblocktrans %}</a>
+                                </li>
+                                {% endif %}
+                                {% block useractions %}
+                                {% endblock %}
+                                {% if user.is_authenticated %}
+                                <li class="last">
+                                    <a href="/logout">{% blocktrans %}Log out{% endblocktrans %}</a>
                                 </li>
                                 {% else %}
-                                <li><a href="/login">Log in</a></li>
+                                <li class="last"><a href="/login">Log in</a></li>
                                 {% endif %}
-                                {% endblock %}
-                                <li class="last">Ok</li>
                             </ul>
                         </div>
-                        <div class="clear tab">
-                            <a href="#" title="<?php _e('Users', 'default'); ?>">
-                                <img src="/static/images/icons/arrow-dn.png" alt="btn" />
-                                <img src="/static/images/icons/arrow-up.png" alt="btn" style="display: none" />
-                            </a>
-                        </div>
+                        {# <div class="clear tab"> #}
+                        {#     <a href="#" title="<?php _e('Users', 'default'); ?>"> #}
+                        {#         <img src="/static/images/icons/arrow-dn.png" alt="btn" /> #}
+                        {#         <img src="/static/images/icons/arrow-up.png" alt="btn" style="display: none" /> #}
+                        {#     </a> #}
+                        {# </div> #}
                     </div>
                     {% endblock %}
                     <div class="logotext">
@@ -58,7 +62,7 @@
                             <ul class="sf-menu">
                                 <li class="page_item"><a href="/">Home</a></li>
                                 <li class="page_item"><a href="#">Communities</a></li>
-                                <li class="page_last">&nbsp;</li>
+                                <li class="page_item"><a href="#">Help</a></li>
                             </ul>
                         </div>
                     </div>
@@ -66,7 +70,11 @@
 
                 <div id="searchform">
                     {% block searchform %}
-                    (Searchform)
+                        <form action="/search" method="post" id="search-box">
+                        	<div class="search-wrapper">
+                        		<input type="text" value="{% trans 'Search...' %}" class="textfield" name="s" id="search-text" onblur="if(this.value=='') this.value='{% trans 'Search...' %}';" onfocus="if(this.value=='{% trans 'Search...' %}') this.value='';" />
+                        	</div>
+                        </form>
                     {% endblock %}
                 </div>
 
