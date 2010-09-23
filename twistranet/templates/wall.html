@@ -7,9 +7,7 @@
 
     {% if latest_content_list %}
         {% for content in latest_content_list %}
-            <div class="post" id="post-{{ content.id }}">
-                {%include "content/summary.part.html" %}
-            </div>
+            {%include "content/summary.part.html" %}
         {% endfor %}
     {% else %}
         <p>No contents are available.</p>

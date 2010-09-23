@@ -22,6 +22,10 @@ urlpatterns = patterns('',
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
             {'document_root': "%s/twistranet/themes/%s/static" % (os.path.dirname(__file__), settings.THEME_NAME)}),
+    (r'^js/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': "%s/twistranet/themes/%s/static/js" % (os.path.dirname(__file__), settings.THEME_NAME)}),
+    (r'^images/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': "%s/twistranet/themes/%s/static/images" % (os.path.dirname(__file__), settings.THEME_NAME)}),
     # (r'^static/(?P<path>.*)$', 'django.views.static.serve',
     #         {'document_root': "%s/twistranet/templates/static" % (os.path.dirname(__file__))}),
 
