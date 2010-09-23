@@ -22,6 +22,16 @@ jQuery(document).ready(function(){
     //  jQuery("#usermenu div.caption").slideToggle("normal");
     //  jQuery("#usermenu div.tab a img").toggle();
     // });
+    
+    // Forms tab switching
+    jQuery("fieldset legend a").click(function(event){
+        jQuery(this).parents("fieldset").hide();
+        jQuery("#" + jQuery(this).attr('href')).show();
+      
+        // Stop the link click from doing its normal thing
+        event.preventDefault();
+    });
+    
 
 	// Superfish mainmenu
 	//
@@ -47,6 +57,7 @@ jQuery(document).ready(function(){
 
 	// Links effect
 	//
+	/*
 	if( BrowserDetect.browser!="Explorer" ) {
 		jQuery("a").hover(
 			function(){
@@ -59,7 +70,7 @@ jQuery(document).ready(function(){
 				jQuery(this).animate({opacity: 1},100);
 			}
 		);
-	}
+	}*/
 
 	// External Links
 	//
@@ -68,8 +79,10 @@ jQuery(document).ready(function(){
 
 	// Go To Top
 	//
+	/*
 	jQuery("span#gototop a").click( function() {
 		jQuery.scrollTo(jQuery("body"), 1000);
 		return false;
 	});
+	*/
 });

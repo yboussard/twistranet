@@ -1,10 +1,19 @@
-{% for form in forms %}
-<a href="javascript://" 
-    onclick="showhide('form-{{form.getName}}');">{{form.getName}}</a>
-{% endfor %}
+{# {% for form in forms %} #}
+{# <a href="javascript://"  #}
+{#     onclick="showhide('form-{{form.getName}}');">{{form.getName}}</a> #}
+{# {% endfor %} #}
 
 {% for form in forms %}
-<fieldset id="form-{{form.getName}}">
+<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="xdisplay: none;"{% endif %}>
+    <legend>
+        {% for formhandle in forms %}
+            {% if formhandle.getName == form.getName %}
+                <span>{{formhandle.getName}}</span>
+            {% else %}
+                <a href="form-{{formhandle.getName}}">{{formhandle.getName}}</a>
+            {% endif %}
+        {% endfor %}
+    </legend>
 <form action="/" method="post">
 {% csrf_token %}
 {% for field in form %}
