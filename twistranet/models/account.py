@@ -87,7 +87,7 @@ class SystemAccount(Account):
     @staticmethod
     def getSystemAccount():
         """Return main (and only) system account"""
-        return SystemAccount.objects.all()[0]
+        return SystemAccount.objects.all()[0]       # REVIEW - consider .get method ; [0] is not error safe ; you don't trap exception here
         
 class UserAccount(Account):
     """

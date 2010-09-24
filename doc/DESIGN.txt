@@ -2,7 +2,7 @@ Design considerations for TwistraNet
 
 
 Database consistancy
-=====================
+====================
 
 The model is not a rdbm-normal one, THIS IS ON PURPOSE:
 1/ for read performance reasons

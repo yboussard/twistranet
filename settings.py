@@ -2,6 +2,8 @@
 import os.path
 import sys
 
+HERE = os.path.dirname(__file__)
+
 DEBUG = True
 TEMPLATE_DEBUG = True
 TEMPLATE_STRING_IF_INVALID = "BOUH"
@@ -14,7 +16,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': "%s/data/tn.db" % (os.path.dirname(__file__), ),                      # Or path to database file if using sqlite3.
+        'NAME': "%s/data/tn.db" % (HERE, ),                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -87,9 +89,9 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "%s/twistranet/themes/%s" % (os.path.dirname(__file__), THEME_NAME, ),
-    "%s/twistranet/themes/default" % (os.path.dirname(__file__), ),
-    "%s/twistranet/templates" % (os.path.dirname(__file__), ),
+    "%s/twistranet/themes/%s" % (HERE, THEME_NAME, ),
+    "%s/twistranet/themes/default" % (HERE, ),
+    "%s/twistranet/templates" % (HERE, ),
 )
 
 LOGIN_URL = '/login/'
