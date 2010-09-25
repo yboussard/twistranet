@@ -66,7 +66,7 @@ class Account(models.Model):
         
     
     def __unicode__(self):
-        return u"%s: %s" % (self.account_type, self.fullname, )
+        return u"%s" % (self.fullname, )
 
     class Meta:
         app_label = 'twistranet'

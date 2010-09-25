@@ -1,56 +1,5 @@
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <link rel="stylesheet" href="/static/style.css" />
-    <title>{% block title %}My amazing site{% endblock %}</title>
-</head>
 
-<body>
-    <div id="loosyheader">
-        <div id="header">
-            {% block topbar %}
-                <h1><a href="/">TwistraNet</a></h1>
-            {% endblock %}
-            {% block actions %}
-                {% if user.is_authenticated %}
-                  <a href="/logout">{% blocktrans %}Log out {{ user.username }}{% endblocktrans %}</a>
-                {% else %}
-                  <a href="/login">Log in</a>
-                {% endif %}
-            {% endblock %}
-        </div>
-    </div>
-    <div id="columnwrap">
-        <div id="sidebar">
-            {% block sidebar %}
-            <ul>
-                <li>My Network</li>
-                <ul>
-                    {% for a in account.getMyNetwork %}
-                        <li><a href="/">{{ a }}</a></li>
-                    {% endfor %}
-                </ul>
-                <li>Who I follow</li>
-                <ul>
-                    {% for a in account.getMyFollowed %}
-                        <li><a href="/">{{ a }}</a></li>
-                    {% endfor %}
-                </ul>
-                <li>Who follow me</li>
-                <ul>
-                    {% for a in account.getMyFollowers %}
-                        <li><a href="/">{{ a }}</a></li>
-                    {% endfor %}
-                </ul>
-            </ul>
-            {% endblock %}
-        </div>
+This template is not even used.
 
-        <div id="content-main">
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-</body>
-</html>
+Maybe we could bring back a bare minimal template code in there anyway?

@@ -1,6 +1,6 @@
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    <h3><a href="">{{ content.author.fullname }}</a> {{ content.subclass.getText }}</h3>
+    <h3><a href="{% url twistranet.views.account content.author.id %}">{{ content.author.fullname }}</a> {{ content.subclass.getText }}</h3>
 <div class="entry">
 (image) 
 </div>

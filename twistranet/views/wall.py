@@ -12,7 +12,6 @@ from twistranet.models import Account
 from twistranet.models import ContentRegistry
 
 
-@login_required
 def account(request, account_id):
     """
     Account (user/profile) page.
@@ -21,12 +20,13 @@ def account(request, account_id):
         - Check if account is listed and permit only if approved
     """
     account = Account.objects.get(id = account_id)
-    latest_list = Content.secured(account).filter(account = account)
+    latest_list = Content.objects.getFollowed(account = account)
     t = loader.get_template('account.html')
-    t = RequestContext(
+    c = RequestContext(
         request,
         {
-            "latest_content_list": latest_list,
+            "account": account,
+            "latest_content_list": latest_list[:5],
         },
         )
     return HttpResponse(t.render(c))

@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Wall{% endblock %}
+{% block title %}{{ account }} Wall{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/">Home</a> > {{ account }}
+{% endblock %}
 
 {% block content %}
+    {% include "content/content_forms.part.html" %}
+
     {% if latest_content_list %}
-        <ul>
         {% for content in latest_content_list %}
-            <li><a href="/contents/{{ content.id }}/">{{ content.htmlSummary }}</a></li>
+            {%include "content/summary.part.html" %}
         {% endfor %}
-        </ul>
     {% else %}
         <p>No contents are available.</p>
     {% endif %}
