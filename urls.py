@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     # (r'^TwistraNet/', include('TwistraNet.foo.urls')),
 
     # The wall page for currently logged-in user
-    (r'^$',                                     'twistranet.views.wall'),
+    (r'^$',                                     'twistranet.views.home'),
     (r'^account/(?P<account_id>\d+)/$',         'twistranet.views.account'),
 
     # Login / Logout / Register stuff

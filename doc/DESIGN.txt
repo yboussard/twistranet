@@ -16,3 +16,12 @@ Here are some clues to ensure that the schema is ok:
 Content are typed, but the 'content' table holds generic information. Check every content type object and check that content.content_type field is set to the right type.
 
 
+TODO
+=====
+
+There are some issues to solve.
+
+- Fully-accessible vs. Listed (ie. only title/image/description visible) content or accounts: how to manage that?
+
+- Search in faceted and secured ways
+

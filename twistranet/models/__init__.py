@@ -1,7 +1,8 @@
 # Importing all models from submodules
 
 # Low-level stuff
-from content import Content, StatusUpdate, ContentRegistry
+from contentregistry import ContentRegistry
+from content import Content, StatusUpdate
 from account import Account, UserAccount, SystemAccount
 from community import Community, GlobalCommunity, AdminCommunity
 from relation import Relation

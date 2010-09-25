@@ -4,40 +4,66 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from account import Account
+import basemanager
+from scope import *
 
-COMMUNITY_SCOPES = (
-    ("members", "Private community visible by its members only", ),
-    ("authenticated", "A regular intranet community visible by logged-in users", ),
-    ("anonymous", "Public community visible by anonymous users", ),
-    )
-COMMUNITY_SCOPE_IDS = [ s[0] for s in COMMUNITY_SCOPES ]
-
-class CommunityManager(models.Manager):
+class CommunityManager(basemanager.BaseManager):
     """
     Useful shortcuts for community management.
     The manager itself only return 100% public communities when secured
     """
-    def __init__(self, secured = True, *args, **kw):
-        self._secured = secured
-        super(CommunityManager, self).__init__(*args, **kw)
-            
     def get_query_set(self):
         """
-        Return either public or restricted communities
+        Return a queryset of 100%-authorized objects.
         """
-        qs = super(CommunityManager, self).get_query_set()
-        if self._secured:
-            qs = qs.filter(scope = "anonymous")
-        return qs
+        # Check for anonymous query
+        authenticated = self._getAuthenticatedAccount()
+        base_query_set = super(CommunityManager, self).get_query_set()
+        if not authenticated:
+            # TODO: Return anonymous objects
+            raise NotImplementedError("TODO: Implement anonymous queries")
+
+        # System account: return all objects
+        if authenticated.account_type == "SystemAccount":
+            authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
+            return base_query_set  # The base qset with no filter
+
+        # Account filter
+        return base_query_set.filter(
+            (
+                # Public accounts
+                Q(scope = ACCOUNTSCOPE_ANONYMOUS)
+                ) | (
+                # Auth-only communities
+                Q(scope = ACCOUNTSCOPE_AUTHENTICATED)
+                ) | (
+                # Communities the bound user is a member of
+                Q(members = authenticated, scope = ACCOUNTSCOPE_MEMBERS)
+                )
+            ).distinct()
         
+    
+    @property
+    def global_(self):
+        """
+        Return the global community. May raise if no access right.
+        """
+        return self.get(community_type = "GlobalCommunity")
+
+    @property
+    def admin(self):
+        """
+        Return the admin community / communities
+        """
+        return self.filter(community_type = "AdminCommunity")
+
 
 class Community(models.Model):
     """
     A simple community class.
     """
     # Managers overloading
-    objects = CommunityManager(secured = True)
-    _objects = CommunityManager(secured = False)
+    objects = CommunityManager()
     
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
@@ -63,30 +89,22 @@ class Community(models.Model):
         """
         if self.scope not in COMMUNITY_SCOPE_IDS:
             raise ValidationError("Invalid community scope: '%s'" % self.scope)
-        # if self.community_type == Community.__name__:
-        #     raise ValidationError("You cannot save a community object. Use a derived class instead.")
         self.community_type = self.__class__.__name__
         return super(Community, self).save(*args, **kw)
 
-    def _getAuthorizedWrapper(self, account):
-        """
-        Check if given account has access to this community. Raises if not.
-        """
-        from communitywrapper import CommunityWrapper
-        wrapper = CommunityWrapper(account)
-        wrapper.get(id = self.id)   # Will raise if unauthorized
-        return wrapper
-    
-    def join(self, account):
+    def join(self, account = None):
         """
         Join the community.
+        If account is None, assume it current authenticated account.
         You can only join the communities you can 'see'
         """
-        # Quick security check
-        wrapper = self._getAuthorizedWrapper(account)
+        # Get account and check security
+        if not account:
+            account = Community.objects._getAuthenticatedAccount()
+            # XXX TODO: Check if __account__ has the right to add a member in the community!
         
         # Don't add twice
-        if self in wrapper.my:
+        if self in account.communities:
             return
         mbr = CommunityMembership(
             account = account,
@@ -98,9 +116,9 @@ class Community(models.Model):
         """
         Leave the community.
         Fails silently is account is not a member of the community.
+        XXX TODO: Check security
         """
         # Quick security check, then delete membership info
-        wrapper = self._getAuthorizedWrapper(account)
         for mbr in CommunityMembership.objects.filter(account = account, community = self):
             mbr.delete()
 

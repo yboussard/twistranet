@@ -9,7 +9,8 @@ import traceback
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 
-from content import Content, StatusUpdate, ContentRegistry
+from contentregistry import ContentRegistry
+from content import Content, StatusUpdate
 from account import Account, UserAccount, SystemAccount
 from relation import Relation
 from community import Community, GlobalCommunity, AdminCommunity
@@ -21,15 +22,17 @@ def load_initial_data():
     """
     try:
         # Create the main system account if it doesn't exist
-        system_accounts = SystemAccount.objects.all()
-        if len(system_accounts) == 0:
+        try:
+            __account__ = SystemAccount.objects.get()
+        except:
             _system = SystemAccount()
             _system.save()
+            __account__ = _system
         _system = SystemAccount.getSystemAccount()
     
         # Create the global community if it doesn't exist.
         try:
-            global_ = _system.communities.global_
+            global_ = Community.objects.global_
         except ObjectDoesNotExist:
             global_ = GlobalCommunity(
                 name = "All TwistraNet Members",
@@ -38,29 +41,29 @@ def load_initial_data():
             global_.save()
     
         # Create the admin community if it doesn't exist.
-        if not (_system.communities.admin):
+        if not (Community.objects.admin):
             c = AdminCommunity(
                 name = "TwistraNet admin team",
                 scope = "members",
                 )
             c.save()
-        admincommunity = _system.communities.admin[0]
+        admincommunity = Community.objects.admin
             
         # Put all Django admin users inside the first admin community
         # and create accounts for them accordingly.
         django_admins = User.objects.filter(is_superuser = True)
         for user in django_admins:
             # XXX Check if this fails
-            account = user.useraccount
+            account = Account.objects.get(id = user.useraccount.id)
             
         # All accounts must (explicitly) belong to the global community.
         # There should be a better way to do this ;)
         if Account.objects.count() <> global_.members.count():
             print "All accounts are not in the global comm. We manually add them"
             for account in Account.objects.get_query_set():
-                if global_ not in account.communities.my:
+                if global_ not in account.communities:
                     print "Force user %s to join global" % account
-                    account.communities.join(global_)
+                    global_.join(account)
         
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
