@@ -30,6 +30,31 @@ class SimpleTest(TestCase):
         self.failUnless(s.content_ptr in Content.objects.getFollowed().all())
         self.failUnless(s.content_ptr not in Content.objects.getFollowed(self.PJ).all())
         
+    def test_followed_content_availability(self):
+        """
+        Check if public content is available in the other walls.
+        We check everything from A's eyes
+        """
+        # Check networked content availability
+        __account__ = self.A
+        s = StatusUpdate(text = "NWK", scope = CONTENTSCOPE_NETWORK)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed().all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed(self.A).all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed(self.PJ).all())
+        self.failUnless(s.content_ptr not in Content.objects.getFollowed(self.B).all())
+        
+        # Check public content availability
+        s = StatusUpdate(text = "PUB", scope = CONTENTSCOPE_PUBLIC)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed().all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed(self.A).all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed(self.PJ).all())
+        self.failUnless(s.content_ptr not in Content.objects.getFollowed(self.B).all())
+        
+        
     def test_simple_wall(self):
         """
         We look at B's wall and perform some actions to see what's going on.

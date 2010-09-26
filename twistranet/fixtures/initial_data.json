@@ -115,7 +115,7 @@
             "content_type": "HelloWorld",
             "publisher": 1,
             "author": 1,
-            "scope": "public"
+            "scope": 100
         }
     },
     {
@@ -134,7 +134,7 @@
             "content_type": "HelloWorld",
             "publisher": 1,
             "author": 1,
-            "scope": "public"
+            "scope": 100
         }
     },
     {
@@ -154,7 +154,7 @@
             "publisher": 1,
             "author": 1,
             "text": "This is a public status update",
-            "scope": "public"
+            "scope": 100
         }
     },
     {
@@ -173,7 +173,7 @@
             "publisher": 1,
             "author": 1,
             "text": "This is a private status update",
-            "scope": "private"
+            "scope": 0
         }
     },
     {
@@ -193,7 +193,7 @@
             "publisher": 3,
             "author": 3,
             "text": "This is a private status update from B",
-            "scope": "network"
+            "scope": 50
         }
     },
     {
@@ -213,7 +213,7 @@
             "publisher": 3,
             "author": 3,
             "text": "This is a public status update from B",
-            "scope": "public"
+            "scope": 100
         }
     },
     {

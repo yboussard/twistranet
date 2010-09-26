@@ -93,8 +93,8 @@ class ContentManager(basemanager.BaseManager):
                 # Public stuff by the people I follow
                 Q(publisher__in = my_followed, scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK))
             ) | (
-                # Public AND private stuff from the people in my network
-                Q(publisher__in = my_network, scope__in = (CONTENTSCOPE_NETWORK, ))
+                # Public AND restricted stuff from the people in my network
+                Q(publisher__in = my_network, scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK, ))
             ) | (
                 # And, of course, what I wrote !
                 Q(author = account)
@@ -125,7 +125,7 @@ class Content(models.Model):
     
     # Security stuff
     publisher = models.ForeignKey(Account)   # The account this content is published for.
-    scope = models.CharField(max_length = 16, choices = CONTENT_SCOPES, default = CONTENTSCOPE_PUBLIC)
+    scope = models.IntegerField(choices = CONTENT_SCOPES, default = CONTENTSCOPE_PUBLIC)
     objects = ContentManager()
     
     def __unicode__(self):

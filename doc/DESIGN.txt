@@ -19,7 +19,7 @@ Content are typed, but the 'content' table holds generic information. Check ever
 TODO: DEV
 ==========
 
-Scope must be an integer, ordered by privacy. 
+Scope must be an integer, ordered by privacy.
 
 TODO: DESIGN
 =============
