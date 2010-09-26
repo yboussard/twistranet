@@ -94,7 +94,7 @@ class ContentManager(basemanager.BaseManager):
                 Q(publisher__in = my_followed, scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK))
             ) | (
                 # Public AND private stuff from the people in my network
-                Q(publisher__in = my_network)
+                Q(publisher__in = my_network, scope__in = (CONTENTSCOPE_NETWORK, ))
             ) | (
                 # And, of course, what I wrote !
                 Q(author = account)

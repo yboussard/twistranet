@@ -18,12 +18,23 @@ class SimpleTest(TestCase):
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "pjgrizel").account_ptr
         
+    def test_followed_private_content(self):
+        """
+        A and PJ are in the same network.
+        If A creates a private, it must not be visible in PJ's wall (even with A account)
+        """
+        __account__ = self.A
+        s = StatusUpdate(text = "Private", scope = CONTENTSCOPE_PRIVATE)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        self.failUnless(s.content_ptr in Content.objects.getFollowed().all())
+        self.failUnless(s.content_ptr not in Content.objects.getFollowed(self.PJ).all())
+        
     def test_simple_wall(self):
         """
         We look at B's wall and perform some actions to see what's going on.
         We use the default fixture to check stuff.
         """
-        from twistranet.models import Content
         self.failUnlessEqual(self.B.useraccount.user.username, "B")
         
         # Check public objects. Must be empty (unless I put truly public objects in the fixture?)
