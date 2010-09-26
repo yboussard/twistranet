@@ -44,8 +44,12 @@ class Account(models.Model):
     # A friendly name
     # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
+    scope = models.IntegerField(choices=ACCOUNT_SCOPES, blank = False, null = False)
     
     objects = AccountManager()
+
+    class Meta:
+        app_label = 'twistranet'
 
     def save(self, *args, **kw):
         """
@@ -67,9 +71,6 @@ class Account(models.Model):
     
     def __unicode__(self):
         return u"%s" % (self.fullname, )
-
-    class Meta:
-        app_label = 'twistranet'
 
     def getMyFollowed(self):
         """

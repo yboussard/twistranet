@@ -58,9 +58,10 @@ class CommunityManager(basemanager.BaseManager):
         return self.filter(community_type = "AdminCommunity")
 
 
-class Community(models.Model):
+class Community(Account):
     """
     A simple community class.
+    A community is an account which have members.
     """
     # Managers overloading
     objects = CommunityManager()
@@ -72,10 +73,9 @@ class Community(models.Model):
     description = models.TextField()
     
     # Members & security management
-    members = models.ManyToManyField(Account, through = "CommunityMembership")
+    members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
     # XXX user_source = (OPTIONAL)
     # XXX scope = ...
-    scope = models.CharField(max_length=16, choices=COMMUNITY_SCOPES, blank = False, null = False)
 
     def __unicode__(self):
         return "%s %d: %s" % (self.community_type, self.id, self.name)
@@ -129,7 +129,7 @@ class CommunityMembership(models.Model):
     This is a many to many asso class
     """
     account = models.ForeignKey(Account)
-    community = models.ForeignKey(Community)
+    community = models.ForeignKey(Community, related_name = "membership_manager")
     date_joined = models.DateField(auto_now_add = True)
 
     class Meta:

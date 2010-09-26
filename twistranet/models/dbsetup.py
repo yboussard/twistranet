@@ -14,6 +14,7 @@ from content import Content, StatusUpdate
 from account import Account, UserAccount, SystemAccount
 from relation import Relation
 from community import Community, GlobalCommunity, AdminCommunity
+from scope import *
 
 def load_initial_data():
     """
@@ -26,6 +27,7 @@ def load_initial_data():
             __account__ = SystemAccount.objects.get()
         except:
             _system = SystemAccount()
+            _system.scope = ACCOUNTSCOPE_ANONYMOUS
             _system.save()
             __account__ = _system
         _system = SystemAccount.getSystemAccount()
@@ -36,16 +38,16 @@ def load_initial_data():
         except ObjectDoesNotExist:
             global_ = GlobalCommunity(
                 name = "All TwistraNet Members",
-                scope = "authenticated",
                 )
+            global_.scope = ACCOUNTSCOPE_AUTHENTICATED
             global_.save()
     
         # Create the admin community if it doesn't exist.
         if not (Community.objects.admin):
             c = AdminCommunity(
                 name = "TwistraNet admin team",
-                scope = "members",
                 )
+            c.scope = ACCOUNTSCOPE_MEMBERS
             c.save()
         admincommunity = Community.objects.admin
             
@@ -59,18 +61,21 @@ def load_initial_data():
         # All accounts must (explicitly) belong to the global community.
         # There should be a better way to do this ;)
         if Account.objects.count() <> global_.members.count():
-            print "All accounts are not in the global comm. We manually add them"
+            # print "All accounts are not in the global comm. We manually add them"
             for account in Account.objects.get_query_set():
                 if global_ not in account.communities:
-                    print "Force user %s to join global" % account
+                    # print "Force user %s to join global" % account
                     global_.join(account)
+                    
+        # XXX TODO: Check if approved relations are symetrical
         
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
         traceback.print_exc()
         
     else:
-        print "Initialized DB successfuly"
+        # print "Initialized DB successfuly"
+        pass
     
 def check_consistancy():
     """

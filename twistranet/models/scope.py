@@ -4,10 +4,10 @@ Twistranet content / account / ressource scope management.
 Just global vars by now but we can imagine some kind of a registry
 """
 
-ACCOUNTSCOPE_ANONYMOUS = "anonymous"            # All anonymous can access it
-ACCOUNTSCOPE_AUTHENTICATED = "authenticated"    # All auth. can access it
-ACCOUNTSCOPE_MEMBERS = "members"                # All members can access it
-ACCOUNTSCOPE_PRIVATE = "private"                # Invisible (kinda)
+ACCOUNTSCOPE_ANONYMOUS = 100                    # All anonymous can access it
+ACCOUNTSCOPE_AUTHENTICATED = 20                 # All auth. can access it
+ACCOUNTSCOPE_MEMBERS = 10                       # All members can access it (for accounts w/ members)
+ACCOUNTSCOPE_PRIVATE = 0                        # Invisible (kinda)
 CONTENTSCOPE_NETWORK = "network"                # All ppl in account network can access it
 CONTENTSCOPE_PUBLIC = "public"                  # All ppl who has access to the account can access it
 CONTENTSCOPE_PRIVATE = "private"                # Unvisible outside the account itself

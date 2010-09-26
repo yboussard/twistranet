@@ -3,8 +3,14 @@ This is a basic wall test.
 """
 from django.test import TestCase
 from twistranet.models import *
+from twistranet.models.scope import *
 
 class SecurityTest(TestCase):
+    """
+    Just to remember:
+    A <=> PJ
+    B  => PJ
+    """
     
     def setUp(self):
         """
@@ -16,7 +22,71 @@ class SecurityTest(TestCase):
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "pjgrizel").account_ptr
+    
+    def test_private_content(self):
+        """
+        Check private content behavior
+        """
+        # A creates a private object
+        __account__ = self.A
+        s = StatusUpdate.objects.create(
+            text = "Hello, World!",
+            scope = CONTENTSCOPE_PRIVATE,
+            )
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
         
+        # pjgrizel must not see it
+        __account__ = self.PJ
+        self.failUnless(s.content_ptr not in Content.objects.all())
+        
+        # B must not see it
+        __account__ = self.B
+        self.failUnless(s.content_ptr not in Content.objects.all())
+        
+        # B creates a private object, same kind of tests
+        __account__ = self.B
+        s = StatusUpdate.objects.create(text = "Hello", scope = CONTENTSCOPE_PRIVATE)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        __account__ = self.PJ
+        self.failUnless(s.content_ptr not in Content.objects.all())
+        __account__ = self.A
+        self.failUnless(s.content_ptr not in Content.objects.all())
+        __account__ = self.B
+        self.failUnless(s.content_ptr in Content.objects.all())
+        
+        # Oh, by the way, the system account must see 'em !
+        __account__ = self._system
+        self.failUnless(s.content_ptr in Content.objects.all())
+        
+    def test_network_content(self):
+        """
+        Check if network-protected content is accessible to NW only
+        """
+        __account__ = self.A
+        s = StatusUpdate(text = "Hello, World!", scope = CONTENTSCOPE_NETWORK)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        __account__ = self.PJ       # PJ is in A's network
+        self.failUnless(s.content_ptr in Content.objects.all())
+        __account__ = self.B        # B is not
+        self.failUnless(s.content_ptr not in Content.objects.all())
+            
+    def test_public_content(self):
+        """
+        Check if public content on an account is visible by anyone
+        """
+        __account__ = self.A
+        s = StatusUpdate(text = "Hello, World!", scope = CONTENTSCOPE_PUBLIC)
+        s.save()
+        self.failUnless(s.content_ptr in Content.objects.all())
+        __account__ = self.PJ       # PJ is in A's network
+        self.failUnless(s.content_ptr in Content.objects.all())
+        __account__ = self.B        # B is not
+        self.failUnless(s.content_ptr in Content.objects.all())
+        
+            
     def test_has_system_account(self):
         """
         Is system account created and working?
@@ -55,10 +125,7 @@ class SecurityTest(TestCase):
     def test_membership(self):
         __account__ = self._system
         self.failUnlessEqual(len(self.A.communities), 1)
-        c = Community(
-            name = "Test Community", 
-            scope = "authenticated",
-            )
+        c = Community.objects.create(name = "Test Community", scope = ACCOUNTSCOPE_AUTHENTICATED)
         c.save()
         c.join(self.A)
         self.failUnless(self.A in c.members.all())

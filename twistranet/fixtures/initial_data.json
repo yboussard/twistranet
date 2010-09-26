@@ -15,7 +15,8 @@
         "model": "twistranet.Account",
         "pk":   1,
         "fields":   {
-            "account_type": "UserAccount"
+            "account_type": "UserAccount",
+            "scope": 20
         }
     },
     {
@@ -38,7 +39,8 @@
         "model": "twistranet.Account",
         "pk":   2,
         "fields":   {        
-            "account_type": "UserAccount"
+            "account_type": "UserAccount",
+            "scope": 20
         }
     },
     {
@@ -61,7 +63,8 @@
         "model": "twistranet.Account",
         "pk":   3,
         "fields":   {        
-            "account_type": "UserAccount"
+            "account_type": "UserAccount",
+            "scope": 20
         }
     },
     {
