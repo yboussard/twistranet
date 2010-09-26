@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 import basemanager
+from resource import Resource
 from scope import *
 
 class AccountManager(basemanager.BaseManager):
@@ -45,7 +46,7 @@ class Account(models.Model):
     # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
     scope = models.IntegerField(choices=ACCOUNT_SCOPES, blank = False, null = False)
-    
+    picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd... We'll avoid the 'null' attribute someday.
     objects = AccountManager()
 
     class Meta:
@@ -56,10 +57,11 @@ class Account(models.Model):
         Populate special content information before saving it.
         XXX TODO: Check saving rights
         """
-        if self.__class__ == Account.__name__:
-            raise RuntimeError("You can't directly save an account object.")
-        self.account_type = self.__class__.__name__
-        super(Account, self).save(*args, **kw)
+        if not self.account_type:
+            if self.__class__.__name__ == Account.__name__:
+                raise RuntimeError("You can't directly save an account object.")
+            self.account_type = self.__class__.__name__
+        return super(Account, self).save(*args, **kw)
     
     @property
     def fullname(self,):

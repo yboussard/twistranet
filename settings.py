@@ -93,6 +93,7 @@ TEMPLATE_DIRS = (
     "%s/twistranet/themes/default" % (HERE, ),
     "%s/twistranet/templates" % (HERE, ),
 )
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (HERE, )
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'

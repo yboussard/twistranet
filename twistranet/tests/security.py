@@ -16,7 +16,7 @@ class SecurityTest(TestCase):
         """
         Get A and B users
         """
-        dbsetup.load_initial_data()
+        dbsetup.bootstrap()
         __account__ = SystemAccount.getSystemAccount()
         self._system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr

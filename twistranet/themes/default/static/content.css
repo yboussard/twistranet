@@ -1,0 +1,12 @@
+/* Content-related stuff, including small content views */
+
+.account-picture {
+  float: left;
+  margin: 0 10px 0 10px;
+}
+
+.post {
+	padding: 0 0 40px 10px;
+	background: none;
+}
+

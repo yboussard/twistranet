@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import basemanager 
 from account import Account
+from resource import Resource
 from scope import *
 
 class ContentManager(basemanager.BaseManager):
@@ -122,6 +123,9 @@ class Content(models.Model):
 
     # The default text displayed for this content
     text = models.TextField()
+    
+    # Resources associated to this content
+    resources = models.ManyToManyField(Resource)
     
     # Security stuff
     publisher = models.ForeignKey(Account)   # The account this content is published for.

@@ -4,21 +4,40 @@ Design considerations for TwistraNet
 Resources
 ==========
 
+Description
+------------
+
 Resources are links to digital assets that TwistraNet doesn't really manage directly.
 A resource can be:
 - A regular file ;
 - An image, video, office file, each one offering additional services
 
+Creation and security
+----------------------
+
 Ressources are not stored in TN's database nor accessible directly through the web: it is secured either by a content or an account.
 A ressource is usually bound to a content, and is available in the same exact conditions as the content it's bound to.
 But resources can also be bound to several contents, avoiding file duplication. If you have an image you want to use in several contents, you can use only one resource (and store only one file).
-Finally, a resource can be unbound, ie. not associated to a content. In this case, security is driven by the account's scope.
+Finally, a resource can be unbound, ie. not associated to a content. In this case, security is driven by the account's scope. To protect security, a resource must be explicitly unbound before beeing "visible".
+A resource owner can always reach its own resources.
 
 An editable resource is deleted when the last content bound to it is deleted (unless explicitly told against it).
 
-Resources are shared across accounts (ie. a resource created by one account can be freely used by another), but a resource has a proprietary account who is the only one to be able to edit it.
+Resources are shared across accounts (ie. a resource created by one account can be freely used by another), but a resource has an owner account who is the only one to be able to edit it (if the owner is a community, then the community managers can edit it).
 
-(v2) Resources can be translated (both metadata AND resource pointer). In case of a translated resource, the translator is the proprietary of the translation, but if the original resource is modified/deleted, all translated resources get modified/deleted too.
+URL Access
+----------
+
+Resource can be reached either by id, by alias or, if they're an attribute of an object, by a x/resource/pty_name where 'x' is the object base url.
+Example for profile picture : /account/xxx/resource/picture ;
+
+I18N
+------
+
+(v2) Resources can be translated (both metadata AND resource pointer). In case of a translated resource, the translator is the owner of the translation, but if the original resource is modified/deleted, all translated resources get modified/deleted too.
+
+Resource Managers
+-----------------
 
 Resources are handled via a resource manager which tells TN where to find the resource content.
 The resource managers provides ways for TN to fetch the resource, and (for some of them) to create new ones, to search them, etc.
@@ -26,6 +45,11 @@ The resource managers bundled with TN are:
 - FilesystemResourceManager: This if for files stored on the filesystem. TN provides a basic file management system to allow upload, storage and deletion of files.
 - ReadonlyFilesystemResourceManager: Same as FilesystemResourceManager, but read-only. This is useful for default resources provided by TN or to enable directory access without hassles.
 - LinkResourceManager: Resources are designated by a URL. This URL is proxied by the server when served.
+
+Each account can define its own (and only one) editable ResourceManager. This way, when a resource is uploaded, it's put in the right bucket.
+If an account doesn't define an editable ResourceManager, the one from the Global Community is used. If no global one is defined... then no file upload permited. No arms, no chocolate.
+
+Each resource manager must define its own ways of setting the locator attribute (listing, text entry, ...).
 
 
 Database consistancy
@@ -37,6 +61,11 @@ The model is not a rdbm-normal one, THIS IS ON PURPOSE:
 
 The framework normally takes care of keeping it straight. But it may be broken in some way (fixture not correct, updates or bugs, crashes, ...)
 Here are some clues to ensure that the schema is ok:
+
+0/ Default objects
+- System Account is a system-wide account which can read everything
+- Global Community is the community every account belongs to
+- Admin Community is the default community for administrators.
 
 1/ Content types
 
@@ -50,7 +79,8 @@ Symetrical (ie. approved) relations are two entries in the relations table. Chec
 TODO: DEV
 ==========
 
-Scope must be an integer, ordered by privacy.
+Check that alias are not formed like ids (all numbers)....
+
 
 TODO: DESIGN
 =============
@@ -60,6 +90,6 @@ There are some issues to solve.
 - Translation (including translatable content vs. translatable fields (for accounts by example))
 - Fully-accessible vs. Listed (ie. only title/image/description visible) content or accounts: how to manage that?
 - Search in faceted and secured ways
-- Resources
+- Resources: resource listing (eg. directory listing)
 - Taxonomy: use a 'Folder' content type?
 

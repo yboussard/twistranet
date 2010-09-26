@@ -14,18 +14,20 @@ from content import Content, StatusUpdate
 from account import Account, UserAccount, SystemAccount
 from relation import Relation
 from community import Community, GlobalCommunity, AdminCommunity
+from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
+from resource import Resource
 from scope import *
 
-def load_initial_data():
+def bootstrap():
     """
     Load initial data if it's not present.
-    This method is SAFE, ie. it won't destroy any existing data, only add missing.
+    This method is SAFE, ie. it won't destroy any existing data, only add missing stuff.
     """
     try:
         # Create the main system account if it doesn't exist
         try:
             __account__ = SystemAccount.objects.get()
-        except:
+        except ObjectDoesNotExist:
             _system = SystemAccount()
             _system.scope = ACCOUNTSCOPE_ANONYMOUS
             _system.save()
@@ -50,6 +52,20 @@ def load_initial_data():
             c.scope = ACCOUNTSCOPE_MEMBERS
             c.save()
         admincommunity = Community.objects.admin
+        
+        # Create Legacy Resource Manager if doesn't exist.
+        # If one exists it must be attach to no community.
+        try:
+            legacy_rm = ReadOnlyFilesystemResourceManager.objects.get()
+        except ObjectDoesNotExist:
+            legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
+            legacy_rm.save()
+            
+        # Load / Update default TN resource files
+        legacy_rm.loadAll(with_aliases = True) 
+            
+        # Check default profile picture
+        profile_picture = Resource.objects.get(alias = "default_profile_picture")
             
         # Put all Django admin users inside the first admin community
         # and create accounts for them accordingly.
@@ -59,13 +75,18 @@ def load_initial_data():
             account = Account.objects.get(id = user.useraccount.id)
             
         # All accounts must (explicitly) belong to the global community.
-        # There should be a better way to do this ;)
+        # XXX There should be a more efficient way to do this ;)
         if Account.objects.count() <> global_.members.count():
             # print "All accounts are not in the global comm. We manually add them"
             for account in Account.objects.get_query_set():
                 if global_ not in account.communities:
                     # print "Force user %s to join global" % account
                     global_.join(account)
+                    
+        # Update accounts with no profile picture
+        for nopicture in Account.objects.filter(picture = None):
+            nopicture.picture = profile_picture
+            nopicture.save()
                     
         # XXX TODO: Check if approved relations are symetrical
         

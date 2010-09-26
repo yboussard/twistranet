@@ -1,3 +1,4 @@
 # Import major views
 
-from wall import *
+from account_views import *
+from resource_views import *

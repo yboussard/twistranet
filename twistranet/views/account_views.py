@@ -12,26 +12,6 @@ from twistranet.models import Account
 from twistranet.models import ContentRegistry
 
 
-def account(request, account_id):
-    """
-    Account (user/profile) page.
-    We just diplay posts of any given account.
-    XXX TODO:
-        - Check if account is listed and permit only if approved
-    """
-    account = Account.objects.get(id = account_id)
-    latest_list = Content.objects.getFollowed(account = account)
-    t = loader.get_template('account.html')
-    c = RequestContext(
-        request,
-        {
-            "account": account,
-            "latest_content_list": latest_list[:5],
-        },
-        )
-    return HttpResponse(t.render(c))
-    
-    
 def _getInlineForms(request, publisher = None):
     """
     Return the inline forms object used to display the marvellous edition form(s).
@@ -75,28 +55,51 @@ def _getInlineForms(request, publisher = None):
     
     # Return the forms
     return forms
-    
-@login_required
-def account_wall(request, account_id):
+
+
+
+def account_by_id(request, account_id):
     """
-    Display an account wall page for given user.
+    Account (user/profile) page.
+    We just diplay posts of any given account.
+    XXX TODO:
+        - Check if account is listed and permit only if approved
     """
-    # Get current user and targeted account information
-    account = request.user.get_profile()
-    wall = account.accounts.filter(id = account_id)
-  
-    # Render the template
-    t = loader.get_template('wall.html')
+    account = Account.objects.get(id = account_id)
+    latest_list = Content.objects.getFollowed(account = account)
+    t = loader.get_template('account.html')
     c = RequestContext(
         request,
         {
-            'account': account,
-            'latest_content_list': account.content.getFollowed()[:5],
-            'forms': forms,
+            "account": account,
+            "latest_content_list": latest_list[:5],
         },
         )
     return HttpResponse(t.render(c))
- 
+    
+
+
+# @login_required
+# def account_wall(request, account_id):
+#     """
+#     Display an account wall page for given user.
+#     """
+#     # Get current user and targeted account information
+#     account = request.user.get_profile()
+#     wall = account.accounts.filter(id = account_id)
+#   
+#     # Render the template
+#     t = loader.get_template('wall.html')
+#     c = RequestContext(
+#         request,
+#         {
+#             'account': account,
+#             'latest_content_list': account.content.getFollowed()[:5],
+#             'forms': forms,
+#         },
+#         )
+#     return HttpResponse(t.render(c))
+#  
 
 @login_required
 def home(request):

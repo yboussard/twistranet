@@ -9,3 +9,15 @@ If you are in trouble, contact us: contact@numericube.com
 TwistraNet is meant to be extended, but please do so in another app. 
 That's what we had in mind when designing it so there's no reason it shouldn't work!
 
+
+Licence and copyright
+---------------------
+
+TwistraNet is licenced under the GPL licence.
+(c)2010 NumeriCube
+TwistraNet is a registered trademark.
+
+Credits
+-------
+
+Icons from: http://pixel-mixer.com/basic_set/
