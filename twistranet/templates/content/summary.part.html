@@ -4,12 +4,12 @@
         <img src="{% url twistranet.views.resource_by_account content.author.id 'picture' %}">
     </div>
     <h3><a href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.fullname }}</a> {{ content.subclass.getText }}</h3>
-<div class="entry">
-(image) 
-</div>
-<div class="postmetadata">
-{{ content.content_type }}
-{{ content.date }}
-{{ content.scope }}
-</div>
+    <div class="entry">
+        (image) 
+    </div>
+    <div class="postmetadata">
+        {{ content.content_type }}
+        {{ content.date }}
+        {{ content.scope }}
+    </div>
 </div>

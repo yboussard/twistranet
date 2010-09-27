@@ -40,6 +40,7 @@ def bootstrap():
         except ObjectDoesNotExist:
             global_ = GlobalCommunity(
                 name = "All TwistraNet Members",
+                description = "This community contains all TwistraNet members. It's mainly used for critical information."
                 )
             global_.scope = ACCOUNTSCOPE_AUTHENTICATED
             global_.save()

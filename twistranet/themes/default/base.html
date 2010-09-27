@@ -56,15 +56,15 @@
                     </div>
                     {% endblock %}
                     <div class="logotext">
-                        <a href="/">TwistraNet</a>
+                        <a href="{% url twistranet.views.home %}">TwistraNet</a>
                         <div class="description">A social content management system.</div>
                     </div>
                     <div id="menubar">
                         <div id="mainmenu">
                             <ul class="sf-menu">
-                                <li class="page_item"><a href="/">Home</a></li>
-                                <li class="page_item"><a href="#">Communities</a></li>
-                                <li class="page_item"><a href="#">Help</a></li>
+                                {% block menu_items %}
+                                    {% include "navigation/menu_items.part.html" %}
+                                {% endblock %}
                             </ul>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
 
                 <div id="breadcrumb">
                     {% block breadcrumb %}
-                    <a href="/">Home</a> > User
+                    <a href="{% url twistranet.views.home %}">Home</a>
                     {% endblock %}
                 </div>
 

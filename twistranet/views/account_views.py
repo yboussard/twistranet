@@ -72,7 +72,7 @@ def account_by_id(request, account_id):
         request,
         {
             "account": account,
-            "latest_content_list": latest_list[:5],
+            "latest_content_list": latest_list[:25],
         },
         )
     return HttpResponse(t.render(c))
@@ -116,7 +116,7 @@ def home(request):
         request,
         {
             'account': account,
-            'latest_content_list': account.content.getFollowed()[:5],
+            'latest_content_list': account.content.getFollowed()[:25],
             'forms': forms,
         },
         )

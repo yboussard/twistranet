@@ -61,7 +61,7 @@ class CommunityManager(basemanager.BaseManager):
 class Community(Account):
     """
     A simple community class.
-    A community is an account which have members.
+    A community is an account which have members. Members are User accounts.
     """
     # Managers overloading
     objects = CommunityManager()

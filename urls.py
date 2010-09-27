@@ -11,15 +11,19 @@ urlpatterns = patterns('',
     # Example:
     # (r'^TwistraNet/', include('TwistraNet.foo.urls')),
 
-    # The wall page for currently logged-in user
+    # The wall page for generic accounts
     (r'^$',                                     'twistranet.views.home'),
-    (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),
+    (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),          # The 'profile' page
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),
     (r'^resource/(\w+)$',                       'twistranet.views.resource_by_alias_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_account'),    # Fetch by account pty
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_content'),    # Fetch by content pty
+
+    # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
+    (r'^communities/$',                         'twistranet.views.communities'),
+    (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ community }}{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/">Home</a> > {{ community }}
+{% endblock %}
+
+{% block content %}
+    {#
+        Only if I can write on it...
+        {% include "content/content_forms.part.html" %}
+    #}
+
+    {% if latest_content_list %}
+        {% for content in latest_content_list %}
+            {%include "content/summary.part.html" %}
+        {% endfor %}
+    {% else %}
+        <p>No contents are available.</p>
+    {% endif %}
+
+{% endblock %}

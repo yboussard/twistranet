@@ -1,0 +1,14 @@
+{# Generate a summary for a 'community' object #}
+<div class="post" id="post-{{community.id}}">
+    <div class="account-picture">
+        <img src="{% url twistranet.views.resource_by_account community.id 'picture' %}">
+    </div>
+    <h3><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.name }}</a></h3>
+    <div class="entry">
+        {{ community.description }}
+    </div>
+    <div class="postmetadata">
+        {{ community.scope }} |
+        {{ community.members.count }} members
+    </div>
+</div>
