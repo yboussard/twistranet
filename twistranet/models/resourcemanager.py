@@ -90,11 +90,15 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
         # Load each file, avoiding to replace it
         for root, dirs, files in os.walk(self.path):
             for fname in files:
+                # By now, we ignore None mimetypes (we don't know how to handle 'em)
+                # XXX TODO: Check if file and dir objects are processed normally!
                 mimetype, encoding = mimetypes.guess_type(fname)
                 defaults = {
                     "mimetype": mimetype,
                     "encoding": encoding,
                 }
+                if not mimetype:
+                    continue
                 if with_aliases:
                     defaults['alias'] = os.path.splitext(os.path.split(fname)[1])[0]
                 Resource.objects.get_or_create(
