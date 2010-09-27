@@ -11,9 +11,16 @@ from twistranet.models import Account
 
 from twistranet.models import ContentRegistry
 
+class MustRedirect(Exception):
+    """
+    Raise this if something must redirect to the current page
+    """
+    pass
 
 def _getInlineForms(request, publisher = None):
     """
+    - a forms list ; empty list if no form to display ;
+
     Return the inline forms object used to display the marvellous edition form(s).
     Process 'em, by the way.
     'publisher' is the account we're going to publish on. If none, assume it's the current user.
@@ -27,7 +34,7 @@ def _getInlineForms(request, publisher = None):
             
     # Wall edition forms if user has the right to write on it
     # This return a list of forms as each content type can define its own tab+form
-    form_classes = ContentRegistry.getContentFormClasses(account, account)
+    form_classes = ContentRegistry.getContentFormClasses(publisher)
     forms = []
     for form_class in form_classes:
         if request.method == 'POST':                        # If the form has been submitted...
@@ -45,8 +52,7 @@ def _getInlineForms(request, publisher = None):
                 # Process the data in form.cleaned_data
                 c = form.save()
                 forms.append(form_class())
-                # c.save()
-                # return HttpResponseRedirect('/') # Redirect after POST
+                raise MustRedirect()
             else:
                 forms.append(form)
         else:
@@ -66,11 +72,18 @@ def account_by_id(request, account_id):
         - Check if account is listed and permit only if approved
     """
     account = Account.objects.get(id = account_id)
-    latest_list = Content.objects.getFollowed(account = account)
+    try:
+        forms = _getInlineForms(request, publisher = account)
+    except MustRedirect:
+        # XXX TODO: Redirect to current page...
+        return HttpResponseRedirect('/')
+    
+    latest_list = Content.objects.filter(publisher = account)
     t = loader.get_template('account.html')
     c = RequestContext(
         request,
         {
+            "content_forms": forms,
             "account": account,
             "latest_content_list": latest_list[:25],
         },
@@ -108,7 +121,11 @@ def home(request):
     """
     # Account information used to build the wall view
     account = request.user.get_profile()
-    forms = _getInlineForms(request)
+    try:
+        forms = _getInlineForms(request)
+    except MustRedirect:
+        # XXX TODO: Redirect to current page...
+        return HttpResponseRedirect('/')
     
     # Render the template
     t = loader.get_template('wall.html')
@@ -117,7 +134,7 @@ def home(request):
         {
             'account': account,
             'latest_content_list': account.content.getFollowed()[:25],
-            'forms': forms,
+            'content_forms': forms,
         },
         )
     return HttpResponse(t.render(c))

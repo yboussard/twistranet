@@ -14,7 +14,7 @@ class CommunityManager(basemanager.BaseManager):
     """
     def get_query_set(self):
         """
-        Return a queryset of 100%-authorized objects.
+        Return a queryset of 100%-authorized (in view) objects.
         """
         # Check for anonymous query
         authenticated = self._getAuthenticatedAccount()
@@ -41,7 +41,6 @@ class CommunityManager(basemanager.BaseManager):
                 Q(members = authenticated, scope = ACCOUNTSCOPE_MEMBERS)
                 )
             ).distinct()
-        
     
     @property
     def global_(self):
@@ -111,6 +110,14 @@ class Community(Account):
             community = self,
             )
         mbr.save()
+        
+    @property
+    def is_member(self):
+        """
+        Return true if currently auth user is a member of the community
+        """
+        account = Community.objects._getAuthenticatedAccount()
+        return not not CommunityMembership.objects.filter(account = account, community = self)
         
     def leave(self, account):
         """

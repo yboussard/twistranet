@@ -65,11 +65,20 @@ class Account(models.Model):
     
     @property
     def fullname(self,):
+        """
+        XXX TODO: user object.username?
+        """
         if self.account_type == "UserAccount":
             return self.useraccount.user.username
         else:
             return self.id
         
+    @property
+    def object(self):
+        """
+        Return the actual object type
+        """
+        return getattr(self, self.account_type.lower())
     
     def __unicode__(self):
         return u"%s" % (self.fullname, )

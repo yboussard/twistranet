@@ -16,13 +16,25 @@ class ContentRegistryManager:
         """
         self._registry_[model_class.__name__]  = (model_class, form_class, )
     
-    def getContentFormClasses(self, user_account, wall_account):
+    def getContentFormClasses(self, publisher):
         """
         This method returns the appropriate content forms for a user seeing an account page.
         This returns a list of Form classes
         """
-        # XXX Temporary. Should perform security checks one day ;)
-        return [ r[1] for r in self._registry_.values() ]
+        from twistranet.models import Account, Community
+        
+        # Only return forms for publisher accounts I'm authorized to write on
+        # Currently, only self or members can write on a publisher. May evolve.
+        account = Account.objects._getAuthenticatedAccount()
+        if publisher.object == account.object:
+            return [ r[1] for r in self._registry_.values() ]
+        if isinstance(publisher.object, Community):
+            # Check if I'm in the community
+            if publisher.is_member():
+                return [ r[1] for r in self._registry_.values() ]
+                
+        # Else, no forms.
+        return []
         
     def getModelClass(self, name):
         """

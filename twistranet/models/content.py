@@ -149,6 +149,8 @@ class Content(models.Model):
         """
         Return the exact subclass this object belongs to.
         Use this to display it.
+        
+        XXX TODO : Rename into 'object'
         """
         obj = getattr(self, self.content_type.lower())
         return obj
