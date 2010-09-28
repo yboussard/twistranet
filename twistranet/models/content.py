@@ -5,12 +5,14 @@ from django.core.exceptions import ValidationError
 import basemanager 
 from account import Account
 from resource import Resource
-from scope import *
+from twistranet.lib import roles, permissions
 
 class ContentManager(basemanager.BaseManager):
     """
     This manager is used for secured content (via the secured()) method.
     Methods are useable if the _account attribute is set.
+    
+    For performance reasons, it's UP TO YOU to call the distinct() method.
     """
     def get_query_set(self):
         """
@@ -22,99 +24,119 @@ class ContentManager(basemanager.BaseManager):
         if not authenticated:
             # TODO: Return anonymous objects
             return base_query_set.filter(
-                scope = CONTENTSCOPE_PUBLIC,
-                publisher__scope = ACCOUNTSCOPE_ANONYMOUS,
+                _permissions__name = permissions.can_view,
+                _permissions__role__in = (roles.content_public, ),
+                publisher___permissions__name = permissions.can_view,
+                publisher___permissions__role__in = (roles.anonymous, ),
                 )
-
+        
         # System account: return all objects
         if authenticated.account_type == "SystemAccount":
-            authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
-            return base_query_set  # The base qset with no filter
-
-        # Return all content objects I can reach
-        my_network = authenticated.getMyNetwork()
-        return base_query_set.filter(
-            (
-                # Public stuff
-                # XXX TODO: Add publisher visibility check
-                Q(scope = CONTENTSCOPE_PUBLIC)
-            ) | (
-                # Stuff from the people in my network
-                Q(scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK), publisher__in = my_network)
-            ) | (
-                # And, of course, what I wrote !
-                Q(author = authenticated)
-            )
-        ).distinct()
+            authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
+            return base_query_set           # The base qset with no filter
         
-    def getAuthorized(self, account = None):
-        """
-        Return content authorized for the given account.
-        If account is None, use currently auth user (and should be the same that get_query_set)
-        """
-        # Get proper account treatment
-        if not account:
-            return self.get_query_set()
-            
-        base_query_set = self.get_query_set()
-
-        # System account: return all possible objects
-        if account.account_type == "SystemAccount":
-            return base_query_set  # The base qset with no filter
-
-        # Return all content objects the account can reach
-        my_network = account.getMyNetwork()
-        return base_query_set.filter(
-            (
-                # Public stuff
-                # XXX TODO: Add publisher visibility check
-                Q(scope = CONTENTSCOPE_PUBLIC)
-            ) | (
-                # Stuff from the people in my network
-                Q(scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK), publisher__in = my_network)
-            ) | (
-                # And, of course, what he wrote !
-                Q(author = account)
-            )
-        ).distinct()
-        
+        return base_query_set.filter(self._getViewFilter(authenticated))    
     
-    def getFollowed(self, account = None):
+    def _getViewFilter(self, account):
+        """
+        Get main security filter parameter. Send this to the filter() method of a queryset.
+        This will behave normally, ie. will not shortcut SystemAccount stuff.
+        """
+        # Return all content objects I can reach
+        my_network = account.network
+        my_communities = account.communities
+        communities_i_manage = () # XXX TODO
+        # account.communities.filter(
+        #             membership_manager__member = account,
+        #             membership_manager__is_manager = True,
+        #             )
+        
+        return (
+            # Public stuff, ie. stuff I can view if I can view the publisher
+            Q(
+                _permissions__name = permissions.can_view,
+                _permissions__role__in = roles.content_public.implied(),
+                publisher___permissions__name = permissions.can_view,
+                publisher___permissions__role__in = roles.authenticated.implied(),
+            )
+        ) | (
+            # Stuff from the people in my network
+            Q(
+                publisher__in = my_network,
+                _permissions__name = permissions.can_view,
+                _permissions__role__in = roles.content_network.implied(),
+                publisher___permissions__name = permissions.can_view,
+                publisher___permissions__role__in = roles.account_network.implied(),
+            )
+        ) | (
+            # Stuff from the communities I'm in
+            Q(
+                publisher__in = my_communities,
+                _permissions__name = permissions.can_view,
+                _permissions__role__in = roles.content_community_member.implied(),
+                publisher___permissions__name = permissions.can_view,
+                publisher___permissions__role__in = roles.community_member.implied(),
+            )
+        ) | (
+            # Stuff from the communities I manage
+            Q(
+                publisher__in = communities_i_manage,
+                _permissions__name = permissions.can_view,
+                _permissions__role__in = roles.content_community_manager.implied(),
+                publisher___permissions__name = permissions.can_view,
+                publisher___permissions__role__in = roles.community_manager.implied(),
+            )
+        ) | (
+            # And, of course, what I wrote !
+            Q(
+                author = account,
+            )
+        )
+    
+    def getViewableBy(self, account):
+        """
+        Get content the given account can view.
+        This will not return content that is not viewable by authenticated user (of course).
+        """
+        return self.get_query_set().filter(self._getViewFilter(account))
+    
+    @property
+    def followed(self):
+        """
+        Followed content by currently auth user
+        """
+        account = self._getAuthenticatedAccount()
+        return self.filter(self._getFollowFilter(account)).distinct()
+        
+    def _getFollowFilter(self, account):
+        """
+        Return the filter parameter set to follow an account.
+        """
+        # Return stuff exclusively from people I'm interested in
+        my_relations = account.my_relations
+        return Q(publisher__in = my_relations) | Q(publisher = account) | Q(author = account)
+        
+        
+    def getFollowedBy(self, account):
         """
         Return a queryset of objects the account follows.
-        You can specify another account (useful for a wall display for example)
+        You can specify another account for a wall display for example.
+        If you want to see current user's followed stuff, use self.followed pty instead.
         """
-        if not account:
-            account = self._getAuthenticatedAccount()        
-        my_followed = account.getMyFollowed()
-        my_network = account.getMyNetwork()
-        
-        return self.get_query_set().filter(
-            (
-                # Public stuff by the people I follow
-                Q(publisher__in = my_followed, scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK))
-            ) | (
-                # Public AND restricted stuff from the people in my network
-                Q(publisher__in = my_network, scope__in = (CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK, ))
-            ) | (
-                # And, of course, what I wrote !
-                Q(author = account)
-            )
-        ).distinct().order_by("-date")
-        
+        return self.filter(
+                self._getViewFilter(account)
+            ).filter(
+                self._getFollowFilter(account)
+            ).distinct()
         
 
-    
 class Content(models.Model):
     """
     Abstract content representation class.
-    
-    API warriors: always use the getFiltered(account) method to fetch content for a given account.
-    When you use the 'objects' manager, only PUBLIC content is retrieved.
-    
-    The _objects manager is the only way of accessing all objects, but never use it in your app.
-    You'll usually call methods from the ContentFromAccountMixin class to access content objects.
     """
+    # Our security model
+    objects = ContentManager()
+    
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
@@ -127,10 +149,17 @@ class Content(models.Model):
     # Resources associated to this content
     resources = models.ManyToManyField(Resource)
     
-    # Security stuff
+    # Security models available for the user
+    # XXX TODO: Use a foreign key instead with some clever checking
+    permission_templates = permissions.content_templates
+    permissions = models.CharField(
+        max_length = 32, 
+        choices = permissions.content_templates.get_choices(), 
+        default = permissions.content_templates.get_default(),
+        )
+    
+    # Security stuff and permissions
     publisher = models.ForeignKey(Account)   # The account this content is published for.
-    scope = models.IntegerField(choices = CONTENT_SCOPES, default = CONTENTSCOPE_PUBLIC)
-    objects = ContentManager()
     
     def __unicode__(self):
         return "%s %d by %s" % (self.content_type, self.id, self.author)
@@ -145,7 +174,7 @@ class Content(models.Model):
         return self.text
 
     @property
-    def subclass(self):
+    def object(self):
         """
         Return the exact subclass this object belongs to.
         Use this to display it.
@@ -159,13 +188,15 @@ class Content(models.Model):
         """
         Populate special content information before saving it.
         """
-        if self.scope not in CONTENT_SCOPE_IDS:
-            raise ValidationError("Invalid content scope: '%s'" % self.scope)
+        import _permissionmapping
+        
+        # XXX TODO: Check permission template first?
         self.content_type = self.__class__.__name__
         if self.content_type == Content.__name__:
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
 
-        # Check content edition
+        # Check if I have content edition rights
+        # XXX Have to use a decorator instead
         authenticated = Content.objects._getAuthenticatedAccount()
         if not authenticated:
             raise ValidationError("You can't save a content anonymously.")
@@ -175,9 +206,16 @@ class Content(models.Model):
             if self.author != authenticated:
                 raise RuntimeError("You're not allowed to edit this content.")
                 
+        # Set publisher
         if self.publisher_id is None:
             self.publisher = self.author
-        return super(Content, self).save(*args, **kw)
+
+        # Actually saves stuff
+        ret = super(Content, self).save(*args, **kw)
+        
+        # Set/reset permissions. We do it last to be sure we've got an id.
+        _permissionmapping._applyPermissionsTemplate(self, _permissionmapping._ContentPermissionMapping)
+        return ret
 
 
 class StatusUpdate(Content):

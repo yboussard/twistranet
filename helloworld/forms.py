@@ -13,5 +13,5 @@ class HelloWorldForm(BaseContentForm):
     # cc_myself = forms.BooleanField(required=False)
     class Meta(BaseContentForm.Meta):
         model = HelloWorld
-        fields = ('scope',)
+        fields = ('permissions',)
     

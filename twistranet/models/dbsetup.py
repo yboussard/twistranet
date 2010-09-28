@@ -16,7 +16,8 @@ from relation import Relation
 from community import Community, GlobalCommunity, AdminCommunity
 from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
 from resource import Resource
-from scope import *
+import _permissionmapping
+from twistranet.lib import permissions
 
 def bootstrap():
     """
@@ -29,7 +30,7 @@ def bootstrap():
             __account__ = SystemAccount.objects.get()
         except ObjectDoesNotExist:
             _system = SystemAccount()
-            _system.scope = ACCOUNTSCOPE_ANONYMOUS
+            _system.permissions = "listed"
             _system.save()
             __account__ = _system
         _system = SystemAccount.getSystemAccount()
@@ -42,7 +43,7 @@ def bootstrap():
                 name = "All TwistraNet Members",
                 description = "This community contains all TwistraNet members. It's mainly used for critical information."
                 )
-            global_.scope = ACCOUNTSCOPE_AUTHENTICATED
+            global_.permissions = "ou"
             global_.save()
     
         # Create the admin community if it doesn't exist.
@@ -50,7 +51,7 @@ def bootstrap():
             c = AdminCommunity(
                 name = "TwistraNet admin team",
                 )
-            c.scope = ACCOUNTSCOPE_MEMBERS
+            c.permissions = "workgroup"
             c.save()
         admincommunity = Community.objects.admin
         
@@ -88,6 +89,12 @@ def bootstrap():
         for nopicture in Account.objects.filter(picture = None):
             nopicture.picture = profile_picture
             nopicture.save()
+                    
+        # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
+        for content in Content.objects.get_query_set():
+            _permissionmapping._applyPermissionsTemplate(content, _permissionmapping._ContentPermissionMapping)
+        for account in Account.objects.get_query_set():
+            _permissionmapping._applyPermissionsTemplate(account.object, _permissionmapping._AccountPermissionMapping)
                     
         # XXX TODO: Check if approved relations are symetrical
         

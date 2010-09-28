@@ -3,7 +3,9 @@ This is a basic wall test.
 """
 from django.test import TestCase
 from twistranet.models import *
-from twistranet.models.scope import *
+from twistranet.lib import permissions
+
+from twistranet.models import _permissionmapping
 
 class SecurityTest(TestCase):
     """
@@ -31,7 +33,7 @@ class SecurityTest(TestCase):
         __account__ = self.A
         s = StatusUpdate.objects.create(
             text = "Hello, World!",
-            scope = CONTENTSCOPE_PRIVATE,
+            permissions = "private"
             )
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
@@ -46,7 +48,7 @@ class SecurityTest(TestCase):
         
         # B creates a private object, same kind of tests
         __account__ = self.B
-        s = StatusUpdate.objects.create(text = "Hello", scope = CONTENTSCOPE_PRIVATE)
+        s = StatusUpdate.objects.create(text = "Hello", permissions = "private")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.PJ
@@ -65,8 +67,11 @@ class SecurityTest(TestCase):
         Check if network-protected content is accessible to NW only
         """
         __account__ = self.A
-        s = StatusUpdate(text = "Hello, World!", scope = CONTENTSCOPE_NETWORK)
+        s = StatusUpdate(text = "Hello, World!", permissions = "network")
         s.save()
+        
+        # Check if 'view' permission is ok in permissionmapping
+        self.failUnless(s._permissions.filter(name = 'can_view').all())
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.PJ       # PJ is in A's network
         self.failUnless(s.content_ptr in Content.objects.all())
@@ -78,7 +83,7 @@ class SecurityTest(TestCase):
         Check if public content on an account is visible by anyone
         """
         __account__ = self.A
-        s = StatusUpdate(text = "Hello, World!", scope = CONTENTSCOPE_PUBLIC)
+        s = StatusUpdate(text = "Hello, World!", permissions = "public")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.PJ       # PJ is in A's network
@@ -109,10 +114,10 @@ class SecurityTest(TestCase):
         AND the system account must see them all.
         """
         __account__ = self._system
-        self.failUnlessEqual(len(AdminCommunity.objects.filter(community_type = "AdminCommunity")), 1)
-        self.failUnlessEqual(len(GlobalCommunity.objects.filter(community_type = "GlobalCommunity")), 1)
+        self.failUnlessEqual(len(AdminCommunity.objects.filter(account_type = "AdminCommunity")), 1)
+        self.failUnlessEqual(len(GlobalCommunity.objects.filter(account_type = "GlobalCommunity")), 1)
         self.failUnlessEqual(len(Community.objects.admin), 1)
-        self.failUnlessEqual(Community.objects.global_.community_type, "GlobalCommunity")
+        self.failUnlessEqual(Community.objects.global_.account_type, "GlobalCommunity")
         
     def test_communities(self):
         """
@@ -125,7 +130,7 @@ class SecurityTest(TestCase):
     def test_membership(self):
         __account__ = self._system
         self.failUnlessEqual(len(self.A.communities), 1)
-        c = Community.objects.create(name = "Test Community", scope = ACCOUNTSCOPE_AUTHENTICATED)
+        c = Community.objects.create(name = "Test Community", permissions = "ou")
         c.save()
         c.join(self.A)
         self.failUnless(self.A in c.members.all())

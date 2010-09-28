@@ -16,7 +16,7 @@
         "pk":   1,
         "fields":   {
             "account_type": "UserAccount",
-            "scope": 20
+            "permissions": "intranet"
         }
     },
     {
@@ -40,7 +40,7 @@
         "pk":   2,
         "fields":   {        
             "account_type": "UserAccount",
-            "scope": 20
+            "permissions": "intranet"
         }
     },
     {
@@ -64,7 +64,7 @@
         "pk":   3,
         "fields":   {        
             "account_type": "UserAccount",
-            "scope": 20
+            "permissions": "intranet"
         }
     },
     {
@@ -115,7 +115,7 @@
             "content_type": "HelloWorld",
             "publisher": 1,
             "author": 1,
-            "scope": 100
+            "permissions": "public"
         }
     },
     {
@@ -134,7 +134,7 @@
             "content_type": "HelloWorld",
             "publisher": 1,
             "author": 1,
-            "scope": 100
+            "permissions": "public"
         }
     },
     {
@@ -154,7 +154,7 @@
             "publisher": 1,
             "author": 1,
             "text": "This is a public status update",
-            "scope": 100
+            "permissions": "public"
         }
     },
     {
@@ -173,7 +173,7 @@
             "publisher": 1,
             "author": 1,
             "text": "This is a private status update",
-            "scope": 0
+            "permissions": "private"
         }
     },
     {
@@ -192,8 +192,8 @@
             "content_type": "StatusUpdate",
             "publisher": 3,
             "author": 3,
-            "text": "This is a private status update from B",
-            "scope": 50
+            "text": "This is a network-only status update from B",
+            "permissions": "network"
         }
     },
     {
@@ -213,7 +213,7 @@
             "publisher": 3,
             "author": 3,
             "text": "This is a public status update from B",
-            "scope": 100
+            "permissions": "public"
         }
     },
     {

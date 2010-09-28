@@ -1,6 +1,86 @@
 Design considerations for TwistraNet
 +++++++++++++++++++++++++++++++++++++
 
+Security Management
+===================
+
+User authentication and model access
+-------------------------------------
+
+Model access is restricted according to user authentication status.
+The <mymodel>.objects managers are overloaded so that security is ensured when you call them.
+Basically, you don't have to worry about security in your views. If you use the 'request' objects, 
+the model will dig into it to find authenticated user and restrain security for you.
+
+If you never use a model method or attribute begining with an _, we guarantee you're safe.
+(XXX TODO: document the __account__ hack)
+
+Roles and permissions
+---------------------
+
+A roles is an account property on a given object. It gives you information about the relation between the account and the object.
+Role can be (as of writing) either:
+
+- ROLE_ANONYMOUS (special role to allow public interaction)
+- ROLE_AUTHENTICATED (no particular relation between the account and the object)
+- ROLE_COMMUNITY_MEMBER (the account is a member of the object - used for communities only)
+- ROLE_COMMUNITY_MANAGER (the account is a community manager of the object - used for communities only)
+- ROLE_CONTENT_AUTHOR (the account is the author of the protected content - used for content only)
+- ROLE_CONTENT_NETWORK (the account is in the network of the content publisher - used for content only)
+- ROLE_ADMINISTRATOR (the account is a global administrator - ie. he belongs to the admin community)
+- ROLE_SYSTEM (a special role given only to the system account)
+
+Other applications can define additional rights.
+
+Object methods can be protected by a permission. And permissions are given to roles.
+The role / permission mapping may be different between objects.
+
+For example, a community may have the following permissions:
+
+- can_list (permission allowing the given roles to know the object exists and access its title, descr. and picture)
+- can_view (permission to allow the given roles to read more than the object basic properties
+- can_publish (permission to allow writing content on the community's wall)
+- can_edit (permission to modify the community properties)
+- can_join (permission to join a community)
+- can_leave (permission to leave the community)
+- can_list_members (permission to view who's inside the community)
+
+On an object, a user has ONE AND ONLY ONE role.
+
+On an object, each permission is given a list of allowed roles. For example, a Worgroup community usually has the following settings:
+
+- can_list = ROLE_AUTHENTICATED.at_least()
+- can_view = ROLE_MEMBER.at_least()
+- can_publish = ROLE_MEMBER.at_least()
+- can_edit = ROLE_COMMUNITY_MANAGER.at_least()
+- can_join = ROLE_COMMUNITY_MANAGER.at_least()     # Only the CM decides who can join the community
+- can_leave = ROLE_MEMBER.at_least()
+- can_list_members = ROLE_AUTHENTICATED.at_least()
+
+The 'at_least()' method return a tuple of all roles implied by another.
+
+To avoid headaches while defining your object permissions, they are organized into templates.
+Each object has a list of available permission templates which can be applied by the setPermissionTemplate() method (or upon object creation).
+You can manipulate individual permissions if you want but it's simpler to stick with templates.
+
+Roles are python objects, they're not stored on the database.
+Permissions are stored in database along with other object attributes. Permissions are hardcoded (they're heavily used in the code anyway).
+Permission templates are python objects and are not stored in database but that may evolve in future versions.
+
+Permissions API
+---------------
+
+The role module provide a protect_by_permission(perm_label) decorator taking a permission string as a parameter. Example:
+
+@protect_by_permission("can_view")
+def view_inside_stuff(self,):
+    pass
+
+The decorator will ensure that currently logged user has one of the 'can_view' authorized roles on the current object
+
+Internally, permissions are stored as Integers bit fields. There can't be more than 32 roles on a project - which is not a problem by now.
+
+
 Resources
 ==========
 
@@ -18,7 +98,7 @@ Creation and security
 Ressources are not stored in TN's database nor accessible directly through the web: it is secured either by a content or an account.
 A ressource is usually bound to a content, and is available in the same exact conditions as the content it's bound to.
 But resources can also be bound to several contents, avoiding file duplication. If you have an image you want to use in several contents, you can use only one resource (and store only one file).
-Finally, a resource can be unbound, ie. not associated to a content. In this case, security is driven by the account's scope. To protect security, a resource must be explicitly unbound before beeing "visible".
+Finally, a resource can be unbound, ie. not associated to a content. In this case, security is driven by the account's can_view permission. To protect security, a resource must be explicitly unbound before beeing "visible".
 A resource owner can always reach its own resources.
 
 An editable resource is deleted when the last content bound to it is deleted (unless explicitly told against it).

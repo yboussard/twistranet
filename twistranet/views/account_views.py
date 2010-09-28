@@ -133,13 +133,10 @@ def home(request):
         request,
         {
             'account': account,
-            'latest_content_list': account.content.getFollowed()[:25],
+            'latest_content_list': account.content.followed.order_by("-date")[:25],
             'content_forms': forms,
         },
         )
     return HttpResponse(t.render(c))
-    # Or can do:
-    # return render_to_response('wall.html', {'latest_content_list': latest_content_list})
-    
 
 
