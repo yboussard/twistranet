@@ -21,14 +21,15 @@ Roles and permissions
 A roles is an account property on a given object. It gives you information about the relation between the account and the object.
 Role can be (as of writing) either:
 
-- ROLE_ANONYMOUS (special role to allow public interaction)
-- ROLE_AUTHENTICATED (no particular relation between the account and the object)
-- ROLE_COMMUNITY_MEMBER (the account is a member of the object - used for communities only)
-- ROLE_COMMUNITY_MANAGER (the account is a community manager of the object - used for communities only)
-- ROLE_CONTENT_AUTHOR (the account is the author of the protected content - used for content only)
-- ROLE_CONTENT_NETWORK (the account is in the network of the content publisher - used for content only)
-- ROLE_ADMINISTRATOR (the account is a global administrator - ie. he belongs to the admin community)
-- ROLE_SYSTEM (a special role given only to the system account)
+- ANONYMOUS (special role to allow public interaction)
+- AUTHENTICATED (no particular relation between the account and the object)
+- COMMUNITY_MEMBER (the account is a member of the object - used for communities only)
+- COMMUNITY_MANAGER (the account is a community manager of the object - used for communities only)
+- CONTENT_PUBLIC (the account has the right to view the content's publisher)
+- CONTENT_AUTHOR (the account is the author of the protected content - used for content only)
+- CONTENT_NETWORK (the account is in the network of the content publisher - used for content only)
+- ADMINISTRATOR (the account is a global administrator - ie. he belongs to the admin community)
+- SYSTEM (a special role given only to the system account)
 
 Other applications can define additional rights.
 
@@ -45,27 +46,14 @@ For example, a community may have the following permissions:
 - can_leave (permission to leave the community)
 - can_list_members (permission to view who's inside the community)
 
-On an object, a user has ONE AND ONLY ONE role.
-
-On an object, each permission is given a list of allowed roles. For example, a Worgroup community usually has the following settings:
-
-- can_list = ROLE_AUTHENTICATED.at_least()
-- can_view = ROLE_MEMBER.at_least()
-- can_publish = ROLE_MEMBER.at_least()
-- can_edit = ROLE_COMMUNITY_MANAGER.at_least()
-- can_join = ROLE_COMMUNITY_MANAGER.at_least()     # Only the CM decides who can join the community
-- can_leave = ROLE_MEMBER.at_least()
-- can_list_members = ROLE_AUTHENTICATED.at_least()
-
-The 'at_least()' method return a tuple of all roles implied by another.
-
-To avoid headaches while defining your object permissions, they are organized into templates.
-Each object has a list of available permission templates which can be applied by the setPermissionTemplate() method (or upon object creation).
-You can manipulate individual permissions if you want but it's simpler to stick with templates.
+On an object, each permission is given a list of allowed roles. All those roles are computed inside a permissions set.
+The permission set is what the end user manipulates: it makes easier to understand the security system.
+Each object has a list of available permissions set which can be applied by the save() method (or upon object creation).
+You can't manipulate individual permissions as they'll stick with the permission set upon save anyway.
 
 Roles are python objects, they're not stored on the database.
-Permissions are stored in database along with other object attributes. Permissions are hardcoded (they're heavily used in the code anyway).
-Permission templates are python objects and are not stored in database but that may evolve in future versions.
+Permissions are stored in database in an object-specific table. Permissions are hardcoded (they're heavily used in the code anyway).
+Permission templates are python objects and are not stored in database but may be in the future.
 
 Permissions API
 ---------------
