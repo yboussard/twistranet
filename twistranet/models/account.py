@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied
 
 import basemanager
 from resource import Resource
@@ -30,7 +31,6 @@ class AccountManager(basemanager.BaseManager):
                 role = roles.anonymous,
                 ).count():
                 # Opened to anonymous. Return public stuff.
-                print "Anonymous authorized"
                 return base_query_set.filter(
                     _permissions__name = permissions.can_list,
                     _permissions__role = roles.anonymous,
@@ -53,10 +53,14 @@ class AccountManager(basemanager.BaseManager):
             community_subquery = Q(members = authenticated)
         elif self.model == Account:
             # Regular Account objects must de-reference the community first
-            community_subquery = Q(community__members = authenticated)
+            community_subquery = Q(
+                community__members = authenticated
+                )
         else:
-            # Account-derived objects that are not communities have no 'members' attribute
-            community_subquery = Q()
+            # Account-derived objects that are not communities have no 'members' attribute.
+            # But we need to check if user is in the network
+            community_subquery = Q(
+            )
 
         # Perform the filter
         return base_query_set.filter(
@@ -67,6 +71,11 @@ class AccountManager(basemanager.BaseManager):
                 # Public accounts, ie. stuff any auth ppl can list
                 _permissions__name = permissions.can_list,
                 _permissions__role__in = roles.authenticated.implied(),
+            ) | Q(
+                # People in account's network
+                _permissions__name = permissions.can_list,
+                _permissions__role__in = roles.account_network.implied(),
+                initiator_whose__target = authenticated,
             ) | community_subquery)
 
 class _AbstractAccount(models.Model):
@@ -76,6 +85,54 @@ class _AbstractAccount(models.Model):
 
     See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
     """
+    can_view_fields = ('id', 'account_type', 'name', 'picture', 'user', )
+    
+    def __getattribute__(self, key):
+        """
+        Protect fields that have to be protected with the can_view permission but not the can_list permission.
+        By default, ALL fields are protected against view except if they're explicitly mentionned 
+        in the 'can_view_fields' pty of the class.
+        """
+        super_getattr = super(_AbstractAccount, self).__getattribute__
+        if key in [ f.name for f in super_getattr("_meta").fields ]:
+            if not key in super_getattr("__class__").can_view_fields:
+                authenticated = basemanager._getAuthenticatedAccount()
+                # No account => anonymous => buerck
+                if not authenticated:
+                    raise PermissionDenied("Unauthorized field access: %s" % key)
+                elif isinstance(authenticated, SystemAccount):
+                    # System account; we can go
+                    pass
+                else:
+                    # If we're here, then we know we've been listed. Study the can_list permission carefuly.
+                    account_roles = [ p.role for p in super_getattr("_permissions").filter(name = permissions.can_view) ]
+                    
+                    # Anonymous / Public can view, ok, we pass
+                    if roles.anonymous.value in account_roles:
+                        return super_getattr(key)
+                    elif roles.authenticated.value in account_roles:
+                        return super_getattr(key)
+                    elif roles.account_network.value in account_roles:
+                        if authenticated in super_getattr('network'):
+                            return super_getattr(key)
+                    elif roles.community_member.value in account_roles:
+                        if super_getattr('members').filter(id = authenticated.id):
+                            return super_getattr(key)
+                    elif roles.community_manager.value in account_roles:
+                        if authenticated in super_getattr('members'):
+                            # XXX TODO: Check community managers, not just members
+                            return super_getattr(key)
+                    elif roles.administrator.value in account_roles:
+                        # XXX TODO: Check if in admin community
+                        pass
+                    else:
+                        raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
+
+                    # Can't find a match? So bad.
+                    raise PermissionDenied("Unauthorized field access: %s" % key)
+        return super_getattr(key)
+    
+    
     class Meta:
         abstract = True
 
@@ -97,8 +154,10 @@ class Account(_AbstractAccount):
     # A friendly name
     # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
-    picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd... We'll avoid the 'null' attribute someday.
+    picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
+                                                            # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
+    description = models.TextField()
 
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
@@ -239,8 +298,12 @@ class SystemAccount(Account):
         
     @staticmethod
     def getSystemAccount():
-        """Return main (and only) system account"""
+        """Return main (and only) system account. Will raise if several are set."""
         return SystemAccount.objects.get()
+        
+    def __unicode__(self):
+        return "SystemAccount (%d)" % self.id
+        
 AccountRegistry.register(SystemAccount)
         
 class UserAccount(Account):

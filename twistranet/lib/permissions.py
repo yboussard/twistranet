@@ -1,6 +1,7 @@
 from roles import *
 
 # Basic permissions
+# TODO: List which roles are possible for each permission kind.
 can_view = "can_view"
 can_edit = "can_edit"
 can_list = "can_list"
@@ -8,6 +9,7 @@ can_list_members = "can_list_members"
 can_publish = "can_publish"
 can_join = "can_join"
 can_leave = "can_leave"
+
 
 # Special role arrangements
 class PermissionTemplate:
@@ -33,7 +35,8 @@ class PermissionTemplate:
     def permissions(self):
         return self.perm_tuple
         
-
+        
+# Regular content permissions
 content_templates = PermissionTemplate((
     {
         "id":               "public",
@@ -45,14 +48,20 @@ content_templates = PermissionTemplate((
     {
         "id":               "network",
         "name":             "Network-only content",
-        "description":      """Content visible only to my network.""",
+        "description":      """
+                            Content visible only to my network.
+                            For community content, use 'Members-only content' instead.
+                            """,
         can_view:           (content_network, ),
         can_edit:           (content_author, administrator),
     },
     {
         "id":               "members",
         "name":             "Members-only content",
-        "description":      "Content visible only to community members",
+        "description":      """
+                            Content visible only to community members.
+                            For regular wall content, use 'Network-only content' instead.
+                            """,
         can_view:           (content_community_member, ),
         can_edit:           (content_author, administrator),
     },
@@ -95,7 +104,7 @@ account_templates = PermissionTemplate((
         "name":             "Private, unsearchable account (except for administrators and ppl in account's network)",
         "description":      "Ghost account.",
         can_view:           (account_network, ),
-        can_list:           (administrator, ),
+        can_list:           (account_network, ),
     },
 ))
 
@@ -105,7 +114,7 @@ community_templates = PermissionTemplate((
         "id":               "workgroup",
         "name":             "Workgroup", 
         "description":      """
-                            A usually small community where all people want to work together.
+                            A (often small) community where all people want to work together.
                             Members have a very high autonomy level and can do many things on their own.
                             Content is usually restricted to members only.
                             """,

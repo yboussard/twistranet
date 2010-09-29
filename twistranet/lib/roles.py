@@ -44,7 +44,7 @@ anonymous = Role(1)
 authenticated = Role(2, implied = (anonymous, ))
 
 # Account roles
-account_network = Role(3, implied = (authenticated, ))
+account_network = Role(3, implied = (authenticated, ))          # Accessible only for ppl in my network
 
 # Community roles
 community_member = Role(4, implied = (authenticated, ))

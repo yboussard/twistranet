@@ -4,6 +4,7 @@ This is a set of account permissions tests
 from django.test import TestCase
 from twistranet.models import *
 from twistranet.lib import permissions
+from django.core.exceptions import ValidationError, PermissionDenied
 
 from twistranet.models import _permissionmapping, dbsetup
 
@@ -35,5 +36,40 @@ class AccountSecurityTest(TestCase):
         self.failUnless(self.B in Account.objects.all()) 
         __account__ = self.PJ
         self.failUnless(self.PJ in Account.objects.all()) 
+        
+    def test_private_account(self):
+        """
+        Check if I can make an account private.
+        Note that private accounts are still visible in their network!
+        """
+        __account__ = self.A
+        __account__.permissions = "private"
+        __account__.save()
+        self.failUnless(self.A in Account.objects.all()) 
+        __account__ = self.B
+        self.failIf(self.A in Account.objects.all())
+        __account__ = self.PJ
+        self.failUnless(self.A in Account.objects.all(), "A private account must still be listable in its network")
+        
+        
+    def test_cant_view_attributes(self):
+        """
+        Fetch a restricted account and check if we can't read basic properties.
+        In our example we use the 'admin' community, which is listed but can't be viewed.
+        """
+        # Check if we find the admin community
+        __account__ = self.A
+        admin = Community.objects.get(name = "Administrators")
+        
+        # Check community name, then the protected 'description' attribute
+        self.failUnless(admin.name == "Administrators")
+        try:
+            admin.description
+        except PermissionDenied:
+            pass
+        else:
+            self.failIf(True, "The private attribute has been read")   # Shouldn't reach there!
+        
+        
         
         

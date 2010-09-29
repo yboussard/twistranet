@@ -13,37 +13,7 @@ class CommunityManager(AccountManager):
     Useful shortcuts for community management.
     The manager itself only return 100% public communities when secured
     """
-#     def get_query_set(self):
-#         """
-#         Return a queryset of 100%-authorized (in view) objects.
-#         """
-#         # Check for anonymous query
-#         authenticated = self._getAuthenticatedAccount()
-#         base_query_set = super(CommunityManager, self).get_query_set()
-#         if not authenticated:
-#             # TODO: Return anonymous objects
-#             raise NotImplementedError("TODO: Implement anonymous queries")
-#     
-#         # System account: return all objects
-#         if authenticated.account_type == "SystemAccount":
-#             authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
-#             return base_query_set  # The base qset with no filter
-#     
-#         # Account filter
-#         # XXX TODO: filter communities!
-#         return base_query_set.distinct()
-#             # (
-#             #     # Public accounts
-#             #     Q(scope = ACCOUNTSCOPE_ANONYMOUS)
-#             #     ) | (
-#             #     # Auth-only communities
-#             #     Q(scope = ACCOUNTSCOPE_AUTHENTICATED)
-#             #     ) | (
-#             #     # Communities the bound user is a member of
-#             #     Q(members = authenticated, scope = ACCOUNTSCOPE_MEMBERS)
-#             #     )
-#             # ).distinct()
-#     
+
     @property
     def global_(self):
         """

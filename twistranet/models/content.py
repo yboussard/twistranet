@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 import basemanager 
 from account import Account
 from resource import Resource
@@ -153,7 +153,6 @@ class Content(_AbstractContent):
     """
     Abstract content representation class.
     """
-    
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
@@ -221,9 +220,9 @@ class Content(_AbstractContent):
         import _permissionmapping
         
         # XXX TODO: Check permission template first?
-        self.content_type = self.__class__.__name__
-        if self.content_type == Content.__name__:
+        if self.__class__.__name__ == Content.__name__:
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
+        self.content_type = self.__class__.__name__
 
         # Check if I have content edition rights
         # XXX Have to use a decorator instead

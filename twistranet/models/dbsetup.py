@@ -30,9 +30,9 @@ def bootstrap():
             __account__ = SystemAccount.objects.get()
         except ObjectDoesNotExist:
             _system = SystemAccount()
+            __account__ = _system
             _system.permissions = "listed"
             _system.save()
-            __account__ = _system
         _system = SystemAccount.getSystemAccount()
     
         # Create the global community if it doesn't exist.
@@ -49,7 +49,8 @@ def bootstrap():
         # Create the admin community if it doesn't exist.
         if not (Community.objects.admin):
             c = AdminCommunity(
-                name = "TwistraNet admin team",
+                name = "Administrators",
+                description = "TwistraNet admin team",
                 )
             c.permissions = "workgroup"
             c.save()

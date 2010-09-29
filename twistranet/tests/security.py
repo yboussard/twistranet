@@ -4,6 +4,7 @@ This is a basic wall test.
 from django.test import TestCase
 from twistranet.models import *
 from twistranet.lib import permissions
+from django.core.exceptions import ValidationError, PermissionDenied
 
 from twistranet.models import _permissionmapping
 
