@@ -3,7 +3,6 @@ This is a set of extensive resource management tests.
 """
 from django.test import TestCase
 from twistranet.models import *
-from twistranet.models.scope import *
 
 class ResourcesTest(TestCase):
     """

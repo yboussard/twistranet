@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 
 from resourcemanager import ResourceManager
 import basemanager 
-from scope import *
 
 class ResourceObjectsManager(basemanager.BaseManager):
     """
