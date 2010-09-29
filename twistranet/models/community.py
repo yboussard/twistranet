@@ -88,11 +88,7 @@ class Community(Account):
         """
         Populate special content information before saving it.
         """
-        # XXX TODO: Check security
-        import _permissionmapping
-        ret = super(Community, self).save(apply_permissions = False, *args, **kw)
-        _permissionmapping._applyPermissionsTemplate(self, _permissionmapping._AccountPermissionMapping)
-        return ret
+        return super(Community, self).save(*args, **kw)
         
     def setTemplate(self, template_id):
         """

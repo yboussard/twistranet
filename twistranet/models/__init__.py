@@ -12,9 +12,3 @@ from relation import Relation
 # import permission_set
 from twistranet.lib import permissions, roles
 import _permissionmapping
-
-# Do the mandatory database checkup and initial buiding
-import dbsetup 
-dbsetup.bootstrap()
-dbsetup.check_consistancy()
-

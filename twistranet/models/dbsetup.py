@@ -6,7 +6,7 @@ See doc/DESIGN.txt for caveats about database
 """
 import traceback
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 
 from contentregistry import ContentRegistry
@@ -92,9 +92,17 @@ def bootstrap():
                     
         # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
         for content in Content.objects.get_query_set():
-            _permissionmapping._applyPermissionsTemplate(content, _permissionmapping._ContentPermissionMapping)
+            try:
+                _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content, _permissionmapping._ContentPermissionMapping)
+            except ValidationError:
+                print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+                traceback.print_exc()
         for account in Account.objects.get_query_set():
-            _permissionmapping._applyPermissionsTemplate(account.object, _permissionmapping._AccountPermissionMapping)
+            try:
+                _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account, _permissionmapping._AccountPermissionMapping)
+            except ValidationError:
+                print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+                traceback.print_exc()
                     
         # XXX TODO: Check if approved relations are symetrical
         

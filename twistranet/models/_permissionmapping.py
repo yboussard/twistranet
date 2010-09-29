@@ -5,45 +5,66 @@ TODO: Disallow permission change! Secure this!!!
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, SuspiciousOperation
 from twistranet.lib import roles
 from twistranet.lib import permissions
 from account import Account
 from content import Content
+from basemanager import BaseManager
 
+class _PermissionMappingManager(BaseManager):
+    """
+    Ensure that security is applied: we can't manipulate unauthorized objects.
+    """
+    def get_query_set(self):
+        """
+        Prohibit queryset usage. Return an empty and dummy filter.
+        """
+        return super(_PermissionMappingManager, self).get_query_set().filter(name = None)
+        # raise SuspiciousOperation("One should never call this part of the code!")
 
-def _applyPermissionsTemplate(target, mapping_class):
-    """
-    Apply / Re-apply a permissions template
-    XXX TODO: More error checking
-    XXX TODO: Factorize this into the manager (and securize the manager BTW)
-    """
-    # Do not apply on base classes
-    # if target.__class__ in mapping_class.dont_apply_on:
-    #     # Try to get the target object
-    #     target = target.object
-    #     return _applyPermissionsTemplate(target, mapping_class)
-    
-    # Get template
-    tpl = [ t for t in target.permission_templates.permissions() if t["id"] == target.permissions ]
-    if not tpl:
-        raise ValidationError("Permissions template '%s' doesn't exist in %s." % (
-            target.permissions,
-            target.permission_templates.permissions(),
-        ))
+    def _get_detail(self, object_id):
+        """
+        Return a detailed permission set as a dict for object id
+        """
+        ret = {}
+        for p in super(_PermissionMappingManager, self).get_query_set().filter(target = object_id):
+            if ret.has_key(p.name):
+                ret[p.name].append(p.role)
+            else:
+                ret[p.name] = [p.role]
+        return ret
+
+    def _applyPermissionsTemplate(self, target, mapping_class):
+        """
+        Apply / Re-apply a permissions template
+        XXX TODO: More error checking
+        """
+        # Get permissions for actual model class
+        target_class = target.model_class
         
-    # Wow, may be a little be excessively optimistic?
-    mapping_class.objects.filter(target = target).delete()  # XXX Replace with SQL?
-    for perm, roles in tpl[0].items():
-        if not perm.startswith("can_"):
-            continue
-        for role in roles:
-            m = mapping_class.objects.create(
-                target = target,
-                name = perm,
-                role = role.value,
-                )
-            m.save()
+        # Get template
+        tpl = [ t for t in target_class.permission_templates.permissions() if t["id"] == target.permissions ]
+        if not tpl:
+            raise ValidationError("Permissions template '%s' for object '%s' doesn't exist in %s." % (
+                target.permissions,
+                target,
+                [ t['id'] for t in target_class.permission_templates.permissions() ],
+            ))
+        
+        # Wow, may be a little be excessively optimistic?
+        # Anyway... we use the base query set to bypass security on this.
+        super(_PermissionMappingManager, self).get_query_set().filter(target = target).delete()
+        for perm, roles in tpl[0].items():
+            if not perm.startswith("can_"):
+                continue
+            for role in roles:
+                m = self.create(
+                    target = target,
+                    name = perm,
+                    role = role.value,
+                    )
+                m.save()
     
 class _BasePermissionMapping(models.Model):
     """
@@ -52,6 +73,9 @@ class _BasePermissionMapping(models.Model):
     
     class Meta:
         abstract = True
+        
+    # The objects overloading
+    objects = _PermissionMappingManager()
         
     # Don't forget to define your content type and content foreign key in subclasses
     name = models.CharField(max_length = 32)

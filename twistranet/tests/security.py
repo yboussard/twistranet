@@ -71,12 +71,22 @@ class SecurityTest(TestCase):
         s.save()
         
         # Check if 'view' permission is ok in permissionmapping
-        self.failUnless(s._permissions.filter(name = 'can_view').all())
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.PJ       # PJ is in A's network
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.B        # B is not
         self.failUnless(s.content_ptr not in Content.objects.all())
+            
+    def test_silent_permissions(self):
+        """
+        Ensure permissions are not easily visible
+        """
+        __account__ = self.A
+        s = StatusUpdate(text = "Hello, World!", permissions = "network")
+        s.save()
+        self.failIf(s._permissions.filter(name = 'can_view').all())
+        self.failIf(s._permissions.all())
+        
             
     def test_public_content(self):
         """
@@ -90,6 +100,24 @@ class SecurityTest(TestCase):
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.B        # B is not
         self.failUnless(s.content_ptr in Content.objects.all())
+        
+    def test_content_deletion(self):
+        """
+        Check if I can delete my own content
+        """
+        # I should be able to delete a content I wrote
+        __account__ = self.A
+        StatusUpdate(text = "Hi, there.").save()
+        c = StatusUpdate.objects.filter(author = self.A)[0]
+        _id = c.id
+        c.delete()
+        self.failIf(StatusUpdate.objects.filter(id = _id))
+        
+        # I shouldn't be able to delete a content I didn't write
+        c = StatusUpdate.objects.filter(author = self.PJ)[0]
+        _id = c.id
+        self.assertRaises(Exception, c.delete, ())
+        self.failUnless(StatusUpdate.objects.filter(id = _id))
         
             
     def test_has_system_account(self):

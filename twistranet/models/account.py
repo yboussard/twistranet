@@ -58,7 +58,12 @@ class Account(models.Model):
     class Meta:
         app_label = 'twistranet'
 
-    def save(self, apply_permissions = True, *args, **kw):
+    @property
+    def permissions_list(self):
+        import _permissionmapping
+        return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
+
+    def save(self, *args, **kw):
         """
         Populate special content information before saving it.
         XXX TODO: Check saving rights
@@ -75,12 +80,10 @@ class Account(models.Model):
         # Call parent
         ret = super(Account, self).save(*args, **kw)
             
-        # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object.
-        try:
-            target = self.object
-        except AttributeError:
-            return ret
-        _permissionmapping._applyPermissionsTemplate(target, _permissionmapping._AccountPermissionMapping)
+        # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
+        _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(
+            self, _permissionmapping._AccountPermissionMapping
+            )
         return ret
 
     @property
@@ -92,6 +95,13 @@ class Account(models.Model):
             return self.useraccount.user.username
         else:
             return self.id
+        
+    @property
+    def model_class(self):
+        """
+        Return the subobject model class
+        """
+        return AccountRegistry.getModelClass(self.account_type)
         
     @property
     def object(self):

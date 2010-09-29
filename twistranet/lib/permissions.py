@@ -40,24 +40,28 @@ content_templates = PermissionTemplate((
         "name":             "Public content", 
         "description":      "Content visible to anyone who can view this page.",
         can_view:           (content_public, ),
+        can_edit:           (content_author, administrator),
     },
     {
         "id":               "network",
         "name":             "Network-only content",
         "description":      """Content visible only to my network.""",
         can_view:           (content_network, ),
+        can_edit:           (content_author, administrator),
     },
     {
         "id":               "members",
         "name":             "Members-only content",
         "description":      "Content visible only to community members",
         can_view:           (content_community_member, ),
+        can_edit:           (content_author, administrator),
     },
     {
         "id":               "private",
         "name":             "Private",
         "description":      "Content visible only for the author",
         can_view:           (content_author, ),
+        can_edit:           (content_author, ),
     },
 ))
 

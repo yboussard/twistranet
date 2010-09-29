@@ -150,7 +150,7 @@ class Content(models.Model):
     resources = models.ManyToManyField(Resource)
     
     # Security models available for the user
-    # XXX TODO: Use a foreign key instead with some clever checking
+    # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
     permissions = models.CharField(
         max_length = 32, 
@@ -174,15 +174,28 @@ class Content(models.Model):
         return self.text
 
     @property
+    def model_class(self):
+        """
+        Return the subobject model class
+        """
+        from twistranet.models import contentregistry
+        return contentregistry.ContentRegistry.getModelClass(self.content_type)
+
+    @property
     def object(self):
         """
         Return the exact subclass this object belongs to.
         Use this to display it.
         
-        XXX TODO : Rename into 'object'
+        XXX TODO: Make this more consistant with account
         """
         obj = getattr(self, self.content_type.lower())
         return obj
+        
+    @property
+    def permissions_list(self):
+        import _permissionmapping
+        return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
         
     def save(self, *args, **kw):
         """
@@ -214,7 +227,7 @@ class Content(models.Model):
         ret = super(Content, self).save(*args, **kw)
         
         # Set/reset permissions. We do it last to be sure we've got an id.
-        _permissionmapping._applyPermissionsTemplate(self, _permissionmapping._ContentPermissionMapping)
+        _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(self, _permissionmapping._ContentPermissionMapping)
         return ret
 
 
@@ -231,25 +244,35 @@ class Link(Content):
     class Meta:
         app_label = 'twistranet'
     
-    
 class File(Content):
     """
     Abstract class which represents a File in database.
     We just add filename information plus several methods to display it.
     """
+    class Meta:
+        app_label = 'twistranet'
     
 class Image(File):
     """
     Image file
     """
+    class Meta:
+        app_label = 'twistranet'
+    
     
 class Video(File):
     """
     Video content
     """
+    class Meta:
+        app_label = 'twistranet'
+
     
 class Comment(Content):
     """
     Special comment handling. Comment is 'just' a special type of content.
     Comments are not commentable themselves...
     """
+    class Meta:
+        app_label = 'twistranet'
+    
