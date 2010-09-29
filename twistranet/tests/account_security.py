@@ -60,16 +60,52 @@ class AccountSecurityTest(TestCase):
         # Check if we find the admin community
         __account__ = self.A
         admin = Community.objects.get(name = "Administrators")
+        self.failIf(admin.can_view)
+
+        # Create a community and perform the same kind of checks
+        c = Community.objects.create(name = "My Workgroup", permissions = "workgroup")
+        self.failUnless(c.can_view)
+        __account__ = self.B
+        self.failIf(c.can_view)
+        __account__ = self.PJ
+        self.failIf(c.can_view)
         
         # Check community name, then the protected 'description' attribute
-        self.failUnless(admin.name == "Administrators")
-        try:
-            admin.description
-        except PermissionDenied:
-            pass
-        else:
-            self.failIf(True, "The private attribute has been read")   # Shouldn't reach there!
+        # DISABLED FOR PERFORMANCE REASONS
+        # self.failUnless(admin.name == "Administrators")
+        # try:
+        #     admin.description
+        # except PermissionDenied:
+        #     pass
+        # else:
+        #     self.failIf(True, "The private attribute has been read")   # Shouldn't reach there!
         
+    def test_community_creation(self):
+        """
+        We create a community and check basic stuff
+        """
+        __account__ = self.A
+        c = Community.objects.create(name = "My Workgroup", permissions = "workgroup")
+        c.save()
+        self.failUnless(c.can_view)
+        self.failUnless(c.is_manager)
+        c_id = c.id
         
+        # B can LIST but can't VIEW the community by now (neither PJ)
+        __account__ = self.B
+        self.failUnless(Community.objects.filter(id = c_id).exists())
+        self.failIf(c.can_view)
+        __account__ = self.PJ
+        self.failUnless(Community.objects.filter(id = c_id).exists())
+        self.failIf(c.can_view)
+        
+        # We add B inside, B should see it
+        __account__ = self.A
+        c.join(self.B)
+        self.failUnless(self.B in c.members.all())
+        __account__ = self.B
+        self.failUnless(Community.objects.filter(id = c_id).exists())
+        self.failUnless(c.is_member)
+        self.failIf(c.is_manager)
         
         

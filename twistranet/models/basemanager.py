@@ -63,11 +63,14 @@ class BaseManager(models.Manager):
         XXX TODO: Check against circular references!
         """
         # We dig into the stack frame to find the request object.
-        from account import Account
+        from account import Account, SystemAccount
         _locals = {}
         try:
             for stack in inspect.stack():
-                _locals = [ mbr[1] for mbr in inspect.getmembers(stack[0]) if mbr[0] == 'f_locals' ][0]
+                for mtype, mbr in inspect.getmembers(stack[0]):
+                    if mtype == 'f_locals':
+                        _locals = mbr
+                        break
 
                 # Check for a request.user User object
                 if _locals.has_key('request') and hasattr(_locals['request'], 'user') and isinstance(_locals['request'].user, User):
@@ -76,7 +79,14 @@ class BaseManager(models.Manager):
                 # Check for an __acount__ variable holding a generic Account object
                 if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
                     return _locals['__account__']
-                
+
+                # # Check if we're called from the syncdb manager action
+                # # Enable this if you use the __getattribute__() method to implicitly check can_view permissions on Account objects
+                # f_code = [ mbr[1] for mbr in inspect.getmembers(stack[0]) if mbr[0] == 'f_code' ][0]
+                # co_filename = [ mbr[1] for mbr in inspect.getmembers(f_code) if mbr[0] == 'co_filename' ][0]
+                # if co_filename.endswith("loaddata.py"):
+                #     return SystemAccount()  # Return a dummy system account to pass this
+            
                 # Clean memory to avoid circular refs before continuing
                 del stack
         finally:

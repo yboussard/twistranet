@@ -85,53 +85,21 @@ class _AbstractAccount(models.Model):
 
     See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
     """
-    can_view_fields = ('id', 'account_type', 'name', 'picture', 'user', )
     
-    def __getattribute__(self, key):
-        """
-        Protect fields that have to be protected with the can_view permission but not the can_list permission.
-        By default, ALL fields are protected against view except if they're explicitly mentionned 
-        in the 'can_view_fields' pty of the class.
-        """
-        super_getattr = super(_AbstractAccount, self).__getattribute__
-        if key in [ f.name for f in super_getattr("_meta").fields ]:
-            if not key in super_getattr("__class__").can_view_fields:
-                authenticated = basemanager._getAuthenticatedAccount()
-                # No account => anonymous => buerck
-                if not authenticated:
-                    raise PermissionDenied("Unauthorized field access: %s" % key)
-                elif isinstance(authenticated, SystemAccount):
-                    # System account; we can go
-                    pass
-                else:
-                    # If we're here, then we know we've been listed. Study the can_list permission carefuly.
-                    account_roles = [ p.role for p in super_getattr("_permissions").filter(name = permissions.can_view) ]
-                    
-                    # Anonymous / Public can view, ok, we pass
-                    if roles.anonymous.value in account_roles:
-                        return super_getattr(key)
-                    elif roles.authenticated.value in account_roles:
-                        return super_getattr(key)
-                    elif roles.account_network.value in account_roles:
-                        if authenticated in super_getattr('network'):
-                            return super_getattr(key)
-                    elif roles.community_member.value in account_roles:
-                        if super_getattr('members').filter(id = authenticated.id):
-                            return super_getattr(key)
-                    elif roles.community_manager.value in account_roles:
-                        if authenticated in super_getattr('members'):
-                            # XXX TODO: Check community managers, not just members
-                            return super_getattr(key)
-                    elif roles.administrator.value in account_roles:
-                        # XXX TODO: Check if in admin community
-                        pass
-                    else:
-                        raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
-
-                    # Can't find a match? So bad.
-                    raise PermissionDenied("Unauthorized field access: %s" % key)
-        return super_getattr(key)
-    
+    # We keep the following code if we ever need to enforce more powerful security (at the expense of speed)    
+    # can_view_fields = ('id', 'account_type', 'name', 'picture', 'user', )
+    # def __getattribute__(self, key):
+    #     """
+    #     Protect fields that have to be protected with the can_view permission but not the can_list permission.
+    #     By default, ALL fields are protected against view except if they're explicitly mentionned 
+    #     in the 'can_view_fields' pty of the class.
+    #     """
+    #     super_getattr = super(_AbstractAccount, self).__getattribute__
+    #     if key in [ f.name for f in super_getattr("_meta").fields ]:
+    #         if not key in super_getattr("__class__").can_view_fields:
+    #             if not super_getattr("can_view"):
+    #                 raise PermissionDenied("Unauthorized field access: %s" % key)
+    #     return super_getattr(key)
     
     class Meta:
         abstract = True
@@ -172,6 +140,51 @@ class Account(_AbstractAccount):
     def permissions_list(self):
         import _permissionmapping
         return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
+        
+    @property
+    def can_view(self):
+        """
+        Return true if the current account can view the current object.
+        """
+        authenticated = Account.objects._getAuthenticatedAccount()
+        
+        # No account => anonymous => berk!
+        # XXX TODO: Maybe authorize this for opened content?
+        if not authenticated:
+            return False
+            
+        # System account; we can go. Blindly.
+        if isinstance(authenticated, SystemAccount):
+            return True
+            
+        # If we're here, then we know the content have been listed. Study the can_list permission carefuly.
+        account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_view) ]
+        
+        # Anonymous / Public can view, ok, we pass
+        if roles.anonymous.value in account_roles:
+            return True
+        elif roles.authenticated.value in account_roles:
+            return True
+        elif roles.account_network.value in account_roles:
+            if authenticated in super_getattr('network'):
+                return True
+        elif roles.community_member.value in account_roles:
+            # XXX TODO: check if we're on a community?
+            if self.members.filter(id = authenticated.id):
+                return True
+        elif roles.community_manager.value in account_roles:
+            if self.members.filter(id = authenticated.id):
+                # XXX TODO: Check community managers, not just members
+                return True
+        elif roles.administrator.value in account_roles:
+            # XXX TODO: Check if in admin community
+            return authenticated.communities.filter(account_type="AdminCommunity").exists()
+        else:
+            raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
+
+        # Can't find a match? So bad.
+        return False
+    
 
     def save(self, *args, **kw):
         """

@@ -6,6 +6,6 @@ ContentRegistry.register(StatusUpdate, StatusUpdateForm)
 
 # Do the mandatory database checkup and initial buiding
 from twistranet.models import dbsetup
-# dbsetup.bootstrap()           # Call it explicitly if you need to.
+dbsetup.bootstrap()           # XXX: TODO: Only call it explicitly if you need to.
 dbsetup.check_consistancy()
 

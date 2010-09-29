@@ -3,19 +3,18 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from account import Account, AccountManager
+from account import Account, AccountManager, UserAccount, SystemAccount
 from accountregistry import AccountRegistry
 import basemanager
-from twistranet.lib import permissions
+from twistranet.lib import permissions, roles
 
 class CommunityManager(AccountManager):
     """
     Useful shortcuts for community management.
     The manager itself only return 100% public communities when secured
     """
-
     @property
-    def global_(self):
+    def global_(self,):
         """
         Return the global community. May raise if no access right.
         """
@@ -67,7 +66,15 @@ class Community(_AbstractCommunity):
         """
         Populate special content information before saving it.
         """
-        return super(Community, self).save(*args, **kw)
+        auth = Community.objects._getAuthenticatedAccount()
+        ret = super(Community, self).save(*args, **kw)
+        if isinstance(auth.object, UserAccount) and not self.isMember(auth):
+            CommunityMembership.objects.create(
+                account = auth,
+                community = self,
+                is_manager = True,
+            )
+        return ret
         
     def setTemplate(self, template_id):
         """
@@ -81,72 +88,115 @@ class Community(_AbstractCommunity):
         """
         Return true if currently auth user is a member of the community
         """
-        account = Community.objects._getAuthenticatedAccount()
-        return not not CommunityMembership.objects.filter(
+        return self.isMember()
+            
+    def isMember(self, account = None, is_manager = False):
+        """
+        Return True if given account is member.
+        If account is None, assume it's current authenticated.
+        """
+        if not account:
+            account = Community.objects._getAuthenticatedAccount()
+            if not account:
+                return False    # Anon user
+                
+        qs = CommunityMembership.objects.filter(
             account = account, 
-            community = self,
-            is_invitation_pending = False,
+            community = self,    
             )
+        if is_manager:
+            qs = qs.filter(is_manager = True)
+        return qs.exists()
 
-    def join(self, account = None):
+            
+    @property
+    def is_manager(self):
+        """
+        Return true if current user is a community manager
+        """
+        return self.isMember(is_manager = True)
+
+    def join_manager(self, account = None):
+        """
+        Same as join() but as a manager.
+        Only a community manager (or the first community member) can do that.
+        """
+        return self.join(account, manager = True)
+        
+    @property
+    def can_join(self):
+        return self.canJoin()
+        
+    def canJoin(self, account = None, manager = False):
+        """
+        Return True if given user can join.
+        Will return False if already a member.
+        """
+        # Get account
+        authenticated = Community.objects._getAuthenticatedAccount()
+        if not account:
+            account = authenticated
+            
+        # If he're already in it, just pass
+        if self.members.filter(id = account.id).exists():
+            return False
+        
+        # Is current user is admin? If so, he can join anything
+        if account.is_admin or authenticated.is_admin:
+            return True
+
+        # Allowed anonymous join? Hum, that's strange
+        if roles.anonymous.allowed_by(self._permissions):
+            raise ValidationError("Anonymous shouldn't be able to join %s community." % self)    
+
+        # If auth users are authorized, then go (provided account logged).
+        elif roles.authenticated.allowed_by(self._permissions):
+            if not manager:
+                return not not account
+            
+        # Invalid role
+        elif roles.account_network.allowed_by(self._permissions):
+            raise ValidationError("Unexpected can_join role %s" % (self, ))
+            
+        elif roles.community_member.allowed_by(self._permissions):
+            if manager:
+                return False
+            if self.is_member:
+                return True
+                
+        # From here, we allow manager adds
+        elif roles.community_manager.allowed_by(self._permissions):
+            if self.is_manager:
+                return True
+        elif roles.administrator.allowed_by(self._permissions):
+            if authenticated.is_admin:
+                return True
+        elif roles.system.allowed_by(self._permissions):
+            if isinstance(authenticated, SystemAccount):
+                return True
+        else:
+            raise ValidationError("Unexpected can_join role %s" % (self, ))
+        
+        # No match? So bad.
+        return False
+        
+    def join(self, account = None, manager = False):
         """
         Join the community.
         If account is None, assume it current authenticated account.
         You can only join the communities you can 'see'
         """
         # Check if current account is allowed to force another account to join
-        current = Community.objects._getAuthenticatedAccount()
-        if account:
-            # Try to force joining sbdy? Check if we're allowed to.
-            if not current.is_admin:
-                raise PermissionDenied("You can't force a user to join a community.")
-        else:
-            account = current
-        
-        # Don't add twice
-        # if account in self.members.filter(is_invitation_pending = False):
-        #     return
-        
-        # Check join rules
-        # XXX TODO: Actually check 'em!
-        allowed = False
-        if current.is_admin:
-            allowed = True
-        # else:
-        #     # Handle easy cases
-        #     if self.join_rule == COMMUNITYJOIN_AUTHENTICATED:
-        #         allowed = True
-        #     elif self.join_rule == COMMUNITYJOIN_CLOSED:
-        #         allowed = False
-        #     else:
-        #         # Invitations management
-        #         invitation = self.members.filter(
-        #             account = account,
-        #             community = self,
-        #             # is_invitation_pending = True
-        #             ).all()
-        #         if not invitation:
-        #             allowed = False
-        #         elif self.join_rule == COMMUNITYJOIN_INVITED_BY_MEMBER:
-        #             if invitation.invitation_from in self.members.filter(is_invitation_pending = False).all():  # XXX YERK!
-        #                 allowed = True
-        #         elif self.join_rule == COMMUNITYJOIN_INVITED_BY_MANAGER:
-        #             if invitation.invitation_from in self.members.filter(is_invitation_pending = False, is_admin = True).all(): # XXX UGLY!
-        #                 allowed = True
-        #         elif self.join_rule == COMMUNITYJOIN_INVITED_BY_ADMIN:
-        #             if invitation_from.is_admin:
-        #                 allowed = True
-        #         else:
-        #             raise NotImplementedError("Unexpected join rule: '%s'" % self.join_rule)
-       
-        if allowed:
-            mbr = CommunityMembership(
-                account = account,
-                community = self,
-                )
-            mbr.save()
-        else:
-            raise PermissionDenied("You're not allowed to join this community")
+        if not self.canJoin(account, manager):
+            raise PermissionDenied("You can't force a user to join a community.")
+
+        # Actually add
+        mbr = CommunityMembership(
+            account = account,
+            community = self,
+            is_manager = manager,
+            )
+        mbr.save()
         
     def leave(self, account):
         """
@@ -173,8 +223,14 @@ class CommunityMembership(models.Model):
     # is_invitation_pending = models.BooleanField(default = False)    # True if invited by sbd
     # invitation_from = models.ForeignKey(Account, related_name = "invite_to_community_membership")
 
+    def __unicode__(self):
+        if self.is_manager:
+            return "%s is a community manager for %s" % (self.account, self.community, )
+        return "%s is member of %s" % (self.account, self.community, )
+
     class Meta:
         app_label = 'twistranet'
+        unique_together = ('account', 'community')
 
 class GlobalCommunity(Community):
     """

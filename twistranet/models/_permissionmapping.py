@@ -67,9 +67,7 @@ class _PermissionMappingManager(BaseManager):
                     role = role.value,
                     )
                 m.save()
-                # print m
-        # print "Saved %s permissions on %s: (%s/%s)" % (tpl, target, super(_PermissionMappingManager, self).filter(target = target).all(), target._permissions.all())
-    
+                    
 class _BasePermissionMapping(models.Model):
     """
     model_type => object_id => permission => role

@@ -37,6 +37,12 @@ class Role:
         """
         return self.value
         
+    def allowed_by(self, permission_set):
+        """
+        Return True if current role is in the given _permissionmapping.QuerySet object
+        """
+        return permission_set.filter(role = self.value).exists()
+        
 Role.defined_values = []
 
 # Global roles
