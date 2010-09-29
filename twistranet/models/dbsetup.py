@@ -43,7 +43,7 @@ def bootstrap():
                 name = "All TwistraNet Members",
                 description = "This community contains all TwistraNet members. It's mainly used for critical information."
                 )
-            global_.permissions = "ou"
+            global_.permissions = "intranet"        # Default permissions = intranet
             global_.save()
     
         # Create the admin community if it doesn't exist.

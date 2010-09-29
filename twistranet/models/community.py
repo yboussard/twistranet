@@ -3,47 +3,47 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from account import Account
+from account import Account, AccountManager
 from accountregistry import AccountRegistry
 import basemanager
 from twistranet.lib import permissions
 
-class CommunityManager(basemanager.BaseManager):
+class CommunityManager(AccountManager):
     """
     Useful shortcuts for community management.
     The manager itself only return 100% public communities when secured
     """
-    def get_query_set(self):
-        """
-        Return a queryset of 100%-authorized (in view) objects.
-        """
-        # Check for anonymous query
-        authenticated = self._getAuthenticatedAccount()
-        base_query_set = super(CommunityManager, self).get_query_set()
-        if not authenticated:
-            # TODO: Return anonymous objects
-            raise NotImplementedError("TODO: Implement anonymous queries")
-
-        # System account: return all objects
-        if authenticated.account_type == "SystemAccount":
-            authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
-            return base_query_set  # The base qset with no filter
-
-        # Account filter
-        # XXX TODO: filter communities!
-        return base_query_set.distinct()
-            # (
-            #     # Public accounts
-            #     Q(scope = ACCOUNTSCOPE_ANONYMOUS)
-            #     ) | (
-            #     # Auth-only communities
-            #     Q(scope = ACCOUNTSCOPE_AUTHENTICATED)
-            #     ) | (
-            #     # Communities the bound user is a member of
-            #     Q(members = authenticated, scope = ACCOUNTSCOPE_MEMBERS)
-            #     )
-            # ).distinct()
-    
+#     def get_query_set(self):
+#         """
+#         Return a queryset of 100%-authorized (in view) objects.
+#         """
+#         # Check for anonymous query
+#         authenticated = self._getAuthenticatedAccount()
+#         base_query_set = super(CommunityManager, self).get_query_set()
+#         if not authenticated:
+#             # TODO: Return anonymous objects
+#             raise NotImplementedError("TODO: Implement anonymous queries")
+#     
+#         # System account: return all objects
+#         if authenticated.account_type == "SystemAccount":
+#             authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
+#             return base_query_set  # The base qset with no filter
+#     
+#         # Account filter
+#         # XXX TODO: filter communities!
+#         return base_query_set.distinct()
+#             # (
+#             #     # Public accounts
+#             #     Q(scope = ACCOUNTSCOPE_ANONYMOUS)
+#             #     ) | (
+#             #     # Auth-only communities
+#             #     Q(scope = ACCOUNTSCOPE_AUTHENTICATED)
+#             #     ) | (
+#             #     # Communities the bound user is a member of
+#             #     Q(members = authenticated, scope = ACCOUNTSCOPE_MEMBERS)
+#             #     )
+#             # ).distinct()
+#     
     @property
     def global_(self):
         """
@@ -58,8 +58,21 @@ class CommunityManager(basemanager.BaseManager):
         """
         return self.filter(account_type = "AdminCommunity")
 
+class _AbstractCommunity(Account):
+    """
+    We use this to enforce using our manager on subclasses.
+    This way, we avoid enforcing you to re-declare objects = AccountManager() on each account class!
 
-class Community(Account):
+    See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
+    """
+    class Meta:
+        abstract = True
+
+    # Our security model
+    objects = CommunityManager()
+
+
+class Community(_AbstractCommunity):
     """
     A simple community class.
     A community is an account which have members. Members are User accounts.
@@ -75,10 +88,6 @@ class Community(Account):
     # Members & security management
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
     # XXX user_source = (OPTIONAL)
-    # initial_template = models.CharField(max_length = 32)
-    # join_rule = models.IntegerField(choices = COMMUNITY_JOIN_RULES_IDS)
-    # publish_rule = models.IntegerField(choices = COMMUNITY_PUBLISH_RULES_IDS)
-    # scope = models.IntegerField(choices = COMMUNITY_SCOPES)   # XXX TODO: Restrict to community scopes only!
     permission_templates = permissions.community_templates
 
     class Meta:
@@ -200,9 +209,17 @@ class CommunityMembership(models.Model):
 class GlobalCommunity(Community):
     """
     THE global community.
+    
+    The global community also has all the webmaster-level settings of Twistranet.
+    can_view must be given to either anonymous or authenticated role for TN to work!
+    If can_view is authenticated, then ALL OF Twistranet is restricted to auth people.
+    
+    Default is authenticated.
     """
     class Meta:
         app_label = 'twistranet'
+    permission_templates = permissions.global_community_templates
+        
 AccountRegistry.register(GlobalCommunity)
 
 class AdminCommunity(Community):
@@ -212,6 +229,9 @@ class AdminCommunity(Community):
     """
     class Meta:
         app_label = 'twistranet'
+        
+    
+        
 AccountRegistry.register(AdminCommunity)
 
     

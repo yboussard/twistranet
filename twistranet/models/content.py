@@ -7,6 +7,7 @@ from account import Account
 from resource import Resource
 from twistranet.lib import roles, permissions
 
+
 class ContentManager(basemanager.BaseManager):
     """
     This manager is used for secured content (via the secured()) method.
@@ -22,10 +23,14 @@ class ContentManager(basemanager.BaseManager):
         authenticated = self._getAuthenticatedAccount()
         base_query_set = super(ContentManager, self).get_query_set()
         if not authenticated:
-            # TODO: Return anonymous objects
+            # If global community is restricted, don't return anything
+            if not Account.objects.filter(account_type = "GlobalCommunity"):
+                return base_query_set.filter(id = -1)       # An on-purpose invalid filter
+            
+            # Return anonymous objects if global community is listable to anonymous.
             return base_query_set.filter(
                 _permissions__name = permissions.can_view,
-                _permissions__role__in = (roles.content_public, ),
+                _permissions__role__in = roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = (roles.anonymous, ),
                 )
@@ -130,12 +135,24 @@ class ContentManager(basemanager.BaseManager):
             ).distinct()
         
 
-class Content(models.Model):
+class _AbstractContent(models.Model):
+    """
+    We use this to enforce using our manager on subclasses.
+    This way, we avoid enforcing you to re-declare objects = ContentManager() on each content class!
+    
+    See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
+    """
+    class Meta:
+        abstract = True
+
+    # Our security model
+    objects = ContentManager()
+
+
+class Content(_AbstractContent):
     """
     Abstract content representation class.
     """
-    # Our security model
-    objects = ContentManager()
     
     # Usual metadata
     date = models.DateTimeField(auto_now = True)

@@ -16,7 +16,7 @@
         "pk":   1,
         "fields":   {
             "account_type": "UserAccount",
-            "permissions": "intranet"
+            "permissions": "public"
         }
     },
     {
@@ -40,7 +40,7 @@
         "pk":   2,
         "fields":   {        
             "account_type": "UserAccount",
-            "permissions": "intranet"
+            "permissions": "public"
         }
     },
     {
@@ -64,7 +64,7 @@
         "pk":   3,
         "fields":   {        
             "account_type": "UserAccount",
-            "permissions": "intranet"
+            "permissions": "public"
         }
     },
     {

@@ -70,28 +70,32 @@ content_templates = PermissionTemplate((
 account_templates = PermissionTemplate((
     # User account templates
     {
-        "id":               "internet",
-        "name":             "Public Internet account",
-        "description":      "Account listed and accessible to anyone who has access to TwistraNet.",
+        "id":               "public",
+        "name":             "Public account",
+        "description":      "Account listed and accessible to anyone who has access to TwistraNet (public if TwistraNet is in internet mode).",
         can_view:           (anonymous, ),
+        can_list:           (anonymous, ),
     },
     {
         "id":               "intranet",
         "name":             "Restricted intranet account",
-        "description":      "Account listed and accessible to anyone who has access to TwistraNet.",
+        "description":      "Account listed and accessible to anyone who is logged into to TwistraNet.",
         can_view:           (authenticated, ),
+        can_list:           (authenticated, ),
     },
     {
         "id":               "listed",
         "name":             "Private but searchable", 
-        "description":      "Account listed BUT NOT accessible to anyone who is logged into TwistraNet. Must be in network to see it.",
-        can_view:           (authenticated, ),
+        "description":      "Account listed BUT NOT necessarily accessible to anyone who is logged into TwistraNet: Must be in his network to see it.",
+        can_view:           (account_network, ),
+        can_list:           (authenticated, ),
     },
     {
         "id":               "private",
-        "name":             "Private, unsearchable account (except for administrators)",
+        "name":             "Private, unsearchable account (except for administrators and ppl in account's network)",
         "description":      "Ghost account.",
-        can_view:           (administrator, ),
+        can_view:           (account_network, ),
+        can_list:           (administrator, ),
     },
 ))
 
@@ -171,3 +175,59 @@ community_templates = PermissionTemplate((
         can_leave:          (community_manager, ),
     },
 ))
+
+# Global community templates.
+global_community_templates = PermissionTemplate((
+    {
+        "id":               "intranet",
+        "name":             "Intranet: Access restricted to logged-in users only.",
+        "description":      """
+                            Use this to have your TwistraNet site opened only to logged-in users.
+                            Everybody is listed, although some accounts can be private.
+                            This is usually how an intranet site works.
+                            """,
+        can_list:           (authenticated, ),
+        can_view:           (authenticated, ),
+        can_list_members:   (authenticated, ),
+        can_publish:        (community_manager, ),
+        can_join:           (system, ),             # Mandatory for global community.
+        can_leave:          (system, ),             # Mandatory for global community.
+    },
+    {
+        "id":               "extranet",
+        "name":             "Extranet: Access restricted to members, they must not know each other.",
+        "description":      """
+                            Use this to have your TwistraNet site opened to your customers and partners.
+                            Customers must not see each other. So they can't be listed in there.
+                            """,
+        can_list:           (authenticated, ),
+        can_view:           (authenticated, ),
+        can_list_members:   (community_manager, ),
+        can_publish:        (community_manager, ),
+        can_join:           (system, ),             # Mandatory for global community.
+        can_leave:          (system, ),             # Mandatory for global community.
+    },
+    {
+        "id":               "internet",
+        "name":             "Internet: Opened to the World.",
+        "description":      """
+                            Want to open your community the the World? That's what this is for.
+                            If you have an association, a (possibly open-source ;)) community project
+                            or just want your company to be reachable, keep the content opened.
+                            Of course, anonymous people won't be able to do anything but read authorized stuff.
+                            
+                            Global community content will still be restricted to auth people.
+                            """,
+        can_list:           (anonymous, ),
+        can_view:           (authenticated, ),
+        can_list_members:   (authenticated, ),
+        can_publish:        (community_manager, ),
+        can_join:           (system, ),             # Mandatory for global community.
+        can_leave:          (system, ),             # Mandatory for global community.
+    },
+))
+
+
+
+
+

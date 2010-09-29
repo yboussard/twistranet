@@ -16,12 +16,12 @@ class _PermissionMappingManager(BaseManager):
     """
     Ensure that security is applied: we can't manipulate unauthorized objects.
     """
-    def get_query_set(self):
-        """
-        Prohibit queryset usage. Return an empty and dummy filter.
-        """
-        return super(_PermissionMappingManager, self).get_query_set().filter(name = None)
-        # raise SuspiciousOperation("One should never call this part of the code!")
+    # def get_query_set(self):
+    #     """
+    #     Prohibit queryset usage. Return an empty and dummy filter.
+    #     """
+    #     return super(_PermissionMappingManager, self).get_query_set().none()
+    #     # raise SuspiciousOperation("One should never call this part of the code!")
 
     def _get_detail(self, object_id):
         """
@@ -39,6 +39,7 @@ class _PermissionMappingManager(BaseManager):
         """
         Apply / Re-apply a permissions template
         XXX TODO: More error checking
+        XXX TODO: Make it far more efficient ; maybe replace perm names by ids to speed things up
         """
         # Get permissions for actual model class
         target_class = target.model_class
@@ -58,6 +59,7 @@ class _PermissionMappingManager(BaseManager):
         for perm, roles in tpl[0].items():
             if not perm.startswith("can_"):
                 continue
+            # print "add roles %s/%s" % (perm, roles)
             for role in roles:
                 m = self.create(
                     target = target,
@@ -65,17 +67,19 @@ class _PermissionMappingManager(BaseManager):
                     role = role.value,
                     )
                 m.save()
+                # print m
+        # print "Saved %s permissions on %s: (%s/%s)" % (tpl, target, super(_PermissionMappingManager, self).filter(target = target).all(), target._permissions.all())
     
 class _BasePermissionMapping(models.Model):
     """
     model_type => object_id => permission => role
-    """
-    
+    """    
     class Meta:
         abstract = True
-        
+
     # The objects overloading
     objects = _PermissionMappingManager()
+    _objects = models.Manager()
         
     # Don't forget to define your content type and content foreign key in subclasses
     name = models.CharField(max_length = 32)
@@ -91,6 +95,8 @@ class _ContentPermissionMapping(_BasePermissionMapping):
     """
     class Meta:
         app_label = "twistranet"
+        unique_together = ('target', 'name', 'role', )
+        
     target = models.ForeignKey(Content, related_name = "_permissions")
     dont_apply_on = (Content, )
 
@@ -101,6 +107,8 @@ class _AccountPermissionMapping(_BasePermissionMapping):
     """
     class Meta:
         app_label = "twistranet"
+        unique_together = ('target', 'name', 'role', )
+
     target = models.ForeignKey(Account, related_name = "_permissions")
     dont_apply_on = (Account, )
 

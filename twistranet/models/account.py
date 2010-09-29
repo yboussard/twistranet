@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 import basemanager
@@ -10,7 +11,6 @@ class AccountManager(basemanager.BaseManager):
     """
     This manager is used for secured account.
     """
-
     def get_query_set(self):
         """
         Return a queryset of 100%-authorized objects.
@@ -19,22 +19,73 @@ class AccountManager(basemanager.BaseManager):
         authenticated = self._getAuthenticatedAccount()
         base_query_set = super(AccountManager, self).get_query_set()
         if not authenticated:
-            # TODO: Return only anonymous objects and system accounts
-            return base_query_set.filter(account_type = "SystemAccount")   # XXX BAD !!!
+            # Return only anonymous objects and system accounts
+            # Special shortcut to check if anonymous access is authorized
+            # Unless we do this, we can have an infinite recursion!
+            # XXX TODO: Improve this to avoid a possibly unncessary query; cache it?
+            import _permissionmapping
+            if _permissionmapping._AccountPermissionMapping._objects.filter(
+                target__account_type = "GlobalCommunity",
+                name = permissions.can_list,
+                role = roles.anonymous,
+                ).count():
+                # Opened to anonymous. Return public stuff.
+                print "Anonymous authorized"
+                return base_query_set.filter(
+                    _permissions__name = permissions.can_list,
+                    _permissions__role = roles.anonymous,
+                    )
+            else:
+                # Just return the system account, as we must be able to bootstrap with it ?
+                # XXX Maybe we should not even return that!
+                return base_query_set.filter(account_type = "SystemAccount")
 
         # System account: return all objects
         if authenticated.account_type == "SystemAccount":
-            authenticated.systemaccount   # This is one more security check, will raise if DB is not properly set
-            return base_query_set       # The base qset with no filter
+            authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
+            return base_query_set           # The base qset with no filter
 
-        # Account filter
-        # TODO: Return only listed objects
-        return base_query_set
+        # Regular Account filter, return only listed accounts.
+        # For Account objects, we don't check members. For Community objects, we do ;)
+        from community import Community
+        if issubclass(self.model, Community):
+            # Community objects can use the 'members' query parameter directly
+            community_subquery = Q(members = authenticated)
+        elif self.model == Account:
+            # Regular Account objects must de-reference the community first
+            community_subquery = Q(community__members = authenticated)
+        else:
+            # Account-derived objects that are not communities have no 'members' attribute
+            community_subquery = Q()
+
+        # Perform the filter
+        return base_query_set.filter(
+            Q(
+                # Myself
+                id = authenticated.id
+            ) | Q(
+                # Public accounts, ie. stuff any auth ppl can list
+                _permissions__name = permissions.can_list,
+                _permissions__role__in = roles.authenticated.implied(),
+            ) | community_subquery)
+
+class _AbstractAccount(models.Model):
+    """
+    We use this to enforce using our manager on subclasses.
+    This way, we avoid enforcing you to re-declare objects = AccountManager() on each account class!
+
+    See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
+    """
+    class Meta:
+        abstract = True
+
+    # Our security model
+    objects = AccountManager()
 
 
 
 # Create your models here.
-class Account(models.Model):
+class Account(_AbstractAccount):
     """
     A generic account.
     This is an abstract class.
