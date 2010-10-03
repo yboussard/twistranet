@@ -82,6 +82,8 @@ MIDDLEWARE_CLASSES = (
 
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
+CACHE_BACKEND = "locmem:///"
+
 ROOT_URLCONF = 'urls'
 
 THEME_NAME = "default"

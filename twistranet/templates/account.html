@@ -6,8 +6,17 @@
     <a href="/">Home</a> > {{ account }}
 {% endblock %}
 
+{% block contextbar %}
+    <ul>
+        <li>{% include "account/account.box.html" %}</li>
+    </ul>
+{% endblock %}
+
+
 {% block content %}
-    {% include "content/content_forms.part.html" %}
+    {% if account.can_publish %}
+        {% include "content/content_forms.part.html" %}
+    {% endif %}
 
     {% if latest_content_list %}
         {% for content in latest_content_list %}

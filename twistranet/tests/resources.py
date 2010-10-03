@@ -16,7 +16,8 @@ class ResourcesTest(TestCase):
         Get A and B users
         """
         dbsetup.bootstrap()
-        __account__ = SystemAccount.getSystemAccount()
+        dbsetup.repair()
+        __account__ = SystemAccount.get()
         self._system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr

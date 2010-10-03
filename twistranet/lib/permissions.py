@@ -3,13 +3,15 @@ from roles import *
 # Basic permissions
 # TODO: List which roles are possible for each permission kind.
 can_view = "can_view"
-can_edit = "can_edit"
+can_edit = "can_edit"           # One who can edit can also delete
 can_list = "can_list"
 can_list_members = "can_list_members"
 can_publish = "can_publish"
 can_join = "can_join"
 can_leave = "can_leave"
+can_create = "can_create"
 
+can_delete = can_edit
 
 # Special role arrangements
 class PermissionTemplate:
@@ -43,7 +45,7 @@ content_templates = PermissionTemplate((
         "name":             "Public content", 
         "description":      "Content visible to anyone who can view this page.",
         can_view:           (content_public, ),
-        can_edit:           (content_author, administrator),
+        can_edit:           (content_author, ),
     },
     {
         "id":               "network",
@@ -53,7 +55,7 @@ content_templates = PermissionTemplate((
                             For community content, use 'Members-only content' instead.
                             """,
         can_view:           (content_network, ),
-        can_edit:           (content_author, administrator),
+        can_edit:           (content_author, ),
     },
     {
         "id":               "members",
@@ -63,7 +65,7 @@ content_templates = PermissionTemplate((
                             For regular wall content, use 'Network-only content' instead.
                             """,
         can_view:           (content_community_member, ),
-        can_edit:           (content_author, administrator),
+        can_edit:           (content_author, ),
     },
     {
         "id":               "private",
@@ -84,6 +86,8 @@ account_templates = PermissionTemplate((
         "description":      "Account listed and accessible to anyone who has access to TwistraNet (public if TwistraNet is in internet mode).",
         can_view:           (anonymous, ),
         can_list:           (anonymous, ),
+        can_publish:        (owner, ),
+        can_edit:           (owner, administrator, ),
     },
     {
         "id":               "intranet",
@@ -91,6 +95,8 @@ account_templates = PermissionTemplate((
         "description":      "Account listed and accessible to anyone who is logged into to TwistraNet.",
         can_view:           (authenticated, ),
         can_list:           (authenticated, ),
+        can_publish:        (owner, administrator, ),
+        can_edit:           (owner, administrator, ),
     },
     {
         "id":               "listed",
@@ -98,6 +104,8 @@ account_templates = PermissionTemplate((
         "description":      "Account listed BUT NOT necessarily accessible to anyone who is logged into TwistraNet: Must be in his network to see it.",
         can_view:           (account_network, ),
         can_list:           (authenticated, ),
+        can_publish:        (owner, administrator, ),
+        can_edit:           (owner, administrator, ),
     },
     {
         "id":               "private",
@@ -105,10 +113,13 @@ account_templates = PermissionTemplate((
         "description":      "Ghost account.",
         can_view:           (account_network, ),
         can_list:           (account_network, ),
+        can_publish:        (owner, administrator, ),
+        can_edit:           (owner, administrator, ),
     },
 ))
 
 # Community templates
+# Default is that, except interest groups, communities must be created by an admin 
 community_templates = PermissionTemplate((
     {
         "id":               "workgroup",
@@ -118,9 +129,11 @@ community_templates = PermissionTemplate((
                             Members have a very high autonomy level and can do many things on their own.
                             Content is usually restricted to members only.
                             """,
+        can_create:         (administrator, ),
         can_list:           (authenticated, ),
         can_view:           (community_member, ),
         can_list_members:   (authenticated, ),
+        can_edit:           (community_manager, ),
         can_publish:        (community_member, ),
         can_join:           (community_member, ),
         can_leave:          (community_member, ),
@@ -132,9 +145,11 @@ community_templates = PermissionTemplate((
                             A great way of managing a service or division communication for a SBE.
                             Content is public and discussable, membership is managed by the application administrators only.
                             """,
+        can_create:         (administrator, ),
         can_list:           (authenticated, ),
         can_view:           (authenticated, ),
         can_list_members:   (authenticated, ),
+        can_edit:           (community_manager, ),
         can_publish:        (community_manager, ),
         can_join:           (community_manager, ),
         can_leave:          (administrator, ),
@@ -145,10 +160,13 @@ community_templates = PermissionTemplate((
         "description":      """
                             A free interest group with free join and publication rules.
                             Very useful for extra-professionnal communities.
+                            All authenticated people can create an interest group.
                             """,
+        can_create:         (authenticated, ),
         can_list:           (authenticated, ),
         can_view:           (authenticated, ),
         can_list_members:   (authenticated, ),
+        can_edit:           (community_manager, ),
         can_publish:        (community_member, ),
         can_join:           (authenticated, ),
         can_leave:          (community_member, ),
@@ -157,12 +175,14 @@ community_templates = PermissionTemplate((
         "id":               "blog",
         "name":             "Blog",
         "description":      """
-                            The way a blog usually works: PUBLIC (even for anonymous!) content,
+                            The way a blog usually works: PUBLIC (even for anonymous if the site is opened) content,
                             community managers as main editors, plus a few contributors who can join the blog.
                             """,
+        can_create:         (administrator, ),
         can_list:           (anonymous, ),
         can_view:           (anonymous, ),
         can_list_members:   (anonymous, ),
+        can_edit:           (community_manager, ),
         can_publish:        (community_member, ),
         can_join:           (community_manager, ),
         can_leave:          (community_member, ),
@@ -176,9 +196,11 @@ community_templates = PermissionTemplate((
                             Don't forget to mark your users as 'unlisted' to ensure complete isolation.
                             Content is usually private to the group.
                             """,
+        can_create:         (administrator, ),
         can_list:           (community_member, ),
         can_view:           (community_member, ),
         can_list_members:   (community_manager, ),
+        can_edit:           (community_manager, ),
         can_publish:        (community_manager, ),
         can_join:           (community_manager, ),
         can_leave:          (community_manager, ),

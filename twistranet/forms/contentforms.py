@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from django.forms.widgets import HiddenInput
+from django.forms import widgets
 
 class BaseContentForm(forms.ModelForm):
     """
@@ -15,11 +15,13 @@ class BaseContentForm(forms.ModelForm):
         """
         return self.Meta.model.__name__
 
+    publisher_id = forms.IntegerField(required = True, widget = widgets.HiddenInput)
+
     class Meta:
         fields = ('text', 'permissions', )
         widgets = {
-            "content_type": HiddenInput,
-            }
+            'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+        }
 
 class StatusUpdateForm(BaseContentForm):
     """
@@ -34,3 +36,4 @@ class StatusUpdateForm(BaseContentForm):
         from twistranet.models import StatusUpdate
         model = StatusUpdate
         fields = BaseContentForm.Meta.fields
+        widgets = BaseContentForm.Meta.widgets

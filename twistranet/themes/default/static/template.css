@@ -20,6 +20,7 @@
 					search
 				wrap
 					container
+					    globalbar
 						content
 						sidebar
 				bottom
@@ -65,12 +66,12 @@ body {
 			position: absolute;
 			float: right;
 			top: 102px; /* 102px; */
-			width: 190px;
+			width: 140px;
 			margin-top: 64px;
-			margin-left: 710px;
+			margin-left: 750px;
 			}
 			#search-box {
-				width: 190px;
+				width: 140px;
 				height: 23px;
 				background: url(../images/box-search.png) left top no-repeat;
 			}
@@ -95,14 +96,21 @@ body {
 		#container {
 			margin: 0 40px 0 20px;
 			}
+			#globalbar {
+				width: 140px;
+				float: left;	
+				margin: 12px 0 12px 12px;
+			}
 			#content {
-				width: 640px;
+				width: 560px;
 				float: left;
 				margin-top: 0;
-				margin-right: 30px;
+				margin-right: 10px;
+				margin-left: 10px;
+                border-right: solid 1px #CCC;
 			}
 			#sidebar {
-				width: 190px;
+				width: 140px;
 				float: right;	
 				margin: 12px 0;
 			}

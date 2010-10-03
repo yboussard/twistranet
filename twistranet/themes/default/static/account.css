@@ -1,0 +1,14 @@
+
+
+ul .account-thumbnails {
+    list-style:             none;
+    list-style-type:        none;
+    display:                inline;
+}
+
+ul .account-thumbnails li {
+    list-style:             none;
+    list-style-type:        none;
+    display:                inline;
+}
+

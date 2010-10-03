@@ -28,19 +28,21 @@ class ContentManager(basemanager.BaseManager):
                 return base_query_set.filter(id = -1)       # An on-purpose invalid filter
             
             # Return anonymous objects if global community is listable to anonymous.
+            # XXX TODO: Avoid the distinct method
             return base_query_set.filter(
                 _permissions__name = permissions.can_view,
                 _permissions__role__in = roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = (roles.anonymous, ),
-                )
+                ).distinct()
         
         # System account: return all objects
         if authenticated.account_type == "SystemAccount":
             authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
             return base_query_set           # The base qset with no filter
         
-        return base_query_set.filter(self._getViewFilter(authenticated))    
+        # XXX TODO: Avoid the distinct method
+        return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
     
     def _getViewFilter(self, account):
         """
@@ -153,6 +155,9 @@ class Content(_AbstractContent):
     """
     Abstract content representation class.
     """
+    # The publisher this content is published for
+    publisher = models.ForeignKey(Account)   # The account this content is published for.
+
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
@@ -173,9 +178,6 @@ class Content(_AbstractContent):
         choices = permissions.content_templates.get_choices(), 
         default = permissions.content_templates.get_default(),
         )
-    
-    # Security stuff and permissions
-    publisher = models.ForeignKey(Account)   # The account this content is published for.
     
     def __unicode__(self):
         return "%s %d by %s" % (self.content_type, self.id, self.author)
@@ -219,6 +221,15 @@ class Content(_AbstractContent):
         """
         import _permissionmapping
         
+        # Confirm publishing rights
+        authenticated = Content.objects._getAuthenticatedAccount()
+        if self.publisher_id is None:
+            if not authenticated.can_publish:
+                raise RuntimeError("%s can't publish anything." % (authenticated, ))
+        else:
+            if not self.publisher.can_publish:
+                raise RuntimeError("%s can't publish on %s." % (authenticated, self.publisher, ))
+        
         # XXX TODO: Check permission template first?
         if self.__class__.__name__ == Content.__name__:
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
@@ -226,7 +237,6 @@ class Content(_AbstractContent):
 
         # Check if I have content edition rights
         # XXX Have to use a decorator instead
-        authenticated = Content.objects._getAuthenticatedAccount()
         if not authenticated:
             raise ValidationError("You can't save a content anonymously.")
         if self.author_id is None:
@@ -246,6 +256,15 @@ class Content(_AbstractContent):
         _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(self, _permissionmapping._ContentPermissionMapping)
         return ret
 
+
+    def delete(self,):
+        """
+        Delete object after we've checked security
+        """
+        authenticated = Content.objects._getAuthenticatedAccount()
+        if not authenticated.has_permission(permissions.can_delete, self):
+            raise PermissionDenied("You're not allowed to delete this object.")
+        return super(Content, self).delete()
 
 class StatusUpdate(Content):
     """

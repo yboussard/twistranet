@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}{{ community }}{% endblock %}
+{% block title %}{{ community.name }}{% endblock %}
 
 {% block breadcrumb %}
-    <a href="/">Home</a> > {{ community }}
+    <a href="/">Home</a> > {{ community.name }}
 {% endblock %}
 
 {% block content %}
-    {#
-        Only if I can write on it...
-        {% include "content/content_forms.part.html" %}
-    #}
-
-    {% if latest_content_list %}
-        {% for content in latest_content_list %}
-            {%include "content/summary.part.html" %}
-        {% endfor %}
-    {% else %}
-        <p>No contents are available.</p>
+    <h1>{{ community.name }}</h1>
+    {% if community.can_publish %}
+        {% include "community/community_forms.part.html" %}
     {% endif %}
+
+    {% for content in latest_content_list %}
+        {%include "content/summary.part.html" %}
+    {% empty %}
+        <p>No contents are available.</p>
+    {% endfor %}
+
+    <h2>Members</h2>
+    <ul class="account-thumbnails">
+        {% for account in members %}
+            {% include "account/thumbnail.part.html" %}
+        {% endfor %}
+    </ul>
 
 {% endblock %}

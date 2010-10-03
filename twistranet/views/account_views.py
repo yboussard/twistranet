@@ -37,27 +37,35 @@ def _getInlineForms(request, publisher = None):
     form_classes = ContentRegistry.getContentFormClasses(publisher)
     forms = []
     for form_class in form_classes:
-        if request.method == 'POST':                        # If the form has been submitted...
-            form = form_class(request.POST)                 # A form bound to the POST data
+        # Initial data processing
+        initial = {
+            "publisher_id": publisher.id,
+            }
+        
+        # Form display / validation stuff
+        if request.method != 'POST':                        # If the form has not been submitted...
+            form = form_class(initial = initial)
+            forms.append(form)
+        else:                                               # Ok, we submited
+            form = form_class(request.POST, initial = initial)
             content_type = form.getName()
             
-            # We skip validation for forms of other content types,
-            # BUT we ensure that data is bound anyway
-            if not request.POST.get('validated_form', None) == content_type:
-                forms.append(form_class())
+            # We skip validation for forms of other content types.
+            if request.POST.get('validated_form', None) <> content_type:
+                forms.append(form_class(initial = initial))
                 continue
 
             # Validate stuff
             if form.is_valid():                             # All validation rules pass
                 # Process the data in form.cleaned_data
-                c = form.save()
-                forms.append(form_class())
+                c = form.save(commit = False)
+                c.publisher = Account.objects.get(id = request.POST.get('publisher_id'))    # Will raise if unauthorized
+                c.save()
+                form.save_m2m()
+                # forms.append(form_class(initial = initial)) => Silly stuff anyway?
                 raise MustRedirect()
             else:
                 forms.append(form)
-        else:
-            form = form_class()
-            forms.append(form)
     
     # Return the forms
     return forms
@@ -75,14 +83,14 @@ def account_by_id(request, account_id):
     try:
         forms = _getInlineForms(request, publisher = account)
     except MustRedirect:
-        # XXX TODO: Redirect to current page...
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(request.path)
     
-    latest_list = Content.objects.filter(publisher = account)
+    latest_list = Content.objects.filter(publisher = account).order_by("-date")
     t = loader.get_template('account.html')
     c = RequestContext(
         request,
         {
+            'path': request.path,
             "content_forms": forms,
             "account": account,
             "latest_content_list": latest_list[:25],
@@ -91,30 +99,7 @@ def account_by_id(request, account_id):
     return HttpResponse(t.render(c))
     
 
-
-# @login_required
-# def account_wall(request, account_id):
-#     """
-#     Display an account wall page for given user.
-#     """
-#     # Get current user and targeted account information
-#     account = request.user.get_profile()
-#     wall = account.accounts.filter(id = account_id)
-#   
-#     # Render the template
-#     t = loader.get_template('wall.html')
-#     c = RequestContext(
-#         request,
-#         {
-#             'account': account,
-#             'latest_content_list': account.content.getFollowed()[:5],
-#             'forms': forms,
-#         },
-#         )
-#     return HttpResponse(t.render(c))
-#  
-
-@login_required
+@login_required     # XXX TODO: Use the correct decorator to avoid the login_required obligation
 def home(request):
     """
     The HOME page. This is the activity feed of the currently logged user.
@@ -124,16 +109,17 @@ def home(request):
     try:
         forms = _getInlineForms(request)
     except MustRedirect:
-        # XXX TODO: Redirect to current page...
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(request.path)
     
     # Render the template
+    latest_list = account.content.followed.order_by("-date")
     t = loader.get_template('wall.html')
     c = RequestContext(
         request,
         {
+            'path': request.path,
             'account': account,
-            'latest_content_list': account.content.followed.order_by("-date")[:25],
+            'latest_content_list': latest_list[:25],
             'content_forms': forms,
         },
         )

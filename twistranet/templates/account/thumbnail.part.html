@@ -1,0 +1,15 @@
+<li>
+    <div class="thumbnail-account-picture">
+        <a href="{% url twistranet.views.account_by_id account.id %}"
+            <img
+                title="{{ account.name }}"
+                alt="{{ account.name }}"
+                src="{% url twistranet.views.resource_by_account account.id 'picture' %}"
+                width="30" height="30">
+        </a>
+        {# <br /> #}
+        {# <a href="{% url twistranet.views.account_by_id account.id %}"> #}
+        {#     {{ account.name }} #}
+        {# </a> #}
+    </div>
+</li>

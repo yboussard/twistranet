@@ -51,8 +51,6 @@ class Community(_AbstractCommunity):
     
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
-    name = models.TextField()
-    description = models.TextField()
     
     # Members & security management
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
@@ -245,6 +243,11 @@ class GlobalCommunity(Community):
     class Meta:
         app_label = 'twistranet'
     permission_templates = permissions.global_community_templates
+
+    @staticmethod
+    def get():
+        """Return main (and only) system account. Will raise if several are set."""
+        return self.__class__.objects.get()
         
 AccountRegistry.register(GlobalCommunity)
 
@@ -256,7 +259,11 @@ class AdminCommunity(Community):
     class Meta:
         app_label = 'twistranet'
         
-    
+    @staticmethod
+    def get():
+        """Return main (and only) system account. Will raise if several are set."""
+        return self.__class__.objects.get()
+
         
 AccountRegistry.register(AdminCommunity)
 

@@ -13,5 +13,6 @@ class HelloWorldForm(BaseContentForm):
     # cc_myself = forms.BooleanField(required=False)
     class Meta(BaseContentForm.Meta):
         model = HelloWorld
+        # Usually, one should do fields = BaseContentForm.Meta.fields + ('myfield', ...)
         fields = ('permissions',)
     

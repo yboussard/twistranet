@@ -19,10 +19,66 @@ from resource import Resource
 import _permissionmapping
 from twistranet.lib import permissions
 
+
+def repair():
+    """
+    Repair a possibly damaged database.
+    For example, incomplete fixtures can be a problem; use this to repair.
+    We use that before launching tests. We should one day export a well-formed test fixture...
+    
+    Warning: can be very slow on a normal system!
+    
+    Will not erase data it doesn't know how to handle.
+    """
+    # Login
+    __account__ = SystemAccount.objects.get()
+
+    # Put all Django admin users inside the first admin community
+    # and create accounts for them accordingly.
+    django_admins = User.objects.filter(is_superuser = True)
+    for user in django_admins:
+        # XXX Check if this fails
+        account = Account.objects.get(id = user.useraccount.id)
+        
+    # All accounts must (explicitly) belong to the global community.
+    # XXX There should be a more efficient way to do this ;)
+    global_ = Community.objects.global_
+    if Account.objects.count() <> global_.members.count():
+        # print "All accounts are not in the global comm. We manually add them"
+        for account in Account.objects.get_query_set():
+            if global_ not in account.communities:
+                # print "Force user %s to join global" % account
+                global_.join(account)
+                
+    # Update accounts with no profile picture
+    profile_picture = Resource.objects.get(alias = "default_profile_picture")
+    for nopicture in Account.objects.filter(picture = None):
+        nopicture.picture = profile_picture
+        nopicture.save()
+                
+    # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
+    for content in Content.objects.get_query_set():
+        try:
+            _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content, _permissionmapping._ContentPermissionMapping)
+        except ValidationError:
+            print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+            traceback.print_exc()
+    for account in Account.objects.get_query_set():
+        try:
+            _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account, _permissionmapping._AccountPermissionMapping)
+        except ValidationError:
+            print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+            traceback.print_exc()
+                
+    # XXX TODO: Check if approved relations are symetrical
+
+
 def bootstrap():
     """
     Load initial data if it's not present.
-    This method is SAFE, ie. it won't destroy any existing data, only add missing stuff.
+    This method is SAFE, ie. it won't destroy any existing data, only add missing stuff`.
+    
+    This should be called every time twistranet is started!
     """
     try:
         # Create the main system account if it doesn't exist
@@ -33,7 +89,7 @@ def bootstrap():
             __account__ = _system
             _system.permissions = "listed"
             _system.save()
-        _system = SystemAccount.getSystemAccount()
+        _system = SystemAccount.get()
     
         # Create the global community if it doesn't exist.
         try:
@@ -70,42 +126,6 @@ def bootstrap():
         # Check default profile picture
         profile_picture = Resource.objects.get(alias = "default_profile_picture")
             
-        # Put all Django admin users inside the first admin community
-        # and create accounts for them accordingly.
-        django_admins = User.objects.filter(is_superuser = True)
-        for user in django_admins:
-            # XXX Check if this fails
-            account = Account.objects.get(id = user.useraccount.id)
-            
-        # All accounts must (explicitly) belong to the global community.
-        # XXX There should be a more efficient way to do this ;)
-        if Account.objects.count() <> global_.members.count():
-            # print "All accounts are not in the global comm. We manually add them"
-            for account in Account.objects.get_query_set():
-                if global_ not in account.communities:
-                    # print "Force user %s to join global" % account
-                    global_.join(account)
-                    
-        # Update accounts with no profile picture
-        for nopicture in Account.objects.filter(picture = None):
-            nopicture.picture = profile_picture
-            nopicture.save()
-                    
-        # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
-        for content in Content.objects.get_query_set():
-            try:
-                _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content, _permissionmapping._ContentPermissionMapping)
-            except ValidationError:
-                print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-                traceback.print_exc()
-        for account in Account.objects.get_query_set():
-            try:
-                _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account, _permissionmapping._AccountPermissionMapping)
-            except ValidationError:
-                print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-                traceback.print_exc()
-                    
-        # XXX TODO: Check if approved relations are symetrical
         
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."

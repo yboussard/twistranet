@@ -1,0 +1,15 @@
+<li>
+    <div class="thumbnail-account-picture">
+        <a href="{% url twistranet.views.community_by_id community.id %}"
+            <img
+                title="{{ community.name }}"
+                alt="{{ community.name }}"
+                src="{% url twistranet.views.resource_by_account community.id 'picture' %}"
+                width="30" height="30">
+        </a>
+        {# <br /> #}
+        {# <a href="{% url twistranet.views.account_by_id account.id %}"> #}
+        {#     {{ account.name }} #}
+        {# </a> #}
+    </div>
+</li>

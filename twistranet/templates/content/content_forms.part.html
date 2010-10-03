@@ -1,8 +1,3 @@
-{# {% for form in forms %} #}
-{# <a href="javascript://"  #}
-{#     onclick="showhide('form-{{form.getName}}');">{{form.getName}}</a> #}
-{# {% endfor %} #}
-
 {% for form in content_forms %}
 <fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
     <legend>
@@ -14,28 +9,20 @@
             {% endif %}
         {% endfor %}
     </legend>
-<form action="/" method="post">
+    <form action="/" method="post">
 
-    <ul class="inline-form">
-        {{ form.as_ul }}
-    <div style="display: none;">
-        <input type="hidden" name="validated_form" value="{{form.getName}}" />
-    </div>
-    {% csrf_token %}
-    <li>
-        <label>&nbsp;</label>
-        <input type="submit" value="Send message" />
-    </li>
-</ul>
+        <ul class="inline-form">
+            {{ form.as_ul }}
+            <div style="display: none;">
+                <input type="hidden" name="validated_form" value="{{form.getName}}" />
+            </div>
+            {% csrf_token %}
+            <li>
+                <label>&nbsp;</label>
+                <input type="submit" value="Send message" />
+            </li>
+        </ul>
 
-{# {% for field in form %} #}
-{#     <div class="fieldWrapper"> #}
-{#         {{ field.errors }} #}
-{#         {{ field.label_tag }}: {{ field }} #}
-{#     </div> #}
-{# {% endfor %} #}
-
-
-</form>
+    </form>
 </fieldset>
 {% endfor %}

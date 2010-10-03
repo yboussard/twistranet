@@ -1,0 +1,30 @@
+<h2>{{ account.name }}</h2>
+<img src="{% url twistranet.views.resource_by_account account.id 'picture' %}">
+<h3>My Communities</h3>
+<ul>
+    {% for community in account.my_communities %}
+        {%include "community/thumbnail.part.html" %}
+    {% endfor %}
+</ul>
+    
+
+<h3>My Network</h3>
+<ul>
+    {% for account in account.getMyNetwork %}
+        {%include "account/thumbnail.part.html" %}
+    {% endfor %}
+</ul>
+
+<h3>I follow them</h3>
+<ul>
+    {% for a in account.getMyFollowed %}
+        {%include "account/thumbnail.part.html" %}
+    {% endfor %}
+</ul>
+
+<h3>They follow me</h3>
+<ul>
+    {% for a in account.getMyFollowers %}
+        {%include "account/thumbnail.part.html" %}
+    {% endfor %}
+</ul>

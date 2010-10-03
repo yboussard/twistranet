@@ -29,8 +29,8 @@ class ContentRegistryManager:
         if publisher.object == account.object:
             return [ r[1] for r in self._registry_.values() ]
         if isinstance(publisher.object, Community):
-            # Check if I'm in the community
-            if publisher.is_member():
+            # Check if I can publish for the community
+            if publisher.can_publish:
                 return [ r[1] for r in self._registry_.values() ]
                 
         # Else, no forms.

@@ -3,7 +3,7 @@ This is a basic wall test.
 """
 from django.test import TestCase
 from twistranet.models import *
-from twistranet.lib import permissions
+from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
 from twistranet.models import _permissionmapping
@@ -20,11 +20,25 @@ class SecurityTest(TestCase):
         Get A and B users
         """
         dbsetup.bootstrap()
-        __account__ = SystemAccount.getSystemAccount()
+        dbsetup.repair()
+        __account__ = SystemAccount.get()
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "pjgrizel").account_ptr
+        
+    def test_has_role(self):
+        """
+        Test various has_role conditions
+        """
+        __account__ = self.system
+        obj = GlobalCommunity.objects.get()
+        self.failUnless(self.system.has_role(roles.system, obj))
+        self.failUnless(self.system.has_role(roles.administrator, obj))
+        self.failIf(self.PJ.has_role(roles.system, obj))
+        self.failIf(self.PJ.has_role(roles.administrator, obj))
+        self.failUnless(self.PJ.has_role(roles.community_member, obj))
+        self.failIf(self.PJ.has_role(roles.community_manager, obj))
     
     def test_private_content(self):
         """

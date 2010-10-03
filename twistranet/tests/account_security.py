@@ -20,7 +20,8 @@ class AccountSecurityTest(TestCase):
         Get A and B users
         """
         dbsetup.bootstrap()
-        __account__ = SystemAccount.getSystemAccount()
+        dbsetup.repair()
+        __account__ = SystemAccount.get()
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
@@ -79,6 +80,40 @@ class AccountSecurityTest(TestCase):
         #     pass
         # else:
         #     self.failIf(True, "The private attribute has been read")   # Shouldn't reach there!
+        
+    def test_can_publish(self):
+        """
+        Check if the can_publish attribute works
+        """
+        # Must be able to write on self
+        __account__ = self.A
+        self.failUnless(self.A.can_publish)
+        self.failIf(self.B.can_publish)
+        self.failIf(self.PJ.can_publish)
+        
+        # Try to write on a wg community
+        c = Community(name = "wkg", permissions = "workgroup")
+        c.save()
+        self.failUnless(c.can_publish)
+        __account__ = self.B
+        self.failIf(c.can_publish)
+        __account__ = self.A
+        c.join(self.B)
+        __account__ = self.B
+        self.failUnless(c.can_publish)
+        
+        # Try to publish on an 'ou' community as a simple member ; must be forbidden
+        __account__ = self.A
+        c = Community(name = "ou", permissions = "ou")
+        c.save()
+        self.failUnless(c.can_publish)
+        __account__ = self.B
+        self.failIf(c.can_publish)
+        __account__ = self.A
+        c.join(self.B)
+        __account__ = self.B
+        self.failIf(c.can_publish)
+        
         
     def test_community_creation(self):
         """

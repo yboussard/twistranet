@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import Q
+from django.core.cache import cache
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
 import basemanager
 from resource import Resource
@@ -15,6 +16,8 @@ class AccountManager(basemanager.BaseManager):
     def get_query_set(self):
         """
         Return a queryset of 100%-authorized objects.
+        We could use the can_list permission to check each individual object,
+        but that'd be at the expense of speed.
         """
         # Check for anonymous query
         authenticated = self._getAuthenticatedAccount()
@@ -63,20 +66,26 @@ class AccountManager(basemanager.BaseManager):
             )
 
         # Perform the filter
+        # XXX TODO: Avoid the distinct() method to optimize. The two last 'Q' methods are redundant.
+        # I should use & ~Q(id = authenticated.id) and restrict the roles implied
         return base_query_set.filter(
             Q(
                 # Myself
                 id = authenticated.id
-            ) | Q(
-                # Public accounts, ie. stuff any auth ppl can list
-                _permissions__name = permissions.can_list,
-                _permissions__role__in = roles.authenticated.implied(),
-            ) | Q(
-                # People in account's network
-                _permissions__name = permissions.can_list,
-                _permissions__role__in = roles.account_network.implied(),
-                initiator_whose__target = authenticated,
-            ) | community_subquery)
+            ) | (
+                Q(
+                    # Public accounts, ie. stuff any auth ppl can list
+                    _permissions__name = permissions.can_list,
+                    _permissions__role__in = roles.authenticated.implied(),
+                )
+            ) | (
+                Q(
+                    # People in account's network
+                    _permissions__name = permissions.can_list,
+                    _permissions__role__in = roles.account_network.implied(),
+                    initiator_whose__target = authenticated,
+                )
+            ) | community_subquery).distinct()
 
 class _AbstractAccount(models.Model):
     """
@@ -117,14 +126,13 @@ class Account(_AbstractAccount):
     Can be subclassed as a user account, group account, app account, etc
     """
     # XXX Should hold:
-    # An unique ID
-    # A picture
     # A friendly name
     # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
     picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
                                                             # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
+    name = models.TextField()
     description = models.TextField()
 
     # Security models available for the user
@@ -136,55 +144,6 @@ class Account(_AbstractAccount):
     class Meta:
         app_label = 'twistranet'
 
-    @property
-    def permissions_list(self):
-        import _permissionmapping
-        return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
-        
-    @property
-    def can_view(self):
-        """
-        Return true if the current account can view the current object.
-        """
-        authenticated = Account.objects._getAuthenticatedAccount()
-        
-        # No account => anonymous => berk!
-        # XXX TODO: Maybe authorize this for opened content?
-        if not authenticated:
-            return False
-            
-        # System account; we can go. Blindly.
-        if isinstance(authenticated, SystemAccount):
-            return True
-            
-        # If we're here, then we know the content have been listed. Study the can_list permission carefuly.
-        account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_view) ]
-        
-        # Anonymous / Public can view, ok, we pass
-        if roles.anonymous.value in account_roles:
-            return True
-        elif roles.authenticated.value in account_roles:
-            return True
-        elif roles.account_network.value in account_roles:
-            if authenticated in super_getattr('network'):
-                return True
-        elif roles.community_member.value in account_roles:
-            # XXX TODO: check if we're on a community?
-            if self.members.filter(id = authenticated.id):
-                return True
-        elif roles.community_manager.value in account_roles:
-            if self.members.filter(id = authenticated.id):
-                # XXX TODO: Check community managers, not just members
-                return True
-        elif roles.administrator.value in account_roles:
-            # XXX TODO: Check if in admin community
-            return authenticated.communities.filter(account_type="AdminCommunity").exists()
-        else:
-            raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
-
-        # Can't find a match? So bad.
-        return False
-    
 
     def save(self, *args, **kw):
         """
@@ -208,16 +167,6 @@ class Account(_AbstractAccount):
             self, _permissionmapping._AccountPermissionMapping
             )
         return ret
-
-    @property
-    def fullname(self,):
-        """
-        XXX TODO: user object.username?
-        """
-        if self.account_type == "UserAccount":
-            return self.useraccount.user.username
-        else:
-            return self.id
         
     @property
     def model_class(self):
@@ -237,25 +186,221 @@ class Account(_AbstractAccount):
         return AccountRegistry.getModelClass(self.account_type).objects.get(id = self.id)
     
     def __unicode__(self):
-        return u"%s" % (self.fullname, )
+        return u"%s" % (self.name, )
+
+    #                                                       #
+    #               Rights / Security management            #
+    #                                                       #
+
+
+    def has_role(self, role, obj = None):
+        """
+        Return if SELF account has the given role on the given object.
+        XXX TODO Heavily uses caching and optimize queries
+        XXX TODO Make only one query for db-dependant roles?
+        Some roles are global (authenticated, anonymous, administrator, ..), 
+        and some are dependent of the given object (community_member, ...).
         
+        Warning: This method can return different results when called
+        from the authenticated user or not. We should only cache calls made
+        from currently authenticated user.
+        
+        If a user has a role on an object, that doesn't means he has a permision.
+        
+        XXX TODO: Oh, BYW, we should check if the role actually exists!
+        """
+        # Role computing
+        if isinstance(role, roles.Role):
+            role = role.value
+            
+        # Global roles.
+        if role == roles.anonymous.value:
+            return True             # An account always has the anonymous role
+                                    # Should not be cached, BTW
+        
+        if role == roles.authenticated.value:
+            return Account._getAuthenticatedAccount() == self      # Don't cache that
+        
+        if role == roles.administrator.value:
+            if self.account_type == "SystemAccount":
+                return True
+            elif self.my_communities.filter(account_type = "AdminCommunity"):
+                return True
+            else:
+                return False
+                
+        if role == roles.system.value:
+            return self.account_type == "SystemAccount"
+    
+        # Account-related roles
+        if isinstance(obj, Account):
+            if role == roles.account_network.value:
+                return obj.network.filter(initiator_whose__target = self).exists()
+            if role == roles.owner.value:
+                return obj.id == self.id
+        
+            # Community-related roles
+            if role == roles.community_member.value:
+                return self.my_communities.filter(id = obj.id).exists()
+            if role == roles.community_manager.value:
+                return self.my_managed_communities.filter(id = obj.id).exists()
+            
+        # Content-related roles
+        import content
+        if isinstance(obj, content.Content):
+            if role == roles.content_public.value:
+                return self.has_permission(permissions.can_view, obj)
+            if role == roles.content_network.value:
+                return self.has_role(roles.network, obj.publisher)
+            if role == roles.content_community_member.value:
+                return self.has_role(roles.community_member, obj.publisher)
+            if role == roles.content_community_manager.value:
+                return self.has_role(roles.community_manager, obj.publisher)
+            if role == roles.owner.value:
+                return obj.author == self
+
+        # We shouldn't reach there
+        raise RuntimeError("Unexpected role (%d) asked for object '%s' (%d)") % (role, obj.__class__.__name__, obj.id)
+
+
+    def has_permission(self, permission, obj):
+        """
+        Return true if authenticated user has been granted the given permission on obj.
+        XXX TODO: Heavily optimize and use caching!
+        """
+        # Check roles, strongest first to optimize caching.
+        for perm in obj._permissions.filter(name = permission).order_by('-role'):
+            if self.has_role(perm.role, obj):
+                return True
+                
+        # Didn't find, we disallow
+        return False
+
+    @property
+    def can_publish(self):
+        """
+        True if authenticated account can publish on the current account object
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_publish, self)
+        # 
+        # from community import CommunityMembership
+        # authenticated = Account.objects._getAuthenticatedAccount()
+        # 
+        # # Self => publishing is authorized
+        # if authenticated.id == self.id:
+        #     return True
+        #     
+        # # System account; we can go. Blindly.
+        # if isinstance(authenticated, SystemAccount):
+        #     return True
+        # 
+        # # Check publish rights
+        # account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_publish) ]
+        # if roles.anonymous.value in account_roles:
+        #     raise SuspiciousOperation("Anonymous can't be authorized to publish on %s" % self)
+        # if roles.authenticated.value in account_roles:
+        #     raise SuspiciousOperation("Authenticated can't be authorized to publish on %s" % self)
+        # elif roles.account_network.value in account_roles:
+        #     if authenticated in self.network:
+        #         return True
+        # elif roles.community_member.value in account_roles:
+        #     if CommunityMembership.objects.filter(
+        #         account = authenticated, 
+        #         community = self,    
+        #         ).exists():
+        #         return True
+        # elif roles.community_manager.value in account_roles:
+        #     if CommunityMembership.objects.filter(
+        #         account = authenticated, 
+        #         community = self,    
+        #         is_manager = True,
+        #         ).exists():
+        #         return True
+        # elif roles.administrator.value in account_roles:
+        #     return authenticated.is_admin
+        # 
+        # return False
+
+    @property
+    def can_view(self):
+        """
+        Return true if the current account can view the current object.
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_view, self)
+        # authenticated = Account.objects._getAuthenticatedAccount()
+        # 
+        # # No account => anonymous => berk!
+        # # XXX TODO: Maybe authorize this for opened content?
+        # if not authenticated:
+        #     return False
+        # 
+        # # System account; we can go. Blindly.
+        # if isinstance(authenticated, SystemAccount):
+        #     return True
+        # 
+        # # If we're here, then we know the content have been listed. Study the can_list permission carefuly.
+        # account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_view) ]
+        # 
+        # # Anonymous / Public can view, ok, we pass
+        # if roles.anonymous.value in account_roles:
+        #     return True
+        # elif roles.authenticated.value in account_roles:
+        #     return True
+        # elif roles.account_network.value in account_roles:
+        #     if authenticated in self.network:
+        #         return True
+        # elif roles.community_member.value in account_roles:
+        #     # XXX TODO: check if we're on a community?
+        #     if self.members.filter(id = authenticated.id).exists():
+        #         return True
+        # elif roles.community_manager.value in account_roles:
+        #     if self.members.filter(id = authenticated.id).exists():
+        #         # XXX TODO: Check community managers, not just members
+        #         return True
+        # elif roles.administrator.value in account_roles:
+        #     # XXX TODO: Check if in admin community
+        #     return authenticated.communities.filter(account_type="AdminCommunity").exists()
+        # else:
+        #     raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
+        # 
+        # # Can't find a match? So bad.
+        # return False
+
+
     @property
     def is_admin(self):
         """
         Return True if current user is in the admin community or is System
         """
-        if self.account_type == "SystemAccount":
-            return True
-        # XXX TODO: Check admin community membership
-        return False
+        return self.has_role(roles.administrator)
 
-    # Relations management
+
+    #                                           #
+    #           Relations management            #
+    #                                           #
     @property
     def my_relations(self):
         """
         Return people I declared an interest for
         """
         return Account.objects.filter(target_whose__initiator = self)
+        
+    @property
+    def my_communities(self):
+        """The communities I'm a member of"""
+        from community import Community
+        return Community.objects.filter(members = self).distinct()
+        
+    @property
+    def my_managed_communities(self):
+        """The communities I'm a manager of"""
+        from community import Community
+        return Community.objects.filter(
+            membership_manager__is_manager = True,
+            membership_manager__account = self,
+            ).distinct()
 
     def getMyFollowed(self):
         """
@@ -277,7 +422,7 @@ class Account(_AbstractAccount):
         """
         Return list of my networked (ie. approved) people
         """
-        # Both calls must return the same (normally...)
+        # FYI, both calls must return the same (normally...)
         return Account.objects.filter(initiator_whose__target = self, initiator_whose__approved = True)
         return Account.objects.filter(target_whose__initiator = self, target_whose__approved = True)
    
@@ -295,7 +440,7 @@ class Account(_AbstractAccount):
         Return communities this user is a member of
         """
         from community import Community
-        return Community.objects.filter(members = self).distinct()
+        return Community.objects.filter(members = self)
         
         
 class SystemAccount(Account):
@@ -310,7 +455,7 @@ class SystemAccount(Account):
         app_label = "twistranet"
         
     @staticmethod
-    def getSystemAccount():
+    def get():
         """Return main (and only) system account. Will raise if several are set."""
         return SystemAccount.objects.get()
         
@@ -326,8 +471,13 @@ class UserAccount(Account):
     """
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
 
-    def __unicode__(self):
-        return self.useraccount.user.username
+    def save(self, *args, **kw):
+        """
+        Set the 'name' attibute from User Source.
+        We don't bother checking the security here, ther parent will do it.
+        """
+        self.name = self.user.username
+        return super(UserAccount, self).save(*args, **kw)
 
     class Meta:
         app_label = 'twistranet'

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/forms.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/content.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/account.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/js/jquery.js" charset="utf-8"></script>
     <style type="text/css">
     body    { background: url(/static/styles/White/bg-page.png) 50% repeat; }
@@ -85,38 +86,31 @@
                     <a href="{% url twistranet.views.home %}">Home</a>
                     {% endblock %}
                 </div>
-
+            
             </div><!-- End header --> 
 
             <div id="wrap">
                 <div id="container">
+
+                    <div id="globalbar" class="sidebar">
+                        {% block globalbar %}
+                            <ul>		
+                                <li>
+                                    {% include "account/selfbar.box.html" %}
+                                </li>
+                            </ul>
+                        {% endblock %}
+                        </ul>
+                    </div>
+
                     <div id="content">
                         {% block content %}
                         {% endblock %}
                     </div>
 
-                    <div id="sidebar">
-                        <ul>		
-                            {% block sidebar %}
-                            <li>
-                                <h2>My Network</h2>
-                                {% for a in account.getMyNetwork %}
-                                <li><a href="{% url twistranet.views.account_by_id a.id %}">{{ a.fullname }}</a></li>
-                                {% endfor %}
-                            </li>
-                            <li>
-                                <h2>Who I follow</h2>
-                                {% for a in account.getMyFollowed %}
-                                <li><a href="{% url twistranet.views.account_by_id a.id %}">{{ a.fullname }}</a></li>
-                                {% endfor %}
-                            </li>
-                            <li><h2>Who follow me</h2>
-                                {% for a in account.getMyFollowers %}
-                                <li><a href="{% url twistranet.views.account_by_id a.id %}">{{ a.fullname }}</a></li>
-                                {% endfor %}
-                            </li>
-                            {% endblock %}
-                        </ul>
+                    <div id="sidebar" class="sidebar">
+                        {% block contextbar %}
+                        {% endblock %}
                     </div>
                 </div><!-- end #container -->
                 <div class="clear">&nbsp;</div>

@@ -89,7 +89,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	overflow: visible;
 	clear: both;
 	margin-left: 1px;
-	padding: 0 0 40px 50px;
+	padding: 0 0 40px 0;
 	background: #fff url(images/post-label.gif) 0px 0px no-repeat;
 	}
 	.post hr {
@@ -351,24 +351,31 @@ ul.children li {
 /* Sidebar
 ***************************************************************************** */
 
-#sidebar h2 {
+.sidebar h2 {
 	margin-bottom: .5em;
 	font-size: 1.6em;
+	border-bottom: 1px solid #cdd;
+	color: #666;
+}
+
+.sidebar h3 {
+	margin-bottom: .5em;
+	font-size: 1.2em;
 	border-bottom: 1px solid #cdd;
 	color: #999;
 }
 
-#sidebar a {
+.sidebar a {
 	font-size: 1.2em;
 	background: none;
 }
 
-#sidebar ul, #sidebar ul ol {
+.sidebar ul, .sidebar ul ol {
 	margin: 0;
 	padding: 0;
 }
 
-#sidebar ul li {
+.sidebar ul li {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
@@ -377,23 +384,23 @@ ul.children li {
 }
 
 
-#sidebar ul p, #sidebar ul select {
+.sidebar ul p, .sidebar ul select {
 	margin: 5px 0 8px;
 }
 
-#sidebar ul ul, #sidebar ul ol {
+.sidebar ul ul, .sidebar ul ol {
 	margin: 5px 0 0 0;
 }
 
-#sidebar ul ul ul, #sidebar ul ol {
+.sidebar ul ul ul, .sidebar ul ol {
 	margin: .5em 0 .5em 1em;
 }
 
-#sidebar ul ol li {
+.sidebar ul ol li {
 	list-style: decimal outside;
 }
 
-#sidebar ul ul li, #sidebar ul ol li {
+.sidebar ul ul li, .sidebar ul ol li {
 	padding: 0;
 	margin: .5em 0 .5em 0;
 }
