@@ -25,8 +25,12 @@ Installation
 - Run ./manage.py runserver 0.0.0.0
 - Point your browser to http://localhost:8000/ => You're done
 
-
 There are a few users already set: "A", "B" and "pjgrizel". All three have 'azerty1234' password.
+If you want to use them, you've got to do the following:
+
+./manage.py shell
+from twistranet.models import dbsetup
+dbsetup.repair()
 
 TODO: Improve the fixtures so that default content is properly installed and users as well.
 
