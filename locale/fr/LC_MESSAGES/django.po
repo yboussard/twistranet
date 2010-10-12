@@ -1,0 +1,30 @@
+# Translation for TwistraNet
+msgid ""
+msgstr ""
+"Project-Id-Version: twistranet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 19:50+0200\n"
+"Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
+"Language-Team: Numericube\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Code: fr\n"
+"Language-Name: French\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: django\n"
+"X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+
+#: twistranet/themes/default/base.html:37
+#, python-format
+msgid "%(user)s"
+msgstr "%(user)s"
+
+#: twistranet/themes/default/base.html:44
+msgid "Log out"
+msgstr "Déconnexion"
+
+#: twistranet/themes/default/base.html:78
+msgid "Search..."
+msgstr "Rechercher..."
