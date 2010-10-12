@@ -9,6 +9,7 @@ About
 
 TwistraNet is a social CMS. That is, it is a full-featured CMS with a social focus.
 
+
 Requirements
 ============
 
@@ -19,7 +20,15 @@ It requires the Django Framework (as of writing, Django 1.2.1 is mandatory)
 Installation
 ============
 
-See Requirements.
+- Download and install Django from http://www.djangoproject.com/download/
+- Run ./manage.py syncdb (answer 'no' to admin user creation, they're not used as of this version)
+- Run ./manage.py runserver 0.0.0.0
+- Point your browser to http://localhost:8000/ => You're done
+
+
+There are a few users already set: "A", "B" and "pjgrizel". All three have 'azerty1234' password.
+
+TODO: Improve the fixtures so that default content is properly installed and users as well.
 
 
 Design considerations
