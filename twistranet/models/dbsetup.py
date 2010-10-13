@@ -55,6 +55,7 @@ def repair():
     for nopicture in Account.objects.filter(picture = None):
         nopicture.picture = profile_picture
         nopicture.save()
+        print "Saved profile picture for user."
                 
     # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
     for content in Content.objects.get_query_set():

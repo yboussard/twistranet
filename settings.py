@@ -37,6 +37,17 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+# List of defined languages for TwistraNet.
+# See http://docs.djangoproject.com/en/dev/ref/settings/ for an explanation of what this lambda does here.
+gettext = lambda s: s
+LANGUAGES = (
+    ('de', gettext('German')),
+    ('en', gettext('English')),
+    ('fr', gettext('French')),
+)
+
+
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not

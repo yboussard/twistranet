@@ -10,7 +10,6 @@ can_publish = "can_publish"
 can_join = "can_join"
 can_leave = "can_leave"
 can_create = "can_create"
-
 can_delete = can_edit
 
 # Special role arrangements

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 import basemanager 
 from account import Account
 from resource import Resource
-from twistranet.lib import roles, permissions
+from twistranet.lib import roles, permissions, languages
 
 
 class ContentManager(basemanager.BaseManager):
@@ -169,6 +169,20 @@ class Content(_AbstractContent):
     
     # Resources associated to this content
     resources = models.ManyToManyField(Resource)
+    
+    # I18N support
+    language = models.CharField(
+        max_length = 10,
+        blank = True,
+        choices = languages.available_languages,
+        default = languages.available_languages[0][0],
+        )
+    translation_of = models.ForeignKey(
+        "Content",
+        related_name = "translations",
+        null = True,
+        blank = True,
+        )
     
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.

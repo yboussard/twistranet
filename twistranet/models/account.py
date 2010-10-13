@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 import basemanager
 from resource import Resource
 from accountregistry import AccountRegistry
-from twistranet.lib import permissions, roles
+from twistranet.lib import permissions, roles, languages
 
 class AccountManager(basemanager.BaseManager):
     """
@@ -329,45 +329,6 @@ class Account(_AbstractAccount):
         """
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_view, self)
-        # authenticated = Account.objects._getAuthenticatedAccount()
-        # 
-        # # No account => anonymous => berk!
-        # # XXX TODO: Maybe authorize this for opened content?
-        # if not authenticated:
-        #     return False
-        # 
-        # # System account; we can go. Blindly.
-        # if isinstance(authenticated, SystemAccount):
-        #     return True
-        # 
-        # # If we're here, then we know the content have been listed. Study the can_list permission carefuly.
-        # account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_view) ]
-        # 
-        # # Anonymous / Public can view, ok, we pass
-        # if roles.anonymous.value in account_roles:
-        #     return True
-        # elif roles.authenticated.value in account_roles:
-        #     return True
-        # elif roles.account_network.value in account_roles:
-        #     if authenticated in self.network:
-        #         return True
-        # elif roles.community_member.value in account_roles:
-        #     # XXX TODO: check if we're on a community?
-        #     if self.members.filter(id = authenticated.id).exists():
-        #         return True
-        # elif roles.community_manager.value in account_roles:
-        #     if self.members.filter(id = authenticated.id).exists():
-        #         # XXX TODO: Check community managers, not just members
-        #         return True
-        # elif roles.administrator.value in account_roles:
-        #     # XXX TODO: Check if in admin community
-        #     return authenticated.communities.filter(account_type="AdminCommunity").exists()
-        # else:
-        #     raise ValueError("Unexpected roles for account %s: %s" % (self, account_roles))
-        # 
-        # # Can't find a match? So bad.
-        # return False
-
 
     @property
     def is_admin(self):
@@ -464,10 +425,13 @@ class SystemAccount(Account):
         
 AccountRegistry.register(SystemAccount)
         
+        
 class UserAccount(Account):
     """
     Generic User account.
-    This holds user profile as well!
+    This holds user profile as well!.
+    
+    A user account has languages defined so that it primarily 'sees' his favorite languages.
     """
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
 
@@ -481,5 +445,23 @@ class UserAccount(Account):
 
     class Meta:
         app_label = 'twistranet'
+        
+
+class AccountLanguage(models.Model):
+    """
+    An intermediate model class to handle user -> languages problem.
+    This is not a reference table.
+    """
+    order = models.IntegerField()
+    language = models.CharField(
+        max_length = 10,
+        blank = True,
+        choices = languages.available_languages,
+        default = languages.available_languages[0][0],
+        )
+    account = models.ForeignKey(UserAccount, related_name = "account_languages")
+
+
+        
 AccountRegistry.register(UserAccount)
 

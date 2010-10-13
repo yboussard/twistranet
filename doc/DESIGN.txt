@@ -97,7 +97,12 @@ URL Access
 ----------
 
 Resource can be reached either by id, by alias or, if they're an attribute of an object, by a x/resource/pty_name where 'x' is the object base url.
-Example for profile picture : /account/xxx/resource/picture ;
+Example for profile picture : /account/xxx/resource/picture
+
+Resources overloading
+---------------------
+
+(TODO: Explain how this works eg. for translation of regular text fields)
 
 I18N
 ------
@@ -113,11 +118,26 @@ The resource managers bundled with TN are:
 - FilesystemResourceManager: This if for files stored on the filesystem. TN provides a basic file management system to allow upload, storage and deletion of files.
 - ReadonlyFilesystemResourceManager: Same as FilesystemResourceManager, but read-only. This is useful for default resources provided by TN or to enable directory access without hassles.
 - LinkResourceManager: Resources are designated by a URL. This URL is proxied by the server when served.
+- DatabaseResourceManager : Resources are stored in the same database as TN regular content objects. This is especially useful for I18N resources
 
 Each account can define its own (and only one) editable ResourceManager. This way, when a resource is uploaded, it's put in the right bucket.
 If an account doesn't define an editable ResourceManager, the one from the Global Community is used. If no global one is defined... then no file upload permited. No arms, no chocolate.
 
 Each resource manager must define its own ways of setting the locator attribute (listing, text entry, ...).
+
+
+
+I18N
+====
+
+The lib/languages.py file describes all available language for TN.
+Everytime a content is produced, a language can be associated to it.
+Then, it will be preferably displayed for users having this language in their spoken languages list.
+
+Same for a resource.
+
+A content can be translated, then the source version will always have precedence over translated versions.
+
 
 
 Database consistancy

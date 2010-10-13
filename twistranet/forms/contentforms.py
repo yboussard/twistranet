@@ -18,7 +18,7 @@ class BaseContentForm(forms.ModelForm):
     publisher_id = forms.IntegerField(required = True, widget = widgets.HiddenInput)
 
     class Meta:
-        fields = ('text', 'permissions', )
+        fields = ('text', 'permissions', 'language', )
         widgets = {
             'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }
