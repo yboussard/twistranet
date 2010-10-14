@@ -5,6 +5,7 @@
 {% block breadcrumb %}
     <a href="/">Home</a> > {{ community.name }}
 {% endblock %}
+{% load i18n %}
 
 {% block content %}
     <h1>{{ community.name }}</h1>
@@ -15,7 +16,7 @@
     {% for content in latest_content_list %}
         {%include "content/summary.part.html" %}
     {% empty %}
-        <p>No contents are available.</p>
+        <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endfor %}
 
     <h2>Members</h2>

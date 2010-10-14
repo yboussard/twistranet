@@ -1,26 +1,27 @@
+{% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <link rel="stylesheet" href="/static/style.css" />
-    <title>{% block title %}My amazing site{% endblock %}</title>
+    <title>{% block title %}{% blocktrans %}My amazing site{% endblocktrans %}{% endblock %}</title>
 </head>
 
 {% block content %}
 
   {% if form.errors %}
-    <p class="error">Sorry, that's not a valid username or password</p>
+    <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
   {% endif %}
 
   <form action="" method="post">
       {% csrf_token %}
-    <label for="username">User name:</label>
+    <label for="username">{% blocktrans %}User name :{% endblocktrans %}</label>
     <input type="text" name="username" value="" id="username">
 
-    <label for="password">Password:</label>
+    <label for="password">{% blocktrans %}Password :{% endblocktrans %}</label>
     <input type="password" name="password" value="" id="password">
 
-    <input type="submit" value="login" />
+    <input type="submit" value="{% trans 'login' %}" />
     <input type="hidden" name="next" value="{{ next|escape }}" />
   </form>
 

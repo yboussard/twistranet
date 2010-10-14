@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}{{ account }} Wall{% endblock %}
+{% block title %}{% blocktrans %}{{ account }}'s Wall{% endblocktrans %}{% endblock %}
 
 {% block breadcrumb %}
     <a href="/">Home</a> > {{ account }}
@@ -23,7 +24,7 @@
             {%include "content/summary.part.html" %}
         {% endfor %}
     {% else %}
-        <p>No contents are available.</p>
+        <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endif %}
 
 {% endblock %}

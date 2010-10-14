@@ -1,4 +1,5 @@
 {# Generate a summary for a 'community' object #}
+{% load i18n %}
 <div class="post" id="post-{{community.id}}">
     <div class="account-picture">
         <img src="{% url twistranet.views.resource_by_account community.id 'picture' %}">

@@ -1,3 +1,4 @@
-<li class="page_item"><a href="{% url twistranet.views.home %}">Home</a></li>
-<li class="page_item"><a href="{% url twistranet.views.communities %}">Communities</a></li>
-<li class="page_item"><a href="">Help</a></li>
+{% load i18n %}
+<li class="page_item"><a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a></li>
+<li class="page_item"><a href="{% url twistranet.views.communities %}">{% trans 'Communities' %}</a></li>
+<li class="page_item"><a href="">{% trans 'Help' %}</a></li>

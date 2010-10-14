@@ -1,9 +1,9 @@
-# Translation for TwistraNet
+# French Translation for TwistraNet
 msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-14 16:10+0200\n"
+"POT-Creation-Date: 2010-10-14 17:31+0200\n"
 "Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
@@ -28,9 +28,86 @@ msgstr "Anglais"
 msgid "French"
 msgstr "Français"
 
-#: twistranet/templates/wall.html:6
+#: twistranet/templates/account.html:4
+#, python-format
+msgid "%(account)s's Wall"
+msgstr "Mur de %(account)s"
+
+#: twistranet/templates/account.html:27 twistranet/templates/community.html:19
+#: twistranet/templates/wall.html:16
+msgid "No contents are available."
+msgstr "Aucun contenu disponible."
+
+#: twistranet/templates/communities.html:4
+#: twistranet/templates/communities.html:7
+#: twistranet/templates/communities.html:11
+#: twistranet/templates/navigation/menu_items.part.html:3
+msgid "Communities"
+msgstr "Communautés"
+
+#: twistranet/templates/communities.html:7
+#: twistranet/templates/navigation/menu_items.part.html:2
+#: twistranet/themes/default/base.html:86
+msgid "Home"
+msgstr "Accueil"
+
+#: twistranet/templates/communities.html:17
+msgid "No community available on your system."
+msgstr "Aucune communauté disponible sur votre système."
+
+#: twistranet/templates/wall.html:4
+msgid "Wall"
+msgstr "Mur"
+
+#: twistranet/templates/wall.html:7
 msgid "Activity Feed"
 msgstr "Fil d'Activité"
+
+#: twistranet/templates/account/selfbar.box.html:4
+msgid "My Communities"
+msgstr "Mes Communautés"
+
+#: twistranet/templates/account/selfbar.box.html:12
+msgid "My Network"
+msgstr "Mon réseau"
+
+#: twistranet/templates/account/selfbar.box.html:19
+msgid "I follow them"
+msgstr "Je les suis"
+
+#: twistranet/templates/account/selfbar.box.html:26
+msgid "They follow me"
+msgstr "Ils me suivent"
+
+#: twistranet/templates/community/community_forms.part.html:23
+#: twistranet/templates/content/content_forms.part.html:23
+msgid "Send message"
+msgstr "Envoyer le message"
+
+#: twistranet/templates/navigation/menu_items.part.html:4
+msgid "Help"
+msgstr "Aide"
+
+#: twistranet/templates/registration/login.html:7
+#: twistranet/themes/default/base.html:8
+msgid "My amazing site"
+msgstr "Mon incroyable site"
+
+#: twistranet/templates/registration/login.html:13
+msgid "Sorry, that's not a valid username or password"
+msgstr "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
+
+#: twistranet/templates/registration/login.html:18
+msgid "User name :"
+msgstr "Nom de user :"
+
+#: twistranet/templates/registration/login.html:21
+msgid "Password :"
+msgstr "Mot de passe :"
+
+#: twistranet/templates/registration/login.html:24
+msgid "login"
+msgstr "Se connecter"
 
 #: twistranet/themes/default/base.html:37
 #, python-format
@@ -52,10 +129,6 @@ msgstr "Un gestionnaire de contenus sociaux."
 #: twistranet/themes/default/base.html:78
 msgid "Search..."
 msgstr "Rechercher..."
-
-#: twistranet/themes/default/base.html:86
-msgid "Home"
-msgstr "Accueil"
 
 #: twistranet/themes/default/base.html:120
 msgid "Powered By "

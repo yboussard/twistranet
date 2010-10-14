@@ -5,7 +5,7 @@
 <head profile="http://gmpg.org/xfn/11">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>{% block title %}My amazing site{% endblock %}</title>
+    <title>{% block title %}{% blocktrans %}My amazing site{% endblocktrans %}{% endblock %}</title>
 
     <meta name="generator" content="TwistraNet" />
     <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" />
@@ -83,7 +83,7 @@
 
                 <div id="breadcrumb">
                     {% block breadcrumb %}
-                    <a href="{% url twistranet.views.home %}">{% blocktrans %}Home{% endblocktrans %}</a>
+                    <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
                     {% endblock %}
                 </div>
             

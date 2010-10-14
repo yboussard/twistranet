@@ -1,3 +1,4 @@
+{% load i18n %}
 {% for form in content_forms %}
 <fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
     <legend>
@@ -19,7 +20,7 @@
             {% csrf_token %}
             <li>
                 <label>&nbsp;</label>
-                <input type="submit" value="Send message" />
+                <input type="submit" value="{% trans 'Send message' %}" />
             </li>
         </ul>
 

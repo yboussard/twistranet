@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Communities{% endblock %}
+{% block title %}{% trans 'Communities' %}{% endblock %}
 
 {% block breadcrumb %}
-    <a href="/">Home</a> > Communities
+    <a href="/">{% trans 'Home' %}</a>&nbsp;&gt;&nbsp;{% trans 'Communities' %}
 {% endblock %}
 
 {% block content %}
-    <h1>Communities</h1>
+    <h1>{% blocktrans %}Communities{% endblocktrans %}</h1>
     {% if communities %}
         {% for community in communities %}
             {%include "community/summary.part.html" %}
         {% endfor %}
     {% else %}
-        <p>No community available on your system.</p>
+        <p>{% blocktrans %}No community available on your system.{% endblocktrans %}</p>
     {% endif %}
 
 {% endblock %}
