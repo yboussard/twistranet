@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-12 19:50+0200\n"
+"POT-Creation-Date: 2010-10-14 16:10+0200\n"
 "Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,22 @@ msgstr ""
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
+#: settings.py:44
+msgid "German"
+msgstr "Allemand"
+
+#: settings.py:45
+msgid "English"
+msgstr "Anglais"
+
+#: settings.py:46
+msgid "French"
+msgstr "Français"
+
+#: twistranet/templates/wall.html:6
+msgid "Activity Feed"
+msgstr "Fil d'Activité"
+
 #: twistranet/themes/default/base.html:37
 #, python-format
 msgid "%(user)s"
@@ -25,6 +41,22 @@ msgstr "%(user)s"
 msgid "Log out"
 msgstr "Déconnexion"
 
+#: twistranet/themes/default/base.html:47
+msgid "Log in"
+msgstr "Se connecter"
+
+#: twistranet/themes/default/base.html:61
+msgid "A social content management system."
+msgstr "Un gestionnaire de contenus sociaux."
+
 #: twistranet/themes/default/base.html:78
 msgid "Search..."
 msgstr "Rechercher..."
+
+#: twistranet/themes/default/base.html:86
+msgid "Home"
+msgstr "Accueil"
+
+#: twistranet/themes/default/base.html:120
+msgid "Powered By "
+msgstr "Propulsé par "

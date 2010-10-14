@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}Wall{% endblock %}
 
 {% block content %}
-    <h1>Activity Feed</h1>
+    <h1>{% blocktrans %}Activity Feed{% endblocktrans %}</h1>
 
     {% include "content/content_forms.part.html" %}
 
