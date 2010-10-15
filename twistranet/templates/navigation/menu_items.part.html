@@ -1,4 +1,12 @@
 {% load i18n %}
 <li class="page_item"><a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a></li>
-<li class="page_item"><a href="{% url twistranet.views.communities %}">{% trans 'Communities' %}</a></li>
+<li class="page_item"><a href="{% url twistranet.views.communities %}">{% trans 'Communities' %}</a>
+{% if account.my_communities %}
+	<ul>
+	{% for community in account.my_communities %}
+		<li><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.name }}</a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+</li>
 <li class="page_item"><a href="">{% trans 'Help' %}</a></li>

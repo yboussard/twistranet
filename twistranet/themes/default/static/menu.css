@@ -127,14 +127,13 @@ ul.sf-menu li li li.sfHover ul {
 		#mainmenu ul ul li.page_item:active,
 		#mainmenu ul ul li.current_page_item {
 			background: none;
-			height: 2.1em;
+			height: auto;
 			margin-left: 0;
 		}
 		#mainmenu ul ul li.page_item:hover {
 			background: url(../images/sys/grey-opacity50.png) repeat;
 		}
 		#mainmenu ul ul a { 
-			height: 1em;
 			padding: .62em 1em .08em;
 		}
 

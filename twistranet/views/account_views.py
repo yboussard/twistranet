@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from twistranet.models import Content, StatusUpdate
 from twistranet.models import Account
 
-from twistranet.models import ContentRegistry
+from twistranet.models import ContentRegistry, Community
 
 class MustRedirect(Exception):
     """
@@ -113,6 +113,7 @@ def home(request):
     
     # Render the template
     latest_list = account.content.followed.order_by("-date")
+    communities_list = Community.objects.get_query_set()
     t = loader.get_template('wall.html')
     c = RequestContext(
         request,
