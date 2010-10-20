@@ -1,0 +1,9 @@
+{% load i18n %}
+{# Generate a summary for 'content' object #}
+<div class="post" id="post-{{content.id}}">
+    <div class="account-picture">
+        <img width="32" height="32" src="{% url twistranet.views.resource_by_account content.publisher.id 'picture' %}">
+    </div>
+    <h3>{{ content.object.getText|safe }}</h3>
+    {{ content.date }}
+</div>

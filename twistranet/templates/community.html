@@ -14,7 +14,7 @@
     {% endif %}
 
     {% for content in latest_content_list %}
-        {%include "content/summary.part.html" %}
+        {%include content.object.summary_view %}
     {% empty %}
         <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endfor %}
