@@ -18,14 +18,14 @@
 
 <h3>{% blocktrans %}I follow them{% endblocktrans %}</h3>
 <ul>
-    {% for a in account.getMyFollowed %}
+    {% for account in account.getMyFollowed %}
         {%include "account/thumbnail.part.html" %}
     {% endfor %}
 </ul>
 
 <h3>{% blocktrans %}They follow me{% endblocktrans %}</h3>
 <ul>
-    {% for a in account.getMyFollowers %}
+    {% for account in account.getMyFollowers %}
         {%include "account/thumbnail.part.html" %}
     {% endfor %}
 </ul>

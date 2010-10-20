@@ -40,22 +40,15 @@ def repair():
         # XXX Check if this fails
         account = Account.objects.get(id = user.useraccount.id)
         
-    # All accounts must (explicitly) belong to the global community.
+    # All user accounts must (explicitly) belong to the global community.
     # XXX There should be a more efficient way to do this ;)
     global_ = Community.objects.global_
-    if Account.objects.count() <> global_.members.count():
+    if UserAccount.objects.count() <> global_.members.count():
         # print "All accounts are not in the global comm. We manually add them"
-        for account in Account.objects.get_query_set():
+        for account in UserAccount.objects.get_query_set():
             if global_ not in account.communities:
                 # print "Force user %s to join global" % account
                 global_.join(account)
-                
-    # Update accounts with no profile picture
-    # profile_picture = Resource.objects.get(alias = "default_profile_picture")
-    # for nopicture in Account.objects.filter(picture = None):
-    #     nopicture.picture = profile_picture
-    #     nopicture.save()
-    #     print "Saved profile picture for user."
                 
     # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
     for content in Content.objects.get_query_set():
@@ -127,6 +120,20 @@ def bootstrap():
         # Check default profile pictures
         profile_picture = Resource.objects.get(alias = "default_profile_picture")
         community_picture = Resource.objects.get(alias = "default_community_picture")
+        a_picture = Resource.objects.get(alias = "default_a_picture")
+        b_picture = Resource.objects.get(alias = "default_b_picture")
+        
+        # Change A / B / TN profile pictures if they're not set
+        if UserAccount.objects.filter(name = 'A').exists():
+            A = UserAccount.objects.get(name = 'A')
+            if not A._picture:
+                A._picture = a_picture
+                A.save()
+        if UserAccount.objects.filter(name = 'B').exists():
+            B = UserAccount.objects.get(name = 'B')
+            if not B._picture:
+                B._picture = b_picture
+                B.save()
             
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
