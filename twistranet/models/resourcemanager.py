@@ -61,7 +61,7 @@ class ResourceManager(models.Model):
 
     class Meta:
         app_label = 'twistranet'
-    
+        
 
 class ReadOnlyFilesystemResourceManager(ResourceManager):
     """

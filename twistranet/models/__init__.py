@@ -3,7 +3,7 @@
 # Low-level stuff
 from contentregistry import ContentRegistry
 from accountregistry import AccountRegistry
-from content import Content, StatusUpdate
+from content import Content, StatusUpdate, LogMessage
 from account import Account, UserAccount, SystemAccount, AccountLanguage
 from community import Community, GlobalCommunity, AdminCommunity
 from resource import Resource

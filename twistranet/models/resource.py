@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 
 from resourcemanager import ResourceManager
+from twistranet.lib import languages
 import basemanager 
 
 class ResourceObjectsManager(basemanager.BaseManager):
@@ -55,6 +56,14 @@ class Resource(models.Model):
     bound = models.BooleanField(default = False)
     owner = models.ForeignKey("Account", related_name = "owned_resources")
     objects = ResourceObjectsManager()
+    
+    # I18N support
+    language = models.CharField(
+        max_length = 10,
+        blank = True,
+        choices = languages.available_languages,
+        default = languages.available_languages[0][0],
+        )
 
     def __unicode__(self):
         return "%s:%s" % (self.manager, self.locator)

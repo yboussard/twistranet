@@ -8,13 +8,14 @@ class ContentRegistryManager:
     # This holds a classname: (model, form) dictionnary
     _registry_ = {}
     
-    def register(self, model_class, form_class):
+    def register(self, model_class, form_class, allow_creation = True):
         """
         Register a model class into the TwistraNet application.
         Will bind the form to the model.
+        if allow_user is True, content is available for end users
         XXX TODO: Provide a way of ordering forms?
         """
-        self._registry_[model_class.__name__]  = (model_class, form_class, )
+        self._registry_[model_class.__name__]  = (model_class, form_class, allow_creation)
     
     def getContentFormClasses(self, publisher):
         """
@@ -27,11 +28,11 @@ class ContentRegistryManager:
         # Currently, only self or members can write on a publisher. May evolve.
         account = Account.objects._getAuthenticatedAccount()
         if publisher.object == account.object:
-            return [ r[1] for r in self._registry_.values() ]
+            return [ r[1] for r in self._registry_.values() if r[2] ]
         if isinstance(publisher.object, Community):
             # Check if I can publish for the community
             if publisher.can_publish:
-                return [ r[1] for r in self._registry_.values() ]
+                return [ r[1] for r in self._registry_.values() if r[2] ]
                 
         # Else, no forms.
         return []

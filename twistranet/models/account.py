@@ -228,6 +228,10 @@ class Account(_AbstractAccount):
         if isinstance(role, roles.Role):
             role = role.value
             
+        # Gory admin shortcuts
+        if self.account_type == "SystemAccount":
+            return True
+            
         # Global roles.
         if role == roles.anonymous.value:
             return True             # An account always has the anonymous role
@@ -298,44 +302,6 @@ class Account(_AbstractAccount):
         """
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_publish, self)
-        # 
-        # from community import CommunityMembership
-        # authenticated = Account.objects._getAuthenticatedAccount()
-        # 
-        # # Self => publishing is authorized
-        # if authenticated.id == self.id:
-        #     return True
-        #     
-        # # System account; we can go. Blindly.
-        # if isinstance(authenticated, SystemAccount):
-        #     return True
-        # 
-        # # Check publish rights
-        # account_roles = [ p.role for p in self._permissions.filter(name = permissions.can_publish) ]
-        # if roles.anonymous.value in account_roles:
-        #     raise SuspiciousOperation("Anonymous can't be authorized to publish on %s" % self)
-        # if roles.authenticated.value in account_roles:
-        #     raise SuspiciousOperation("Authenticated can't be authorized to publish on %s" % self)
-        # elif roles.account_network.value in account_roles:
-        #     if authenticated in self.network:
-        #         return True
-        # elif roles.community_member.value in account_roles:
-        #     if CommunityMembership.objects.filter(
-        #         account = authenticated, 
-        #         community = self,    
-        #         ).exists():
-        #         return True
-        # elif roles.community_manager.value in account_roles:
-        #     if CommunityMembership.objects.filter(
-        #         account = authenticated, 
-        #         community = self,    
-        #         is_manager = True,
-        #         ).exists():
-        #         return True
-        # elif roles.administrator.value in account_roles:
-        #     return authenticated.is_admin
-        # 
-        # return False
 
     @property
     def can_view(self):
@@ -377,6 +343,13 @@ class Account(_AbstractAccount):
             membership_manager__is_manager = True,
             membership_manager__account = self,
             ).distinct()
+            
+    @property
+    def my_interest(self):
+        """
+        Return a list of accounts I'm interested in.
+        """
+        return Account.objects.filter(Q(target_whose__initiator = self) | Q(community__members = self)).distinct()
 
     def getMyFollowed(self):
         """
@@ -426,6 +399,7 @@ class SystemAccount(Account):
     System accounts can reach ALL content from ALL communities.
     """
     objects = AccountManager()
+    default_picture_resource_alias = "default_system_picture"
     
     class Meta:
         app_label = "twistranet"

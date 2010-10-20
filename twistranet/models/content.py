@@ -71,7 +71,7 @@ class ContentManager(basemanager.BaseManager):
             Q(
                 publisher__in = my_network,
                 _permissions__name = permissions.can_view,
-                _permissions__role__in = roles.content_network.implied(),
+                _permissions__role__in = roles.content_network.implied() + roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = roles.account_network.implied(),
             )
@@ -80,7 +80,7 @@ class ContentManager(basemanager.BaseManager):
             Q(
                 publisher__in = my_communities,
                 _permissions__name = permissions.can_view,
-                _permissions__role__in = roles.content_community_member.implied(),
+                _permissions__role__in = roles.content_community_member.implied() + roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = roles.community_member.implied(),
             )
@@ -89,7 +89,7 @@ class ContentManager(basemanager.BaseManager):
             Q(
                 publisher__in = communities_i_manage,
                 _permissions__name = permissions.can_view,
-                _permissions__role__in = roles.content_community_manager.implied(),
+                _permissions__role__in = roles.content_community_manager.implied() + roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = roles.community_manager.implied(),
             )
@@ -119,8 +119,8 @@ class ContentManager(basemanager.BaseManager):
         """
         Return the filter parameter set to follow an account.
         """
-        # Return stuff exclusively from people I'm interested in
-        my_relations = account.my_relations
+        # Return stuff exclusively from people / communities I'm interested in
+        my_relations = account.my_interest
         return Q(publisher__in = my_relations) | Q(publisher = account) | Q(author = account)
         
         
@@ -288,6 +288,42 @@ class StatusUpdate(Content):
     class Meta:
         app_label = 'twistranet'
 
+class LogMessage(Content):
+    """
+    ACCOUNT did WHAT [on ACCOUNT/CONTENT].
+    This is an internal system message, available to people following either the first or second mentionned account.
+    It's meant to be posted by SystemAccount only.
+    """
+    who = models.ForeignKey(Account, related_name = "who")
+    did_what = models.CharField(
+        max_length = 32, 
+        choices = (
+            ("joined", "joined", ),
+            ("left", "left", ),
+            ("picture", "changed his/her profile picture", ),
+            ("network", "is connected to", ),
+            ("follows", "follows", ),
+            ),
+        )
+    on_who = models.ForeignKey(Account, related_name = "on_who", null = True)
+    on_what = models.ForeignKey(Content, related_name = "on_what", null = True)
+    
+    def __unicode__(self,):
+        return u"LogMessage %d: %s" % (self.id, self.getText())
+    
+    def getText(self):
+        """
+        XXX TODO: Translate the sentence using gettext!
+        """
+        if self.on_who:
+            return "%s %s %s" % (self.who, self.did_what, self.on_who, )
+        if self.on_what:
+            return "%s %s %s" % (self.who, self.did_what, self.on_what, )
+        else:
+            return "%s %s" % (self.who, self.did_what, )
+    
+    class Meta:
+        app_label = "twistranet"
     
 class Link(Content):
     class Meta:

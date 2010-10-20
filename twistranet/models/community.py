@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from account import Account, AccountManager, UserAccount, SystemAccount
 from accountregistry import AccountRegistry
 import basemanager
-from twistranet.lib import permissions, roles
+from twistranet.lib import permissions, roles, autolog
 
 class CommunityManager(AccountManager):
     """
@@ -186,8 +186,11 @@ class Community(_AbstractCommunity):
         You can only join the communities you can 'see'
         """
         # Check if current account is allowed to force another account to join
-        if not self.canJoin(account, manager):
-            raise PermissionDenied("You can't force a user to join a community.")
+        if account:
+            if not self.canJoin(account, manager):
+                raise PermissionDenied("You can't force a user to join a community.")
+        else:
+            raise NotImplementedError("Should handle __account__ when account parameter is not given!")
 
         # Actually add
         mbr = CommunityMembership(
@@ -196,6 +199,9 @@ class Community(_AbstractCommunity):
             is_manager = manager,
             )
         mbr.save()
+        
+        # Post join message
+        autolog.joined(account, self)
         
     def leave(self, account):
         """
