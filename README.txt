@@ -26,7 +26,7 @@ Installation
 - Run ./manage.py runserver 0.0.0.0
 - Point your browser to http://localhost:8000/ => You're done
 
-There are a few users already set: "A", "B" and "twistranet". All three have 'azerty1234' password.
+There are a few users already set: "A", "B" and "admin". All three have 'azerty1234' password.
 
 Design considerations
 =====================

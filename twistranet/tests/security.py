@@ -25,7 +25,7 @@ class SecurityTest(TestCase):
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.PJ = UserAccount.objects.get(user__username = "twistranet").account_ptr
+        self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
         
     def test_has_role(self):
         """
@@ -36,7 +36,7 @@ class SecurityTest(TestCase):
         self.failUnless(self.system.has_role(roles.system, obj))
         self.failUnless(self.system.has_role(roles.administrator, obj))
         self.failIf(self.PJ.has_role(roles.system, obj))
-        self.failIf(self.PJ.has_role(roles.administrator, obj))
+        self.failUnless(self.PJ.has_role(roles.administrator, obj))
         self.failUnless(self.PJ.has_role(roles.community_member, obj))
         self.failIf(self.PJ.has_role(roles.community_manager, obj))
     
@@ -182,15 +182,15 @@ class SecurityTest(TestCase):
         __account__ = self.system
         self.failUnlessEqual(len(AdminCommunity.objects.filter(account_type = "AdminCommunity")), 1)
         self.failUnlessEqual(len(GlobalCommunity.objects.filter(account_type = "GlobalCommunity")), 1)
-        self.failUnlessEqual(len(Community.objects.admin), 1)
+        self.failUnlessEqual(Community.objects.admin.account_type, "AdminCommunity")
         self.failUnlessEqual(Community.objects.global_.account_type, "GlobalCommunity")
         
     def test_communities(self):
         """
-        Check if system is in the two communities
+        Check if system is NOT in the community.
         """
         __account__ = self.system
-        self.failUnlessEqual(len(self.system.communities), 1)
+        self.failUnlessEqual(len(self.system.communities), 0)
         self.failUnlessEqual(len(Community.objects.all()), 2)
         
     def test_membership(self):

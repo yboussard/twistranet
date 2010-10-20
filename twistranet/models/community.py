@@ -25,7 +25,7 @@ class CommunityManager(AccountManager):
         """
         Return the admin community / communities
         """
-        return self.filter(account_type = "AdminCommunity")
+        return self.get(account_type = "AdminCommunity")
 
 class _AbstractCommunity(Account):
     """

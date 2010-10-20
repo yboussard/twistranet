@@ -35,10 +35,10 @@ def repair():
 
     # Put all Django admin users inside the first admin community
     # and create accounts for them accordingly.
-    django_admins = User.objects.filter(is_superuser = True)
+    django_admins = UserAccount.objects.filter(user__is_superuser = True)
     for user in django_admins:
-        # XXX Check if this fails
-        account = Account.objects.get(id = user.useraccount.id)
+        if not Community.objects.admin in user.my_communities:
+            Community.objects.admin.join(user)
         
     # All user accounts must (explicitly) belong to the global community.
     # XXX There should be a more efficient way to do this ;)
@@ -97,7 +97,9 @@ def bootstrap():
             global_.save()
     
         # Create the admin community if it doesn't exist.
-        if not (Community.objects.admin):
+        try:
+            admincommunity = Community.objects.admin
+        except ObjectDoesNotExist:
             c = AdminCommunity(
                 name = "Administrators",
                 description = "TwistraNet admin team",

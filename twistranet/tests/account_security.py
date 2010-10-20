@@ -25,7 +25,7 @@ class AccountSecurityTest(TestCase):
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.PJ = UserAccount.objects.get(user__username = "twistranet").account_ptr
+        self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
     
     def test_can_see_myself(self):
         """

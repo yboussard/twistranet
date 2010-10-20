@@ -45,7 +45,7 @@ By default (using sqlite), the data is stored in tn.db
 
 Bootstrap the first data
 The structure by default is set in twistranet/fixtures/initial_data.json
-You can define in this file a new superuser (by default twistranet/azerty1234)
+You can define in this file a new superuser (by default admin/azerty1234)
     
     (twistranet) >> python manage.py twistranet_bootstrap
 
