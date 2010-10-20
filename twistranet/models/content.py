@@ -315,12 +315,16 @@ class LogMessage(Content):
         """
         XXX TODO: Translate the sentence using gettext!
         """
+        from django.core.urlresolvers import reverse
+        who_url = reverse('twistranet.views.account_by_id', args = (self.who.id,))
         if self.on_who:
-            return "%s %s %s" % (self.who, self.did_what, self.on_who, )
-        if self.on_what:
-            return "%s %s %s" % (self.who, self.did_what, self.on_what, )
+            on_who_url = reverse('twistranet.views.account_by_id', args = (self.on_who.id,))
+            return "<a href='%s'>%s</a> %s <a href='%s'>%s</a>" % (who_url, self.who, self.did_what, on_who_url, self.on_who)
+        elif self.on_what:
+            on_what_url = reverse('twistranet.views.content_by_id', args = (self.on_what.id,))
+            return "<a href='%s'>%s</a> %s <a href='%s'>%s</a>" % (who_url, self.who, self.did_what, on_what_url, self.on_what)
         else:
-            return "%s %s" % (self.who, self.did_what, )
+            return "<a href='%s'>%s</a> %s" % (who_url, self.who, )
     
     class Meta:
         app_label = "twistranet"

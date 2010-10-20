@@ -4,7 +4,7 @@
     <div class="account-picture">
         <img src="{% url twistranet.views.resource_by_account content.author.id 'picture' %}">
     </div>
-    <h3><a href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.name }}</a> {{ content.object.getText }}</h3>
+    <h3><a href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.name }}</a> {{ content.object.getText|safe }}</h3>
     <div class="entry">
     </div>
     <div class="postmetadata">
