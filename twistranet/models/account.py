@@ -461,6 +461,11 @@ class AccountLanguage(models.Model):
         )
     account = models.ForeignKey(UserAccount, related_name = "account_languages")
 
+    class Meta:
+        app_label = 'twistranet'
+
+    def __unicode__(self):
+        return self.language
 
         
 AccountRegistry.register(UserAccount)
