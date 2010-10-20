@@ -5,7 +5,7 @@
         "model": "auth.User",
         "pk": 1,
         "fields": {
-            "username": "pjgrizel",
+            "username": "twistranet",
             "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
             "email": "test@test.com",
             "is_superuser": "True",
@@ -17,7 +17,7 @@
         "pk":   1,
         "fields":   {
             "account_type": "UserAccount",
-            "name": "pjgrizel",
+            "name": "twistranet",
 			"description": "A twistranet manager",
             "permissions": "public"
         }

@@ -51,11 +51,11 @@ def repair():
                 global_.join(account)
                 
     # Update accounts with no profile picture
-    profile_picture = Resource.objects.get(alias = "default_profile_picture")
-    for nopicture in Account.objects.filter(picture = None):
-        nopicture.picture = profile_picture
-        nopicture.save()
-        print "Saved profile picture for user."
+    # profile_picture = Resource.objects.get(alias = "default_profile_picture")
+    # for nopicture in Account.objects.filter(picture = None):
+    #     nopicture.picture = profile_picture
+    #     nopicture.save()
+    #     print "Saved profile picture for user."
                 
     # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
     for content in Content.objects.get_query_set():
@@ -124,10 +124,10 @@ def bootstrap():
         # Load / Update default TN resource files
         legacy_rm.loadAll(with_aliases = True) 
             
-        # Check default profile picture
+        # Check default profile pictures
         profile_picture = Resource.objects.get(alias = "default_profile_picture")
+        community_picture = Resource.objects.get(alias = "default_community_picture")
             
-        
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
         traceback.print_exc()

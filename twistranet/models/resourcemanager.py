@@ -1,6 +1,6 @@
 import mimetypes
 
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Q
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
@@ -79,7 +79,7 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
     def loadAll(self, with_aliases = False):
         """
         Special method to load all the filesystem content and transform each file into a file resource.
-        Must be called from a SystemAccount for security reasons!
+        Must be called from a SystemAccount for security reasons, all generated resources will belong to SystemAccount.
         """
         # Security check
         from resource import Resource
@@ -100,11 +100,32 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
                 if not mimetype:
                     continue
                 if with_aliases:
-                    defaults['alias'] = os.path.splitext(os.path.split(fname)[1])[0]
-                Resource.objects.get_or_create(
-                    manager = self, 
-                    locator = fname, 
-                    defaults = defaults,
+                    alias = os.path.splitext(os.path.split(fname)[1])[0]
+                    defaults['alias'] = alias
+                    objects = Resource.objects.filter(
+                        manager = self, 
+                        alias = alias,
+                        )
+                    if objects:
+                        if len(objects) > 1:
+                            raise IntegrityError("More than one resource with '%s' alias" % alias)
+                        r = objects[0]
+                    else:
+                        r = Resource()
+                    
+                    # Set pties and save
+                    r.manager = self
+                    r.locator = fname
+                    r.alias = alias
+                    r.mimetype = mimetype
+                    r.encoding = encoding
+                    r.save()
+                else:
+                    raise NotImplementedError("Should implement w/o aliases")
+                    Resource.objects.get_or_create(
+                        manager = self, 
+                        locator = fname,
+                        defaults = defaults,
                     )
     
     def readResource(self, resource):

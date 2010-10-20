@@ -25,7 +25,7 @@ class SecurityTest(TestCase):
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.PJ = UserAccount.objects.get(user__username = "pjgrizel").account_ptr
+        self.PJ = UserAccount.objects.get(user__username = "twistranet").account_ptr
         
     def test_has_role(self):
         """
@@ -53,7 +53,7 @@ class SecurityTest(TestCase):
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         
-        # pjgrizel must not see it
+        # twistranet must not see it
         __account__ = self.PJ
         self.failUnless(s.content_ptr not in Content.objects.all())
         

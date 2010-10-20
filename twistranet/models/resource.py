@@ -74,7 +74,8 @@ class Resource(models.Model):
             self.owner = authenticated
         else:
             if self.owner != authenticated:
-                raise RuntimeError("You're not allowed to edit this resource. XXX TODO: Resource delegation?")
+                if not self.owner.is_admin:
+                    raise RuntimeError("You're not allowed to edit this resource. XXX TODO: Resource delegation?")
 
         # Actually save it
         return super(Resource, self).save(*args, **kw)

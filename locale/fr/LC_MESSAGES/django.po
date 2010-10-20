@@ -123,8 +123,8 @@ msgid "Log in"
 msgstr "Se connecter"
 
 #: twistranet/themes/default/base.html:61
-msgid "A social content management system."
-msgstr "Un gestionnaire de contenus sociaux."
+msgid "The social content management system."
+msgstr "Le CMS social."
 
 #: twistranet/themes/default/base.html:78
 msgid "Search..."

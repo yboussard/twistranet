@@ -51,6 +51,7 @@ class Community(_AbstractCommunity):
     
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
+    default_picture_resource_alias = "default_community_picture"
     
     # Members & security management
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")

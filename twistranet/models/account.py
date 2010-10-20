@@ -129,7 +129,12 @@ class Account(_AbstractAccount):
     # A friendly name
     # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
-    picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
+    
+    # Picture management.
+    # If None, will use the default_picture_resource_alias attribute.
+    # If you want to get the account picture, use the 'picture' attribute.
+    default_picture_resource_alias = "default_profile_picture"
+    _picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
                                                             # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
     name = models.TextField()
@@ -140,6 +145,16 @@ class Account(_AbstractAccount):
     # XXX because there's a problem here as choices cannot be re-defined for subclasses.
     permission_templates = permissions.account_templates
     permissions = models.CharField(max_length = 32)
+    
+    @property
+    def picture(self):
+        """
+        Return the resource id for the proper picture image.
+        Will safely use default picture if necessary
+        """
+        if self._picture:
+            return self._picture
+        return Resource.objects.get(alias = self.object.default_picture_resource_alias)
     
     class Meta:
         app_label = 'twistranet'
