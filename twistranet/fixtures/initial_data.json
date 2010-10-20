@@ -8,7 +8,8 @@
             "username": "pjgrizel",
             "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
             "email": "test@test.com",
-            "is_superuser": "True"
+            "is_superuser": "True",
+            "is_staff": "True"
         }
     },
     {
@@ -16,6 +17,8 @@
         "pk":   1,
         "fields":   {
             "account_type": "UserAccount",
+            "name": "pjgrizel",
+			"description": "A twistranet manager",
             "permissions": "public"
         }
     },
@@ -40,6 +43,8 @@
         "pk":   2,
         "fields":   {        
             "account_type": "UserAccount",
+            "name": "A",
+			"description": "A twistranet user",
             "permissions": "public"
         }
     },
@@ -64,6 +69,8 @@
         "pk":   3,
         "fields":   {        
             "account_type": "UserAccount",
+            "name": "B",
+			"description": "A twistranet user",
             "permissions": "public"
         }
     },
