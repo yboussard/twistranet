@@ -8,9 +8,8 @@
     <div class="entry">
     </div>
     <div class="postmetadata">
-        {{ content.content_type }}
-        {{ content.date }}
-        {{ content.language }}
+        {{ content.date|timesince }} |
+        {{ content.language }} |
         {{ content.permissions }}
     </div>
 </div>

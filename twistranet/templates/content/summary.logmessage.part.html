@@ -5,5 +5,5 @@
         <img width="32" height="32" src="{% url twistranet.views.resource_by_account content.publisher.id 'picture' %}">
     </div>
     <h3>{{ content.object.getText|safe }}</h3>
-    {{ content.date }}
+    {{ content.date|timesince }}
 </div>
