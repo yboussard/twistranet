@@ -3,26 +3,69 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/media/css/base.css" />
+    <link rel="stylesheet" href="/media/css/login.css" />
+	<style>
+		body.login {
+		    background: url("/static/styles/White/bg-head.png") repeat-x scroll 50% 0 transparent;
+		}
+		#container {
+			-moz-border-radius: 10px;
+			-webkit-border-radius: 10px;
+			border-radius: 10px;
+		}
+		#container #header {
+			background-color: transparent;
+			color: #BE261E;			
+		}
+		#container #header #branding h1 {
+			background-color: transparent;
+			color: #BE261E;			
+		}
+		input{
+			border: 1px solid #CDD;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			border-radius: 5px;
+			padding: 3px 10px;
+			background-color: #F9FFFF;
+		}
+	</style>
     <title>{% block title %}{% blocktrans %}My amazing site{% endblocktrans %}{% endblock %}</title>
 </head>
 
+<body class="login">
 {% block content %}
 
   {% if form.errors %}
     <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
   {% endif %}
-
-  <form action="" method="post">
-      {% csrf_token %}
-    <label for="username">{% blocktrans %}User name :{% endblocktrans %}</label>
-    <input type="text" name="username" value="" id="username">
-
-    <label for="password">{% blocktrans %}Password :{% endblocktrans %}</label>
-    <input type="password" name="password" value="" id="password">
-
-    <input type="submit" value="{% trans 'login' %}" />
-    <input type="hidden" name="next" value="{{ next|escape }}" />
-  </form>
+  <div id="container">
+    <!-- Header -->
+	<div id="header">
+	    <div id="branding">
+	      <h1 id="site-name">TwistraNet</h1>
+	    </div> 
+	</div>
+	<!-- END Header -->
+	<div class="colM" id="content">
+	  <form id="login-form" action="" method="post">
+	      {% csrf_token %}
+	    <div class="form-row">
+		  <label for="username">{% blocktrans %}User name :{% endblocktrans %}</label>
+	      <input type="text" name="username" value="" id="username">
+		</div>
+	    <div class="form-row">
+	      <label for="password">{% blocktrans %}Password :{% endblocktrans %}</label>
+	      <input type="password" name="password" value="" id="password">
+		</div>
+	    <div class="submit-row">
+          <input type="submit" value="{% trans 'login' %}" />
+	      <input type="hidden" name="next" value="{{ next|escape }}" />
+		</div>
+	  </form>
+	</div>
+  </div>
 
 {% endblock %}
+</body>

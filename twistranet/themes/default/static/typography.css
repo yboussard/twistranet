@@ -125,6 +125,7 @@ input {
 	border: 1px solid #cdd;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	background: #f9ffff;
 }
 input.button {
