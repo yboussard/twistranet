@@ -38,8 +38,9 @@ body {
 }
 #wrapper {
 	top: 0;
-	width: 940px;
+	width: 980px;
 	margin: 0 auto;
+	padding: 0 9px;
 	}
 	#header {
 		height: 210px;
@@ -50,7 +51,7 @@ body {
 		#usermenu {
 			position: absolute;
 			top: 0;
-			width: 900px;
+			width: 920px;
 			margin: 0 20px;
 		}
 		#menubar {
@@ -58,14 +59,14 @@ body {
 			top: 102px;
 			width: 802px;
 			height: 60px;
-			margin: 0 40px 0 77px;
+			margin: 0 40px 0 75px;
 			}
 			#mainmenu {
 			}
 		#searchform {
 			position: relative;
 			top: -100px; 
-			right: 30px;
+			right: 50px;
 			width: 192px;
 			float: right;
 			}
@@ -85,6 +86,7 @@ body {
 
 	#wrap {
 		height: 100%; /* Fix IE7 */
+		padding: 0 20px;
 		}
 		#breadcrumb {
 			position: absolute;
@@ -93,26 +95,25 @@ body {
 			margin: 0 40px 0 70px;
 		}
 		#container {
-			margin: 0 40px 0 20px;
+			margin: 0;
+			padding: 0 30px;
 			position: relative;
 			top: -15px;
+			clear: both;
 			}
 			#globalbar {
-				width: 140px;
+				width: 150px;
 				float: left;	
-				margin: 12px 50px 12px 12px;
+				margin: 0 30px 12px 0;
 			}
 			#content {
-				width: 560px;
+				width: 550px;
 				float: left;
-				margin-top: 0;
-				margin-right: 10px;
-                border-right: solid 1px #CCC;
 			}
 			#sidebar {
-				width: 140px;
+				width: 150px;
 				float: right;	
-				margin: 12px 0;
+				margin: 0 0 12px;
 			}
 	#bottom {
 		clear: both !important;
