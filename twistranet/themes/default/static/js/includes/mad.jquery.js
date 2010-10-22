@@ -37,8 +37,8 @@ jQuery(document).ready(function(){
 	//
   jQuery("#mainmenu ul.sf-menu").superfish({
   	animation: {width:'show'},
-		speed: 'fast',
-		delay: 40,
+		speed: 2,   // speed for submenu apparition
+		delay: 400, // the delay in milliseconds that the mouse can remain outside a submenu without closing 
 		minWidth: 10,
 		maxWidth: 20,
 		extraWidth: 0
