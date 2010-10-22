@@ -109,8 +109,17 @@
                     </div>
 
                     <div id="sidebar" class="sidebar">
-                        {% block contextbar %}
-                        {% endblock %}
+                        <ul>
+                            <li>
+                                {% block contextbar %}
+                                {% endblock %}
+                            </li>
+                            <li>
+                                {% block generalbar %}
+                                    {% include "actions/general.part.html" %}
+                                {% endblock %}
+                            </li>
+                        </ul>
                     </div>
                 </div><!-- end #container -->
                 <div class="clear">&nbsp;</div>

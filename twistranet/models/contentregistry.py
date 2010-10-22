@@ -27,12 +27,13 @@ class ContentRegistryManager:
         # Only return forms for publisher accounts I'm authorized to write on
         # Currently, only self or members can write on a publisher. May evolve.
         account = Account.objects._getAuthenticatedAccount()
-        if publisher.object == account.object:
+        # if publisher.object == account.object:
+        if publisher.can_publish:
             return [ r[1] for r in self._registry_.values() if r[2] ]
-        if isinstance(publisher.object, Community):
-            # Check if I can publish for the community
-            if publisher.can_publish:
-                return [ r[1] for r in self._registry_.values() if r[2] ]
+        # if isinstance(publisher.object, Community):
+        #     # Check if I can publish for the community
+        #     if publisher.can_publish:
+        #         return [ r[1] for r in self._registry_.values() if r[2] ]
                 
         # Else, no forms.
         return []

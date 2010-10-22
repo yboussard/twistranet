@@ -24,8 +24,6 @@ def _getInlineForms(request, publisher = None):
     Return the inline forms object used to display the marvellous edition form(s).
     Process 'em, by the way.
     'publisher' is the account we're going to publish on. If none, assume it's the current user.
-    
-    XXX TODO: Manage that publisher stuff
     """
     # Account information used to build the wall view
     account = request.user.get_profile()
@@ -81,6 +79,7 @@ def account_by_id(request, account_id):
     """
     # Get the OBJECT himself
     account = Account.objects.get(id = account_id).object
+    current_account = request.user.get_profile()
     
     # If we're on a community, we should redirect
     if isinstance(account, Community):
@@ -99,8 +98,11 @@ def account_by_id(request, account_id):
         {
             'path': request.path,
             "content_forms": forms,
+            "current_account": current_account,
             "account": account,
             "latest_content_list": latest_list[:25],
+            
+            "account_in_my_network": not not current_account.network.filter(id = account.id),
         },
         )
     return HttpResponse(t.render(c))
@@ -127,6 +129,7 @@ def home(request):
         {
             'path': request.path,
             'account': account,
+            'current_account': request.user.get_profile(),
             'latest_content_list': latest_list[:25],
             'content_forms': forms,
         },

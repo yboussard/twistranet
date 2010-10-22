@@ -128,9 +128,7 @@ def bootstrap():
         admin_picture = Resource.objects.get(alias = "default_admin_picture")
         
         # Change A / B / TN profile pictures if they're not set
-        print "change profile pictures"
         if UserAccount.objects.filter(name = 'admin').exists():
-            print "admin"
             A = UserAccount.objects.get(name = 'admin')
             if not A._picture:
                 A._picture = admin_picture

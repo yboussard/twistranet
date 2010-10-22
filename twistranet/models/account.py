@@ -222,7 +222,7 @@ class Account(_AbstractAccount):
         
         If a user has a role on an object, that doesn't means he has a permision.
         
-        XXX TODO: Oh, BYW, we should check if the role actually exists!
+        XXX TODO: Oh, BTW, we should check if the role actually exists!
         """
         # Role computing
         if isinstance(role, roles.Role):
@@ -254,7 +254,7 @@ class Account(_AbstractAccount):
         # Account-related roles
         if isinstance(obj, Account):
             if role == roles.account_network.value:
-                return obj.network.filter(initiator_whose__target = self).exists()
+                return not not obj.network.filter(id = self.id)
             if role == roles.owner.value:
                 return obj.id == self.id
         

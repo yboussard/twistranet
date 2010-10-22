@@ -85,7 +85,7 @@ account_templates = PermissionTemplate((
         "description":      "Account listed and accessible to anyone who has access to TwistraNet (public if TwistraNet is in internet mode).",
         can_view:           (anonymous, ),
         can_list:           (anonymous, ),
-        can_publish:        (owner, ),
+        can_publish:        (owner, account_network, ),
         can_edit:           (owner, administrator, ),
     },
     {
@@ -94,7 +94,7 @@ account_templates = PermissionTemplate((
         "description":      "Account listed and accessible to anyone who is logged into to TwistraNet.",
         can_view:           (authenticated, ),
         can_list:           (authenticated, ),
-        can_publish:        (owner, administrator, ),
+        can_publish:        (owner, administrator, account_network, ),
         can_edit:           (owner, administrator, ),
     },
     {
@@ -103,7 +103,7 @@ account_templates = PermissionTemplate((
         "description":      "Account listed BUT NOT necessarily accessible to anyone who is logged into TwistraNet: Must be in his network to see it.",
         can_view:           (account_network, ),
         can_list:           (authenticated, ),
-        can_publish:        (owner, administrator, ),
+        can_publish:        (owner, administrator, account_network, ),
         can_edit:           (owner, administrator, ),
     },
     {
@@ -112,7 +112,7 @@ account_templates = PermissionTemplate((
         "description":      "Ghost account.",
         can_view:           (account_network, ),
         can_list:           (account_network, ),
-        can_publish:        (owner, administrator, ),
+        can_publish:        (owner, administrator, account_network, ),
         can_edit:           (owner, administrator, ),
     },
 ))

@@ -3,7 +3,7 @@ This is a set of account permissions tests
 """
 from django.test import TestCase
 from twistranet.models import *
-from twistranet.lib import permissions
+from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
 from twistranet.models import _permissionmapping, dbsetup
@@ -26,6 +26,7 @@ class AccountSecurityTest(TestCase):
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
+        self.admin = self.PJ
     
     def test_can_see_myself(self):
         """
@@ -37,6 +38,14 @@ class AccountSecurityTest(TestCase):
         self.failUnless(self.B in Account.objects.all()) 
         __account__ = self.PJ
         self.failUnless(self.PJ in Account.objects.all()) 
+        
+    def test_account_network_role(self):
+        """
+        Check if A and admin have the account_network role on each other
+        """
+        __account__ = self.admin
+        self.failUnless(self.admin.has_role(roles.account_network, self.A))
+        self.failIf(self.admin.has_role(roles.account_network, self.B))
         
     def test_private_account(self):
         """
@@ -85,11 +94,12 @@ class AccountSecurityTest(TestCase):
         """
         Check if the can_publish attribute works
         """
-        # Must be able to write on self
+        # Must be able to write on self.
+        # Friends (in the network) can also write on one's wall!
         __account__ = self.A
         self.failUnless(self.A.can_publish)
         self.failIf(self.B.can_publish)
-        self.failIf(self.PJ.can_publish)
+        self.failUnless(self.admin.can_publish)
         
         # Try to write on a wg community
         c = Community(name = "wkg", permissions = "workgroup")
