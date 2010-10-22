@@ -1,14 +1,14 @@
-from twistranet.models.community import GlobalCommunity, CommunityMembership
+from twistranet.models.community import Community, CommunityMembership
 from django.contrib import admin
 
 class CommunityMembershipInline(admin.TabularInline):
     model = CommunityMembership
     extra = 1
 
-class GlobalCommunityAdmin(admin.ModelAdmin):
+class CommunityAdmin(admin.ModelAdmin):
     inlines = (CommunityMembershipInline,)
 
 
 # not so easy ;-)
 # admin.site.register(Community, CommunityAdmin)
-admin.site.register(GlobalCommunity)
+admin.site.register(Community)
