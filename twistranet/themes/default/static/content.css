@@ -1,8 +1,8 @@
 /* Content-related stuff, including small content views */
 
 .account-picture {
-  float: left;
-  margin: 0 10px 0 10px;
+    float: left;
+    margin: 0 0px 0 10px;
 }
 
 .post {
@@ -11,3 +11,24 @@
 	background: none;
 }
 
+.entry {
+    float: left;
+    width: 450px;
+    margin: 0 0px 0 10px;
+}
+
+.entry h3 {
+    font-size: 14px;
+    font-weight: normal;
+/*    display: inline;*/
+}
+
+.author {
+    font-weight: bold;
+}
+
+.entry .postmetadata {
+    font-size: 12px;
+    color: #999;
+    text-align: right;
+}

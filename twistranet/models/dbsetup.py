@@ -82,6 +82,7 @@ def bootstrap():
             _system = SystemAccount()
             __account__ = _system
             _system.permissions = "listed"
+            _system.name = "TwistraNet System"
             _system.save()
         _system = SystemAccount.get()
     

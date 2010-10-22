@@ -38,7 +38,7 @@ jQuery(document).ready(function(){
   jQuery("#mainmenu ul.sf-menu").superfish({
   	animation: {width:'show'},
 		speed: 'fast',
-		delay: 400,
+		delay: 40,
 		minWidth: 10,
 		maxWidth: 20,
 		extraWidth: 0

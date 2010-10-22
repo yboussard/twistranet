@@ -2,14 +2,28 @@
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
     <div class="account-picture">
-        <img src="{% url twistranet.views.resource_by_account content.publisher.id 'picture' %}">
+        <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author.id 'picture' %}">
     </div>
-    <h3><a href="{% url twistranet.views.account_by_id content.publisher.id %}">{{ content.publisher.name }}</a> {{ content.object.getText|safe }}</h3>
     <div class="entry">
-    </div>
-    <div class="postmetadata">
-        {{ content.date|timesince }} |
-        {{ content.language }} |
-        {{ content.permissions }}
+        <a class="author" href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.name }}</a>
+        {% if not content.author == content.publisher %}
+            &raquo;
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher.id %}">{{ content.publisher.name }}</a>
+        {% endif %}
+        {% if content.object.headline %}
+            <span class="headline">
+                {{ content.object.headline }}<br />
+            </span>
+        {% endif %}
+        {% if content.object.summary %}
+            <div class="summary-content">
+                {{ content.object.summary|safe }}
+            </div>
+        {% endif %}
+        <div class="postmetadata">
+            {{ content.date|timesince }} |
+            {{ content.language }} |
+            {{ content.permissions }}
+        </div>
     </div>
 </div>

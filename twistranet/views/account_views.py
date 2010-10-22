@@ -4,10 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.db.models import Q
 
-
-from twistranet.models import Content, StatusUpdate
-from twistranet.models import Account
+from twistranet.models import Content, StatusUpdate, Community, Account
 
 from twistranet.models import ContentRegistry, Community
 
@@ -79,13 +79,20 @@ def account_by_id(request, account_id):
     XXX TODO:
         - Check if account is listed and permit only if approved
     """
-    account = Account.objects.get(id = account_id)
+    # Get the OBJECT himself
+    account = Account.objects.get(id = account_id).object
+    
+    # If we're on a community, we should redirect
+    if isinstance(account, Community):
+        return HttpResponseRedirect(reverse('twistranet.views.community_by_id', args = (account.id,)))
+
+    # Generate forms
     try:
         forms = _getInlineForms(request, publisher = account)
     except MustRedirect:
         return HttpResponseRedirect(request.path)
     
-    latest_list = Content.objects.filter(publisher = account).order_by("-date")
+    latest_list = Content.objects.getActivityFeed(account).order_by("-date")
     t = loader.get_template('account.html')
     c = RequestContext(
         request,

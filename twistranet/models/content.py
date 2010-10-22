@@ -43,6 +43,17 @@ class ContentManager(basemanager.BaseManager):
         
         # XXX TODO: Avoid the distinct method
         return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
+        
+        
+    def getActivityFeed(self, account):
+        """
+        Return activity feed content for the given account
+        It's content the account follows + content it produced + log messages he's the originator
+        """
+        return self.filter(
+            Q(publisher = account) | Q(author = account) | Q(logmessage__who = account) | Q(logmessage__on_who = account)
+            ).distinct()
+        
     
     def _getViewFilter(self, account):
         """
@@ -192,6 +203,10 @@ class Content(_AbstractContent):
         choices = permissions.content_templates.get_choices(), 
         default = permissions.content_templates.get_default(),
         )
+        
+    # View overriding support
+    # XXX TODO: Find a way to optimize this without having to query the underlying object
+    summary_view = "content/summary.part.html"
     
     def __unicode__(self):
         return "%s %d by %s" % (self.content_type, self.id, self.author)
@@ -199,11 +214,43 @@ class Content(_AbstractContent):
     class Meta:
         app_label = 'twistranet'
 
+    #                                                               #
+    #                       Display management                      #
+    # You can override this in your content types.                  #
+    #                                                               #
+
     def getText(self):
         """
         Override this to not use the 'text' attribute of the super class
         """
         return self.text
+        
+    @property
+    def headline(self):
+        """
+        Use this to display the headline on your activity feed.
+        You can have some logic to display a different headline according to the content's properties.
+        
+        Default is to display the 255 first characters of the raw text content in other cases.
+        """
+        text = self.getText()
+        if len(text) < 255:
+            return text
+        return u"%s [...]" % text[:255]
+    
+    @property
+    def summary(self):
+        """
+        Inner summary text. Return properly-formated HTML summary.
+        Default is to display nothing if text is the same as the headline.
+        """
+        if self.getText() == self.headline:
+            return None
+        return self.getText()
+
+    #                                                               #
+    #                   Content internal stuff                      #
+    #                                                               #
 
     @property
     def model_class(self):
@@ -293,7 +340,11 @@ class LogMessage(Content):
     ACCOUNT did WHAT [on ACCOUNT/CONTENT].
     This is an internal system message, available to people following either the first or second mentionned account.
     It's meant to be posted by SystemAccount only.
+    
+    Author is usually SystemAccount.
+    Publisher is usually the community (or account) this content belongs to.
     """
+    # Defined fields on the logmessage
     who = models.ForeignKey(Account, related_name = "who")
     did_what = models.CharField(
         max_length = 32, 
@@ -303,10 +354,14 @@ class LogMessage(Content):
             ("picture", "changed his/her profile picture", ),
             ("network", "is connected to", ),
             ("follows", "follows", ),
+            ("likes", "likes", ),
             ),
         )
     on_who = models.ForeignKey(Account, related_name = "on_who", null = True)
     on_what = models.ForeignKey(Content, related_name = "on_what", null = True)
+    
+    # View overriding support
+    summary_view = "content/summary.logmessage.part.html"
     
     def __unicode__(self,):
         return u"LogMessage %d: %s" % (self.id, self.getText())
