@@ -30,6 +30,7 @@ def community_by_id(request, community_id):
     Here you can view all members and posts published on this community
     """
     account = request.user.get_profile()
+    current_account = account
     community = Community.objects.get(id = community_id)
     latest_list = Content.objects.filter(publisher = community).order_by("-date")
 
@@ -50,6 +51,8 @@ def community_by_id(request, community_id):
             "members": community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
             "latest_content_list": latest_list[:25],
             "community_forms": forms,
+            
+            "i_am_in": community.members.filter(id = current_account.id).exists(),
         },
         )
     return HttpResponse(t.render(c))

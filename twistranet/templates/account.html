@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% blocktrans %}{{ account }}'s Wall{% endblocktrans %}{% endblock %}
+{% block title %}{% blocktrans %}{{ account }}'s Profile{% endblocktrans %}{% endblock %}
 
 {% block breadcrumb %}
     <a href="/">Home</a> > {{ account }}
@@ -15,6 +15,7 @@
 
 
 {% block content %}
+    <h1>{% blocktrans %}{{ account }}'s Profile{% endblocktrans %}</h1>
     {% if account.can_publish %}
         {% include "content/content_forms.part.html" %}
     {% endif %}

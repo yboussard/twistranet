@@ -27,3 +27,17 @@
     </ul>
 
 {% endblock %}
+
+{% block contextbar %}
+    {# Display the 'join'/'leave' links #}
+    {% if not im_am_in %}
+        {% if community.can_join %}
+            <a href="" class="main-action">{% trans "Join this community" %}</a>
+        {% endif %}
+    {% else %}
+        {% if community.can_leave %}
+            <a href="" class="main-action">{% trans "Leave this community" %}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

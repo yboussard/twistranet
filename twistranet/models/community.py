@@ -124,79 +124,34 @@ class Community(_AbstractCommunity):
         
     @property
     def can_join(self):
-        return self.canJoin()
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_join, self)
         
-    def canJoin(self, account = None, manager = False):
-        """
-        Return True if given user can join.
-        Will return False if already a member.
-        """
-        # Get account
-        authenticated = Community.objects._getAuthenticatedAccount()
-        if not account:
-            account = authenticated
-            
-        # If he're already in it, just pass
-        if self.members.filter(id = account.id).exists():
-            return False
-        
-        # Is current user is admin? If so, he can join anything
-        if account.is_admin or authenticated.is_admin:
-            return True
-
-        # Allowed anonymous join? Hum, that's strange
-        if roles.anonymous.allowed_by(self._permissions):
-            raise ValidationError("Anonymous shouldn't be able to join %s community." % self)    
-
-        # If auth users are authorized, then go (provided account logged).
-        elif roles.authenticated.allowed_by(self._permissions):
-            if not manager:
-                return not not account
-            
-        # Invalid role
-        elif roles.account_network.allowed_by(self._permissions):
-            raise ValidationError("Unexpected can_join role %s" % (self, ))
-            
-        elif roles.community_member.allowed_by(self._permissions):
-            if manager:
-                return False
-            if self.is_member:
-                return True
-                
-        # From here, we allow manager adds
-        elif roles.community_manager.allowed_by(self._permissions):
-            if self.is_manager:
-                return True
-        elif roles.administrator.allowed_by(self._permissions):
-            if authenticated.is_admin:
-                return True
-        elif roles.system.allowed_by(self._permissions):
-            if isinstance(authenticated, SystemAccount):
-                return True
-        else:
-            raise ValidationError("Unexpected can_join role %s" % (self, ))
-        
-        # No match? So bad.
-        return False
+    @property
+    def can_leave(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_leave, self)
         
     def join(self, account = None, manager = False):
         """
         Join the community.
         If account is None, assume it current authenticated account.
-        You can only join the communities you can 'see'
         """
         # Check if current account is allowed to force another account to join
-        if account:
-            if not self.canJoin(account, manager):
-                raise PermissionDenied("You can't force a user to join a community.")
-        else:
-            raise NotImplementedError("Should handle __account__ when account parameter is not given!")
+        if not self.can_join:
+            if account:
+                raise PermissionDenied("You're not allowed to let somebody join this community.")
+            else:
+                raise PermissionDenied("You're not allowed to join this community. You must be invited.")
+        
+        if not account:
+            account = Account.objects._getAuthenticatedAccount()
 
         # Actually add
         mbr = CommunityMembership(
             account = account,
             community = self,
-            is_manager = manager,
+            is_manager = not not manager,
             )
         mbr.save()
         
@@ -207,8 +162,13 @@ class Community(_AbstractCommunity):
         """
         Leave the community.
         Fails silently is account is not a member of the community.
-        XXX TODO: Check security
         """
+        if not self.can_leave:
+            if account:
+                raise PermissionDenied("You're not allowed to exclude somebody from this community.")
+            else:
+                raise PermissionDenied("You're not allowed to leave this community")
+            
         # Quick security check, then delete membership info
         for mbr in CommunityMembership.objects.filter(account = account, community = self):
             mbr.delete()

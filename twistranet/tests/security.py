@@ -26,6 +26,7 @@ class SecurityTest(TestCase):
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
         self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
+        self.admin = self.PJ
         
     def test_has_role(self):
         """
@@ -39,6 +40,18 @@ class SecurityTest(TestCase):
         self.failUnless(self.PJ.has_role(roles.administrator, obj))
         self.failUnless(self.PJ.has_role(roles.community_member, obj))
         self.failIf(self.PJ.has_role(roles.community_manager, obj))
+        
+    def test_can_join(self,):
+        """
+        Check if can_join permissions seem ok
+        """
+        __account__ = self.A
+        adm = Community.objects.get(name = "Administrators")
+        self.failIf(adm.can_join)
+        self.failIf(adm.can_leave)
+        __account__ = self.admin
+        self.failUnless(adm.can_join)
+        self.failUnless(adm.can_leave)
     
     def test_private_content(self):
         """
