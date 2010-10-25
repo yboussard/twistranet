@@ -60,28 +60,40 @@ def community_by_id(request, community_id):
         )
     return HttpResponse(t.render(c))
     
-def edit_community(request, community_id):
+def edit_community(request, community_id = None):
     """
     Edit the given community
     """
     # Get basic information
     account = request.user.get_profile()
     current_account = account
-    community = Community.objects.get(id = community_id)
-    if not community.can_view:
-        raise NotImplementedError("Should implement a permission denied exception here")
-    if not community.can_edit:
-        raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
+    if community_id is not None:
+        community = Community.objects.get(id = community_id)
+        if not community.can_view:
+            raise NotImplementedError("Should implement a permission denied exception here")
+        if not community.can_edit:
+            raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
+    else:
+        # XXX TODO: Check some kind of "can_create_community" permission?
+        community = None
 
     # Process form
     if request.method == 'POST': # If the form has been submitted...
-        form = communityforms.CommunityForm(request.POST, instance = community) # A form bound to the POST data
+        if community:
+            form = communityforms.CommunityForm(request.POST, instance = community)
+        else:
+            form = communityforms.CommunityForm(request.POST)
+            
         if form.is_valid(): # All validation rules pass
-            form.save()
+            community = form.save()
             return HttpResponseRedirect(reverse('twistranet.views.community_by_id', args = (community.id,)))
     else:
-        form = communityforms.CommunityForm(instance = community) # An unbound form
+        if community:
+            form = communityforms.CommunityForm(instance = community) # An unbound form
+        else:
+            form = communityforms.CommunityForm()
 
+    # Template hapiness
     t = loader.get_template('community/edit.html')
     c = RequestContext(
         request,
@@ -90,9 +102,9 @@ def edit_community(request, community_id):
             "account": account,
             "current_account": account,
             "community": community,
-            "members": community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
+            "members": community and community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
             "form": form,
-            "i_am_in": community.members.filter(id = current_account.id).exists(),
+            "i_am_in": community and community.members.filter(id = current_account.id).exists(),
         },
         )
     return HttpResponse(t.render(c))
@@ -102,7 +114,7 @@ def edit_community(request, community_id):
 def create_community(request):
     """
     """
-    raise NotImplementedError("Still have to do this ;)")
+    return edit_community(request, None)
 
 
 
