@@ -38,7 +38,7 @@ def repair():
     django_admins = UserAccount.objects.filter(user__is_superuser = True)
     for user in django_admins:
         if not Community.objects.admin in user.my_communities:
-            Community.objects.admin.join(user)
+            Community.objects.admin.join(user, manager = True)
         
     # All user accounts must (explicitly) belong to the global community.
     # XXX There should be a more efficient way to do this ;)

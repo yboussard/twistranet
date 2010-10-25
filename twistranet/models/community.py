@@ -57,6 +57,10 @@ class Community(_AbstractCommunity):
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
     # XXX user_source = (OPTIONAL)
     permission_templates = permissions.community_templates
+    
+    @property
+    def managers(self):
+        return CommunityMembership.objects.filter(community = self, is_manager = True)
 
     class Meta:
         app_label = 'twistranet'
@@ -123,6 +127,11 @@ class Community(_AbstractCommunity):
         return self.join(account, manager = True)
         
     @property
+    def can_edit(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_edit, self)
+        
+    @property
     def can_join(self):
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_join, self)
@@ -151,7 +160,7 @@ class Community(_AbstractCommunity):
         mbr = CommunityMembership(
             account = account,
             community = self,
-            is_manager = not not manager,
+            is_manager = manager,
             )
         mbr.save()
         

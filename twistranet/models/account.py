@@ -137,7 +137,7 @@ class Account(_AbstractAccount):
     _picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
                                                             # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
-    name = models.TextField()
+    name = models.CharField(max_length = 255)
     description = models.TextField()
 
     # Security models available for the user

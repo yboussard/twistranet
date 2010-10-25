@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ community.name }}{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/">Home</a> > {{ community.name }}
+{% endblock %}
+{% load i18n %}
+
+{% block content %}
+    <h1><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.name }}</h1>
+    
+    <form action="{% url twistranet.views.edit_community community.id %}" method="post">
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }}: {{ field }}
+            </div>
+        {% endfor %}
+        {% csrf_token %}
+        <p><input type="submit" value="Save" /></p>
+    </form>
+    
+{% endblock %}
+
+{% block contextbar %}
+    {# Display the 'join'/'leave' links #}
+    {% if not i_am_in %}
+        {% if community.can_join %}
+            <a href="" class="main-action">{% trans "Join this community" %}</a>
+        {% endif %}
+    {% else %}
+        {% if community.can_leave %}
+            <a href="" class="main-action">{% trans "Leave this community" %}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

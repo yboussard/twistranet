@@ -24,6 +24,8 @@ urlpatterns = patterns('',
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     (r'^communities/$',                         'twistranet.views.communities'),
     (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
+    (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
+    (r'^community/new$',                        'twistranet.views.create_community'),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),

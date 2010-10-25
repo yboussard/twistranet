@@ -53,6 +53,20 @@ class SecurityTest(TestCase):
         self.failUnless(adm.can_join)
         self.failUnless(adm.can_leave)
     
+    def test_can_edit(self,):
+        """
+        Check some basic edition rights
+        """
+        __account__ = self.A
+        adm = Community.objects.get(name = "Administrators")
+        self.failIf(adm.can_edit)
+        __account__ = self.A
+        self.failIf(adm.is_manager)
+        self.failIf(adm.can_edit)
+        __account__ = self.admin
+        self.failUnless(adm.is_manager)
+        self.failUnless(adm.can_edit)
+    
     def test_private_content(self):
         """
         Check private content behavior
