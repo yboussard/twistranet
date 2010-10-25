@@ -2,19 +2,18 @@
 
 .account-picture {
     float: left;
-    margin: 0 0px 0 10px;
+    margin: 0 5px 5px 0;
 }
 
 .post {
-	margin-top: 1em;
-	padding: 0 0 2em 0px;
+	margin-top: 2em;
+	padding: 0;
 	background: none;
+	clear: both;
 }
 
 .entry {
-    float: left;
-    width: 450px;
-    margin: 0 0px 0 10px;
+    margin: 0;
 }
 
 .entry h3 {
