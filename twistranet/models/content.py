@@ -170,7 +170,7 @@ class Content(_AbstractContent):
     publisher = models.ForeignKey(Account)   # The account this content is published for.
 
     # Usual metadata
-    date = models.DateTimeField(auto_now = True)
+    date = models.DateTimeField(auto_now = True)                # XXX TODO: Rename this into 'pub_date' to avoid confusion
     content_type = models.TextField()
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)

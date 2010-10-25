@@ -73,9 +73,10 @@
 
                 <div id="searchform">
                     {% block searchform %}
-                        <form action="/search" method="post" id="search-box">
+                        <form action="/search/" method="get" id="search-box">
+                            {% csrf_token %}
                         	<div class="search-wrapper">
-                        		<input type="text" value="{% trans 'Search...' %}" class="textfield" name="s" id="search-text" onblur="if(this.value=='') this.value='{% trans 'Search...' %}';" onfocus="if(this.value=='{% trans 'Search...' %}') this.value='';" />
+                        		<input type="text" value="{% trans 'Search...' %}" class="textfield" name="q" id="search-text" onblur="if(this.value=='') this.value='{% trans 'Search...' %}';" onfocus="if(this.value=='{% trans 'Search...' %}') this.value='';" />
                         	</div>
                         </form>
                     {% endblock %}

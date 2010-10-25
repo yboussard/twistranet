@@ -113,14 +113,22 @@ TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (H
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
+# Search engine (Haystack) configuration
+HAYSTACK_SITECONF = 'twistranet.search_sites'
+HAYSTACK_SEARCH_ENGINE = "simple"
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    # Uncomment the next line to enable the admin:
+
+    # admin stuff
     'django.contrib.admin',
+    
+    # Haystack search engine
+    'haystack',
     
     # TwistraNet core stuff
     'twistranet',

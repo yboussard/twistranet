@@ -1,0 +1,5 @@
+import haystack
+haystack.autodiscover()
+
+
+

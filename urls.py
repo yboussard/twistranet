@@ -27,6 +27,9 @@ urlpatterns = patterns('',
     (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),
 
+    # Search engine (Haystack)
+    (r'^search/', include('haystack.urls')),
+
     # Login / Logout / Register stuff
     (r'^login/$', login),
     (r'^logout/$', logout),
