@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if account_by_id %}
+{% if account %}
     <h2>
         <a href="{% url twistranet.views.account_by_id account.id %}">
             {{ account.name }}
