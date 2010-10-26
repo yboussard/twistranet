@@ -8,6 +8,10 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 TEMPLATE_STRING_IF_INVALID = "BOUH"
 
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS':      False,
+}
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
