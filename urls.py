@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     # The wall page for generic accounts
     (r'^$',                                     'twistranet.views.home'),
     (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),          # The 'profile' page
+    (r'^resource/(\w+)$',                       'twistranet.views.account_by_alias_or_id'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),

@@ -68,7 +68,11 @@ def _getInlineForms(request, publisher = None):
     # Return the forms
     return forms
 
-
+def account_by_alias_or_id(request, alias):
+    """
+    XXX TODO
+    """
+    raise NotImplementedError
 
 def account_by_id(request, account_id):
     """

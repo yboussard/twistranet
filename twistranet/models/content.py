@@ -226,7 +226,7 @@ class Content(_AbstractContent):
 
     def getText(self):
         """
-        Override this to not use the 'text' attribute of the super class
+        Override this to not use the 'text' attribute of the super class.
         """
         return self.text
         

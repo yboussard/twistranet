@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load twistranet_extras %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
     <div class="account-picture">
@@ -12,12 +13,12 @@
         {% endif %}
         {% if content.object.headline %}
             <span class="headline">
-                {{ content.object.headline }}<br />
+                {{ content.object.headline|escape_status }}<br />
             </span>
         {% endif %}
         {% if content.object.summary %}
             <div class="summary-content">
-                {{ content.object.summary|safe }}
+                {{ content.object.summary|escape_status }}
             </div>
         {% endif %}
         <div class="postmetadata">
