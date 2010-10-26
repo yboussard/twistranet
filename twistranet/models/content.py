@@ -208,6 +208,8 @@ class Content(_AbstractContent):
     # XXX TODO: Find a way to optimize this without having to query the underlying object
     summary_view = "content/summary.part.html"
     
+    is_content = True
+    
     def __unicode__(self):
         return "%s %d by %s" % (self.content_type, self.id, self.author)
     
@@ -247,6 +249,19 @@ class Content(_AbstractContent):
         if self.getText() == self.headline:
             return None
         return self.getText()
+        
+    #                                                               #
+    #                       Security Management                     #
+    #                                                               #
+    
+    @property
+    def can_list(self):
+        """
+        Same as can_view for content objects?
+        XXX TODO: Clean that a little bit?
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_view, self)
 
     #                                                               #
     #                   Content internal stuff                      #

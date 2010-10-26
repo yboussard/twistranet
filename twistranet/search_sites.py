@@ -1,5 +1,3 @@
 import haystack
 haystack.autodiscover()
 
-
-

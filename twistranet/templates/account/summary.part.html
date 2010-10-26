@@ -1,6 +1,6 @@
-{# Generate a summary for a 'community' object #}
+{# Generate a summary for an 'account' object #}
 {% load i18n %}
-<div class="post" id="post-{{community.id}}">
+<div class="post" id="post-{{content.id}}">
     <div class="account-picture">
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">
     </div>
@@ -10,10 +10,9 @@
             {{ account.description|safe }}
         </div>
         <div class="postmetadata">
-            {{ account.permissions }} |
-            {# XXX TODO: Fix members count in search results #}
-            {{ account.members.count }} members
+            {# {{ content.date|timesince }} | #}
+            {# {{ content.language }} | #}
+            {# {{ content.permissions }} #}
         </div>
     </div>
 </div>
-

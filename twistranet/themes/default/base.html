@@ -5,7 +5,7 @@
 <head profile="http://gmpg.org/xfn/11">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>{% block title %}{% blocktrans %}My amazing site{% endblocktrans %}{% endblock %}</title>
+    <title>{% block title %}{% blocktrans %}TwistraNet{% endblocktrans %}{% endblock %}</title>
 
     <meta name="generator" content="TwistraNet" />
     <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" />
@@ -72,14 +72,7 @@
                 </div>
 
                 <div id="searchform">
-                    {% block searchform %}
-                        <form action="/search/" method="get" id="search-box">
-                            {% csrf_token %}
-                        	<div class="search-wrapper">
-                        		<input type="text" value="{% trans 'Search...' %}" class="textfield" name="q" id="search-text" onblur="if(this.value=='') this.value='{% trans 'Search...' %}';" onfocus="if(this.value=='{% trans 'Search...' %}') this.value='';" />
-                        	</div>
-                        </form>
-                    {% endblock %}
+                    {% include "search/searchfield.part.html" %}
                 </div>
 
                 <div id="breadcrumb">
@@ -103,6 +96,14 @@
                         {% endblock %}
                         </ul>
                     </div>
+                    
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
 
                     <div id="content">
                         {% block content %}

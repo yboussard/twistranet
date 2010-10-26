@@ -10,7 +10,7 @@
 {% block content %}
     <h1>{% blocktrans %}Communities{% endblocktrans %}</h1>
     {% if communities %}
-        {% for community in communities %}
+        {% for account in communities %}
             {%include "community/summary.part.html" %}
         {% endfor %}
     {% else %}

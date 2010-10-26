@@ -6,13 +6,16 @@ from twistranet.models import *
 
 class StatusUpdateIndex(SearchIndex):
     searchable_text = CharField(document=True, use_template=True)
-    # author = CharField(model_attr='user')
+    author = CharField(model_attr='author')
     date = DateTimeField(model_attr='date')
 
-    # def get_queryset(self):
-    #     """Used when the entire index for model is updated."""
-    #     return StatusUpdate.objects
-
-
 site.register(StatusUpdate, StatusUpdateIndex)
+
+
+class AccountIndex(SearchIndex):
+    searchable_text = CharField(document=True, use_template=True)
+
+site.register(Account, AccountIndex)
+
+
 

@@ -8,8 +8,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    # (r'^TwistraNet/', include('TwistraNet.foo.urls')),
+    # XXX TODO : Move those URLs inside the TN product
 
     # The wall page for generic accounts
     (r'^$',                                     'twistranet.views.home'),
@@ -25,10 +24,11 @@ urlpatterns = patterns('',
     (r'^communities/$',                         'twistranet.views.communities'),
     (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
     (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
+    (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),
 
     # Search engine (Haystack)
-    (r'^search/', include('haystack.urls')),
+    (r'^search/',                               include('twistranet.urls.search')),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),
@@ -51,3 +51,5 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
 )
+
+

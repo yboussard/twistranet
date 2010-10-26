@@ -126,6 +126,7 @@ def bootstrap():
         a_picture = Resource.objects.get(alias = "default_a_picture")
         b_picture = Resource.objects.get(alias = "default_b_picture")
         admin_picture = Resource.objects.get(alias = "default_admin_picture")
+        tn_picture = Resource.objects.get(alias = "default_tn_picture")
         
         # Change A / B / TN profile pictures if they're not set
         if UserAccount.objects.filter(name = 'admin').exists():
@@ -143,6 +144,9 @@ def bootstrap():
             if not B._picture:
                 B._picture = b_picture
                 B.save()
+        if not _system._picture:
+            _system._picture = tn_picture
+            _system.save()
             
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."

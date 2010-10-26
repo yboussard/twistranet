@@ -1,0 +1,17 @@
+{# Display search result summary according to content type #}
+{% if result.object.object.can_list %}
+    {% if result.object.is_content %}
+        {% with result.object.object as content %}
+            {%include content.summary_view %}
+        {% endwith %}
+    {% else %}{% if result.object.is_account %}
+        {% with result.object.object as account %}
+            {%include account.summary_view %}
+        {% endwith %}
+    {% else %}
+
+        {# Don't know how to display that! #}
+        ??{{ result.object }}
+
+    {% endif %}{% endif %}
+{% endif %}

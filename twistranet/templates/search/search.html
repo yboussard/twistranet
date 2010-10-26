@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% if query %}
+        {% blocktrans %}Search results{% endblocktrans %}
+    {% else %}
+        {% blocktrans %}Search{% endblocktrans %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <h2>Search</h2>
@@ -19,9 +28,9 @@
 
             {% for result in page.object_list %}
                 <p>
-                    {% with result.object as content %}
-                        <a href="{{ result.object.get_absolute_url }}">{% include "content/summary.part.html" %}</a>
-                    {% endwith %}
+                    <a href="{{ result.object.get_absolute_url }}">
+                        {% include "search/summary.part.html" %}
+                    </a>
                 </p>
             {% empty %}
                 <p>No results found.</p>

@@ -1,21 +1,39 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% blocktrans %}{{ account }}'s Profile{% endblocktrans %}{% endblock %}
+{% block title %}
+    {%ifequal account.id current_account.id %}
+        {% blocktrans %}My profile{% endblocktrans %}
+    {%else%}
+        {% blocktrans %}{{ account }}'s Profile{% endblocktrans %}
+    {%endifequal%}
+{% endblock %}
 
 {% block breadcrumb %}
     <a href="/">Home</a> > {{ account }}
 {% endblock %}
 
 {% block globalbar %}
-    <ul>
-        <li>{% include "account/account.box.html" %}</li>
-    </ul>
+    {%ifequal account.id current_account.id %}
+        <ul>
+            <li>{% include "account/selfbar.box.html" %}</li>
+        </ul>
+    {%else%}
+        <ul>
+            <li>{% include "account/account.box.html" %}</li>
+        </ul>
+    {%endifequal%}
 {% endblock %}
 
 
 {% block content %}
-    <h1>{% blocktrans %}{{ account }}'s Profile{% endblocktrans %}</h1>
+    <h1>
+        {%ifequal account.id current_account.id %}
+            {% blocktrans %}My profile{% endblocktrans %}
+        {%else%}
+            {% blocktrans %}{{ account }}'s Profile{% endblocktrans %}
+        {%endifequal%}
+    </h1>
     {% if account.can_publish %}
         {% include "content/content_forms.part.html" %}
     {% endif %}

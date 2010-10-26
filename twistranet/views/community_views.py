@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import *
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+
 
 from twistranet.forms import communityforms
 
@@ -113,8 +116,21 @@ def edit_community(request, community_id = None):
     
 def create_community(request):
     """
+    Simple, isn't it?
     """
     return edit_community(request, None)
+
+def delete_community(request, community_id):
+    """
+    Delete a community by its id.
+    The model checks the can_delete permission (of course).
+    """
+    account = request.user.get_profile()
+    community = Community.objects.get(id = community_id)
+    name = community.name
+    community.delete()
+    messages.info(request, _('The community %(name)s has been deleted.' % {'name': name}))
+    return HttpResponseRedirect(reverse('twistranet.views.home', ))
 
 
 

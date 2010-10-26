@@ -57,6 +57,11 @@ class Community(_AbstractCommunity):
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
     # XXX user_source = (OPTIONAL)
     permission_templates = permissions.community_templates
+
+    # View overriding support
+    # XXX TODO: Find a way to optimize this without having to query the underlying object
+    summary_view = "community/summary.part.html"
+    is_community = True
     
     @property
     def managers(self):
@@ -78,6 +83,14 @@ class Community(_AbstractCommunity):
                 is_manager = True,
             )
         return ret
+        
+    def delete(self, ):
+        """
+        Check the can_delete permission before dumping content
+        """
+        if not self.can_delete:
+            raise PermissionDenied("You're not allowed to delete this community")
+        return super(Community, self).delete()
         
     def setTemplate(self, template_id):
         """
@@ -138,9 +151,15 @@ class Community(_AbstractCommunity):
         
     @property
     def can_leave(self):
+        # TODO: Check if we're not the last manager inside
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_leave, self)
         
+    @property
+    def can_delete(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_delete, self)
+    
     def join(self, account = None, manager = False):
         """
         Join the community.

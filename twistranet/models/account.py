@@ -146,6 +146,12 @@ class Account(_AbstractAccount):
     permission_templates = permissions.account_templates
     permissions = models.CharField(max_length = 32)
     
+    # View overriding support
+    # XXX TODO: Find a way to optimize this without having to query the underlying object
+    summary_view = "account/summary.part.html"
+
+    is_account = True
+    
     @property
     def picture(self):
         """
@@ -238,7 +244,7 @@ class Account(_AbstractAccount):
                                     # Should not be cached, BTW
         
         if role == roles.authenticated.value:
-            return Account._getAuthenticatedAccount() == self      # Don't cache that
+            return Account.objects._getAuthenticatedAccount() == self      # Don't cache that
         
         if role == roles.administrator.value:
             if self.account_type == "SystemAccount":
@@ -268,7 +274,7 @@ class Account(_AbstractAccount):
         import content
         if isinstance(obj, content.Content):
             if role == roles.content_public.value:
-                return self.has_permission(permissions.can_view, obj)
+                return self.has_permission(permissions.can_view, obj.publisher)
             if role == roles.content_network.value:
                 return self.has_role(roles.network, obj.publisher)
             if role == roles.content_community_member.value:
@@ -302,6 +308,14 @@ class Account(_AbstractAccount):
         """
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_publish, self)
+
+    @property
+    def can_list(self):
+        """
+        Return true if the current account can list the current object.
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_list, self)
 
     @property
     def can_view(self):
@@ -423,6 +437,8 @@ class UserAccount(Account):
     A user account has languages defined so that it primarily 'sees' his favorite languages.
     """
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
+
+    is_user_account = True
 
     def save(self, *args, **kw):
         """
