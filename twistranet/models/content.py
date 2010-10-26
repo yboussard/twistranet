@@ -167,10 +167,10 @@ class Content(_AbstractContent):
     Abstract content representation class.
     """
     # The publisher this content is published for
-    publisher = models.ForeignKey(Account)   # The account this content is published for.
+    publisher = models.ForeignKey(Account)                      # The account this content is published for.
 
     # Usual metadata
-    date = models.DateTimeField(auto_now = True)                # XXX TODO: Rename this into 'pub_date' to avoid confusion
+    created_at = models.DateTimeField(auto_now = True)
     content_type = models.TextField()
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)
@@ -180,6 +180,9 @@ class Content(_AbstractContent):
     
     # Resources associated to this content
     resources = models.ManyToManyField(Resource)
+    
+    # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
+    source = "web"
     
     # I18N support
     language = models.CharField(

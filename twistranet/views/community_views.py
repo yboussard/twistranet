@@ -38,7 +38,7 @@ def community_by_id(request, community_id):
     account = request.user.get_profile()
     current_account = account
     community = Community.objects.get(id = community_id)
-    latest_list = Content.objects.filter(publisher = community).order_by("-date")
+    latest_list = Content.objects.filter(publisher = community).order_by("-created_at")
 
     # Form management
     try:

@@ -33,6 +33,9 @@ urlpatterns = patterns('',
     # Login / Logout / Register stuff
     (r'^login/$', login),
     (r'^logout/$', logout),
+    
+    # TwistraNet's API
+    (r'^api/',                                  include('twistranet.api.urls')),
 
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',

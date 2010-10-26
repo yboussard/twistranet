@@ -31,8 +31,6 @@ class ResourceObjectsManager(basemanager.BaseManager):
                 Q(owner = authenticated)
                 )
             ).distinct()
-        
-    
 
 class Resource(models.Model):
     """

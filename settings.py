@@ -90,7 +90,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+INTERNAL_IPS = ("127.0.0.1", )
 
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
@@ -127,8 +130,10 @@ INSTALLED_APPS = (
     # admin stuff
     'django.contrib.admin',
     
-    # Haystack search engine
+    # 3rd party modules
+    'debug_toolbar',
     'haystack',
+    'piston',
     
     # TwistraNet core stuff
     'twistranet',

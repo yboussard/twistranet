@@ -91,7 +91,7 @@ def account_by_id(request, account_id):
     except MustRedirect:
         return HttpResponseRedirect(request.path)
     
-    latest_list = Content.objects.getActivityFeed(account).order_by("-date")
+    latest_list = Content.objects.getActivityFeed(account).order_by("-created_at")
     t = loader.get_template('account.html')
     c = RequestContext(
         request,
@@ -121,7 +121,7 @@ def home(request):
         return HttpResponseRedirect(request.path)
     
     # Render the template
-    latest_list = account.content.followed.order_by("-date")
+    latest_list = account.content.followed.order_by("-created_at")
     communities_list = Community.objects.get_query_set()
     t = loader.get_template('wall.html')
     c = RequestContext(
