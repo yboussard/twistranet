@@ -102,7 +102,6 @@ def account_by_id(request, account_id):
         {
             'path': request.path,
             "content_forms": forms,
-            "current_account": current_account.object,
             "account": account.object,
             "latest_content_list": latest_list[:25],
             
@@ -133,7 +132,6 @@ def home(request):
         {
             'path': request.path,
             'account': account,
-            'current_account': request.user.get_profile(),
             'latest_content_list': latest_list[:25],
             'content_forms': forms,
         },

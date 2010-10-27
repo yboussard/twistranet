@@ -36,7 +36,6 @@ def community_by_id(request, community_id):
     Here you can view all members and posts published on this community
     """
     account = request.user.get_profile()
-    current_account = account
     community = Community.objects.get(id = community_id)
     latest_list = Content.objects.filter(publisher = community).order_by("-created_at")
 
@@ -58,7 +57,7 @@ def community_by_id(request, community_id):
             "latest_content_list": latest_list[:25],
             "community_forms": forms,
             
-            "i_am_in": community.members.filter(id = current_account.id).exists(),
+            "i_am_in": community.members.filter(id = account.id).exists(),
         },
         )
     return HttpResponse(t.render(c))
@@ -69,7 +68,6 @@ def edit_community(request, community_id = None):
     """
     # Get basic information
     account = request.user.get_profile()
-    current_account = account
     if community_id is not None:
         community = Community.objects.get(id = community_id)
         if not community.can_view:
@@ -103,11 +101,10 @@ def edit_community(request, community_id = None):
         {
             "path": request.path,
             "account": account,
-            "current_account": account,
             "community": community,
             "members": community and community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
             "form": form,
-            "i_am_in": community and community.members.filter(id = current_account.id).exists(),
+            "i_am_in": community and community.members.filter(id = account.id).exists(),
         },
         )
     return HttpResponse(t.render(c))
