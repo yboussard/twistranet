@@ -96,7 +96,7 @@ def account_by_id(request, account_id):
         return HttpResponseRedirect(request.path)
     
     latest_list = Content.objects.getActivityFeed(account).order_by("-created_at")
-    t = loader.get_template('account.html')
+    t = loader.get_template('account/view.html')
     c = RequestContext(
         request,
         {
