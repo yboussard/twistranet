@@ -295,10 +295,10 @@ class Account(_AbstractAccount):
             if role == roles.content_community_manager.value:
                 return self.has_role(roles.community_manager, obj.publisher)
             if role == roles.owner.value:
-                return obj.author == self
+                return obj.author.id == self.id
 
         # We shouldn't reach there
-        raise RuntimeError("Unexpected role (%d) asked for object '%s' (%d)") % (role, obj.__class__.__name__, obj.id)
+        raise RuntimeError("Unexpected role (%d) asked for object '%s' (%d)") % (role, obj and obj.__class__.__name__, obj and obj.id)
 
 
     def has_permission(self, permission, obj):

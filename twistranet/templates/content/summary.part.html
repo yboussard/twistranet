@@ -22,9 +22,14 @@
             </div>
         {% endif %}
         <div class="postmetadata">
-            {{ content.created_at|timesince }} |
-            {{ content.language }} |
-            {{ content.permissions }}
+            <ul>
+                <li>{{ content.created_at|timesince }}</li>
+                <li>{{ content.language }}</li>
+                <li>{{ content.permissions }}</li>
+            </ul>
+        </div>
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
         </div>
     </div>
 </div>

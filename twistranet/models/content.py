@@ -266,6 +266,11 @@ class Content(_AbstractContent):
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_view, self)
 
+    @property
+    def can_delete(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_delete, self)
+
     #                                                               #
     #                   Content internal stuff                      #
     #                                                               #
