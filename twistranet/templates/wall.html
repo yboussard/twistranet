@@ -1,12 +1,26 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans 'Wall' %}{% endblock %}
+{% block title %}{% blocktrans %}Activity Feed{% endblocktrans %}{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/">Home</a> > {{ account }}
+{% endblock %}
+
+{% block contextbar %}
+    <ul>
+        {% include 'account/profile.box.html' %}
+        {% include 'account/actions.box.html' %}
+        {% include "account/relations.box.html" %}
+    </ul>
+{% endblock %}
+
 
 {% block content %}
     <h1>{% blocktrans %}Activity Feed{% endblocktrans %}</h1>
-
-    {% include "content/content_forms.part.html" %}
+    {% if account.can_publish %}
+        {% include "content/content_forms.part.html" %}
+    {% endif %}
 
     {% if latest_content_list %}
         {% for content in latest_content_list %}
@@ -15,5 +29,5 @@
     {% else %}
         <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endif %}
-
 {% endblock %}
+
