@@ -5,6 +5,7 @@ from django.test import TestCase
 from twistranet.models import *
 from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.db import IntegrityError
 
 from twistranet.models import _permissionmapping, dbsetup
 
@@ -62,6 +63,26 @@ class AccountSecurityTest(TestCase):
         self.failUnless(self.A in Account.objects.all(), "A private account must still be listable in its network")
         
         
+    def test_slugify(self):
+        """
+        Test if slugify works. Check slugification and check against duplicates
+        """
+        __account__ = self.admin
+        c = Community()
+        c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
+        c.save()
+        self.failUnlessEqual(c.name, "my_a_community_it_has_a_very_long_title_so_its_goi")
+        c = Community()
+        c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
+        try:
+            c.save()
+        except:
+            pass
+        else:
+            self.fail("Should have been raising as the two slugs are identical!")
+        
+        
+        
     def test_cant_view_attributes(self):
         """
         Fetch a restricted account and check if we can't read basic properties.
@@ -69,11 +90,12 @@ class AccountSecurityTest(TestCase):
         """
         # Check if we find the admin community
         __account__ = self.A
-        admin = Community.objects.get(name = "Administrators")
+        admin = Community.objects.get(name = "administrators")
         self.failIf(admin.can_view)
 
         # Create a community and perform the same kind of checks
         c = Community.objects.create(name = "My Workgroup", permissions = "workgroup")
+        c.save()
         self.failUnless(c.can_view)
         __account__ = self.B
         self.failIf(c.can_view)

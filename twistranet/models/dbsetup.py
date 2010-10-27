@@ -82,7 +82,8 @@ def bootstrap():
             _system = SystemAccount()
             __account__ = _system
             _system.permissions = "listed"
-            _system.name = "TwistraNet System"
+            _system.screen_name = "TwistraNet System"
+            _system.name = "system"
             _system.save()
         _system = SystemAccount.get()
     
@@ -91,7 +92,8 @@ def bootstrap():
             global_ = Community.objects.global_
         except ObjectDoesNotExist:
             global_ = GlobalCommunity(
-                name = "All TwistraNet Members",
+                name = "all_twistranet",
+                screen_name = "All TwistraNet Members",
                 description = "This community contains all TwistraNet members. It's mainly used for critical information."
                 )
             global_.permissions = "intranet"        # Default permissions = intranet
@@ -102,7 +104,8 @@ def bootstrap():
             admincommunity = Community.objects.admin
         except ObjectDoesNotExist:
             c = AdminCommunity(
-                name = "Administrators",
+                name = "administrators",
+                screen_name = "Administrators",
                 description = "TwistraNet admin team",
                 )
             c.permissions = "workgroup"

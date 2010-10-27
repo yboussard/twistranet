@@ -16,6 +16,7 @@ can_delete = can_edit
 class PermissionTemplate:
     """
     Permission template helper.
+    XXX TODO: Avoid value modification when for example you do perm[4]['can_view'] = True !
     """
     def __init__(self, perm_tuple, default_index = 0):
         """
@@ -34,7 +35,7 @@ class PermissionTemplate:
         return self.perm_tuple[self.default_index]["id"]
         
     def permissions(self):
-        return self.perm_tuple
+        return tuple(self.perm_tuple)
         
         
 # Regular content permissions

@@ -2,7 +2,7 @@
 {% if account %}
     <h2>
         <a href="{% url twistranet.views.account_by_id account.id %}">
-            {{ account.name }}
+            {{ account.screen_name }}
         </a>
     </h2>
     <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">

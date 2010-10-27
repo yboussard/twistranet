@@ -6,10 +6,10 @@
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author.id 'picture' %}">
     </div>
     <div class="entry">
-        <a class="author" href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.name }}</a>
+        <a class="author" href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.screen_name }}</a>
         {% if not content.author == content.publisher %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher.id %}">{{ content.publisher.name }}</a>
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher.id %}">{{ content.publisher.screen_name }}</a>
         {% endif %}
         {% if content.object.headline %}
             <span class="headline">

@@ -5,7 +5,7 @@
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">
     </div>
     <div class="entry">
-        <a class="author" href="{% url twistranet.views.account_by_id account.id %}">{{ account.name }}</a>
+        <a class="author" href="{% url twistranet.views.account_by_id account.id %}">{{ account.screen_name }}</a>
         <div class="summary-content">
             {{ account.description|safe }}
         </div>

@@ -46,7 +46,7 @@ class SecurityTest(TestCase):
         Check if can_join permissions seem ok
         """
         __account__ = self.A
-        adm = Community.objects.get(name = "Administrators")
+        adm = Community.objects.get(name = "administrators")
         self.failIf(adm.can_join)
         self.failIf(adm.can_leave)
         __account__ = self.admin
@@ -58,7 +58,7 @@ class SecurityTest(TestCase):
         Check some basic edition rights
         """
         __account__ = self.A
-        adm = Community.objects.get(name = "Administrators")
+        adm = Community.objects.get(name = "administrators")
         self.failIf(adm.can_edit)
         __account__ = self.A
         self.failIf(adm.is_manager)

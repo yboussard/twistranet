@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 import basemanager
 from resource import Resource
 from accountregistry import AccountRegistry
-from twistranet.lib import permissions, roles, languages
+from twistranet.lib import permissions, roles, languages, utils
 
 class AccountManager(basemanager.BaseManager):
     """
@@ -125,20 +125,21 @@ class Account(_AbstractAccount):
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
     """
-    # XXX Should hold:
-    # A friendly name
-    # name = models.CharField(max_length = 127)
     account_type = models.CharField(max_length = 64)
+    screen_name = models.CharField(max_length = 64, null = False, blank = False)             # The screenname (ie. the 'pseudo' used to display the account name).
+                                                                # This may be translatable someday.
+    name = models.SlugField(unique = True)                      # The actual name used for logging-in and addressing the account by name.
+                                                                # XXX TODO: Slug may be too restrictive 'cause it doesn't allow dots.
     
     # Picture management.
     # If None, will use the default_picture_resource_alias attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_alias = "default_profile_picture"
-    _picture = models.ForeignKey("Resource", null = True)    # Ok, this is odd but it's because of the bootstrap.
-                                                            # We'll avoid the 'null' attribute someday.
+    _picture = models.ForeignKey("Resource", null = True)       # Ok, this is odd but it's because of the bootstrap.
+                                                                # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
-    name = models.CharField(max_length = 255)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now = True)
 
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
@@ -177,9 +178,21 @@ class Account(_AbstractAccount):
         # Check account subtype
         if not self.account_type:
             if self.__class__.__name__ == Account.__name__:
-                raise RuntimeError("You can't directly save an account object.")
+                raise RuntimeError("You can't directly save an account object. Use 'account.object.save()' method instead.")
             self.account_type = self.__class__.__name__
         
+        # Validate screen_name / slug
+        if not self.screen_name:
+            if not self.name:
+                raise ValidationError("You must provide either a name or a screen_name for an account")
+            self.screen_name = self.name
+        elif not self.name:
+            self.name = utils.slugify(self.screen_name)
+            
+        # Default permissions
+        if not self.permissions:
+            self.permissions = self.permission_templates.get_default()
+            
         # Call parent
         ret = super(Account, self).save(*args, **kw)
             
@@ -207,7 +220,7 @@ class Account(_AbstractAccount):
         return AccountRegistry.getModelClass(self.account_type).objects.get(id = self.id)
     
     def __unicode__(self):
-        return u"%s" % (self.name, )
+        return u"%s" % (self.screen_name, )
 
     #                                                       #
     #               Rights / Security management            #

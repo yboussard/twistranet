@@ -18,6 +18,7 @@
         "fields":   {
             "account_type": "UserAccount",
             "name": "admin",
+            "screen_name": "Administrator",
 			"description": "A twistranet manager",
             "permissions": "public"
         }
@@ -44,6 +45,7 @@
         "fields":   {        
             "account_type": "UserAccount",
             "name": "A",
+            "screen_name": "Albert",
 			"description": "A twistranet user",
             "permissions": "public"
         }
@@ -70,6 +72,7 @@
         "fields":   {        
             "account_type": "UserAccount",
             "name": "B",
+            "screen_name": "Bernard",
 			"description": "A twistranet user",
             "permissions": "public"
         }

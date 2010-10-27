@@ -69,9 +69,9 @@ class SimpleTest(TestCase):
 
         # Check wall objects. First one should be older than, say, the third one.
         __account__ = self.B
-        latest = self.B.content.all().order_by('-date')[:5]
+        latest = self.B.content.all().order_by('-created_at')[:5]
         self.failUnlessEqual(len(latest), 5)
-        self.failUnless(latest[0].date >= latest[3].date, "Invalid date order for the wall")
+        self.failUnless(latest[0].created_at >= latest[3].created_at, "Invalid date order for the wall")
         
     def test_wall_security(self):
         """
