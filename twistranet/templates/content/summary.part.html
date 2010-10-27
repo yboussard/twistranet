@@ -24,7 +24,7 @@
         <div class="postmetadata">
             <ul>
                 <li>{{ content.created_at|timesince }}</li>
-                <li>{{ content.language }}</li>
+                {%if content.language %}<li>{{ content.language }}</li>{%endif%}
                 <li>{{ content.permissions }}</li>
             </ul>
         </div>
