@@ -20,7 +20,7 @@ def communities(request):
     """
     account = request.user.get_profile()
     communities = Community.objects.get_query_set()
-    t = loader.get_template('communities.html')
+    t = loader.get_template('community/list.html')
     c = RequestContext(
         request,
         {
@@ -46,7 +46,7 @@ def community_by_id(request, community_id):
         return HttpResponseRedirect(request.path)
 
     # Generate template
-    t = loader.get_template('community.html')
+    t = loader.get_template('community/view.html')
     c = RequestContext(
         request,
         {

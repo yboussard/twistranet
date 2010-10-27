@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if community %}
+    <li id="community-profile-box">
+        <h2>
+            <a href="{% url twistranet.views.community_by_name community.name %}">
+                {{ community }}
+            </a>
+        </h2>
+        <img width="50" height="50" src="{% url twistranet.views.resource_by_account community.id 'picture' %}">
+    </li>
+{% endif %}

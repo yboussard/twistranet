@@ -1,0 +1,9 @@
+{% load i18n %}
+<li id="community-members-box">
+    <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
+    <ul>
+        {% for account in members %}
+            {% include "account/thumbnail.part.html" %}
+        {% endfor %}
+    </ul>
+</li>

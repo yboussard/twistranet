@@ -19,16 +19,13 @@
         <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endfor %}
 
-    <h2>Members</h2>
-    <ul class="account-thumbnails">
-        {% for account in members %}
-            {% include "account/thumbnail.part.html" %}
-        {% endfor %}
-    </ul>
-
 {% endblock %}
 
 {% block contextbar %}
-    {% include "community/actions.part.html" %}
+    <ul>
+        {% include 'community/profile.box.html' %}
+        {% include 'community/actions.box.html' %}
+        {% include 'community/members.box.html' %}
+    </ul>
 {% endblock %}
 

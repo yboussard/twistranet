@@ -89,10 +89,10 @@
 
                     <div id="contextbar" class="sidebar">
                         {% block contextbar %}
-                            <ul>		
-                                <li>
-                                    {% include "account/self.box.html" %}
-                                </li>
+                            <ul>
+                                {% include 'account/profile.box.html' %}
+                                {% include 'account/actions.box.html' %}
+                                {% include "account/relations.box.html" %}
                             </ul>
                         {% endblock %}
                         </ul>
