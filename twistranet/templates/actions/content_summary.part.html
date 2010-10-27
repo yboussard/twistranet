@@ -1,0 +1,8 @@
+{% load i18n %}
+<ul>
+    {% if content.can_delete %}
+        <li>
+            <a href="{% url twistranet.views.communities %}">{% blocktrans %}Delete{% endblocktrans %}</a>
+        </li>
+    {% endif %}
+</ul>
