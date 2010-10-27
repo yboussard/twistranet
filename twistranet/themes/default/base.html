@@ -56,10 +56,11 @@
                         {# </div> #}
                     </div>
                     {% endblock %}
-                    <div class="logotext">
-                        <a href="{% url twistranet.views.home %}">TwistraNet</a>
-                        <div class="description">{% blocktrans %}The social content management system.{% endblocktrans %}</div>
-                    </div>
+                    <a class="logotext"
+                       href="{% url twistranet.views.home %}">
+                        <span>TwistraNet</span><br />
+                        <span class="description">{% blocktrans %}The social content management system.{% endblocktrans %}</span>
+                    </a>
                     <div id="menubar">
                         <div id="mainmenu">
                             <ul class="sf-menu">

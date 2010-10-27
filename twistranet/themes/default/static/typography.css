@@ -168,11 +168,11 @@ a {	text-decoration: none; }
 
 a img {	border: none;	}
 
-.logotext a {	text-decoration: none; }
-	.logotext a:link    { color: #be261e; }
-	.logotext a:hover   { color: #000; }
-	.logotext a:active  { color: #26a; }
-	.logotext a:visited { color: #be261e; }
+a.logotext {	text-decoration: none; }
+	a.logotext:link    { color: #be261e; }
+	a.logotext:hover   { color: #000; }
+	a.logotext:active  { color: #26a; }
+	a.logotext:visited { color: #be261e; }
 
 #mainmenu ul li a:link    { color: #26a; }
 #mainmenu ul li a:hover   { color: #000; }

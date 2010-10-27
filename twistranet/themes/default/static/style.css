@@ -27,14 +27,17 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 /* Head
 ***************************************************************************** */
 
-#head .logotext {
+#head a.logotext {
 	font-size: 3.2em;
 	font-weight: bold;
 	padding: 15px 30px 0 50px;
+	display: block;
+	cursor: pointer;
     }
 	#head .logotext .description {
 		font-size: 80%;
 		letter-spacing:0.03em;
+		color: #444 !important;
 	}
 
 #head .slogan {
