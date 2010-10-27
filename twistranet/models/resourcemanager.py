@@ -3,6 +3,7 @@ import mimetypes
 from django.db import models, IntegrityError
 from django.db.models import Q
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.http import HttpResponse
 
 import os
 import os.path
@@ -133,13 +134,16 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
         Return a pointer to the given resource file.
         """
         # Security check against locator path (avoid "/../../" hacks)
-        fpath = os.path.abspath(os.path.join(self.path, resource.locator))
+        
+        filename = resource.locator
+        fpath = os.path.abspath(os.path.join(self.path, filename))
         if not fpath.startswith(os.path.abspath(self.path)):
             raise ValueError("Invalid locator path: %s" % fpath)
         
         # Open file descriptor
-        f = open(fpath, "r")
-        return f
+        f = open(fpath, "rb").read()
+        content_type = mimetypes.guess_type(filename)[0]
+        return HttpResponse(f, mimetype=content_type)
 
 
 
