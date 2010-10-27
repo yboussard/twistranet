@@ -20,9 +20,9 @@
 					search
 				wrap
 					container
-					    globalbar
+					    contextbar
 						content
-						sidebar
+						globalbar
 				bottom
 					footer
 */
@@ -101,7 +101,7 @@ body {
 			top: -40px;
 			clear: both;
 			}
-			#globalbar {
+			#contextbar {
 				width: 150px;
 				float: left;	
 				margin: 0 30px 12px 0;
@@ -110,7 +110,7 @@ body {
 				width: 550px;
 				float: left;
 			}
-			#sidebar {
+			#globalbar {
 				width: 150px;
 				float: right;	
 				margin: 0 0 12px;

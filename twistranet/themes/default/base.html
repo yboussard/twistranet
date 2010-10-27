@@ -78,7 +78,7 @@
 
                 <div id="breadcrumb">
                     {% block breadcrumb %}
-                    <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
+                        <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
                     {% endblock %}
                 </div>
             
@@ -87,11 +87,11 @@
             <div id="wrap">
                 <div id="container">
 
-                    <div id="globalbar" class="sidebar">
-                        {% block globalbar %}
+                    <div id="contextbar" class="sidebar">
+                        {% block contextbar %}
                             <ul>		
                                 <li>
-                                    {% include "account/selfbar.box.html" %}
+                                    {% include "account/self.box.html" %}
                                 </li>
                             </ul>
                         {% endblock %}
@@ -111,18 +111,14 @@
                         {% endblock %}
                     </div>
 
-                    <div id="sidebar" class="sidebar">
-                        <ul>
-                            <li>
-                                {% block contextbar %}
-                                {% endblock %}
-                            </li>
-                            <li>
-                                {% block generalbar %}
+                    <div id="globalbar" class="sidebar">
+                        {% block globalbar %}
+                            <ul>
+                                <li>
                                     {% include "actions/general.part.html" %}
-                                {% endblock %}
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        {% endblock %}
                     </div>
                 </div><!-- end #container -->
                 <div class="clear">&nbsp;</div>

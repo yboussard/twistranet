@@ -1,0 +1,102 @@
+{% load i18n %}
+{# Use this as a base for your own templates. #}
+
+
+{# The top bar is the upper user-related links bar. #}
+{% block topbar %}
+<div id="usermenu">
+    <div class="caption">
+        <ul>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="/">{% blocktrans %}{{ user }}{% endblocktrans %}</a>
+            </li>
+            {% endif %}
+            {% block useractions %}
+            {% endblock %}
+            {% if user.is_authenticated %}
+            <li class="last">
+                <a href="/logout">{% blocktrans %}Log out{% endblocktrans %}</a>
+            </li>
+            {% else %}
+            <li class="last"><a href="/login">{% blocktrans %}Log in{% endblocktrans %}</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {# <div class="clear tab"> #}
+    {#     <a href="#" title="<?php _e('Users', 'default'); ?>"> #}
+    {#         <img src="/static/images/icons/arrow-dn.png" alt="btn" /> #}
+    {#         <img src="/static/images/icons/arrow-up.png" alt="btn" style="display: none" /> #}
+    {#     </a> #}
+    {# </div> #}
+</div>
+{% endblock %}
+
+
+{# This is where you tell your site what it's all about #}
+{% block sitetitle %}
+<a class="logotext"
+   href="{% url twistranet.views.home %}">
+    <span>TwistraNet</span><br />
+    <span class="description">{% blocktrans %}The social content management system.{% endblocktrans %}</span>
+</a>
+<div id="menubar">
+    <div id="mainmenu">
+        <ul class="sf-menu">
+            {% block menu_items %}
+                {% include "navigation/menu_items.part.html" %}
+            {% endblock %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{# The search form #}
+<div id="searchform">
+    {% include "search/searchfield.part.html" %}
+</div>
+
+{% block breadcrumb %}
+<a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
+{% endblock %}
+
+
+
+{% block contextbar %}
+    <ul>		
+        <li>
+            {% include "account/selfbar.box.html" %}
+        </li>
+    </ul>
+{% endblock %}
+
+{% block message_zone %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+
+{% block globalbar %}
+                    <div id="sidebar" class="sidebar">
+                        <ul>
+                            <li>
+                            </li>
+                            <li>
+                                {% block generalbar %}
+                                    {% include "actions/general.part.html" %}
+                                {% endblock %}
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- end #container -->
+                <div class="clear">&nbsp;</div>
+            </div><!-- end #wrap -->
+{% endblock %}
+
+{% block footer %}
+    <div id="footer">{% blocktrans %}Powered By {% endblocktrans %}<a href="http://www.twistranet.com">TwistraNet</a></div>
+{% endblock %}
