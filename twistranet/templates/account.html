@@ -13,22 +13,20 @@
     <a href="/">Home</a> > {{ account }}
 {% endblock %}
 
-{% block globalbar %}
-    {%ifequal account.id current_account.id %}
-        <ul>
-            <li>{% include "account/selfbar.box.html" %}</li>
-        </ul>
-    {%else%}
-        <ul>
-            <li>{% include "account/account.box.html" %}</li>
-        </ul>
-    {%endifequal%}
+{% block contextbar %}
+
+    <ul>
+        {% include 'account/profile.box.html' %}
+        {% include 'account/actions.box.html' %}
+        {% include "account/relations.box.html" %}
+    </ul>
+
 {% endblock %}
 
 
 {% block content %}
     <h1>
-        {%ifequal account.id current_account.id %}
+        {%ifequal account.id logged_account.id %}
             {% blocktrans %}My profile{% endblocktrans %}
         {%else%}
             {% blocktrans %}{{ account }}'s Profile{% endblocktrans %}
@@ -49,18 +47,6 @@
 {% endblock %}
 
 
-{% block contextbar %}
-    {# Display the 'follow'/'unfollow'/'add to my nwk'/... buttons if we're on a followable account #}
-    {% ifequal account current_account %}
-        {# Hey, it's me! Don't have anything to do. #}
-    {% else %}
-        {% if account_in_my_network %}
-            <a href="" class="main-action">{% trans "Remove from my network" %}</a>
-        {% else %}
-            <a href="" class="main-action">{% trans "Add to my network" %}</a>
-        {% endif %}
-    {% endifequal %}
-{% endblock %}
 
 
 

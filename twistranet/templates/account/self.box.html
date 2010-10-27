@@ -1,11 +1,5 @@
 {% load i18n %}
 {% if logged_account %}
-    <h2>
-        <a href="{% url twistranet.views.account_by_name logged_account.name %}">
-            {{ logged_account }}
-        </a>
-    </h2>
-    <img width="50" height="50" src="{% url twistranet.views.resource_by_account logged_account.id 'picture' %}">
     <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     <ul>
         {% for community in logged_account.my_communities %}

@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if account %}
+    <li id="account-profile-box">
+        <h2>
+            <a href="{% url twistranet.views.account_by_name account.name %}">
+                {{ account }}
+            </a>
+        </h2>
+        <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">
+    </li>
+{% endif %}
