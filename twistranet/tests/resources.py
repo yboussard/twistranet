@@ -37,8 +37,8 @@ class ResourcesTest(TestCase):
         Try to get a public resource anonymously.
         We fetch the first we can find
         """
-        # Read the first public resource we can find
+        # Get the first public resource
         r = Resource.objects.all()[0]
-        self.failUnless(r.get().read())
+        self.failUnless(r.get())
 
 
