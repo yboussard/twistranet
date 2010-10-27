@@ -151,7 +151,12 @@ class Community(_AbstractCommunity):
         
     @property
     def can_leave(self):
-        # TODO: Check if we're not the last manager inside
+        # Special check if we're not the last manager inside
+        if self.is_manager:
+            if self.managers.count() == 1:
+                return False
+        
+        # Regular checks
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_leave, self)
         

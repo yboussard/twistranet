@@ -25,11 +25,11 @@ urlpatterns = patterns('',
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     (r'^communities/$',                         'twistranet.views.communities'),
-    (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
-    (r'^community/(\w+)$',                      'twistranet.views.community_by_name'),
     (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
     (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),
+    (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
+    (r'^community/(\w+)$',                      'twistranet.views.community_by_name'),
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),
