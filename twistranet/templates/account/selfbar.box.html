@@ -1,14 +1,14 @@
 {% load i18n %}
-{% if account %}
+{% if logged_account %}
     <h2>
-        <a href="{% url twistranet.views.account_by_id account.id %}">
-            {{ account.screen_name }}
+        <a href="{% url twistranet.views.account_by_name logged_account.name %}">
+            {{ logged_account }}
         </a>
     </h2>
-    <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">
+    <img width="50" height="50" src="{% url twistranet.views.resource_by_account logged_account.id 'picture' %}">
     <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     <ul>
-        {% for community in account.my_communities %}
+        {% for community in logged_account.my_communities %}
             {%include "community/thumbnail.part.html" %}
         {% endfor %}
     </ul>
@@ -16,21 +16,21 @@
 
     <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     <ul>
-        {% for account in account.getMyNetwork %}
+        {% for account in logged_account.getMyNetwork %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>
 
     <h3>{% blocktrans %}I follow them{% endblocktrans %}</h3>
     <ul>
-        {% for account in account.getMyFollowed %}
+        {% for account in logged_account.getMyFollowed %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>
 
     <h3>{% blocktrans %}They follow me{% endblocktrans %}</h3>
     <ul>
-        {% for account in account.getMyFollowers %}
+        {% for account in logged_account.getMyFollowers %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>

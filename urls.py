@@ -12,8 +12,10 @@ urlpatterns = patterns('',
 
     # The wall page for generic accounts
     (r'^$',                                     'twistranet.views.home'),
-    (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),          # The 'profile' page
-    (r'^resource/(\w+)$',                       'twistranet.views.account_by_alias_or_id'),
+    
+    # Account pages
+    (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),              # The 'profile' page
+    (r'^account/(\w+)/$',                       'twistranet.views.account_by_name'),            # The 'profile' page
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),
@@ -24,6 +26,7 @@ urlpatterns = patterns('',
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     (r'^communities/$',                         'twistranet.views.communities'),
     (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
+    (r'^community/(\w+)$',                      'twistranet.views.community_by_name'),
     (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
     (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),

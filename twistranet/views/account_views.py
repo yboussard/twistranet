@@ -110,6 +110,13 @@ def account_by_id(request, account_id):
         )
     return HttpResponse(t.render(c))
     
+    
+def account_by_name(request, account_name):
+    """
+    XXX TODO: Make this more efficient?
+    """
+    account = Account.objects.get(name = account_name)
+    return account_by_id(request, account.id)
 
 @login_required     # XXX TODO: Use the correct decorator to avoid the login_required obligation
 def home(request):

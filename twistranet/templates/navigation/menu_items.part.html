@@ -4,7 +4,7 @@
 {% if logged_account.my_communities %}
 	<ul>
 	{% for community in logged_account.my_communities %}
-		<li><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.name }}</a></li>
+		<li><a href="{% url twistranet.views.community_by_name community.name %}">{{ community }}</a></li>
 	{% endfor %}
 	</ul>
 {% endif %}

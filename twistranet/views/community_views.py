@@ -51,7 +51,6 @@ def community_by_id(request, community_id):
         request,
         {
             "path": request.path,
-            "account": account,
             "community": community,
             "members": community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
             "latest_content_list": latest_list[:25],
@@ -61,6 +60,16 @@ def community_by_id(request, community_id):
         },
         )
     return HttpResponse(t.render(c))
+    
+
+def community_by_name(request, community_name):
+    """
+    (not very very efficent)
+    """
+    account = request.user.get_profile()
+    community = Community.objects.get(name = community_name)
+    return community_by_id(request, community.id)
+
     
 def edit_community(request, community_id = None):
     """
