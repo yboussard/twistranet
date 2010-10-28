@@ -50,13 +50,14 @@ def repair():
                 # print "Force user %s to join global" % account
                 global_.join(account)
                 
-    # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security update of all objects!
+    # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security and cache
     for content in Content.objects.get_query_set():
-        try:
-            _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content.object)
-        except ValidationError:
-            print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-            traceback.print_exc()
+        content.object.save()
+        # try:
+        #     _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content.object)
+        # except ValidationError:
+        #     print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+        #     traceback.print_exc()
     for account in Account.objects.get_query_set():
         try:
             _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account.object)

@@ -42,7 +42,7 @@ class Notification(Content):
     on_what = models.ForeignKey(Content, related_name = "on_what", null = True)
     
     # View overriding support
-    summary_view = "content/summary.notification.part.html"
+    type_summary_view = "content/summary.notification.part.html"
     
     def __unicode__(self,):
         return u"Notification %d: %s" % (self.id, self.getText())

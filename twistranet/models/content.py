@@ -231,8 +231,11 @@ class Content(_AbstractContent):
         )
         
     # View overriding support
-    # XXX TODO: Find a way to optimize this without having to query the underlying object
-    summary_view = "content/summary.part.html"
+    # This will be saved into the Content object for performance reasons.
+    # That way you don't have to dereference the underlying object until you want to see the whole page.
+    # Overload the 'type_summary_view' in your subclasses if you want.
+    type_summary_view = "content/summary.part.html"
+    summary_view = models.CharField(max_length = 127)
     detail_view = "content/view.html"
     
     is_content = True
@@ -324,6 +327,11 @@ class Content(_AbstractContent):
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_delete, self)
 
+    @property
+    def can_edit(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_edit, self)
+
     #                                                               #
     #                   Content internal stuff                      #
     #                                                               #
@@ -375,14 +383,16 @@ class Content(_AbstractContent):
         self.content_type = self.__class__.__name__
 
         # Check if I have content edition rights
-        # XXX Have to use a decorator instead
         if not authenticated:
             raise ValidationError("You can't save a content anonymously.")
         if self.author_id is None:
             self.author = authenticated
         else:
             if self.author != authenticated:
-                raise RuntimeError("You're not allowed to edit this content.")
+                if not self.id:
+                    raise RuntimeError("You're not allowed to save this content.")
+                elif not self.can_edit:
+                    raise RuntimeError("You're not allowed to modify this content.")
                 
         # Set publisher
         if self.publisher_id is None:
@@ -394,6 +404,9 @@ class Content(_AbstractContent):
         self.setHTMLSummary()
         self.setTextHeadline()
         self.setTextSummary()
+        
+        # Set other cached attributes
+        self.summary_view = self.type_summary_view
 
         # Actually saves stuff
         ret = super(Content, self).save(*args, **kw)
