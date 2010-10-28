@@ -451,10 +451,10 @@ ul.children li {
 .tn-box h3,
 .tn-box h4 {
   border-bottom: none;
-  font-weight: bold;
 }
 
-.tn-box h2 {
+.tn-box h2 {         
+  font-weight: bold;
   font-size: 1.3em;
   clear: none;
 }
@@ -463,12 +463,13 @@ ul.children li {
   -moz-border-radius:3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  background-color:#F9FFFF;
-  border:1px solid #CCDDDD;
-  color:#889999;
+  background-color:#FFF7F7;
+  border:1px solid #A99392;
+  color:#5D130F;
   font-size:1.1em;
   padding:2px 5px;
   text-align:center;
+  margin-bottom: 1em;
 }
 
 /* sidebar boxes */
@@ -511,6 +512,7 @@ ul.children li {
   -moz-border-radius:0;
   -webkit-border-radius: 0;
   border-radius: 0;
+  font-weight: bold;
   color:#777777;
   background-color: transparent;
   font-size:1.2em;
