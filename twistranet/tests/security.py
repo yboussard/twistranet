@@ -43,15 +43,15 @@ class SecurityTest(TestCase):
         
     def test_can_join(self,):
         """
-        Check if can_join permissions seem ok
+        Check if can_join permissions seem ok.
         """
         __account__ = self.A
         adm = Community.objects.get(name = "administrators")
         self.failIf(adm.can_join)
         self.failIf(adm.can_leave)
         __account__ = self.admin
-        self.failUnless(adm.can_join)
-        self.failUnless(adm.can_leave)
+        self.failUnless(adm.can_join)        
+        self.failIf(adm.can_leave, "Administrator is the last account on this community, it shouldn't be able to leave")
     
     def test_can_edit(self,):
         """
