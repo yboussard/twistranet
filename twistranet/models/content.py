@@ -192,6 +192,8 @@ class Content(_AbstractContent):
     text = models.TextField()
     html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
     html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
+    text_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
+    text_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
     
     # Resources associated to this content
     resources = models.ManyToManyField(Resource)
@@ -272,6 +274,12 @@ class Content(_AbstractContent):
         text = utils.escape_links(text)
         self.html_headline = text
         
+    def setTextHeadline(self,):
+        """
+        Default is just tag-stripping
+        """
+        self.text_headline = html.strip_tags(self.html_headline)
+        
     def setHTMLSummary(self,):
         """
         Return an HTML-safe summary.
@@ -287,6 +295,11 @@ class Content(_AbstractContent):
             text = ""
         self.html_summary = text
         
+    def setTextSummary(self,):
+        """
+        Default is just tag-stripping
+        """
+        self.text_headline = html.strip_tags(self.html_headline)
         
     #                                                               #
     #                       Security Management                     #
@@ -379,6 +392,8 @@ class Content(_AbstractContent):
         self.setText()
         self.setHTMLHeadline()
         self.setHTMLSummary()
+        self.setTextHeadline()
+        self.setTextSummary()
 
         # Actually saves stuff
         ret = super(Content, self).save(*args, **kw)

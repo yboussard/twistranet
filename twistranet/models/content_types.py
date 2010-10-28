@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.utils import html
 import basemanager
 from account import Account
 from content import Content
@@ -66,6 +67,8 @@ class Document(Content):
     """
     A document is a (possibly long) text/html content associated with resource,
     with all the bells and whistle a CMS is expected to carry.
+    
+    Docs have a title so that's what is used (by now) as a headline.
     """
     
     class Meta:
@@ -73,6 +76,14 @@ class Document(Content):
 
     title = models.CharField(max_length = 255)
     doc_summary = models.TextField()
+    
+
+    def setHTMLHeadline(self,):
+        """
+        Default is just tag-stripping without any HTML formating
+        """
+        self.html_headline = html.escape(self.title)
+
 
 # class Link(Content):
 #     class Meta:
