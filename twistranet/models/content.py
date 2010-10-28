@@ -51,7 +51,7 @@ class ContentManager(basemanager.BaseManager):
         It's content the account follows + content it produced + log messages he's the originator
         """
         return self.filter(
-            Q(publisher = account) | Q(author = account) | Q(logmessage__who = account) | Q(logmessage__on_who = account)
+            Q(publisher = account) | Q(author = account) | Q(notification__who = account) | Q(notification__on_who = account)
             ).distinct()
         
     
