@@ -1,3 +1,3 @@
 from notifications import notifier
-from content_registry import ContentRegistry
+from form_registry import form_registry
 from account_registry import AccountRegistry

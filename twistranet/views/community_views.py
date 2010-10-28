@@ -8,8 +8,7 @@ from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-
-from twistranet.forms import communityforms
+from twistranet.forms import community_forms
 
 from twistranet.models import *
 import account_views
@@ -90,18 +89,18 @@ def edit_community(request, community_id = None):
     # Process form
     if request.method == 'POST': # If the form has been submitted...
         if community:
-            form = communityforms.CommunityForm(request.POST, instance = community)
+            form = community_forms.CommunityForm(request.POST, instance = community)
         else:
-            form = communityforms.CommunityForm(request.POST)
+            form = community_forms.CommunityForm(request.POST)
             
         if form.is_valid(): # All validation rules pass
             community = form.save()
             return HttpResponseRedirect(reverse('twistranet.views.community_by_id', args = (community.id,)))
     else:
         if community:
-            form = communityforms.CommunityForm(instance = community) # An unbound form
+            form = community_forms.CommunityForm(instance = community) # An unbound form
         else:
-            form = communityforms.CommunityForm()
+            form = community_forms.CommunityForm()
 
     # Template hapiness
     t = loader.get_template('community/edit.html')

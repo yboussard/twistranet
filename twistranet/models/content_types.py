@@ -2,9 +2,8 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
-import basemanager 
+import basemanager
 from account import Account
-from resource import Resource
 from content import Content
 from twistranet.lib import roles, permissions, languages
 

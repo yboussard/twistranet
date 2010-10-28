@@ -1,3 +1,2 @@
 # Major forms import
-
-from contentforms import *
+from content_forms import *

@@ -1,8 +1,8 @@
 
 # List of registered content types for this application
-from twistranet.lib import ContentRegistry
+from twistranet.lib import form_registry
 from helloworld.models import HelloWorld
 from helloworld.forms import HelloWorldForm
 
-ContentRegistry.register(HelloWorld, HelloWorldForm)    
+form_registry.register(HelloWorldForm)    
 

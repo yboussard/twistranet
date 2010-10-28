@@ -127,7 +127,7 @@ TEMPLATE_DIRS = (
     "%s/twistranet/themes/default" % (HERE, ),
     "%s/twistranet/templates" % (HERE, ),
 )
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (HERE, )
+
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -135,6 +135,10 @@ LOGIN_REDIRECT_URL = '/'
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.search_sites'
 HAYSTACK_SEARCH_ENGINE = "simple"
+
+# Twistranet settings
+# XXX TODO: Put this in a twistranet.settings module?
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (HERE, )
 
 INSTALLED_APPS = (
     'django.contrib.auth',

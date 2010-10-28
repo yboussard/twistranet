@@ -35,22 +35,41 @@ class _PermissionMappingManager(BaseManager):
                 ret[p.name] = [p.role]
         return ret
 
-    def _applyPermissionsTemplate(self, target, mapping_class):
+    def _applyPermissionsTemplate(self, target):
         """
-        Apply / Re-apply a permissions template
+        Apply / Re-apply a permissions template.
+        
+        target is the objects perms will be applied on.
         XXX TODO: More error checking
         XXX TODO: Make it far more efficient ; maybe replace perm names by ids to speed things up
         """
-        # Get permissions for actual model class
-        target_class = target.model_class
+        # Get permissions for actual model class.
+        # XXX TODO: Make this more efficient and less 'magic'!
+        # XXX For example, move this code into Content and Account as a 'model_class' attribute?
+        permission_templates = None
+        klasses = ((Content, 'content_type'), (Account, 'account_type'))
+        for k in klasses:
+            if isinstance(target, k[0]):
+                t = getattr(target, k[1], None)
+                if not t:
+                    raise ValueError("You can't apply permissions before setting your %s" % k[1])
+                if t == target.__class__.__name__:
+                    permission_templates = target.__class__.permission_templates
+                    break
+                for sub in target.__class__.__subclasses__():
+                    if sub.__name__ == t:
+                        permission_templates = sub.permission_templates
+                        break
+        if not permission_templates:
+            raise ValueError("Can't find permission templates for %s" % target.__class__)
         
         # Get template
-        tpl = [ t for t in target_class.permission_templates.permissions() if t["id"] == target.permissions ]
+        tpl = [ t for t in permission_templates.permissions() if t["id"] == target.permissions ]
         if not tpl:
             raise ValidationError("Permissions template '%s' for object '%s' doesn't exist in %s." % (
                 target.permissions,
                 target,
-                [ t['id'] for t in target_class.permission_templates.permissions() ],
+                [ t['id'] for t in permission_templates.permissions() ],
             ))
         
         # Wow, may be a little be excessively optimistic?

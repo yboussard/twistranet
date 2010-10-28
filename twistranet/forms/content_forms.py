@@ -2,10 +2,11 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
-class BaseContentForm(forms.ModelForm):
+class BaseInlineForm(forms.ModelForm):
     """
-    Abstract class to describe the basic content form
-    """    
+    Abstract class to describe the basic inline (ie. in-the-wall) content creation form
+    """
+    is_inline = True
     error_css_class = 'error'
     required_css_class = 'required'
 
@@ -23,17 +24,12 @@ class BaseContentForm(forms.ModelForm):
             'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }
 
-class StatusUpdateForm(BaseContentForm):
+class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
-    # subject = forms.CharField(max_length=100)
-    # message = forms.CharField()
-    # sender = forms.EmailField()
-    # cc_myself = forms.BooleanField(required=False)
-    
-    class Meta(BaseContentForm.Meta):
-        from twistranet.models import StatusUpdate
+    class Meta(BaseInlineForm.Meta):
+        from twistranet.models.content_types import StatusUpdate
         model = StatusUpdate
-        fields = BaseContentForm.Meta.fields
-        widgets = BaseContentForm.Meta.widgets
+        fields = BaseInlineForm.Meta.fields
+        widgets = BaseInlineForm.Meta.widgets

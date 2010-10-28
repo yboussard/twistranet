@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 
 from twistranet.models import Content, StatusUpdate, Community, Account, Community
-from twistranet.lib import ContentRegistry
+from twistranet.lib import form_registry
 
 class MustRedirect(Exception):
     """
@@ -31,7 +31,7 @@ def _getInlineForms(request, publisher = None):
             
     # Wall edition forms if user has the right to write on it
     # This return a list of forms as each content type can define its own tab+form
-    form_classes = ContentRegistry.getContentFormClasses(publisher)
+    form_classes = form_registry.getInlineFormClasses(publisher)
     forms = []
     for form_class in form_classes:
         # Initial data processing

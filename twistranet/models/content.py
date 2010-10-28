@@ -5,8 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 import basemanager 
 from account import Account
 from resource import Resource
-from twistranet.lib import roles, permissions, languages
-from twistranet.lib import ContentRegistry
+from twistranet.lib import roles, permissions, languages, utils
 
 class ContentManager(basemanager.BaseManager):
     """
@@ -198,6 +197,10 @@ class Content(_AbstractContent):
         blank = True,
         )
     
+    # End-user behavior. You can override those values in your subclasses
+    inline_creation = False             # Set to true if you want to add an inline creation form XXX TODO: Replace that by the form itself?
+    allow_creation = True               # Set to true if you want your content type to be globaly creatable XXX TODO: Replace that by the form itself?
+    
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
@@ -280,7 +283,7 @@ class Content(_AbstractContent):
         """
         Return the subobject model class
         """
-        return ContentRegistry.getModelClass(self.content_type)
+        return utils.get_model_class(self, Content, self.content_type)        
 
     @property
     def object(self):
@@ -288,10 +291,13 @@ class Content(_AbstractContent):
         Return the exact subclass this object belongs to.
         Use this to display it.
         
-        XXX TODO: Make this more consistant with account
+        XXX TODO: Make this more efficient!
         """
-        obj = getattr(self, self.content_type.lower())
-        return obj
+        if self.id is None:
+            raise RuntimeError("You can't get subclass until your object is saved in database.")
+        return self.model_class.objects.get(id = self.id)
+        # obj = getattr(self, self.content_type.lower())
+        # return obj
         
     @property
     def permissions_list(self):
@@ -336,7 +342,7 @@ class Content(_AbstractContent):
         ret = super(Content, self).save(*args, **kw)
         
         # Set/reset permissions. We do it last to be sure we've got an id.
-        _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(self, _permissionmapping._ContentPermissionMapping)
+        _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(self)
         return ret
 
 

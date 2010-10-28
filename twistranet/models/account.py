@@ -196,9 +196,7 @@ class Account(_AbstractAccount):
         ret = super(Account, self).save(*args, **kw)
             
         # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
-        _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(
-            self, _permissionmapping._AccountPermissionMapping
-            )
+        _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(self)
         return ret
         
     @property
