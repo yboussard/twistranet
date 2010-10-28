@@ -151,6 +151,8 @@ ul.sf-menu li li li.sfHover ul {
 #usermenu {
 	font-size: 1.2em;
 	color: #aaa;
+	float: right;
+	margin: 0 40px;
 }
 
 #usermenu div.caption {

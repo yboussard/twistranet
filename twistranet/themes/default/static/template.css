@@ -49,10 +49,6 @@ body {
 			height: 210px;
 		}
 		#usermenu {
-			position: absolute;
-			top: 0;
-			width: 920px;
-			margin: 0 20px;
 		}
 		#menubar {
 			position: absolute;
