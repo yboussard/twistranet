@@ -1,6 +1,6 @@
 {% load i18n %}
 {% if account %}
-    <li id="account-profile-box">
+    <li id="account-profile-box" class="sidebar-box profile-box">
         <h2>
             <a href="{% url twistranet.views.account_by_name account.name %}">
                 {{ account }}
