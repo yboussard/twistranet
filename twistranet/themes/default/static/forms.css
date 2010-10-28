@@ -45,3 +45,26 @@ ul.inline-form li label {
   margin-top: 1em;
   display: none;
 }
+
+.fieldWrapper {
+  margin-bottom: 2em;
+}
+
+.fieldWrapper label {
+  font-size: 1.3em;
+}
+
+.fieldWrapper  label,
+.fieldWrapper  input,
+.fieldWrapper  select,
+.fieldWrapper  textarea {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+input[type="submit"] {
+  background-color:#CCDDDD;
+  border-color:#777777;
+  cursor:pointer;
+  min-width:100px;
+}

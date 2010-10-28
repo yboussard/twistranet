@@ -25,7 +25,7 @@
         {% for field in form %}
             <div class="fieldWrapper">
                 {{ field.errors }}
-                {{ field.label_tag }}: {{ field }}
+                {{ field.label_tag }} {{ field }}
             </div>
         {% endfor %}
         {% csrf_token %}
