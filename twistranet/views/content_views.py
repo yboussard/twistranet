@@ -63,12 +63,27 @@ def edit_content(request, content_id = None, content_type = None):
     return HttpResponse(t.render(c))
 
 
-def content_by_id(request, id):
+def content_by_id(request, content_id):
     """
     Display a content
     """
-    raise NotImplementedError
+    # Basic data
+    account = request.user.get_profile()
+    content = Content.objects.distinct().get(id = content_id)
+    if not content.can_view:
+        raise NotImplementedError("Should raise permission denied here.")
     
+    # Display the view template (given by the detail_view pty of the content)
+    t = loader.get_template(content.detail_view)
+    c = RequestContext(
+        request,
+        {
+            "path": request.path,
+            "content": content,
+        },
+        )
+    return HttpResponse(t.render(c))    
+
 
 def create_content(request, content_type):
     """

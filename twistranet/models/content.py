@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.utils import html
 import basemanager 
 from account import Account
 from resource import Resource
@@ -178,8 +179,19 @@ class Content(_AbstractContent):
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)
 
-    # The default text displayed for this content
+    # Text representation of this content
+    # Usually content is represented that way:
+    # (pict) HEADLINE
+    # Summary summary summary [Read more]
+    # 
+    # We store summary and headline in DB for performance and searchability reasons.
+    # Heavy @-querying will be done at save time, not at display-time.
+    # Both of them can contain links and minimal HTML formating.
+    # Use setHTMLHeadline and setHTMLSummary (and setText if you want) to set those two values.
+    # Never let your users edit those fields directly, as they'll be flagged as html-safe!
     text = models.TextField()
+    html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
+    html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
     
     # Resources associated to this content
     resources = models.ManyToManyField(Resource)
@@ -219,6 +231,7 @@ class Content(_AbstractContent):
     # View overriding support
     # XXX TODO: Find a way to optimize this without having to query the underlying object
     summary_view = "content/summary.part.html"
+    detail_view = "content/view.html"
     
     is_content = True
     
@@ -233,34 +246,47 @@ class Content(_AbstractContent):
     # You can override this in your content types.                  #
     #                                                               #
 
-    def getText(self):
+    def setText(self):
         """
         Override this to not use the 'text' attribute of the super class.
-        """
-        return self.text
+        Normally you shouldn't have to do it except for a content type not having a kind of a 'body' attribute.
         
-    @property
-    def headline(self):
+        The order of method callings is very important:
+        - setText() is called first
+        - setHTMLHeadline() is called second
+        - setHTMLSummary() is called third
         """
-        Use this to display the headline on your activity feed.
+        # Or you can do self.text = ''
+        pass
+        
+    def setHTMLHeadline(self,):
+        """
+        Use this to compute the headline displayed.
         You can have some logic to display a different headline according to the content's properties.
+        Default is to display the 140 first characters (or so) of the raw text content.
+        """
+        MAX_HEADLINE_LENGTH = 140 - 5
+        text = html.escape(self.text)
+        if len(text) >= MAX_HEADLINE_LENGTH:
+            text = u"%s [...]" % text[:MAX_HEADLINE_LENGTH]
+        text = utils.escape_links(text)
+        self.html_headline = text
         
-        Default is to display the 255 first characters of the raw text content in other cases.
+    def setHTMLSummary(self,):
         """
-        text = self.getText()
-        if len(text) < 255:
-            return text
-        return u"%s [...]" % text[:255]
-    
-    @property
-    def summary(self):
+        Return an HTML-safe summary.
+        Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
+        PLUS don't set the summary if it's the same as the headline!
         """
-        Inner summary text. Return properly-formated HTML summary.
-        Default is to display nothing if text is the same as the headline.
-        """
-        if self.getText() == self.headline:
-            return None
-        return self.getText()
+        MAX_SUMMARY_LENGTH = 1024 - 10
+        text = html.escape(self.text)
+        if len(text) >= MAX_SUMMARY_LENGTH:
+            text = u"%s [...]" % text[:MAX_SUMMARY_LENGTH]
+        text = utils.escape_links(text)
+        if text == self.html_headline:
+            text = ""
+        self.html_summary = text
+        
         
     #                                                               #
     #                       Security Management                     #
@@ -272,6 +298,11 @@ class Content(_AbstractContent):
         Same as can_view for content objects?
         XXX TODO: Clean that a little bit?
         """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_view, self)
+
+    @property
+    def can_view(self):
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_view, self)
 
@@ -343,6 +374,11 @@ class Content(_AbstractContent):
         # Set publisher
         if self.publisher_id is None:
             self.publisher = self.author
+            
+        # Set headline and summary cached values
+        self.setText()
+        self.setHTMLHeadline()
+        self.setHTMLSummary()
 
         # Actually saves stuff
         ret = super(Content, self).save(*args, **kw)

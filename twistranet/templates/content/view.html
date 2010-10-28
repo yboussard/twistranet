@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ content.headline }}{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/">Home</a> > {{ content.headline }}
+{% endblock %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ content.headline }}</h1>
+
+    {{ content.summary }}
+    
+    {{ content.text }}
+
+{% endblock %}
+
+{% block contextbar %}
+    <ul>
+        {% with logged_account as account %}
+            {% include 'account/profile.box.html' %}
+        {% endwith %}
+        {# {% include 'content/actions.box.html' %} #}
+        {# {% include 'content/metadata.box.html' %} #}
+    </ul>
+{% endblock %}
+

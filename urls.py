@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     
     # Account pages
     (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),              # The 'profile' page
-    (r'^account/(\w+)/$',                       'twistranet.views.account_by_name'),            # The 'profile' page
+    (r'^account/(\w+)/$',                       'twistranet.views.account_by_name'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),

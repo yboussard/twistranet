@@ -46,20 +46,17 @@ class Notification(Content):
     def __unicode__(self,):
         return u"Notification %d: %s" % (self.id, self.getText())
     
-    def getText(self):
+    def setText(self):
         """
         XXX TODO: Translate the sentence using gettext!
         """
         from django.core.urlresolvers import reverse
-        who_url = reverse('twistranet.views.account_by_id', args = (self.who.id,))
         if self.on_who:
-            on_who_url = reverse('twistranet.views.account_by_id', args = (self.on_who.id,))
-            return "<a href='%s'>%s</a> %s <a href='%s'>%s</a>" % (who_url, self.who, self.did_what, on_who_url, self.on_who)
+            self.text = "@%s %s @%s" % (self.who.name, self.did_what, self.on_who.name)
         elif self.on_what:
-            on_what_url = reverse('twistranet.views.content_by_id', args = (self.on_what.id,))
-            return "<a href='%s'>%s</a> %s <a href='%s'>%s</a>" % (who_url, self.who, self.did_what, on_what_url, self.on_what)
+            self.text = "@%s %s %s" % (self.who.name, self.did_what, self.on_what.id)
         else:
-            return "<a href='%s'>%s</a> %s" % (who_url, self.who, )
+            self.text = "@%s" % (self.who, )
     
     class Meta:
         app_label = "twistranet"
@@ -74,7 +71,8 @@ class Document(Content):
     class Meta:
         app_label = 'twistranet'
 
-
+    title = models.CharField(max_length = 255)
+    doc_summary = models.TextField()
 
 # class Link(Content):
 #     class Meta:

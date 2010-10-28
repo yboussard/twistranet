@@ -127,8 +127,8 @@ class Account(_AbstractAccount):
     account_type = models.CharField(max_length = 64, db_index = True)
     screen_name = models.CharField(max_length = 64, db_index = True, null = False, blank = False)             # The screenname (ie. the 'pseudo' used to display the account name).
                                                                 # This may be translatable someday.
-    name = models.SlugField(unique = True, db_index = True)                      # The actual name used for logging-in and addressing the account by name.
-                                                                # XXX TODO: Slug may be too restrictive 'cause it doesn't allow dots.
+    name = models.SlugField(unique = True, db_index = True)                 # The actual name used for logging-in and addressing the account by name.
+                                                                            # XXX TODO: Slug may be too restrictive 'cause it doesn't allow dots.
     
     # Picture management.
     # If None, will use the default_picture_resource_alias attribute.

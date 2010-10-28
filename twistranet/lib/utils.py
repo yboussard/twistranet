@@ -1,5 +1,7 @@
 import re
 import unicodedata
+from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 def slugify(value):
     """
@@ -34,4 +36,43 @@ def get_model_class(ob, base_class, type_value):
             return sub
     raise ValueError("Didn't find base class for %s/%s/%s" % (ob, base_class, type_value, ))
     
+
+url_regex = re.compile( r"(?P<Protocol>(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?)(?P<UsernamePassword>(?:\w+:\w+@)?)(?P<Subdomains>(?:(?:[-\w]+\.)+)(?P<TopLevelDomains>(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2})))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?"
+)
+user_regex = re.compile(r"@(?P<name>[a-zA-Z_]\w*)")
+
+def escape_links(text):
+    """
+    This safely escapes the HTML content and replace all links, @, etc by their TN counterpart.
+    Use this to record the summary and/or headline of your content types.
+    """
+    # Security context
+    from twistranet.models import Account
+    auth = Account.objects._getAuthenticatedAccount()
     
+    # Replace xxx:// strings by <a href> tags
+    text = url_regex.sub('<a target="_blank" href="\g<0>">\g<Subdomains></a>', text)
+
+    # Replace @<alias> by the actual account link
+    match = user_regex.search(text) 
+    while match is not None:
+        try:
+            account = Account.objects.distinct().get(name = match.group(0)[1:])
+        except ObjectDoesNotExist:
+            # No account matching, we week things that way
+            match =  user_regex.search(text, match.end())
+            continue
+        
+        # Ok, serious stuff start now!
+        replacement = '<a href="%s">%s</a>' % (reverse('twistranet.views.account_by_name', args = (account.name,)), account.screen_name)
+        text = "%s%s%s" % (
+            text[0:match.start()],
+            replacement,
+            text[match.end():],
+            )
+        # print text[match.start() + len(replacement):]
+        match =  user_regex.search(text, match.start() + len(replacement))
+        
+    return text
+
+

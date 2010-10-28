@@ -20,6 +20,6 @@ class DocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.models.content_types import Document
         model = Document
-        fields = BaseRegularForm.Meta.fields
+        fields = ('title', ) + BaseRegularForm.Meta.fields
         widgets = BaseRegularForm.Meta.widgets
 

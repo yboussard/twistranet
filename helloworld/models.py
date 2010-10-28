@@ -9,8 +9,9 @@ class HelloWorld(Content):
     
     You don't really need this in a production environment ;)
     """
-    def getText(self):
+    
+    def setText(self):
         """This always return the same boring text.
         """
-        return "Hello, World"
+        self.text = "Hello, World"
 

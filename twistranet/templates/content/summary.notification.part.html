@@ -1,15 +1,15 @@
 {% load i18n %}
-{# Generate a summary for 'content' object #}
+{# Generate a summary for 'notification' object #}
 <div class="post" id="post-{{content.id}}">
     <div class="entry notification">
-        {% if content.object.headline %}
+        {% if content.html_headline %}
             <span class="headline">
-                {{ content.object.headline|safe }}
+                {{ content.html_headline|safe }}
             </span>
         {% endif %}
-        {% if content.object.summary %}
+        {% if content.html_summary %}
             <div class="summary-content">
-                {{ content.object.summary|safe }}
+                {{ content.html_summary|safe }}
             </div>
         {% endif %}
         <span class="postmetadata">

@@ -14,14 +14,14 @@
             &raquo;
             <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
         {% endif %}
-        {% if content.object.headline %}
+        {% if content.html_headline %}
             <div class="headline">
-                {{ content.object.headline|escape_status }}<br />
+                {{ content.html_headline|safe }}<br />
             </div>
         {% endif %}
-        {% if content.object.summary %}
+        {% if content.html_summary %}
             <div class="summary-content">
-                {{ content.object.summary|escape_status }}
+                {{ content.html_summary|safe }}
             </div>
         {% endif %}
         <div class="postmetadata">
