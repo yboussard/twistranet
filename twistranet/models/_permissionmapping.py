@@ -99,8 +99,8 @@ class _BasePermissionMapping(models.Model):
     _objects = models.Manager()
         
     # Don't forget to define your content type and content foreign key in subclasses
-    name = models.CharField(max_length = 32)
-    role = models.IntegerField()
+    name = models.CharField(max_length = 32, db_index = True)
+    role = models.IntegerField(db_index = True)
     
     def __unicode__(self):
         # Meant to be called on subclasses only (where 'target' is defined)

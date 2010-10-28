@@ -81,7 +81,7 @@ def account_by_id(request, account_id):
         - Check if account is listed and permit only if approved
     """
     # Get the OBJECT himself
-    account = Account.objects.get(id = account_id).object
+    account = Account.objects.select_related('useraccount').get(id = account_id).object
     current_account = request.user.get_profile()
     
     # If we're on a community, we should redirect
@@ -101,9 +101,8 @@ def account_by_id(request, account_id):
         {
             'path': request.path,
             "content_forms": forms,
-            "account": account.object,
+            "account": account,
             "latest_content_list": latest_list[:25],
-            
             "account_in_my_network": not not current_account.network.filter(id = account.id),
         },
         )

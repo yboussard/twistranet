@@ -152,7 +152,6 @@ class Account(_AbstractAccount):
     # View overriding support
     # XXX TODO: Find a way to optimize this without having to query the underlying object
     summary_view = "account/summary.part.html"
-
     is_account = True
     
     @property
@@ -210,6 +209,13 @@ class Account(_AbstractAccount):
         return AccountRegistry.getModelClass(self.account_type)
         
     @property
+    def object_type(self):
+        """
+        XXX TODO: Rename the actual DB field name to account_type!
+        """
+        return self.account_type
+        
+    @property
     def object(self):
         """
         Return the actual object type.
@@ -217,7 +223,16 @@ class Account(_AbstractAccount):
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
-        return AccountRegistry.getModelClass(self.account_type).objects.get(id = self.id)
+            
+        # Shortcuts for performance reasons
+        if self.object_type == self.__class__.__name__:
+            print "self shortcut"
+            return self
+        obj = getattr(self, self.object_type.lower(), None)
+        if obj:
+            print "attrname shortcut"
+            return obj
+        return AccountRegistry.getModelClass(self.object_type).objects.get(id = self.id)
     
     def __unicode__(self):
         return u"%s" % (self.screen_name, )

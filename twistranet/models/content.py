@@ -302,8 +302,9 @@ class Content(_AbstractContent):
         
     @property
     def permissions_list(self):
-        import _permissionmapping
-        return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
+        # import _permissionmapping
+        # return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
+        return self._permissions
         
     def save(self, *args, **kw):
         """
