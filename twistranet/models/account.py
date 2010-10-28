@@ -320,10 +320,16 @@ class Account(_AbstractAccount):
         XXX TODO: Heavily optimize and use caching!
         """
         # Check roles, strongest first to optimize caching.
-        for perm in obj._permissions.filter(name = permission).order_by('-role'):
-            if self.has_role(perm.role, obj):
+        p_template = obj.object.permission_templates.get(obj.permissions)
+        for role in p_template[permission]:
+            if self.has_role(role, obj):
                 return True
-                
+
+        # # DB checking disabled for performance reasons
+        # for perm in obj._permissions.filter(name = permission).order_by('-role'):
+        #     if self.has_role(perm.role, obj):
+        #         return True
+        
         # Didn't find, we disallow
         return False
 

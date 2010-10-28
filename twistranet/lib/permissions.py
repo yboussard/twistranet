@@ -24,6 +24,8 @@ class PermissionTemplate:
         """
         self.perm_tuple = perm_tuple
         self.default_index = default_index
+        self.perm_dict = dict()
+        [ self.perm_dict.__setitem__(v['id'], v) for v in perm_tuple ]
         
     def get_choices(self):
         """
@@ -36,6 +38,9 @@ class PermissionTemplate:
         
     def permissions(self):
         return tuple(self.perm_tuple)
+        
+    def get(self, id_):
+        return self.perm_dict[id_]
         
         
 # Regular content permissions
