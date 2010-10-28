@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-14 17:31+0200\n"
+"POT-Creation-Date: 2010-10-28 16:12+0200\n"
 "Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
@@ -16,120 +16,214 @@ msgstr ""
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#: settings.py:44
+#: .\settings.py:48
 msgid "German"
 msgstr "Allemand"
 
-#: settings.py:45
+#: .\settings.py:49
 msgid "English"
 msgstr "Anglais"
 
-#: settings.py:46
+#: .\settings.py:50
 msgid "French"
 msgstr "Français"
 
-#: twistranet/templates/account.html:4
-#, python-format
-msgid "%(account)s's Wall"
-msgstr "Mur de %(account)s"
-
-#: twistranet/templates/account.html:27 twistranet/templates/community.html:19
-#: twistranet/templates/wall.html:16
-msgid "No contents are available."
-msgstr "Aucun contenu disponible."
-
-#: twistranet/templates/communities.html:4
-#: twistranet/templates/communities.html:7
-#: twistranet/templates/communities.html:11
-#: twistranet/templates/navigation/menu_items.part.html:3
-msgid "Communities"
-msgstr "Communautés"
-
-#: twistranet/templates/communities.html:7
-#: twistranet/templates/navigation/menu_items.part.html:2
-#: twistranet/themes/default/base.html:86
-msgid "Home"
-msgstr "Accueil"
-
-#: twistranet/templates/communities.html:17
-msgid "No community available on your system."
-msgstr "Aucune communauté disponible sur votre système."
-
-#: twistranet/templates/wall.html:4
-msgid "Wall"
-msgstr "Mur"
-
-#: twistranet/templates/wall.html:7
+#: .\twistranet\templates\wall.html.py:4
+#: .\twistranet\templates\wall.html.py:20
 msgid "Activity Feed"
 msgstr "Fil d'Activité"
 
-#: twistranet/templates/account/selfbar.box.html:4
+#: .\twistranet\templates\wall.html.py:30
+#: .\twistranet\templates\account\view.html.py:42
+#: .\twistranet\templates\community\view.html.py:19
+msgid "No contents are available."
+msgstr "Aucun contenu disponible."
+
+#: .\twistranet\templates\account\actions.box.html.py:6
+msgid "Edit my profile"
+msgstr "Modifier mon profil"
+
+#: .\twistranet\templates\account\actions.box.html.py:12
+msgid "Remove from my network"
+msgstr "Supprimer de mon réseau"
+
+#: .\twistranet\templates\account\actions.box.html.py:16
+msgid "Add to my network"
+msgstr "Ajouter à mon réseau"
+
+#: .\twistranet\templates\account\relations.box.html.py:4
 msgid "My Communities"
 msgstr "Mes Communautés"
 
-#: twistranet/templates/account/selfbar.box.html:12
+#: .\twistranet\templates\account\relations.box.html.py:6
+msgid "His/Her Communities"
+msgstr "Ses Communautés"
+
+#: .\twistranet\templates\account\relations.box.html.py:17
 msgid "My Network"
 msgstr "Mon réseau"
 
-#: twistranet/templates/account/selfbar.box.html:19
-msgid "I follow them"
+#: .\twistranet\templates\account\relations.box.html.py:19
+msgid "His/Her Network"
+msgstr "Son réseau"
+
+#: .\twistranet\templates\account\relations.box.html.py:30
+msgid "You follow them"
 msgstr "Je les suis"
 
-#: twistranet/templates/account/selfbar.box.html:26
-msgid "They follow me"
+#: .\twistranet\templates\account\relations.box.html.py:32
+msgid "He/She follows them"
+msgstr "Il ou elle les suis"
+
+#: .\twistranet\templates\account\relations.box.html.py:43
+msgid "They follow you"
 msgstr "Ils me suivent"
 
-#: twistranet/templates/community/community_forms.part.html:23
-#: twistranet/templates/content/content_forms.part.html:23
+#: .\twistranet\templates\account\relations.box.html.py:45
+msgid "They follow him/her"
+msgstr "Ils le ou la suivent"
+
+#: .\twistranet\templates\account\view.html.py:6
+#: .\twistranet\templates\account\view.html.py:28
+msgid "My profile"
+msgstr "Mon profil"
+
+#: .\twistranet\templates\account\view.html.py:8
+#: .\twistranet\templates\account\view.html.py:30
+msgid "%(account)s's Profile"
+msgstr "Mur de %(account)s"
+
+#: .\twistranet\templates\actions\content_summary.part.html.py:5
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\twistranet\templates\actions\general.part.html.py:4
+#: .\twistranet\templates\community\list.html.py:4
+#: .\twistranet\templates\community\list.html.py:7
+#: .\twistranet\templates\community\list.html.py:11
+#: .\twistranet\templates\navigation\menu_items.part.html.py:3
+msgid "Communities"
+msgstr "Communautés"
+
+#: .\twistranet\templates\actions\general.part.html.py:6
+msgid "View all communities"
+msgstr "Mes Communautés"
+
+#: .\twistranet\templates\actions\general.part.html.py:7
+msgid "Create a community"
+msgstr "Créer une communauté"
+
+#: .\twistranet\templates\community\actions.box.html.py:8
+msgid "Edit this community"
+msgstr "Modifier cette communauté"
+
+#: .\twistranet\templates\community\actions.box.html.py:12
+msgid "Delete this community"
+msgstr "Supprimer cette communauté"
+
+#: .\twistranet\templates\community\actions.box.html.py:20
+msgid "Join this community"
+msgstr "Joindre cette communauté"
+
+#: .\twistranet\templates\community\actions.box.html.py:24
+msgid "Leave this community"
+msgstr "Quitter cette communauté"
+
+#: .\twistranet\templates\community\community_forms.part.html.py:23
+#: .\twistranet\templates\content\content_forms.part.html.py:23
 msgid "Send message"
 msgstr "Envoyer le message"
 
-#: twistranet/templates/navigation/menu_items.part.html:4
+#: .\twistranet\templates\community\edit.html.py:7
+#: .\twistranet\templates\community\edit.html.py:16
+msgid "New community"
+msgstr "Nouvelle communauté"
+
+#: .\twistranet\templates\community\list.html.py:7
+#: .\twistranet\templates\navigation\menu_items.part.html.py:2
+#: .\twistranet\themes\default\base.html.py:81
+msgid "Home"
+msgstr "Accueil"
+
+#: .\twistranet\templates\community\list.html.py:17
+msgid "No community available on your system."
+msgstr "Aucune communauté disponible sur votre système."
+
+#: .\twistranet\templates\community\members.box.html.py:3
+msgid "Members"
+msgstr "Membres"
+
+#: .\twistranet\templates\navigation\menu_items.part.html.py:12
 msgid "Help"
 msgstr "Aide"
 
-#: twistranet/templates/registration/login.html:7
-#: twistranet/themes/default/base.html:8
-msgid "My amazing site"
-msgstr "Mon incroyable site"
+#: .\twistranet\templates\registration\login.html.py:34
+msgid "TwistraNet - The social content management system."
+msgstr "TwistraNet - Le CMS social."
 
-#: twistranet/templates/registration/login.html:13
+#: .\twistranet\templates\registration\login.html.py:41
 msgid "Sorry, that's not a valid username or password"
-msgstr "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
+msgstr ""
+"Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
-#: twistranet/templates/registration/login.html:18
+#: .\twistranet\templates\registration\login.html.py:55
 msgid "User name :"
 msgstr "Nom de user :"
 
-#: twistranet/templates/registration/login.html:21
+#: .\twistranet\templates\registration\login.html.py:59
 msgid "Password :"
 msgstr "Mot de passe :"
 
-#: twistranet/templates/registration/login.html:24
+#: .\twistranet\templates\registration\login.html.py:63
 msgid "login"
 msgstr "Se connecter"
 
-#: twistranet/themes/default/base.html:37
+#: .\twistranet\templates\search\search.html.py:6
+msgid "Search results"
+msgstr "Résultats de recherche"
+
+#: .\twistranet\templates\search\searchfield.part.html.py:11
+#: .\twistranet\templates\search\searchfield.part.html.py:15
+#: .\twistranet\templates\search\searchfield.part.html.py:16
+msgid "Search..."
+msgstr "Rechercher..."
+
+#: .\twistranet\themes\default\base.html.py:8
+msgid "TwistraNet"
+msgstr ""
+
+#: .\twistranet\themes\default\base.html.py:37
 #, python-format
 msgid "%(user)s"
 msgstr "%(user)s"
 
-#: twistranet/themes/default/base.html:44
+#: .\twistranet\themes\default\base.html.py:44
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: twistranet/themes/default/base.html:47
+#: .\twistranet\themes\default\base.html.py:47
 msgid "Log in"
 msgstr "Se connecter"
 
-#: twistranet/themes/default/base.html:61
+#: .\twistranet\themes\default\base.html.py:62
 msgid "The social content management system."
 msgstr "Le CMS social."
 
-#: twistranet/themes/default/base.html:78
-msgid "Search..."
-msgstr "Rechercher..."
-
-#: twistranet/themes/default/base.html:120
+#: .\twistranet\themes\default\base.html.py:128
 msgid "Powered By "
 msgstr "Propulsé par "
+
+#: .\twistranet\views\community_views.py:137
+#, python-format
+msgid "The community %(name)s has been deleted."
+msgstr "La communauté %(name)s a été supprimée"
+
+#: .\twistranet\views\community_views.py:137
+msgid "name"
+msgstr "nom"
+
+#~ msgid "Wall"
+#~ msgstr "Mur"
+
+#~ msgid "My amazing site"
+#~ msgstr "Mon incroyable site"

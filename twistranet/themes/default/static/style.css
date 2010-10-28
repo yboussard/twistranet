@@ -492,6 +492,7 @@ ul.children li {
 
 .sidebar .actions-box .edit-actions {
   margin-top: 0;
+  padding-left: 50px;
 } 
 
 .sidebar .actions-box .edit-actions a {

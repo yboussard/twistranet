@@ -1,7 +1,7 @@
 {% load i18n %}
 <li id="community-members-box" class="tn-box sidebar-box members-box">
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
-    <ul>
+    <ul class="thumbnails-inner">
         {% for account in members %}
             {% include "account/thumbnail.part.html" %}
         {% endfor %}

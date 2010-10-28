@@ -71,11 +71,11 @@ Find new internationalized strings in your code
 and update your .po files
 more information here : http://docs.djangoproject.com/en/dev/topics/i18n/localization/
 
-    (twistranet) >> django-admin.py makemessages -a
+    (twistranet) >> python manage.py makemessages -a
 
 Compile your .po (it's a mandatory after each change)
 
-    (twistranet) >> django-admin.py compilemessages
+    (twistranet) >> python manage.py compilemessages
 
 
 
