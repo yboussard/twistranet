@@ -9,14 +9,14 @@ import traceback
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 
-from contentregistry import ContentRegistry
-from content import Content
-from account import Account, UserAccount, SystemAccount
-from relation import Relation
-from community import Community, GlobalCommunity, AdminCommunity
-from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
-from resource import Resource
-import _permissionmapping
+from twistranet.models import *
+# .content import Content
+# from twistranet.models.account import Account, UserAccount, SystemAccount
+# from twistranet.models.relation import Relation
+# from community import Community, GlobalCommunity, AdminCommunity
+# from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
+# from resource import Resource
+from twistranet.models import _permissionmapping
 from twistranet.lib import permissions
 
 

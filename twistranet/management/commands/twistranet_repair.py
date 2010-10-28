@@ -4,7 +4,7 @@ Handy for bootstraping the application!
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from twistranet.models import dbsetup
+from twistranet.lib import dbsetup
 
 class Command(BaseCommand):
     args = ''

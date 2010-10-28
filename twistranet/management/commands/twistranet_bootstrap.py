@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cmd = syncdb.Command()
         cmd.execute()
-        from twistranet.models import dbsetup
+        from twistranet.lib import dbsetup
         dbsetup.repair()
         print "Finished bootstraping. You can play with TwistraNet now."
 

@@ -3,6 +3,7 @@ This is a basic wall test.
 """
 from django.test import TestCase
 from twistranet.models import *
+from twistranet.lib import dbsetup
 
 class SimpleTest(TestCase):
     

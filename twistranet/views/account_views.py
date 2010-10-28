@@ -7,9 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 
-from twistranet.models import Content, StatusUpdate, Community, Account
-
-from twistranet.models import ContentRegistry, Community
+from twistranet.models import Content, StatusUpdate, Community, Account, Community
+from twistranet.lib import ContentRegistry
 
 class MustRedirect(Exception):
     """

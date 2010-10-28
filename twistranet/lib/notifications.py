@@ -21,5 +21,4 @@ class Notifier(object):
             )
         l.save()
 
-
 notifier = Notifier()

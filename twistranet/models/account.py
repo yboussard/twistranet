@@ -6,8 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 
 import basemanager
 from resource import Resource
-from accountregistry import AccountRegistry
-from twistranet.lib import permissions, roles, languages, utils
+from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
 
 class AccountManager(basemanager.BaseManager):
     """

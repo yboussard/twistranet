@@ -1,8 +1,6 @@
 # Importing all models from submodules
 
 # Low-level stuff
-from contentregistry import ContentRegistry
-from accountregistry import AccountRegistry
 from content import Content
 from content_types import StatusUpdate, Notification
 from account import Account, UserAccount, SystemAccount

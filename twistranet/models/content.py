@@ -6,7 +6,7 @@ import basemanager
 from account import Account
 from resource import Resource
 from twistranet.lib import roles, permissions, languages
-
+from twistranet.lib import ContentRegistry
 
 class ContentManager(basemanager.BaseManager):
     """
@@ -280,8 +280,7 @@ class Content(_AbstractContent):
         """
         Return the subobject model class
         """
-        from twistranet.models import contentregistry
-        return contentregistry.ContentRegistry.getModelClass(self.content_type)
+        return ContentRegistry.getModelClass(self.content_type)
 
     @property
     def object(self):

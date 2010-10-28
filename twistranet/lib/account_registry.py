@@ -1,5 +1,5 @@
 
-class AccountRegistryManager:
+class AccountRegistryManager(object):
     """
     Account registry for account types.
 

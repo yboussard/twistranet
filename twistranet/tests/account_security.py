@@ -7,7 +7,7 @@ from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 
-from twistranet.models import _permissionmapping, dbsetup
+from twistranet.lib import dbsetup
 
 class AccountSecurityTest(TestCase):
     """

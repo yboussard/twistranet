@@ -1,5 +1,5 @@
 from django.db import models
-from twistranet.models import Content, ContentRegistry
+from twistranet.models import Content
 
 
 class HelloWorld(Content):
