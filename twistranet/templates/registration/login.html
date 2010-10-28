@@ -30,6 +30,19 @@
 			padding: 3px 10px;
 			background-color: #F9FFFF;
 		}
+    input[type="submit"] {
+      cursor:pointer;
+    }		
+		#tn-message {
+		  position: absolute;
+		  top: 50px;
+		  left: -14em;
+		  width: 27em;
+		  margin: 0 50%;
+      color: red;		  
+      text-align: center;
+      padding: 5px 0.5em 0;
+    }
 	</style>
     <title>{% block title %}{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}{% endblock %}</title>
 </head>
@@ -38,13 +51,15 @@
 {% block content %}
 
   {% if form.errors %}
-    <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
+    <div id="tn-message">
+      <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
+    </div>
   {% endif %}
   <div id="container">
     <!-- Header -->
 	<div id="header">
 	    <div id="branding">
-	      <h1 id="site-name">TwistraNet - The social content management system.</h1>
+	      <h1 id="site-name">{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}</h1>
 	    </div> 
 	</div>
 	<!-- END Header -->

@@ -1,7 +1,7 @@
 {% load i18n %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    <div class="entry">
+    <div class="entry notification">
         {% if content.object.headline %}
             <span class="headline">
                 {{ content.object.headline|safe }}
@@ -13,9 +13,13 @@
             </div>
         {% endif %}
         <span class="postmetadata">
-            {{ content.created_at|timesince }}
-        {#     {{ content.language }} | #}
-        {#     {{ content.permissions }} #}
+          <ul>
+            <li class="date">
+              {{ content.created_at|timesince }}
+            </li>
+            {#     {{ content.language }} | #}
+            {#     {{ content.permissions }} #}
+          </ul>
         </span>
     </div>
 </div>

@@ -27,7 +27,7 @@
 }
 
 .entry .postmetadata {
-  font-size: 90%;
+  font-size: 85%;
   color: #999;
   text-align: left;
 	line-height: auto;
@@ -38,13 +38,57 @@
   }  
   .entry .postmetadata ul li {
     margin: 0 0.5em 0 0;
-    padding: 0;
+    padding: 1px 0 2px 17px;
     display: inline;
     list-style: none;
     list-style-image: none; 
     list-style-type: none;
   }
 
+.notification .postmetadata ul {
+  display: inline;
+}
+ 
 #content textarea {
 	width: 460px;
+}
+
+.content-actions {
+  float: right;
+  width: 70px;
+}
+
+.content-actions ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;    
+  list-style-image: none;
+}
+
+.content-actions ul li {
+  list-style: none;    
+  list-style-image: none;
+}
+
+.content-actions ul li a {
+  display: block;
+  padding: 3px 3px 3px 15px;
+  border-bottom: 1px dotted #7a4c4a; 
+  color: #7a4c4a;
+  text-align: right;
+}
+
+.content-actions ul li.first a {  
+  border-top: 1px dotted #7a4c4a;
+}
+.content-actions ul li a:hover {
+  color: white;
+  background-color: #7a4c4a;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;   
+	border-radius: 3px;
+}
+
+div.headline {
+  margin-top: 0.1em;
 }

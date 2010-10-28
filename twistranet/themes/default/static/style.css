@@ -120,7 +120,10 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	.postmetadata .author:hover   { background: url(images/icons/icons-hover.png) 0 -16px no-repeat;	}
 
 	.postmetadata .comment        { background: url(images/icons/icons-normal.png) 0 -32px no-repeat; }
-	.postmetadata .comment:hover  { background: url(images/icons/icons-hover.png) 0 -32px no-repeat;	}
+	.postmetadata .comment:hover  { background: url(images/icons/icons-hover.png) 0 -32px no-repeat;	}   
+
+	.postmetadata .target        { background: url(images/icons/icons-normal.png) 0 -32px no-repeat; }
+	.postmetadata .target:hover  { background: url(images/icons/icons-hover.png) 0 -32px no-repeat;	}
 
 	.postmetadata .category       { background: url(images/icons/icons-normal.png) 0 -48px no-repeat; }
 	.postmetadata .category:hover { background: url(images/icons/icons-hover.png) 0 -48px no-repeat;	}
@@ -252,6 +255,18 @@ img.centered {
 	margin-right: auto;
 }
 
+/* icons 
+***************************************************************************** */
+
+.icon-delete {
+  background: url(images/icons/delete.png) 0 1px no-repeat;
+  color: #7a4c4a;
+}
+.icon-delete:hover {
+  background-image: url(images/icons/delete-hover.png);
+  color: white;
+  background-color: #83524f;
+}
 
 /* Comments
 ***************************************************************************** */
