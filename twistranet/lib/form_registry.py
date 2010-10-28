@@ -1,4 +1,4 @@
-from twistranet.forms.content_forms import BaseInlineForm
+from twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
 
 
 class FormRegistryManager:
@@ -22,7 +22,24 @@ class FormRegistryManager:
             'model_class': model, 
             'form_class': form_class,
             'allow_inline_creation': issubclass(form_class, BaseInlineForm),
+            'allow_regular_creation': issubclass(form_class, BaseRegularForm),
+            'content_type': model.__name__
             }
+            
+    def getRegularFormClasses(self):
+        """
+        This method returns the appropriate content forms for a user (globally).
+        This returns a list of Form classes
+        """
+        from twistranet.models import Account, Community
+
+        # Only return forms for publisher accounts I'm authorized to write on
+        account = Account.objects._getAuthenticatedAccount()
+        return [ r for r in self._registry_.values() if r['allow_regular_creation'] ]
+
+        # Else, no forms.
+        return []
+
     
     def getInlineFormClasses(self, publisher):
         """

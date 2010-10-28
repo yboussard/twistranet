@@ -2,6 +2,7 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
+
 class BaseInlineForm(forms.ModelForm):
     """
     Abstract class to describe the basic inline (ie. in-the-wall) content creation form
@@ -23,13 +24,17 @@ class BaseInlineForm(forms.ModelForm):
         widgets = {
             'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }
+        
+class BaseRegularForm(forms.ModelForm):
+    """
+    A regular form is a form which is displayed on a full page
+    """
+    is_inline = False
+    
+    class Meta:
+        fields = ('text', 'permissions', 'language', )
+        widgets = {
+            'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+        }
 
-class StatusUpdateForm(BaseInlineForm):
-    """
-    The famous status update.
-    """
-    class Meta(BaseInlineForm.Meta):
-        from twistranet.models.content_types import StatusUpdate
-        model = StatusUpdate
-        fields = BaseInlineForm.Meta.fields
-        widgets = BaseInlineForm.Meta.widgets
+

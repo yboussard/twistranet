@@ -1,18 +1,23 @@
 """
 Special context processor to handle the logged_account variable for all of TN calls.
 """
+import form_registry
 
 def security_context(request):
     """
-    Retrieve the logged account and populate the variable (don't do anything with anon account by now)
+    Retrieve the logged account and populate the variable (don't do anything with anon account by now).
+    Also get the content form available
     """
-    if request.user and hasattr(request.user, 'get_profile'):
-        return (
-            {
-                'logged_account': request.user.get_profile(),
-            }
-        )
+    ret = dict()
 
-    # No user logged-in, we return an empty tuple, we've got nothing to populate.
-    return ()
+    # The logged-in account
+    if request.user and hasattr(request.user, 'get_profile'):
+        ret['logged_account'] = request.user.get_profile()
+
+    # Content forms
+    klasses = form_registry.form_registry.getRegularFormClasses()
+    if klasses:
+        ret['creatable_content_types'] = klasses
+
+    return ret
     

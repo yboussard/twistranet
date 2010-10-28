@@ -1,10 +1,10 @@
 
 # List of registered content and account types for this application
-from twistranet.forms.content_forms import StatusUpdateForm
+from twistranet.forms.content_forms import StatusUpdateForm, DocumentForm
 from twistranet.lib import form_registry
 
 form_registry.register(StatusUpdateForm)
-# form_registry.register(DocumentForm)
+form_registry.register(DocumentForm)
 
 # Do the mandatory database checkup and initial buiding
 from twistranet.lib import dbsetup

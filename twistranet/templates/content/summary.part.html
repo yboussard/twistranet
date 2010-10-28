@@ -3,13 +3,13 @@
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
     <div class="account-picture">
-        <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author.id 'picture' %}">
+        <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author_id 'picture' %}">
     </div>
     <div class="entry">
-        <a class="author" href="{% url twistranet.views.account_by_id content.author.id %}">{{ content.author.screen_name }}</a>
+        <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.screen_name }}</a>
         {% if not content.author == content.publisher %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher.id %}">{{ content.publisher.screen_name }}</a>
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
         {% endif %}
         {% if content.object.headline %}
             <span class="headline">

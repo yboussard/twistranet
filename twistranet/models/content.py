@@ -204,7 +204,7 @@ class Content(_AbstractContent):
     
     # End-user behavior. You can override those values in your subclasses
     inline_creation = False             # Set to true if you want to add an inline creation form XXX TODO: Replace that by the form itself?
-    allow_creation = True               # Set to true if you want your content type to be globaly creatable XXX TODO: Replace that by the form itself?
+    regular_creation = True               # Set to true if you want your content type to be globaly creatable XXX TODO: Replace that by the form itself?
     
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
