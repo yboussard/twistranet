@@ -109,12 +109,12 @@ account_templates = PermissionTemplate((
     },
     {
         "id":               "private",
-        "name":             "Private, unsearchable account (except for administrators and ppl in account's network)",
+        "name":             "Private, unsearchable account (except for administrators and ppl in account's network). They cannot write on their wall, only on the communities they're in.",
         "description":      "Ghost account.",
         can_view:           (account_network, ),
         can_list:           (account_network, ),
-        can_publish:        (owner, administrator, account_network, ),
-        can_edit:           (owner, administrator, ),
+        can_publish:        (administrator, account_network, ),
+        can_edit:           (administrator, ),
     },
 ))
 

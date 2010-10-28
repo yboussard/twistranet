@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from account import Account, AccountManager, UserAccount, SystemAccount
 from accountregistry import AccountRegistry
 import basemanager
-from twistranet.lib import permissions, roles, autolog
+from twistranet.lib import permissions, roles, notifier
 
 class CommunityManager(AccountManager):
     """
@@ -189,7 +189,7 @@ class Community(_AbstractCommunity):
         mbr.save()
         
         # Post join message
-        autolog.joined(account, self)
+        notifier.joined(account, self)
         
     def leave(self, account):
         """

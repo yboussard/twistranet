@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 
 from contentregistry import ContentRegistry
-from content import Content, StatusUpdate
+from content import Content
 from account import Account, UserAccount, SystemAccount
 from relation import Relation
 from community import Community, GlobalCommunity, AdminCommunity
