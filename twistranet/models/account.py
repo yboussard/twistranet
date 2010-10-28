@@ -226,11 +226,9 @@ class Account(_AbstractAccount):
             
         # Shortcuts for performance reasons
         if self.object_type == self.__class__.__name__:
-            print "self shortcut"
             return self
         obj = getattr(self, self.object_type.lower(), None)
         if obj:
-            print "attrname shortcut"
             return obj
         return AccountRegistry.getModelClass(self.object_type).objects.get(id = self.id)
     
