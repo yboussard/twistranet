@@ -33,7 +33,7 @@ class ContentManager(basemanager.BaseManager):
                 _permissions__role__in = roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = (roles.anonymous, ),
-                ).distinct()
+                )
         
         # System account: return all objects
         if authenticated.account_type == "SystemAccount":
@@ -41,8 +41,12 @@ class ContentManager(basemanager.BaseManager):
             return base_query_set           # The base qset with no filter
         
         # XXX TODO: Avoid the distinct method
-        return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
+        return base_query_set.filter(self._getViewFilter(authenticated))
         
+        
+    @property
+    def __booster__(self):
+        return super(ContentManager, self).get_query_set()
         
     def getActivityFeed(self, account):
         """
@@ -123,7 +127,7 @@ class ContentManager(basemanager.BaseManager):
         Followed content by currently auth user
         """
         account = self._getAuthenticatedAccount()
-        return self.filter(self._getFollowFilter(account)).distinct()
+        return self.filter(self._getFollowFilter(account))
         
     def _getFollowFilter(self, account):
         """
@@ -144,7 +148,7 @@ class ContentManager(basemanager.BaseManager):
                 self._getViewFilter(account)
             ).filter(
                 self._getFollowFilter(account)
-            ).distinct()
+            )
         
 
 class _AbstractContent(models.Model):

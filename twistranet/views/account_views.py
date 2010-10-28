@@ -10,6 +10,14 @@ from django.db.models import Q
 from twistranet.models import Content, StatusUpdate, Community, Account, Community
 from twistranet.lib import form_registry
 
+
+select_related_summary_fields = (
+    "notification",
+    "statusupdate",
+    "author",
+    "publisher",
+)
+
 class MustRedirect(Exception):
     """
     Raise this if something must redirect to the current page
@@ -93,8 +101,15 @@ def account_by_id(request, account_id):
         forms = _getInlineForms(request, publisher = account)
     except MustRedirect:
         return HttpResponseRedirect(request.path)
-    
-    latest_list = Content.objects.getActivityFeed(account).order_by("-created_at")
+        
+    # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
+    # This way, we just issue a couple of queries instead of a bunch of requests!
+    # This replaces the following line:
+    # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:25]
+    latest_ids = Content.objects.getActivityFeed(account).values_list('id', flat = True).order_by("-created_at").distinct()[:25]
+    latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*select_related_summary_fields).order_by("-created_at")
+
+    # Generate the view itself
     t = loader.get_template('account/view.html')
     c = RequestContext(
         request,
@@ -102,7 +117,7 @@ def account_by_id(request, account_id):
             'path': request.path,
             "content_forms": forms,
             "account": account,
-            "latest_content_list": latest_list[:25],
+            "latest_content_list": latest_list,
             "account_in_my_network": not not current_account.network.filter(id = account.id),
         },
         )
@@ -128,8 +143,17 @@ def home(request):
     except MustRedirect:
         return HttpResponseRedirect(request.path)
     
+    # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
+    # This way, we just issue a couple of queries instead of a bunch of requests!
+    # We also do the discinct part by hand, assuming each content can be duplicated at most 10 times XXX Calculate that more precisely!
+    # This replaces the following line:
+    # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:25]
+    latest_ids = account.content.followed.values_list('id', flat = True).order_by("-created_at")[:25 * 10]
+    latest = {}
+    [ latest.__setitem__(i, None) for i in latest_ids ]
+    latest_list = Content.objects.__booster__.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
+
     # Render the template
-    latest_list = account.content.followed.order_by("-created_at")
     communities_list = Community.objects.get_query_set()
     t = loader.get_template('wall.html')
     c = RequestContext(
