@@ -169,8 +169,8 @@ class Content(_AbstractContent):
     publisher = models.ForeignKey(Account)                      # The account this content is published for.
 
     # Usual metadata
-    created_at = models.DateTimeField(auto_now = True)
-    content_type = models.TextField()
+    created_at = models.DateTimeField(auto_now = True, db_index = True)
+    content_type = models.CharField(max_length = 64, db_index = True)
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)
 
@@ -189,6 +189,7 @@ class Content(_AbstractContent):
         blank = True,
         choices = languages.available_languages,
         default = languages.available_languages[0][0],
+        db_index = True,
         )
     translation_of = models.ForeignKey(
         "Content",
@@ -205,9 +206,10 @@ class Content(_AbstractContent):
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
     permissions = models.CharField(
-        max_length = 32, 
+        max_length = 32,
         choices = permissions.content_templates.get_choices(), 
         default = permissions.content_templates.get_default(),
+        db_index = True,
         )
         
     # View overriding support
@@ -295,9 +297,8 @@ class Content(_AbstractContent):
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
-        return self.model_class.objects.get(id = self.id)
-        # obj = getattr(self, self.content_type.lower())
-        # return obj
+        # return self.model_class.objects.get(id = self.id)
+        return getattr(self, self.content_type.lower())
         
     @property
     def permissions_list(self):

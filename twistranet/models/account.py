@@ -124,10 +124,10 @@ class Account(_AbstractAccount):
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
     """
-    account_type = models.CharField(max_length = 64)
-    screen_name = models.CharField(max_length = 64, null = False, blank = False)             # The screenname (ie. the 'pseudo' used to display the account name).
+    account_type = models.CharField(max_length = 64, db_index = True)
+    screen_name = models.CharField(max_length = 64, db_index = True, null = False, blank = False)             # The screenname (ie. the 'pseudo' used to display the account name).
                                                                 # This may be translatable someday.
-    name = models.SlugField(unique = True)                      # The actual name used for logging-in and addressing the account by name.
+    name = models.SlugField(unique = True, db_index = True)                      # The actual name used for logging-in and addressing the account by name.
                                                                 # XXX TODO: Slug may be too restrictive 'cause it doesn't allow dots.
     
     # Picture management.
@@ -138,13 +138,16 @@ class Account(_AbstractAccount):
                                                                 # We'll avoid the 'null' attribute someday.
     objects = AccountManager()
     description = models.TextField()
-    created_at = models.DateTimeField(auto_now = True)
+    created_at = models.DateTimeField(auto_now = True, db_index = True)
 
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
     # XXX because there's a problem here as choices cannot be re-defined for subclasses.
     permission_templates = permissions.account_templates
-    permissions = models.CharField(max_length = 32)
+    permissions = models.CharField(
+        max_length = 32,
+        db_index = True,
+        )
     
     # View overriding support
     # XXX TODO: Find a way to optimize this without having to query the underlying object
