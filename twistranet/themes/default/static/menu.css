@@ -111,7 +111,7 @@ ul.sf-menu li li li.sfHover ul {
 		-webkit-border-bottom-left-radius: 7px;
 		-moz-border-radius-bottomright: 7px;
 		-webkit-border-bottom-right-radius: 7px;
-		background: url(../images/sys/white-opacity90.png) repeat;
+		background-color: white;
 		}
 		#mainmenu ul ul ul {
 			margin-top: .3em;
