@@ -2,7 +2,7 @@
 <ul>
     {% if content.can_delete %}
         <li>
-            <a href="{% url twistranet.views.communities %}">{% blocktrans %}Delete{% endblocktrans %}</a>
+            <a href="{% url twistranet.views.delete_content content.id %}">{% blocktrans %}Delete{% endblocktrans %}</a>
         </li>
     {% endif %}
 </ul>

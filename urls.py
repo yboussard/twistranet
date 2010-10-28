@@ -24,7 +24,10 @@ urlpatterns = patterns('',
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_content'),    # Fetch by content pty
     
     # Content links
+    (r'^content/(\d+)$',                        'twistranet.views.content_by_id'),
     (r'^content/create/(\w+)$',                 'twistranet.views.create_content'),
+    (r'^content/(\d+)/edit$',                   'twistranet.views.edit_content'),
+    (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     (r'^communities/$',                         'twistranet.views.communities'),

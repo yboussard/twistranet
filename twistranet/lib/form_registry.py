@@ -26,6 +26,12 @@ class FormRegistryManager:
             'content_type': model.__name__
             }
             
+    def getFormEntry(self, name):
+        """
+        Return the form dict used for the given model
+        """
+        return self._registry_[name]
+            
     def getRegularFormClasses(self):
         """
         This method returns the appropriate content forms for a user (globally).
