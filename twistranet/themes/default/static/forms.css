@@ -67,4 +67,10 @@ input[type="submit"] {
   border-color:#777777;
   cursor:pointer;
   min-width:100px;
+  float: right;
+}
+
+ul.errorlist {
+  float: right;
+  color: red;
 }

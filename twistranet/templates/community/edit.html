@@ -16,6 +16,7 @@
         <h1>{% trans "New community" %}</h1>    
         <form action="{% url twistranet.views.create_community %}" method="post">
     {% endif %}
+        <fieldset>
         {% for field in form %}
             <div class="fieldWrapper">
                 {{ field.errors }}
@@ -23,7 +24,8 @@
             </div>
         {% endfor %}
         {% csrf_token %}
-        <p><input type="submit" value="Save" /></p>
+        <input type="submit" value="Save" />
+        </fieldset>
     </form>
     
 {% endblock %}

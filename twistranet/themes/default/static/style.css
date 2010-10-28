@@ -492,7 +492,7 @@ ul.children li {
 
 .sidebar .actions-box .edit-actions {
   margin-top: 0;
-  padding-left: 50px;
+  padding-left: 53px;
 } 
 
 .sidebar .actions-box .edit-actions a {
@@ -503,7 +503,39 @@ ul.children li {
   clear: both;
 }
 
-.
+/* first column style boxes */
+
+/* second column style boxes */
+
+#globalbar .tn-box h3 {
+  -moz-border-radius:0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  color:#777777;
+  background-color: transparent;
+  font-size:1.2em;
+  margin-bottom:0.5em;
+  padding:2px 5px 1px;
+  text-align:left;
+  border: none;
+  border-bottom: 2px solid #EEE;       
+  border-top: 1px solid #AAA;
+}
+
+#globalbar ul ul, #globalbar ul ol  {
+  margin-left: 5px;
+  font-size: 11px;
+}
+
+#globalbar ul ul a,
+#globalbar ul ul a:link,
+#globalbar ul ul a:visited {
+  color: #2266AA;
+}
+
+#globalbar ul ul a:hover {
+  color: #444;
+}
 
 /* Calendar */
 
