@@ -1,18 +1,21 @@
 {% load i18n %}
-<li id="account-actions-box" class="sidebar-box actions-box">
-    <ul>
-        {% ifequal account.id logged_account.id %}
-            {# Hey, it's me! Don't have anything to do. Yet. #}
+<li id="account-actions-box" class="tn-box sidebar-box actions-box">
+    {% ifequal account.id logged_account.id %}
+      <ul class="edit-actions">
+          {# Hey, it's me! >> TODO make the edit profile view #}
+          <li><a href="" class="action">{% trans "Edit my profile" %}</a></li>
+      </ul>
+    {% else %}
+      <ul class="global-actions">   
+        {% if account_in_my_network %}
+            <li>
+                <a href="" class="action">{% trans "Remove from my network" %}</a>
+            </li>
         {% else %}
-            {% if account_in_my_network %}
-                <li>
-                    <a href="" class="action">{% trans "Remove from my network" %}</a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="" class="action main-action">{% trans "Add to my network" %}</a>
-                </li>
-            {% endif %}
-        {% endifequal %}
-    </ul>
+            <li>
+                <a href="" class="action main-action">{% trans "Add to my network" %}</a>
+            </li>
+        {% endif %}
+      </ul>         
+    {% endifequal %}
 </li>

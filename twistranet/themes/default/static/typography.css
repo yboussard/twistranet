@@ -10,13 +10,10 @@
 ---------------------------------------------------------------- */
 
 body {
-	font-family: Arial, Helvetica, Geneva, sans-serif;
-	font-size: 62.50%; /* Resets 1em to 10px */
+	font-family: helvetica, arial, sans-serif;
+	font-size: 9px; /* Resets 1em to 9px */
 	color: #444;
 	}
-	body.font-small		{ font-size: 65%; }
-	body.font-medium	{ font-size: 75%; }  
-	body.font-large		{ font-size: 85%; }
   
 /* Headings
 ***************************************************************************** */
@@ -116,6 +113,11 @@ em { font-style: italic; }
 
 /* General elements
 ***************************************************************************** */
+
+input, select, textarea {
+  font-family: arial, helvetica, sans-serif;
+  font-size: 1.2em;
+}
 
 input {
 	padding: 4px 8px;

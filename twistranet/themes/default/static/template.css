@@ -43,16 +43,16 @@ body {
 	padding: 0 9px;
 	}
 	#header {
-		height: 210px;
+		height: 190px;
 	}
 		#head {
-			height: 210px;
+			height: 190px;
 		}
 		#usermenu {
 		}
 		#menubar {
 			position: absolute;
-			top: 102px;
+			top: 82px;
 			width: 802px;
 			height: 60px;
 			margin: 0 40px 0 75px;
@@ -76,8 +76,9 @@ body {
 				background: transparent none no-repeat 0 0;
 				border: none;
 				margin: 1px 32px 4px 4px;
-				color: #444;
+				color: #777;
 				width: 122px;
+				font-size: 1.3em;
 			}
 
 	#wrap {
@@ -87,7 +88,7 @@ body {
 		#breadcrumb {
 			position: absolute;
 			float: left;
-			top: 168px;
+			top: 148px;
 			margin: 0 40px 0 70px;
 		}
 		#container {
@@ -96,6 +97,7 @@ body {
 			position: relative;
 			top: -40px;
 			clear: both;
+			font-size: 110%;
 			}
 			#contextbar {
 				width: 150px;

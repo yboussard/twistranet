@@ -1,49 +1,53 @@
 {% load i18n %}
-<li class="sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box">
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     {% else %}
         <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul>
+    <ul class="thumbnails-inner">
         {% for community in account.my_communities %}
             {%include "community/thumbnail.part.html" %}
         {% endfor %}
     </ul>
+    <div class="clearfix"><!-- --></div>
 </li>
-<li class="sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul>
+    <ul class="thumbnails-inner">
         {% for account in account.getMyNetwork %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>
+    <div class="clearfix"><!-- --></div>
 </li>
-<li class="sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}You follow them{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}He/She follows them{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul>
+    <ul class="thumbnails-inner">
         {% for account in account.getMyFollowed %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>
+    <div class="clearfix"><!-- --></div>
 </li>
-<li class="sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}They follow you{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}They follow him/her{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul>
+    <ul class="thumbnails-inner">
         {% for account in account.getMyFollowers %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
     </ul>
+    <div class="clearfix"><!-- --></div>
 </li>

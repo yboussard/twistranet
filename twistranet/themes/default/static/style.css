@@ -27,8 +27,8 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 /* Head
 ***************************************************************************** */
 
-#head a.logotext {
-	font-size: 3.2em;
+#head a.logotext { 
+  font-size: 3.2em;
 	font-weight: bold;
 	padding: 15px 30px 0 50px;
 	display: block;
@@ -139,7 +139,8 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	font-size: 1.0em;
 	border: 1px solid #dee;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	-webkit-border-radius: 5px;   
+	border-radius: 5px;
 	background: #f1f9f9;
 	}
 	#pagenavigator a,
@@ -167,6 +168,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		border: 1px dashed #ccc;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
+		border-radius: 5px;
 	}
 	.entry fieldset legend {
 		font-weight: bold;
@@ -177,6 +179,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		border: 1px solid #ccc;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
+    border-radius: 5px;
 	}
 	.entry table {
 		border-width: 0 1px 1px 0;
@@ -220,6 +223,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		border: 1px solid #ccc;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
+		border-radius: 5px;
 		background: #fff9f9;
 	}
 	.notice div#icon {
@@ -279,6 +283,7 @@ li.comment {
 	border: 1px solid #cdd;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	margin-bottom: 20px;
 	padding-top: 1em;
 	font-size: 12px;
@@ -353,39 +358,50 @@ ul.children li {
 }
 
 
+
+/* image tags
+***************************************************************************** */ 
+
+.image-block {
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  float: left;
+  margin: 0 0.5em 0.5em 0; 
+  overflow: hidden;
+}
+
+.image-block-32-32 {
+  width: 32px;
+  height: 32px;
+}  
+
+.image-block-50-50 {
+  width: 50px;
+  height: 50px;
+}
+
 /* Sidebar
 ***************************************************************************** */
-
-.sidebar h2 {
-	margin-bottom: .5em;
-	font-size: 1.6em;
-	border-bottom: 1px solid #cdd;
-	color: #666;
+.sidebar {
+  word-wrap: break-word;
 }
 
-.sidebar h3 {
-	margin-bottom: .5em;
-	font-size: 1.2em;
-	border-bottom: 1px solid #cdd;
-	color: #999;
-}
-
-.sidebar a {
-	font-size: 1.2em;
-	background: none;
-}
-
-.sidebar ul, .sidebar ul ol {
+.sidebar ul, .sidebar ul {
 	margin: 0;
-	padding: 0;
+	padding: 0;         
+	list-style-type: none;
+	list-style-image: none;
 }
 
-.sidebar ul li {
+.sidebar ul li.sidebar-box {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 	list-style-image: none;
-	margin-bottom: 20px;
+	margin-bottom: 0.8em;
+	display: block;
+	clear: both;
 }
 
 
@@ -409,6 +425,84 @@ ul.children li {
 	padding: 0;
 	margin: .5em 0 .5em 0;
 }
+
+.sidebar .thumbnails-inner {
+  margin-left: 5px;
+}
+
+.sidebar .thumbnail-account-part {
+  width: 35px;
+  height: 35px;
+  float: left;
+  overflow:hidden;
+}
+
+.sidebar .thumbnail-account-part .image-block {
+  margin-right: 0;
+} 
+
+/* the account title can be displayed in another places */
+.sidebar .thumbnail-account-part .thumbnail-account-legend {
+  display: none;
+}
+
+/* tn boxes (global style for any kind of boxes) */
+.tn-box h2,
+.tn-box h3,
+.tn-box h4 {
+  border-bottom: none;
+  font-weight: bold;
+}
+
+.tn-box h2 {
+  font-size: 1.3em;
+  clear: none;
+}
+
+.tn-box h3 {
+  -moz-border-radius:3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color:#F9FFFF;
+  border:1px solid #CCDDDD;
+  color:#889999;
+  font-size:1.1em;
+  padding:2px 5px;
+  text-align:center;
+}
+
+/* sidebar boxes */
+
+.sidebar ul li.profile-box {
+  margin-bottom: 0 !important;
+}
+
+.sidebar ul li.profile-box .image-block {
+  margin-bottom: 1.5em !important;
+}
+
+.sidebar  ul li.actions-box {
+  clear: none !important;
+  font-size: 11px;
+}
+
+.sidebar .actions-box a:hover {
+  text-decoration: underline;
+}  
+
+.sidebar .actions-box .edit-actions {
+  margin-top: 0;
+} 
+
+.sidebar .actions-box .edit-actions a {
+  color: #777;
+}  
+
+.sidebar .actions-box .global-actions {
+  clear: both;
+}
+
+.
 
 /* Calendar */
 

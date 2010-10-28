@@ -27,11 +27,23 @@
 }
 
 .entry .postmetadata {
-    font-size: 90%;
-    color: #999;
-    text-align: right;
+  font-size: 90%;
+  color: #999;
+  text-align: left;
 	line-height: auto;
 }
+  .entry .postmetadata ul {
+    margin: 0;
+    padding: 0;
+  }  
+  .entry .postmetadata ul li {
+    margin: 0 0.5em 0 0;
+    padding: 0;
+    display: inline;
+    list-style: none;
+    list-style-image: none; 
+    list-style-type: none;
+  }
 
 #content textarea {
 	width: 460px;
