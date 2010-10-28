@@ -321,7 +321,7 @@ class Account(_AbstractAccount):
         """
         # Check roles, strongest first to optimize caching.
         p_template = obj.object.permission_templates.get(obj.permissions)
-        for role in p_template[permission]:
+        for role in p_template[permission]:         # Will raise if permission is not set on the given content
             if self.has_role(role, obj):
                 return True
 

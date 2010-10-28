@@ -225,7 +225,8 @@ global_community_templates = PermissionTemplate((
         can_list:           (authenticated, ),
         can_view:           (authenticated, ),
         can_list_members:   (authenticated, ),
-        can_publish:        (community_manager, ),
+        can_edit:           (administrator, ),
+        can_publish:        (administrator, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },
@@ -239,7 +240,8 @@ global_community_templates = PermissionTemplate((
         can_list:           (authenticated, ),
         can_view:           (authenticated, ),
         can_list_members:   (community_manager, ),
-        can_publish:        (community_manager, ),
+        can_edit:           (administrator, ),
+        can_publish:        (administrator, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },
@@ -257,7 +259,8 @@ global_community_templates = PermissionTemplate((
         can_list:           (anonymous, ),
         can_view:           (authenticated, ),
         can_list_members:   (authenticated, ),
-        can_publish:        (community_manager, ),
+        can_edit:           (administrator, ),
+        can_publish:        (administrator, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },
