@@ -414,7 +414,7 @@ ul.children li {
 	padding: 0;
 	list-style-type: none;
 	list-style-image: none;
-	margin-bottom: 0.8em;
+	margin-bottom: 1.5em;
 	display: block;
 	clear: both;
 }
@@ -675,4 +675,20 @@ ul.children li {
 	line-height: 17px;
 	padding: 0 4px 5px;
 	margin: 0;
+}
+
+/* dialog boxes */
+
+.confirm-message {
+  display: none;
+}
+
+#tn-dialog-blockmessage {
+  margin-top: 1em;
+  padding: 0.5em;
+}
+
+#tn-dialog-blockmessage .ui-icon {
+  float: left;
+  margin: 0 0.7em 0.7em 0;
 }

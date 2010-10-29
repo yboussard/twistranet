@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-28 16:12+0200\n"
+"POT-Creation-Date: 2010-10-29 16:20+0200\n"
 "Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "Je les suis"
 
 #: .\twistranet\templates\account\relations.box.html.py:32
 msgid "He/She follows them"
-msgstr "Il ou elle les suis"
+msgstr "Il/elle les suis"
 
 #: .\twistranet\templates\account\relations.box.html.py:43
 msgid "They follow you"
@@ -81,7 +81,7 @@ msgstr "Ils me suivent"
 
 #: .\twistranet\templates\account\relations.box.html.py:45
 msgid "They follow him/her"
-msgstr "Ils le ou la suivent"
+msgstr "Ils le/la suivent"
 
 #: .\twistranet\templates\account\view.html.py:6
 #: .\twistranet\templates\account\view.html.py:28
@@ -93,11 +93,19 @@ msgstr "Mon profil"
 msgid "%(account)s's Profile"
 msgstr "Mur de %(account)s"
 
-#: .\twistranet\templates\actions\content_summary.part.html.py:5
+#: .\twistranet\templates\actions\content_summary.part.html.py:7
+msgid "Delete content"
+msgstr "Supprimer le contenu"
+
+#: .\twistranet\templates\actions\content_summary.part.html.py:8
 msgid "Delete"
 msgstr "Supprimer"
 
-#: .\twistranet\templates\actions\general.part.html.py:4
+#: .\twistranet\templates\actions\content_summary.part.html.py:10
+msgid "This action can't be undone, are you sure ?"
+msgstr "Cette action ne pourra pas être annulée, êtes vous sûr ?"
+
+#: .\twistranet\templates\actions\general.part.html.py:3
 #: .\twistranet\templates\community\list.html.py:4
 #: .\twistranet\templates\community\list.html.py:7
 #: .\twistranet\templates\community\list.html.py:11
@@ -105,11 +113,11 @@ msgstr "Supprimer"
 msgid "Communities"
 msgstr "Communautés"
 
-#: .\twistranet\templates\actions\general.part.html.py:6
+#: .\twistranet\templates\actions\general.part.html.py:5
 msgid "View all communities"
-msgstr "Mes Communautés"
+msgstr "Voir toutes les communautés"
 
-#: .\twistranet\templates\actions\general.part.html.py:7
+#: .\twistranet\templates\actions\general.part.html.py:6
 msgid "Create a community"
 msgstr "Créer une communauté"
 
@@ -117,15 +125,25 @@ msgstr "Créer une communauté"
 msgid "Edit this community"
 msgstr "Modifier cette communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:12
+#: .\twistranet\templates\community\actions.box.html.py:15
+#: .\twistranet\templates\community\actions.box.html.py:16
 msgid "Delete this community"
 msgstr "Supprimer cette communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:20
-msgid "Join this community"
-msgstr "Joindre cette communauté"
+#: .\twistranet\templates\community\actions.box.html.py:18
+msgid "This action is irreversible, are you sure ?"
+msgstr "Cette action est irréversible, êtes-vous sûr ?"
 
-#: .\twistranet\templates\community\actions.box.html.py:24
+#: .\twistranet\templates\community\actions.box.html.py:31
+#: .\twistranet\templates\community\actions.box.html.py:32
+msgid "Join this community"
+msgstr "Rejoindre cette communauté"
+
+#: .\twistranet\templates\community\actions.box.html.py:34
+msgid "Would you really want to join the community '%(community)s' ?"
+msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
+
+#: .\twistranet\templates\community\actions.box.html.py:40
 msgid "Leave this community"
 msgstr "Quitter cette communauté"
 
@@ -141,7 +159,7 @@ msgstr "Nouvelle communauté"
 
 #: .\twistranet\templates\community\list.html.py:7
 #: .\twistranet\templates\navigation\menu_items.part.html.py:2
-#: .\twistranet\themes\default\base.html.py:81
+#: .\twistranet\themes\default\base.html.py:84
 msgid "Home"
 msgstr "Accueil"
 
@@ -153,28 +171,43 @@ msgstr "Aucune communauté disponible sur votre système."
 msgid "Members"
 msgstr "Membres"
 
+#: .\twistranet\templates\content\content_creation.box.html.py:4
+msgid "Create content"
+msgstr "Créer un contenu"
+
+#: .\twistranet\templates\content\edit.html.py:6
+msgid "Edit %(content_type)s"
+msgstr "Modifier %(content_type)s"
+
+#: .\twistranet\templates\content\edit.html.py:8
+#: .\twistranet\templates\content\edit.html.py:13
+#: .\twistranet\templates\content\edit.html.py:22
+msgid "New %(content_type)s"
+msgstr "Nouveau %(content_type)s"
+
 #: .\twistranet\templates\navigation\menu_items.part.html.py:12
 msgid "Help"
 msgstr "Aide"
 
-#: .\twistranet\templates\registration\login.html.py:34
+#: .\twistranet\templates\registration\login.html.py:47
+#: .\twistranet\templates\registration\login.html.py:62
 msgid "TwistraNet - The social content management system."
 msgstr "TwistraNet - Le CMS social."
 
-#: .\twistranet\templates\registration\login.html.py:41
+#: .\twistranet\templates\registration\login.html.py:55
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
 "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
-#: .\twistranet\templates\registration\login.html.py:55
+#: .\twistranet\templates\registration\login.html.py:70
 msgid "User name :"
 msgstr "Nom de user :"
 
-#: .\twistranet\templates\registration\login.html.py:59
+#: .\twistranet\templates\registration\login.html.py:74
 msgid "Password :"
 msgstr "Mot de passe :"
 
-#: .\twistranet\templates\registration\login.html.py:63
+#: .\twistranet\templates\registration\login.html.py:78
 msgid "login"
 msgstr "Se connecter"
 
@@ -190,37 +223,56 @@ msgstr "Rechercher..."
 
 #: .\twistranet\themes\default\base.html.py:8
 msgid "TwistraNet"
-msgstr ""
+msgstr "TwistraNet"
 
-#: .\twistranet\themes\default\base.html.py:37
-#, python-format
+#: .\twistranet\themes\default\base.html.py:40
 msgid "%(user)s"
 msgstr "%(user)s"
 
-#: .\twistranet\themes\default\base.html.py:44
+#: .\twistranet\themes\default\base.html.py:47
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\twistranet\themes\default\base.html.py:47
+#: .\twistranet\themes\default\base.html.py:50
 msgid "Log in"
 msgstr "Se connecter"
 
-#: .\twistranet\themes\default\base.html.py:62
+#: .\twistranet\themes\default\base.html.py:65
 msgid "The social content management system."
 msgstr "Le CMS social."
 
-#: .\twistranet\themes\default\base.html.py:128
+#: .\twistranet\themes\default\base.html.py:132
 msgid "Powered By "
 msgstr "Propulsé par "
 
+#: .\twistranet\themes\default\base.html.py:138
+msgid "Confirmation Required"
+msgstr "Confirmation demandée"
+
+#: .\twistranet\themes\default\base.html.py:141
+msgid "Are you sure about this?"
+msgstr "Etes vous sûr ?"
+
+#: .\twistranet\themes\default\base.html.py:143
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\twistranet\themes\default\base.html.py:144
+msgid "OK"
+msgstr "OK"
+
 #: .\twistranet\views\community_views.py:137
-#, python-format
 msgid "The community %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
 
 #: .\twistranet\views\community_views.py:137
+#: .\twistranet\views\content_views.py:87
 msgid "name"
 msgstr "nom"
+
+#: .\twistranet\views\content_views.py:87
+msgid "The %(name)s has been deleted."
+msgstr "La communauté %(name)s a été supprimée"
 
 #~ msgid "Wall"
 #~ msgstr "Mur"

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/static/forms.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/content.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/account.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/js/jquery.js" charset="utf-8"></script>
     <style type="text/css">
     body    { background: url(/static/styles/White/bg-page.png) 50% repeat; }
@@ -21,7 +22,9 @@
     #bottom { background: url(/static/styles/Default/footer-bg.png) 50% 0 no-repeat;	}
     </style>
     <script type="text/javascript" src="/js/includes/lib/include.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/includes/mad.jquery.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/includes/mad.jquery.js" charset="utf-8"></script> 
+    <script type="text/javascript" src="/js/jquery-ui-1.8.5.custom.min.js" charset="utf-8"></script> 
+    <script type="text/javascript" src="/js/tn.js" charset="utf-8"></script>
 </head>
 <body>
     <div id="page">
@@ -99,11 +102,13 @@
                     </div>
                     
                     {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+                    <div id="tn-message">
+                      <ul class="messages">
+                          {% for message in messages %}
+                          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                      </ul>
+                    </div>
                     {% endif %}
 
                     <div id="content">
@@ -129,6 +134,14 @@
 
         </div><!-- end #wrapper -->
     </div><!-- end #page -->
-
+    <!-- Confirmation Box -->
+    <div id="tn-dialog" title="{% trans 'Confirmation Required' %}">
+      <p id="tn-dialog-blockmessage">
+        <span class="ui-icon ui-icon-alert"></span>
+        <span id="tn-dialog-message">{% blocktrans %}Are you sure about this?{% endblocktrans %}</span>
+      </p>            
+        <span id="tn-dialog-button-cancel">{% blocktrans %}Cancel{% endblocktrans %}</span>
+        <span id="tn-dialog-button-ok">{% blocktrans %}OK{% endblocktrans %}</span>
+    </div>                                      
 </body>
 </html>

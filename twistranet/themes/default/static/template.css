@@ -62,14 +62,14 @@ body {
 		#searchform {
 			position: relative;
 			top: -60px; 
-			right: 25px;
-			width: 192px;
+			right: 51px;
+			width: 150px;
 			float: right;
 			}
 			#search-box {
-				width: 192px;
+				width: 150px;
 				height: 23px;
-				background: url(../images/box-search.png) left top no-repeat;
+				background: url(../images/box-search-150.png) left top no-repeat;
 			}
 			
 			#search-text {
@@ -106,6 +106,16 @@ body {
 				float: left;	
 				margin: 0 30px 12px 0;
 			}
+  		#tn-message {
+  		  position: absolute;
+  		  top: -30px;
+  		  left: -19em;
+  		  width: 37em;
+  		  margin: 0 50%;
+        color: red;		  
+        text-align: center;
+        padding: 5px 0.5em 0;
+      }
 			#content {
 				width: 550px;
 				float: left;
@@ -125,3 +135,7 @@ body {
 			padding: 7px 0;
 			border-top: 1px solid #cdd;
 		}
+#tn-dialog-button-cancel,
+#tn-dialog-button-ok {
+  display: none;
+}

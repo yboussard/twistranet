@@ -9,7 +9,15 @@
         {% endif %}
 
         {% if community.can_delete %}
-            <li><a class="action" href="{% url twistranet.views.delete_community community.id %}" title="{% trans 'Delete this community' %}">{% trans "Delete this community" %}</a></li>
+            <li>
+              <a class="action confirmbefore"
+                 href="{% url twistranet.views.delete_community community.id %}"
+                 title="{% trans 'Delete this community' %}">
+                 <span>{% trans "Delete this community" %}</span>
+                 <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
+                 <span class="confirm-message">{% blocktrans %}This action is irreversible, are you sure ?{% endblocktrans %}</span>
+              </a>
+            </li>
         {% endif %}    
     </ul>
     {# Display the 'join'/'leave' links #}
@@ -17,11 +25,27 @@
 
         {% if not i_am_in %}
             {% if community.can_join %}
-                <li><a href="" class="action main-action">{% trans "Join this community" %}</a></li>
+                <li>
+                  <a href="" 
+                     class="action main-action confirmbefore"
+                     title="{% trans 'Join this community' %}">
+                     <span>{% blocktrans %}Join this community{% endblocktrans %}</span>
+                     <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
+                     <span class="confirm-message">{% blocktrans %}Would you really want to join the community '{{ community }}' ?{% endblocktrans %}</span>
+                  </a>
+                </li>
             {% endif %}
         {% else %}
             {% if community.can_leave %}
-                <li><a href="" class="action">{% trans "Leave this community" %}</a></li>
+                <li>
+                  <a href=""
+                     class="action confirmbefore"
+                     title="{% trans 'Leave this community' %}">
+                     <span>{% blocktrans %}Leave this community{% endblocktrans %}</span>
+                     <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
+                     <span class="confirm-message">{% blocktrans %}Would you really want to leave the community '{{ community }}' ?{% endblocktrans %}</span>
+                  </a>
+                </li>
             {% endif %}
         {% endif %}
 
