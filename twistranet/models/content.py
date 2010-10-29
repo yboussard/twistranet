@@ -413,10 +413,6 @@ class Content(_AbstractContent):
         self.setTextHeadline()
         self.setTextSummary()
         
-        # Set other cached attributes
-        self.summary_view = self.type_summary_view
-        self.detail_view = self.type_detail_view
-
         # Actually saves stuff
         ret = super(Content, self).save(*args, **kw)
         
