@@ -8,6 +8,7 @@ import traceback
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
+from django.db.utils import DatabaseError
 
 from twistranet.models import *
 # .content import Content
@@ -151,6 +152,11 @@ def bootstrap():
         if not _system._picture:
             _system._picture = tn_picture
             _system.save()
+           
+    except DatabaseError:
+        # XXX TODO: Check the actual error to avoid fake postifives.
+        # If we reach there we should meet the 'no such table' error
+        print "DatabaseError while bootstraping. Your tables are probably not created yet."
             
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
