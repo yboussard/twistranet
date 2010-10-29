@@ -21,7 +21,7 @@ def edit_content(request, content_id = None, content_type = None):
     # Get basic information
     account = request.user.get_profile()
     if content_id is not None:
-        content = Content.objects.get(id = content_id)
+        content = Content.objects.distinct().get(id = content_id)
         if not content.can_view:
             raise NotImplementedError("Should implement a permission denied exception here")
         if not content.can_edit:
@@ -35,7 +35,7 @@ def edit_content(request, content_id = None, content_type = None):
     # Process form
     if request.method == 'POST': # If the form has been submitted...
         if content:
-            form = form_entry['form_class'](request.POST, instance = content)
+            form = form_entry['form_class'](request.POST, instance = content.object)
         else:
             form = form_entry['form_class'](request.POST)
         
@@ -44,7 +44,7 @@ def edit_content(request, content_id = None, content_type = None):
             return HttpResponseRedirect(reverse('twistranet.views.content_by_id', args = (content.id,)))
     else:
         if content:
-            form = form_entry['form_class'](instance = content)
+            form = form_entry['form_class'](instance = content.object)
         else:
             form = form_entry['form_class']()
 

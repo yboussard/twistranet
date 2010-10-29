@@ -13,6 +13,8 @@ class StatusUpdate(Content):
     StatusUpdate is the most simple content available (except maybe helloworld).
     It provides a good example of what you can do with a content type.
     """
+    type_detail_view = None
+
     class Meta:
         app_label = 'twistranet'
 
@@ -43,6 +45,7 @@ class Notification(Content):
     
     # View overriding support
     type_summary_view = "content/summary.notification.part.html"
+    type_detail_view = None
     
     def __unicode__(self,):
         return u"Notification %d: %s" % (self.id, self.getText())

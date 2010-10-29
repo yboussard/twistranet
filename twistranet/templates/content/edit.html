@@ -16,7 +16,9 @@
 
 {% block content %}
     {% if content %}
-        <h1><a href="{% url twistranet.views.content_by_id content.id %}">{{ content.headline }}</a></h1>    
+        {%with content.text_headline as headline%}
+            <h1><a href="{% url twistranet.views.content_by_id content.id %}">{%blocktrans%}Edit "{{ headline }}"{%endblocktrans%}</a></h1>
+        {%endwith%}
         <form action="{% url twistranet.views.edit_content content.id %}" method="post">
     {% else %}
         <h1>{%blocktrans%}New {{content_type}}{%endblocktrans%}</h1>

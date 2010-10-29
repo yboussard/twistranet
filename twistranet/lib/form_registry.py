@@ -1,6 +1,3 @@
-from twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
-
-
 class FormRegistryManager:
     """
     Form registry for content types.
@@ -17,6 +14,7 @@ class FormRegistryManager:
         if allow_user is True, content is available for end users.
         XXX TODO: Provide a way of ordering forms?
         """
+        from twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
         model = form_class.Meta.model
         self._registry_[model.__name__]  = {
             'model_class': model, 

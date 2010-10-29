@@ -1,0 +1,19 @@
+{% load i18n %}
+{% with content.content_type as content_type %}
+<li id="content-actions-box" class="tn-box sidebar-box actions-box">
+    <ul class="global-actions">   
+    {% if content.can_edit %}
+        <li>
+            <a href="{% url twistranet.views.edit_content content.id %}" class="action">
+                {% blocktrans %}Edit {{content_type}}{% endblocktrans %}
+            </a>
+        </li>
+    {% else %}
+        <li>
+            <a href="" class="action main-action">{% trans "Add to my network" %}</a>
+        </li>
+    {% endif %}
+    </ul>         
+</li>
+
+{% endwith %}

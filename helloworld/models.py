@@ -9,6 +9,7 @@ class HelloWorld(Content):
     
     You don't really need this in a production environment ;)
     """
+    type_detail_view = None
     
     def setText(self):
         """This always return the same boring text.

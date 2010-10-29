@@ -16,7 +16,13 @@
         {% endif %}
         {% if content.html_headline %}
             <div class="headline">
-                {{ content.html_headline|safe }}<br />
+                {% if content.detail_view %}
+                    <a href="{% url twistranet.views.content_by_id content.id %}">
+                        {{ content.text_headline }}
+                    </a>
+                {% else %}
+                    {{ content.html_headline|safe }}
+                {% endif %}
             </div>
         {% endif %}
         {% if content.html_summary %}

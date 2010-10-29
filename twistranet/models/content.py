@@ -230,13 +230,13 @@ class Content(_AbstractContent):
         db_index = True,
         )
         
-    # View overriding support
+    # View overriding support.
     # This will be saved into the Content object for performance reasons.
     # That way you don't have to dereference the underlying object until you want to see the whole page.
     # Overload the 'type_summary_view' in your subclasses if you want.
+    # Same for detail_view. Set to 'None' if no detail view (so no links on summary views)
     type_summary_view = "content/summary.part.html"
-    summary_view = models.CharField(max_length = 127)
-    detail_view = "content/view.html"
+    type_detail_view = "content/view.html"
     
     is_content = True
     
@@ -303,6 +303,14 @@ class Content(_AbstractContent):
         Default is just tag-stripping
         """
         self.text_headline = html.strip_tags(self.html_headline)
+        
+    @property
+    def summary_view(self):
+        return self.model_class.type_summary_view
+    
+    @property
+    def detail_view(self):
+        return self.model_class.type_detail_view
         
     #                                                               #
     #                       Security Management                     #
@@ -407,6 +415,7 @@ class Content(_AbstractContent):
         
         # Set other cached attributes
         self.summary_view = self.type_summary_view
+        self.detail_view = self.type_detail_view
 
         # Actually saves stuff
         ret = super(Content, self).save(*args, **kw)

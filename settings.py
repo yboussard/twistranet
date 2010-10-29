@@ -158,6 +158,6 @@ INSTALLED_APPS = (
     # TwistraNet core stuff
     'twistranet',
     
-    # TwistraNet additional content classes
+    # TwistraNet extensions
     'helloworld',
 )

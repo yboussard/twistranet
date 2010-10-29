@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 import basemanager
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
+from django.db.utils import DatabaseError
 
 class AccountManager(basemanager.BaseManager):
     """
@@ -27,20 +28,24 @@ class AccountManager(basemanager.BaseManager):
             # Unless we do this, we can have an infinite recursion!
             # XXX TODO: Improve this to avoid a possibly unncessary query; cache it?
             import _permissionmapping
-            if _permissionmapping._AccountPermissionMapping._objects.filter(
-                target__account_type = "GlobalCommunity",
-                name = permissions.can_list,
-                role = roles.anonymous,
-                ).count():
-                # Opened to anonymous. Return public stuff.
-                return base_query_set.filter(
-                    _permissions__name = permissions.can_list,
-                    _permissions__role = roles.anonymous,
-                    )
-            else:
-                # Just return the system account, as we must be able to bootstrap with it ?
-                # XXX Maybe we should not even return that!
-                return base_query_set.filter(account_type = "SystemAccount")
+            try:
+                if _permissionmapping._AccountPermissionMapping._objects.filter(
+                    target__account_type = "GlobalCommunity",
+                    name = permissions.can_list,
+                    role = roles.anonymous,
+                    ).count():
+                    # Opened to anonymous. Return public stuff.
+                    return base_query_set.filter(
+                        _permissions__name = permissions.can_list,
+                        _permissions__role = roles.anonymous,
+                        )
+                else:
+                    # Just return the system account, as we must be able to bootstrap with it ?
+                    # XXX Maybe we should not even return that!
+                    return base_query_set.filter(account_type = "SystemAccount")
+            except DatabaseError:
+                # Avoid bootstrap quircks. XXX VERY DANGEROUS, should limit that to table doesn't exist errors!
+                return base_query_set.none()
 
         # System account: return all objects
         if authenticated.account_type == "SystemAccount":
