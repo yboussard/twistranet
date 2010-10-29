@@ -24,7 +24,8 @@ initConfirmBox = function(elt){
     dialogBox = jQuery('#tn-dialog');
     // the title of the box is kept using link title + ' ?'
     jQuery('#ui-dialog-title-tn-dialog').text(actionLabel+ ' ?');
-    // the legend of the box is kept inside a invisible block with class confirm-message 
+    // the legend of the box is kept inside a invisible block with class 
+    // confirm-message 
     // inside the link
     actionLegend = jQuery('.confirm-message', elt);
     if (actionLegend.length) jQuery('#tn-dialog-message').text(actionLegend.text());
@@ -34,16 +35,16 @@ initConfirmBox = function(elt){
     var okLabel = jQuery('#tn-dialog-button-ok', dialogBox).text();
     var tnbuttons = {};  
     tnbuttons[okLabel] = function() {
-			// ok action for now just redirect to the link
+    // ok action for now just redirect to the link
       window.location.replace(actionLink);
-		};
+    };
     tnbuttons[cancelLabel] = function() {
-			jQuery( this ).dialog( "close" );
-		}; 
+      jQuery( this ).dialog( "close" );
+    }; 
     dialogBox.dialog({   
-			buttons: tnbuttons 
-		});
-		dialogBox.dialog('open');
+      buttons: tnbuttons 
+    });
+    dialogBox.dialog('open');
 }
 
 // main class
@@ -63,7 +64,8 @@ var twistranet = {
     initconfirmdialogs: function(e){
         defaultDialogMessage = jQuery('#tn-dialog-message').text();
         jQuery("#tn-dialog").dialog({  
-			    resizable: true,
+          resizable: false,
+          draggable: false,
           autoOpen: false,
           height: 130,
           modal: true,
