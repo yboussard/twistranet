@@ -42,7 +42,7 @@ class ContentManager(basemanager.BaseManager):
             return base_query_set           # The base qset with no filter
         
         # XXX TODO: Avoid the distinct method
-        return base_query_set.filter(self._getViewFilter(authenticated))
+        return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
         
         
     @property
