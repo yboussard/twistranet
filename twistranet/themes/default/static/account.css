@@ -12,20 +12,4 @@ ul .account-thumbnails li {
     display:                inline;
 }
 
-.sidebar a.main-action,
-.sidebar a.main-action:link,
-.sidebar a.main-action:hover {
-    background-color: #BE261E;
-    color: white;
-    padding: 3px 5px 3px 5px;
-    border-radius: 3px;
-/*    border: #ddd solid 1px;*/
-}
 
-.sidebar a.main-action:hover {
-    background-color: #bbb;
-    color: white;
-    padding: 3px 5px 3px 5px;
-    border-radius: 3px;
-    border: #666 solid 1px;
-}

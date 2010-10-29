@@ -53,6 +53,7 @@ var twistranet = {
         /* finalize styles */
         twistranet.finalizestyles();
         twistranet.initconfirmdialogs();
+        twistranet.initformserrors()
     },
     finalizestyles: function(e) {
         /* some first and last classes */
@@ -79,7 +80,12 @@ var twistranet = {
            e.preventDefault();
            initConfirmBox(this);
         } );
-    }
+    },
+    initformserrors: function(e) {
+      jQuery('.fieldWrapper .errorlist').each(function(){
+          jQuery(jQuery(this).parent()).addClass('fieldWrapperWithError');
+      })
+    } 
 }
 
 jQuery(document).ready(twistranet.__init__)

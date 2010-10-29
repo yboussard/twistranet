@@ -48,6 +48,16 @@ ul.inline-form li label {
 
 .fieldWrapper {
   margin-bottom: 2em;
+  padding: 0.5em;
+}
+
+.fieldWrapperWithError {
+  background-color: #F7F1F1;
+  border: 1px solid #BE261E;
+  -moz-border-radius: 3px;  
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 1em;
 }
 
 .fieldWrapper label {
@@ -72,5 +82,15 @@ input[type="submit"] {
 
 ul.errorlist {
   float: right;
-  color: red;
+  color: #BE261E;
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+}
+ul.errorlist li {
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 2px 0;
 }

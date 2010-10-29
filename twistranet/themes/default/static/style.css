@@ -516,7 +516,23 @@ ul.children li {
 }  
 
 .sidebar .actions-box .global-actions {
-  clear: both;
+  clear: both; 
+} 
+
+.sidebar .actions-box .global-actions li a {
+  display: block;
+  text-align: center;
+  padding: 2px 5px;
+  background-color: #A99392;
+  color: white;
+  text-decoration: none;
+}
+.sidebar .actions-box .global-actions li a:hover {
+  text-decoration: none;
+}
+.sidebar .actions-box .global-actions li a.main-action,
+.sidebar .actions-box .global-actions li a.main-action:hover {
+  background-color: #5D130F;
 }
 
 /* first column style boxes */
