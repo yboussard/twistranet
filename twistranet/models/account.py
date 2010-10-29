@@ -160,6 +160,28 @@ class Account(_AbstractAccount):
     is_account = True
     
     @property
+    def media_resource_manager(self,):
+        """
+        Return or create the media res manager for this account.
+        XXX TODO: Security checks
+        """
+        from resourcemanager import FileSystemResourceManager
+        if not self.can_edit:
+            raise NotImplementedError("Shouldn't allow to access this if we can't edit")
+
+        # Create one if necessary
+        try:
+            return self._media_resource_manager
+        except ObjectDoesNotExist:
+            fsrm = FileSystemResourceManager(account = self)
+            fsrm.save()
+            self._media_resource_manager = fsrm
+            self.save()
+        
+        # Return it
+        return self._media_resource_manager
+    
+    @property
     def picture(self):
         """
         Return the resource id for the proper picture image.
@@ -361,6 +383,14 @@ class Account(_AbstractAccount):
         """
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_view, self)
+
+    @property
+    def can_edit(self):
+        """
+        Return true if the current account can view the current object.
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_edit, self)
 
     @property
     def is_admin(self):

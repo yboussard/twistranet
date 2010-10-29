@@ -139,6 +139,7 @@ HAYSTACK_SEARCH_ENGINE = "simple"
 # Twistranet settings
 # XXX TODO: Put this in a twistranet.settings module?
 TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (HERE, )
+TWISTRANET_ACCOUNT_MEDIA_PATH = "%s/data/media" % (HERE, )
 
 INSTALLED_APPS = (
     'django.contrib.auth',

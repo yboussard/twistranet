@@ -87,7 +87,6 @@ def content_by_id(request, content_id):
 
 def create_content(request, content_type):
     """
-    XXX TODO
     """
     return edit_content(request, content_type = content_type)
 

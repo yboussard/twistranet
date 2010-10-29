@@ -50,7 +50,9 @@ class ResourceManager(models.Model):
         authenticated = Resource.objects._getAuthenticatedAccount()
         if not authenticated.account_type == "SystemAccount":
             # XXX TODO: Non-admin check ;)
-            raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
+            # Maybe that's just a matter of checking the can_edit permission on an account?
+            # raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
+            pass
         
         # Save manager_type info
         self.manager_type = self.__class__.__name__
@@ -63,20 +65,46 @@ class ResourceManager(models.Model):
     class Meta:
         app_label = 'twistranet'
         
+class _AbstractFilesystemResourceManager(ResourceManager):
+    # Default value is TN's default resources path
+    path = models.CharField(max_length = 512, default = settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
+    
+    class Meta:
+        abstract = True
+        app_label = 'twistranet'
 
-class ReadOnlyFilesystemResourceManager(ResourceManager):
+    def saveResource(self, resource, uploaded):
+        """
+        Save a resource from the given uploaded file
+        """
+        raise NotImplementedError("You can't save a file on a readonly manager.")
+
+    def readResource(self, resource, ):
+        """
+        Return a pointer to the given resource FILE. Use this in a view.
+        """
+        # Security check against locator path (avoid "/../../" hacks)
+        filename = resource.locator
+        fpath = os.path.abspath(os.path.join(self.path, filename))
+        if not fpath.startswith(os.path.abspath(self.path)):
+            raise ValueError("Invalid locator path: %s" % fpath)
+
+        # Open file descriptor
+        f = open(fpath, "rb").read()
+        content_type = mimetypes.guess_type(filename)[0]
+        return HttpResponse(f, mimetype=content_type)
+
+class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
     """
     A readonly FS manager.
     It is used for legacy TN resource (profile images, ...)
-    
+
     Locator is a filepath below the 'path' value.
     """
-    # Default value is TN's default resources path
-    path = models.CharField(max_length = 512, default = settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
 
     class Meta:
         app_label = 'twistranet'
-        
+
     def loadAll(self, with_aliases = False):
         """
         Special method to load all the filesystem content and transform each file into a file resource.
@@ -87,7 +115,7 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
         authenticated = Resource.objects._getAuthenticatedAccount()
         if not authenticated.account_type == "SystemAccount":
             raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
-        
+
         # Load each file, avoiding to replace it
         for root, dirs, files in os.walk(self.path):
             for fname in files:
@@ -113,11 +141,12 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
                         r = objects[0]
                     else:
                         r = Resource()
-                    
+
                     # Set pties and save
                     r.manager = self
                     r.locator = fname
                     r.alias = alias
+                    r.original_filename = fname
                     r.mimetype = mimetype
                     r.encoding = encoding
                     r.save()
@@ -129,21 +158,83 @@ class ReadOnlyFilesystemResourceManager(ResourceManager):
                         defaults = defaults,
                     )
     
-    def readResource(self, resource):
-        """
-        Return a pointer to the given resource file.
-        """
-        # Security check against locator path (avoid "/../../" hacks)
+
+class FileSystemResourceManager(_AbstractFilesystemResourceManager):
+    """
+    A R/W FS resource manager. Must be attached to an account.
+    This is how media is managed on a per-account basis.
+    
+    'path' is not settable, it's given a value relative to TWISTRANET_ACCOUNT_MEDIA_PATH directory.
+    """
+    account = models.OneToOneField('Account', related_name = '_media_resource_manager', )
+    _root_path = settings.TWISTRANET_ACCOUNT_MEDIA_PATH
+    
+    class Meta:
+        app_label = 'twistranet'
         
-        filename = resource.locator
-        fpath = os.path.abspath(os.path.join(self.path, filename))
-        if not fpath.startswith(os.path.abspath(self.path)):
-            raise ValueError("Invalid locator path: %s" % fpath)
+    def uploadResource(self, uploaded):
+        """
+        Create a resource based on the given upload file and attached to the current account.
+        Return the created resource.
+        """
+        from twistranet.models.resource import Resource
+        from twistranet.models.account import Account
+        resource = Resource(
+            owner = Account.objects._getAuthenticatedAccount(),
+            manager = self,
+        )
+        self.saveResource(resource, uploaded)
+        print "Saved resource", resource, resource.id
+        return resource
+
+    def saveResource(self, resource, uploaded):
+        """
+        Save the given uploaded file.
+        uploaded must be an UploadedFile object.
+        Will erase any content that's already there.
+        The resource object will be save if it doesn't have an id!
+        """
+        # Set resource manager if not set
+        if not resource.manager:
+            resource.manager = self
+        else:
+            NotImplementedError("Should raise a permission error if we try to switch managers")
         
-        # Open file descriptor
-        f = open(fpath, "rb").read()
-        content_type = mimetypes.guess_type(filename)[0]
-        return HttpResponse(f, mimetype=content_type)
+        # Save resource so that we have an id
+        if not resource.id:
+            resource.save()
+        filename = os.path.join(self.path, "%s" % resource.id)
+        
+        # Write the file
+        destination = open(filename, 'wb+')
+        for chunk in uploaded.chunks():
+            destination.write(chunk)
+        destination.close()
+        
+        # Set resource properties
+        # XXX TODO: Maybe we could use the 'magic' module?
+        # Set pties and save
+        resource.locator = "%s" % (resource.id, )
+        resource.original_filename = uploaded.name
+        resource.mimetype = uploaded.content_type
+        resource.encoding = uploaded.charset            # XXX TODO: Handle encoding...
+        resource.save()
+
+    def save(self, *args, **kw):
+        """
+        Handle particular attributes
+        """
+        # Create the path according to where this FSRM is supposed to be
+        self.path = os.path.join(self._root_path, "%s" % self.account_id)
+        if os.path.exists(self.path):
+            ### XXX TODO: check if directory is empty to avoid nameclash
+            pass
+            # raise ValueError("FileSystemResourceManager can't create path %s: already exists. Please save your files and remove this directory." % self.path)
+        else:
+            os.makedirs(self.path)
+        
+        # Superclass save
+        super(FileSystemResourceManager, self).save(*args, **kw)
 
 
 

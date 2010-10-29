@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{# Some shortcuts here, have to make a beautiful form instead #}
+{% block content %}
+    {% if media_list %}
+        <ul>
+            {% for media in media_list %}
+                <li>
+                    <a href="{% url twistranet.views.resource_by_id media.id %}">{{ media.original_filename }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

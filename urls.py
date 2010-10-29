@@ -19,13 +19,19 @@ urlpatterns = patterns('',
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),
+    (r'^resource/new$',                         'twistranet.views.create_resource'),
     (r'^resource/(\w+)$',                       'twistranet.views.resource_by_alias_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_account'),    # Fetch by account pty
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_content'),    # Fetch by content pty
     
+    # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
+    (r'^media_resource/new$',                   'twistranet.views.create_media'),
+    (r'^media_resource/(\d+)/edit$',            'twistranet.views.edit_media'),
+    (r'^media_library/(\d+)$',                  'twistranet.views.view_media_library'),
+    
     # Content links
     (r'^content/(\d+)$',                        'twistranet.views.content_by_id'),
-    (r'^content/create/(\w+)$',                 'twistranet.views.create_content'),
+    (r'^content/new/(\w+)$',                    'twistranet.views.create_content'),
     (r'^content/(\d+)/edit$',                   'twistranet.views.edit_content'),
     (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 

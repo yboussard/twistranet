@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% if resource %}
+        {%blocktrans%}Edit Resource{%endblocktrans%}
+    {% else %}
+        {%blocktrans%}New Resource{%endblocktrans%}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {# <a href="/">Home</a> > {% if content %}{{ content.headline }}{% else %}{%blocktrans%}New {{content_type}}{%endblocktrans%}{% endif %} #}
+{% endblock %}
+
+{% block content %}
+    {% if resource %}
+        <h1><a href="{% url twistranet.views.resource_by_id resource.id %}">{%blocktrans%}Edit Resource{%endblocktrans%}</a></h1>
+        <form enctype="multipart/form-data" action="{{ path }}" method="post">
+    {% else %}
+        <h1>{%blocktrans%}New Resource{%endblocktrans%}</h1>
+        <form enctype="multipart/form-data" action="{{ path }}" method="post">
+    {% endif %}
+        <fieldset>
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+        {% csrf_token %}
+        <input type="submit" value="Save" />
+        </fieldset>
+    </form>
+    
+{% endblock %}
+
+{% block contextbar %}
+    <ul>
+        {% include 'account/profile.box.html' %}
+    <li>
+{% endblock %}
+

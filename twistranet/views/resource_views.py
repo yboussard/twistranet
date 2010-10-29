@@ -1,4 +1,3 @@
-# Create your views here.
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
@@ -6,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
 from twistranet.models import *
-
+from twistranet.forms.resource_forms import ResourceForm
 
 def _getResourceResponse(request, resource):
     """
@@ -60,6 +59,57 @@ def resource_by_content(request, content_id, property):
         raise ValueError("Invalid property")
 
 
+def edit_resource(request, resource_id = None):
+    """
+    Edit the given resource or create a new one if necessary
+    """
+    # Get basic information
+    account = request.user.get_profile()
+    if resource_id is not None:
+        resource = Resource.objects.get(id = resource_id)
+        # XXX TODO: Implement security here.
+        # if not resource.can_view:
+        #     raise NotImplementedError("Should implement a permission denied exception here")
+        # if not resource.can_edit:
+        #     raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
+        # form_entry = form_registry.getFormEntry(content.content_type)
+    else:
+        # XXX TODO: Check some kind of "can_create_content" permission?
+        resource = None
+        # form_entry = form_registry.getFormEntry(content_type)
+
+    # Process form
+    if request.method == 'POST': # If the form has been submitted...
+        if resource:
+            form = ResourceForm(request.POST, request.FILES, instance = resource)
+        else:
+            form = ResourceForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('twistranet.views.resource_by_id', args = (resource.id,)))
+    else:
+        if resource:
+            form = ResourceForm(instance = resource.object)
+        else:
+            form = ResourceForm()
+
+    # Template hapiness
+    t = loader.get_template('resource/edit.html')
+    c = RequestContext(
+        request,
+        {
+            "path": request.path,
+            "account": account,
+            "resource": resource,
+            "form": form,
+        },
+        )
+    return HttpResponse(t.render(c))
+
+def create_resource(request):
+    """
+    """
+    return edit_resource(request)
 
 
         
