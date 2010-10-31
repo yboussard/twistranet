@@ -441,8 +441,7 @@ formats are :
 }
 
 .thumbnail-50-bottom {
-  width: 50px;
-  height: 80px;
+  width: 50px;;
   margin-right: 5px;
   margin-bottom: 5px;
 }
@@ -494,6 +493,10 @@ formats are :
 }   
 .thumbnail-32-right label {}
 
+/* the first thumbnail in a column is on clear left */
+.thumbnails-inner .first {
+  clear: left;
+}
 /* the last thumbnail in a column has no margin right */
 .thumbnails-inner .last {
   margin-right: 0;
@@ -604,22 +607,68 @@ formats are :
 
 .sidebar .actions-box .global-actions {
   clear: both; 
+  padding: 0;
+  position: relative;
+  height: 20px;
 } 
 
 .sidebar .actions-box .global-actions li a {
   display: block;
+  position: absolute;
+  width: 160px;
+  left: 6px;
   text-align: center;
   padding: 2px 5px;
   background-color: #A99392;
   color: white;
   text-decoration: none;
+  -moz-border-radius : 9px; 
+  -webkit-border-radius : 9px;
+  border-radius : 9px;
+  background-image: -webkit-gradient(
+      linear,
+      left top,
+      right top,
+      color-stop(0.26, rgb(169,147,146)),
+      color-stop(0.63, rgb(169,147,146)),
+      color-stop(0.82, rgb(131,82,79))
+  );
+  background-image: -moz-linear-gradient(
+      left center,
+      rgb(169,147,146) 26%,
+      rgb(169,147,146) 63%,
+      rgb(131,82,79) 82%
+  );  
 }
-.sidebar .actions-box .global-actions li a:hover {
+.sidebar .actions-box .global-actions li a:hover {  
+  top: 3px;
+  left: 9px;
+  -moz-box-shadow: -3px -3px 3px #000;
+  -webkit-box-shadow: -3px -3px 3px #000;
+  box-shadow: -3px -3px 3px #000;
+}
+
+.sidebar .actions-box .global-actions li a:hover,
+.sidebar .actions-box .global-actions li a.main-action {
   text-decoration: none;
-}
-.sidebar .actions-box .global-actions li a.main-action,
-.sidebar .actions-box .global-actions li a.main-action:hover {
   background-color: #5D130F;
+  background-image: -webkit-gradient(
+      linear,
+      left top,
+      right top,
+      color-stop(0.26, rgb(169,147,146)),
+      color-stop(0.08, rgb(169,147,146)),
+      color-stop(0.48, rgb(131,82,79))
+  );
+  background-image: -moz-linear-gradient(
+      left center,
+      rgb(169,147,146) 26%,
+      rgb(169,147,146) 8%,
+      rgb(131,82,79) 48%
+  );
+}
+.sidebar .actions-box .global-actions li a.main-action:hover {
+  background: #5D130F !important;
 }
 
 /* first column style boxes */
