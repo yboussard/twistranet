@@ -577,7 +577,7 @@ formats are :
 /* sidebar particular boxes */
 
 .sidebar ul li.profile-box {
-  padding-bottom: 0 !important;
+  padding: 0 6px !important;
 }
 
 .sidebar ul li.profile-box .image-block {
@@ -634,7 +634,7 @@ formats are :
   color:#777777;
   background-color: transparent;
   font-size:1.2em;
-  margin-bottom:0.5em;
+  margin-bottom: 1em;
   padding:2px 5px 1px;
   text-align:left;
   border: none;
