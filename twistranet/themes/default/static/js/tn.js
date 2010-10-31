@@ -62,8 +62,9 @@ var twistranet = {
     __init__: function(e) {
         /* finalize styles */
         twistranet.finalizestyles();
+        twistranet.showContentActions();
         twistranet.initconfirmdialogs();
-        twistranet.initformserrors()
+        twistranet.initformserrors();
     },
     finalizestyles: function(e) {
         /* some first and last classes  */
@@ -76,6 +77,15 @@ var twistranet = {
         jQuery([['.tn-box', '.thumbnail-32-none']]).each(function(){
            setFirstAndLast(this[0], this[1], 5);
         } );       
+    },
+    showContentActions: function(e){
+        /* show content actions one post mouseover */
+        jQuery('.post').bind('mouseenter', function(){
+          jQuery(this).addClass('activepost');
+        });
+        jQuery('.post').bind('mouseleave', function(){
+          jQuery(this).removeClass('activepost');
+        });                                          
     },
     initconfirmdialogs: function(e){
         defaultDialogMessage = jQuery('#tn-dialog-message').text();

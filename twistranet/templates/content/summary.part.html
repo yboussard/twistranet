@@ -2,9 +2,6 @@
 {% load twistranet_extras %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    <div class="content-actions">
-        {% include 'actions/content_summary.part.html' %}
-    </div>
     <div class="account-picture">
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author_id 'picture' %}">
     </div>
@@ -15,7 +12,7 @@
             <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
         {% endif %}
         {% if content.html_headline %}
-            <div class="headline">
+            <span class="headline">
                 {% if content.detail_view %}
                     <a href="{% url twistranet.views.content_by_id content.id %}">
                         {{ content.text_headline }}
@@ -23,13 +20,16 @@
                 {% else %}
                     {{ content.html_headline|safe }}
                 {% endif %}
-            </div>
+            </span>
         {% endif %}
         {% if content.html_summary %}
             <div class="summary-content">
                 {{ content.html_summary|safe }}
             </div>
         {% endif %}
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
+        </div>
         <div class="postmetadata">
             <ul>
                 <li class="date">{{ content.created_at|timesince }}</li>
@@ -38,4 +38,5 @@
             </ul>
         </div>
     </div>
+    <div class="clearfix"><!-- --></div>
 </div>

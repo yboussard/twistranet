@@ -92,18 +92,13 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	}
 
 .post {
-	overflow: visible;
 	clear: both;
-	margin-left: 1px;
-	padding: 0 0 40px 0;
-	background: #fff url(images/post-label.gif) 0px 0px no-repeat;
 	}
 	.post hr {
 		display: block;
 	}
 
 .postmetadata {
-	clear: both;
 	margin: 0;
 	font-size: 1.2em;
 	line-height:1.6em;
@@ -259,7 +254,9 @@ img.centered {
 ***************************************************************************** */
 
 .icon-delete {
-  background: url(images/icons/delete.png) 0 1px no-repeat;
+  background-image: url(images/icons/delete.png);
+  background-repeat: no-repeat;
+  background-position: center left;
   color: #7a4c4a;
 }
 .icon-delete:hover {
@@ -561,9 +558,9 @@ formats are :
 }
 
 .tn-box h3 {
-  -moz-border-radius:3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 6px 3px 3px 3px;
+  -webkit-border-radius: 6px 3px 3px 3px;
+  border-radius: 6px 3px 3px 3px;
   -moz-box-shadow: 3px 3px 3px #BBBBBB;
   -webkit-box-shadow: 3px 3px 3px #BBBBBB;
   box-shadow: 3px 3px 3px #BBBBBB;
