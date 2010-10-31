@@ -1,17 +1,14 @@
 {% load i18n %}
-<li>
-    <div class="thumbnail-account-part">
-        <a href="{% url twistranet.views.community_by_id community.id %}"  class="image-block image-block-32-32">
-            <img
-                title="{{ community.name }}"
-                alt="{{ community.name }}"
-                src="{% url twistranet.views.resource_by_account community.id 'picture' %}"
-                width="32" height="32">
-        </a>
-        <label class="thumbnail-account-legend">
-          <a href="{% url twistranet.views.account_by_id account.id %}">
-           {{ community }}
-          </a>
-        </label>
-    </div>
-</li>
+<div class="thumbnail-account-part thumbnail-50-bottom">
+    <a href="{% url twistranet.views.community_by_id community.id %}"  class="image-block image-block-50-50">
+        <img
+            title="{{ community.screen_name }}"
+            alt="{{ community.screen_name }}"
+            src="{% url twistranet.views.resource_by_account community.id 'picture' %}" />
+    </a>
+    <label class="thumbnail-account-legend">
+      <a href="{% url twistranet.views.account_by_id account.id %}">
+       {{ community.screen_name }}
+      </a>
+    </label>
+</div>

@@ -1,10 +1,9 @@
 {% load i18n %}
 {% if community %}
     <li id="community-profile-box" class="tn-box sidebar-box profile-box">
-      <a href="{% url twistranet.views.community_by_name community.name %}" class="image-block image-block-50-50">
+      <a href="{% url twistranet.views.community_by_name community.name %}" class="image-block image-block-50-50 image-block-alone">
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account community.id 'picture' %}">  
       </a>                                         
-      <div>
       <h2 class="box-header">
         <a href="{% url twistranet.views.community_by_name community.name %}">
            {{ community }}

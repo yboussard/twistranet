@@ -1,27 +1,31 @@
 {% load i18n %}
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box rised-box">
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     {% else %}
         <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>
     {%endifequal%}
     <ul class="thumbnails-inner">
+      <li>
         {% for community in account.my_communities %}
             {%include "community/thumbnail.part.html" %}
         {% endfor %}
+      </li>
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box sidebar-box relations-box rised-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
     {%endifequal%}
     <ul class="thumbnails-inner">
+      <li>
         {% for account in account.getMyNetwork %}
             {%include "account/thumbnail.part.html" %}
         {% endfor %}
+      </li>
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
@@ -32,9 +36,11 @@
         <h3>{% blocktrans %}He/She follows them{% endblocktrans %}</h3>
     {%endifequal%}
     <ul class="thumbnails-inner">
+      <li>
         {% for account in account.getMyFollowed %}
-            {%include "account/thumbnail.part.html" %}
+            {%include "account/thumbnail.part-32none.html" %}
         {% endfor %}
+      </li>
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
@@ -45,9 +51,11 @@
         <h3>{% blocktrans %}They follow him/her{% endblocktrans %}</h3>
     {%endifequal%}
     <ul class="thumbnails-inner">
+      <li>
         {% for account in account.getMyFollowers %}
-            {%include "account/thumbnail.part.html" %}
+            {%include "account/thumbnail.part-32none.html" %}
         {% endfor %}
+      </li>
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>

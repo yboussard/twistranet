@@ -7,16 +7,26 @@
 
 // helpers
 
-setFirstAndLast = function(block, sub) {
+// set first and last class on subblocks
+setFirstAndLast = function(block, sub, modulo) {
    jQuery(block).each(function() {
-      jQuery(sub+':first', jQuery(this)).addClass('first');
-      jQuery(sub+':last', jQuery(this)).addClass('last');
+      if (typeof modulo=='undefined')  {
+        jQuery(sub+':first', jQuery(this)).addClass('first');
+        jQuery(sub+':last', jQuery(this)).addClass('last');
+      }
+      else {
+        jQuery(sub, jQuery(this)).each(function(i) {
+            if ((i+1)%modulo==0) jQuery(this).addClass('last');
+            if ((i+1)%modulo==1) jQuery(this).addClass('first');
+        })
+      }
    })
 }
 
 // global vars
 
 var defaultDialogMessage = '';
+
 // confirm boxes using jqueryui
 initConfirmBox = function(elt){
     actionLabel = jQuery(elt).attr('title');
@@ -56,11 +66,16 @@ var twistranet = {
         twistranet.initformserrors()
     },
     finalizestyles: function(e) {
-        /* some first and last classes */
-        elts = [['.content-actions', 'li'] ];
-        jQuery(elts).each(function(){
+        /* some first and last classes  */
+        jQuery([['.content-actions', 'li']]).each(function(){
            setFirstAndLast(this[0], this[1]);
+        } );  
+        jQuery([['.tn-box', '.thumbnail-50-bottom']]).each(function(){
+           setFirstAndLast(this[0], this[1], 3);
         } );
+        jQuery([['.tn-box', '.thumbnail-32-none']]).each(function(){
+           setFirstAndLast(this[0], this[1], 5);
+        } );       
     },
     initconfirmdialogs: function(e){
         defaultDialogMessage = jQuery('#tn-dialog-message').text();

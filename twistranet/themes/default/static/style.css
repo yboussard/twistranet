@@ -372,28 +372,134 @@ ul.children li {
 	padding-bottom: 30px;
 }
 
+.sidebar ul.thumbnails-inner {
+  margin: 0 0 0 10px;
+  padding: 0;
+}
+.sidebar ul.thumbnails-inner li {
+  list-style:             none;
+  list-style-type:        none;
+  display: inline;
+  margin: 0;  
+}
 
-
-/* image tags
+/* image tags can be displayed also outside thumbnails parts
 ***************************************************************************** */ 
 
 .image-block {
+  float: left;
+  margin: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
   text-decoration: none;
   display: block;
   cursor: pointer;
-  float: left;
-  margin: 0 0.5em 0.5em 0; 
   overflow: hidden;
+  position: relative;
 }
 
-.image-block-32-32 {
+.image-block img {
   width: 32px;
   height: 32px;
 }  
 
-.image-block-50-50 {
+.image-block-50-50,
+.image-block-50-50 img {
   width: 50px;
   height: 50px;
+} 
+
+.image-block-32-32,
+.image-block-32-32 img {
+  width: 32px;
+  height: 32px;
+}
+
+.image-block-alone {
+  margin: 0 7px 7px 0 !important;
+}
+
+/* thumbnails blocks ******************
+anywhere in the application accounts can be displayed
+with different formats :
+
+formats are :
+
+- .thumbnail-50-bottom :  tag 50px*50px legend at bottom
+- .thumbnail-50-right :  tag 50px*50px legend on right
+- .thumbnail-50-none :  tag 50px*50px no legend (only onmouseover)
+- .thumbnail-32-right :  tag 32px*32px legend on right
+- .thumbnail-32-none :  tag 32px*32px no legend
+
+******************************************************************/
+
+
+.thumbnail-account-part {
+  float: left;
+  overflow:hidden;
+}
+.thumbnail-account-part label {     
+  font-weight: lighter;
+}
+
+.thumbnail-50-bottom {
+  width: 50px;
+  height: 80px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.thumbnail-50-bottom label {
+  text-align: center;
+  font-size: 9px;
+  clear: left;
+  padding-top: 2px;
+}
+
+.thumbnail-50-none {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.thumbnail-50-none label {
+  display: none;
+}
+
+.thumbnail-50-right {
+  width: 100%;
+  height: 50px;
+  float: none;
+  clear both;
+  margin-right: 0;
+  margin-bottom: 5px;
+}
+.thumbnail-50-right label {
+}
+
+.thumbnail-32-none {
+  width: 32px;
+  height: 32px;
+  margin-right: 3px;
+  margin-bottom: 3px;
+}
+.thumbnail-32-none label {
+  display: none;
+}
+
+.thumbnail-32-right {
+  width: 100%;
+  height: 32px;
+  float: none;
+  clear both;
+  margin-right: 0;
+  margin-bottom: 5px;
+}   
+.thumbnail-32-right label {}
+
+/* the last thumbnail in a column has no margin right */
+.thumbnails-inner .last {
+  margin-right: 0;
 }
 
 /* Sidebar
@@ -414,9 +520,9 @@ ul.children li {
 	padding: 0;
 	list-style-type: none;
 	list-style-image: none;
-	margin-bottom: 1.5em;
 	display: block;
 	clear: both;
+	padding: 0 0 0.5em;
 }
 
 
@@ -441,26 +547,6 @@ ul.children li {
 	margin: .5em 0 .5em 0;
 }
 
-.sidebar .thumbnails-inner {
-  margin-left: 5px;
-}
-
-.sidebar .thumbnail-account-part {
-  width: 35px;
-  height: 35px;
-  float: left;
-  overflow:hidden;
-}
-
-.sidebar .thumbnail-account-part .image-block {
-  margin-right: 0;
-} 
-
-/* the account title can be displayed in another places */
-.sidebar .thumbnail-account-part .thumbnail-account-legend {
-  display: none;
-}
-
 /* tn boxes (global style for any kind of boxes) */
 .tn-box h2,
 .tn-box h3,
@@ -478,19 +564,23 @@ ul.children li {
   -moz-border-radius:3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  background-color:#FFF7F7;
+  -moz-box-shadow: 3px 3px 3px #BBBBBB;
+  -webkit-box-shadow: 3px 3px 3px #BBBBBB;
+  box-shadow: 3px 3px 3px #BBBBBB;
+  background-color:#FFF9F9;
   border:1px solid #A99392;
   color:#5D130F;
   font-size:1.1em;
   padding:2px 5px;
   text-align:center;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
+  margin-top: 0;
 }
 
-/* sidebar boxes */
+/* sidebar particular boxes */
 
 .sidebar ul li.profile-box {
-  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .sidebar ul li.profile-box .image-block {
@@ -568,6 +658,19 @@ ul.children li {
 
 #globalbar ul ul a:hover {
   color: #444;
+}
+
+/* underlined boxes = different looks
+   depending on place (left right or center)
+   the class is named risedbox */
+   
+#contextbar .rised-box {
+  background-color: #FAF9F9;
+}
+
+#contextbar .rised-box h3 {
+  background-color: #5D130F;
+  color: #FFF9F9;
 }
 
 /* Calendar */
