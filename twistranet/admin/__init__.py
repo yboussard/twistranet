@@ -1,2 +1,3 @@
 import account,\
-       community
+       community,\
+       relation

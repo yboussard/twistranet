@@ -8,7 +8,4 @@ class CommunityMembershipInline(admin.TabularInline):
 class CommunityAdmin(admin.ModelAdmin):
     inlines = (CommunityMembershipInline,)
 
-
-# not so easy ;-)
-# admin.site.register(Community, CommunityAdmin)
 admin.site.register(Community)

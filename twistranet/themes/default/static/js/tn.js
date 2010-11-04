@@ -1,8 +1,5 @@
-/*!
- * jQuery JavaScript Library v1.4.2
- * http://jquery.com/
- *
- * TwistraNet  javascript
+/*
+ * TwistraNet Main  javascript methods
  */
 
 // helpers
@@ -79,7 +76,7 @@ var twistranet = {
         } );       
     },
     showContentActions: function(e){
-        /* show content actions one post mouseover */
+        /* show content actions on post mouseover */
         jQuery('.post').bind('mouseenter', function(){
           jQuery(this).addClass('activepost');
         });

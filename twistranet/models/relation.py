@@ -16,7 +16,7 @@ class Relation(models.Model):
                                             # Used when security is restricted.
     
     def __unicode__(self):
-        return "%s => %s (approved=%s)" % (self.initiator, self.target, self.approved, )
+        return u"%s => %s (approved=%s)" % (self.initiator, self.target, self.approved, )
 
     class Meta:
         app_label = 'twistranet'
