@@ -16,7 +16,7 @@ class CommunityForm(forms.ModelForm):
     class Meta:
         from twistranet.models import Community
         model = Community
-        fields = ('name', 'description', '_picture', 'permissions', )
+        fields = ('name', 'screen_name', 'description', '_picture', 'permissions', )
 
         # fields = ('text', 'permissions', 'language', )
         widgets = {
