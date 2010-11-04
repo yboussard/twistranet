@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load macros %}
+{# just a thumbnail with a link}
+{# See styles.css for css complete description ... #}
+{% macro thumbnail imgwidth imgheight title linkurl imgurl  %}
+      <a title="{{title}}"
+         href="{% url linkurl %}"
+         class="image-block image-block-{{imgwidth}}-{{imgheight}} image-block-alone">
+        <img title="{{title}}"
+             alt="{{title}}"
+             src="{% url imgurl %}" />  
+      </a>
+{% endmacro %}
+{# just a thumbnail with a link for account objects (useraccount, community ...) }
+{# TODO: use the thumbnail more generic macro above }
+{% macro accountthumbnail imgwidth imgheight accountobject  %}
+      <a title="{{accountobject.screen_name}}"
+         href="{% url twistranet.views.account_by_name accountobject.name %}"
+         class="image-block image-block-{{imgwidth}}-{{imgheight}} image-block-alone">
+        <img title="{{accountobject.screen_name}}"
+             alt="{{accountobject.screen_name}}"
+             src="{% url twistranet.views.resource_by_account accountobject.id 'picture' %}" />  
+      </a>
+{% endmacro %}
+{# block containing a thumbnail and a legend, to be used in list of thumbnails}
+{# See styles.css for different blocktype, ex : 'thumbnail-50-bottom' ... #}
+{# imgwidth and imgheight are integers #}
+{# title will fill the title and alt tags, legend the legend block #}
+{# linkurl is the href tag  #}
+{# imgurl is the src tag  #}
+{% macro thumbblock blocktype imgwidth imgheight title legend linkurl imgurl  %}     
+  <div class="thumbnail-account-part {{blocktype}}">
+      <a href="{% url linkurl %}" 
+         title="{{title}}"
+         class="image-block image-block-{{imgwidth}}-{{imgheight}}">
+          <img title="{{title}}"
+               alt="{{title}}"
+               src="{% url imgurl %}" />
+      </a>
+      <label class="thumbnail-account-legend">
+        <a href="{% url linkurl %}">
+         {{ legend }}
+        </a>
+      </label>
+  </div>
+{% endmacro %}
+{# for an account or a community thumbnail block  #}
+{# TODO: use the thumbblock more generic macro above }
+{% macro accountblock blocktype imgwidth imgheight accountobject %}
+  <div class="thumbnail-account-part {{blocktype}}">
+      <a href="{% url twistranet.views.account_by_name accountobject.name %}" class="image-block image-block-{{imgwidth}}-{{imgheight}}">
+          <img
+              title="{{accountobject.screen_name}}"
+              alt="{{accountobject.screen_name}}"
+              src="{% url twistranet.views.resource_by_account accountobject.id 'picture' %}" />
+      </a>
+      <label class="thumbnail-account-legend">
+        <a href="{% url twistranet.views.account_by_name accountobject.name %}">
+         {{ accountobject.screen_name }}
+        </a>
+      </label>
+  </div>
+{% endmacro %}

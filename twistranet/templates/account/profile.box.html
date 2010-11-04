@@ -1,9 +1,9 @@
 {% load i18n %}
 {% if account %}
+  {% load macros %}
+  {% loadmacros "thumbnails/main-macro.html" %}
     <li id="account-profile-box" class="tn-box sidebar-box profile-box">
-      <a href="{% url twistranet.views.account_by_name account.name %}" class="image-block image-block-50-50 image-block-alone">
-        <img width="50" height="50" src="{% url twistranet.views.resource_by_account account.id 'picture' %}">  
-      </a>                                         
+      {% usemacro accountthumbnail 50 50 account %}                                         
       <h2 class="box-header">
         <a href="{% url twistranet.views.account_by_name account.name %}">
           {{ account }}

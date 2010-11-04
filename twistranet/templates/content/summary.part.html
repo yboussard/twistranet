@@ -1,32 +1,34 @@
 {% load i18n %}
 {% load twistranet_extras %}
+{% load macros %}
+{% loadmacros "thumbnails/main-macro.html" %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    <div class="account-picture">
-        <img width="50" height="50" src="{% url twistranet.views.resource_by_account content.author_id 'picture' %}">
-    </div>
+    {% usemacro accountthumbnail 50 50 content.author %}
     <div class="entry">
-        <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.screen_name }}</a>
-        {% if not content.author == content.publisher %}
-            &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
-        {% endif %}
-        {% if content.html_headline %}
-            <span class="headline">
-                {% if content.detail_view %}
-                    <a href="{% url twistranet.views.content_by_id content.id %}">
-                        {{ content.text_headline }}
-                    </a>
-                {% else %}
-                    {{ content.html_headline|safe }}
-                {% endif %}
-            </span>
-        {% endif %}
-        {% if content.html_summary %}
-            <div class="summary-content">
-                {{ content.html_summary|safe }}
-            </div>
-        {% endif %}
+        <div class="entry-main">
+          <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.screen_name }}</a>
+          {% if not content.author == content.publisher %}
+              &raquo;
+              <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
+          {% endif %}
+          {% if content.html_headline %}
+              <span class="headline">
+                  {% if content.detail_view %}
+                      <a href="{% url twistranet.views.content_by_id content.id %}">
+                          {{ content.text_headline }}
+                      </a>
+                  {% else %}
+                      {{ content.html_headline|safe }}
+                  {% endif %}
+              </span>
+          {% endif %}
+          {% if content.html_summary %}
+              <div class="summary-content">
+                  {{ content.html_summary|safe }}
+              </div>
+          {% endif %}
+        </div>
         <div class="content-actions">
             {% include 'actions/content_summary.part.html' %}
         </div>
@@ -35,8 +37,8 @@
                 <li class="date">{{ content.created_at|timesince }}</li>
                 {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
                 <li class="target">{{ content.permissions }}</li>
-            </ul>
-        </div>
+            </ul>               
+        </div>          
     </div>
     <div class="clearfix"><!-- --></div>
 </div>
