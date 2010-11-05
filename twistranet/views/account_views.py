@@ -38,9 +38,9 @@ def _getInlineForms(request, publisher = None):
             
     # Wall edition forms if user has the right to write on it
     # This return a list of forms as each content type can define its own tab+form
-    form_classes = form_registry.getInlineFormClasses(publisher)
+    form_classes = form_registry.getInlineForms(publisher)
     forms = []
-    for form_class in form_classes:
+    for form_class in [ k['form_class'] for k in form_classes ]:
         # Initial data processing
         initial = {
             "publisher_id": publisher.id,

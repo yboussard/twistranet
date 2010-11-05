@@ -23,3 +23,5 @@ class CommunityForm(forms.ModelForm):
             'permissions':     widgets.Select(),
         }
 
+
+

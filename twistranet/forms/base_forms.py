@@ -37,4 +37,10 @@ class BaseRegularForm(forms.ModelForm):
             'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }
 
-
+class ConfigurationForm(BaseRegularForm):
+    """
+    The main TN configuration form
+    """
+    
+    class Meta:
+        pass

@@ -238,10 +238,23 @@ class GlobalCommunity(Community):
     If can_view is authenticated, then ALL OF Twistranet is restricted to auth people.
     
     Default is authenticated.
+    
+    This community holds all the TN configuration as well!
     """
     class Meta:
         app_label = 'twistranet'
     permission_templates = permissions.global_community_templates
+    
+    site_name = models.CharField(
+        max_length = 64,
+        help_text = "Enter this site's name. It will be displayed prominently on all pages. No HTML please.",
+        default = "TwistraNet",
+        )
+    baseline = models.CharField(
+        max_length = 64,
+        help_text = "Enter the site's baseline. It will be displayed in the upper bar of the site. No HTML please.",
+        default = "Enjoy working in team.",
+        )
 
     @staticmethod
     def get():

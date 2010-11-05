@@ -1,10 +1,10 @@
+
 class FormRegistryManager:
     """
     Form registry for content types.
     This is mandatory to properly generate forms.
-    XXX TODO: Put most of this code into settings.py?
     """
-    # This holds a {classname: {}} dictionnary
+    # This holds a {classname: {{}}} dictionnary
     _registry_ = {}
     
     def register(self, form_class):
@@ -14,38 +14,55 @@ class FormRegistryManager:
         if allow_user is True, content is available for end users.
         XXX TODO: Provide a way of ordering forms?
         """
+        # Prepare the form itself
         from twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
         model = form_class.Meta.model
-        self._registry_[model.__name__]  = {
+        form = {
             'model_class': model, 
             'form_class': form_class,
             'allow_inline_creation': issubclass(form_class, BaseInlineForm),
-            'allow_regular_creation': issubclass(form_class, BaseRegularForm),
+            'allow_fullpage_creation': issubclass(form_class, BaseRegularForm),
             'content_type': model.__name__
             }
+
+        # Avoid registering twice the same form
+        registered_model = self._registry_.get(model.__name__, None)
+        if not registered_model:
+            self._registry_[model.__name__] = []
+            registered_model = self._registry_[model.__name__]
+        for f in registered_model:
+            if f['form_class'].__name__ == form_class.__name__:
+                return  # Already registered.
+        
+        # Actually register it
+        registered_model.append(form)
             
-    def getFormEntry(self, name):
+            
+    def getFormEntries(self, name):
         """
-        Return the form dict used for the given model
+        Return the form dict used for the given model.
+        Will return the FIRST form anyway.
         """
         return self._registry_[name]
             
-    def getRegularFormClasses(self):
+    def getFullpageForms(self):
         """
         This method returns the appropriate content forms for a user (globally).
         This returns a list of Form classes
         """
         from twistranet.models import Account, Community
 
-        # Only return forms for publisher accounts I'm authorized to write on
         account = Account.objects._getAuthenticatedAccount()
-        return [ r for r in self._registry_.values() if r['allow_regular_creation'] ]
+        ret = []
+        for m in self._registry_.values():
+            for f in m:
+                if f['allow_fullpage_creation']:
+                    ret.append(f)
 
         # Else, no forms.
-        return []
+        return tuple(ret)
 
-    
-    def getInlineFormClasses(self, publisher):
+    def getInlineForms(self, publisher):
         """
         This method returns the appropriate content forms for a user seeing an account page.
         This returns a list of Form classes
@@ -54,11 +71,16 @@ class FormRegistryManager:
         
         # Only return forms for publisher accounts I'm authorized to write on
         account = Account.objects._getAuthenticatedAccount()
+        ret = []
         if publisher.can_publish:
-            return [ r['form_class'] for r in self._registry_.values() if r['allow_inline_creation'] ]
+            for m in self._registry_.values():
+                for f in m:
+                    if f['allow_inline_creation']:
+                        ret.append(f)
                 
         # Else, no forms.
-        return []
+        return tuple(ret)
+        
         
     def getModelClass(self, name):
         """
