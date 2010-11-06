@@ -1,0 +1,174 @@
+/*---------------------------------------------------------------- 
+  Copyright: 
+  Copyright (C) 2009 danielfajardo web
+	Based on:
+	* Superfish v1.4.8 - jQuery menu widget
+	* Copyright (c) 2008 Joel Birch
+	* http://users.tpg.com.au/j_birch/plugins/superfish/
+	* Dual licensed under the MIT and GPL licenses:
+	* 	http://www.opensource.org/licenses/mit-license.php
+	* 	http://www.gnu.org/licenses/gpl.html 
+  
+  Author: 
+  danielfajardo - http: //wwww.danielfajardo.com
+---------------------------------------------------------------- */
+
+
+/*** ESSENTIAL STYLES ***/
+.sf-menu, .sf-menu * {
+	list-style:		none;
+}
+.sf-menu {
+	line-height:	1.0;
+}
+.sf-menu ul {
+	position:		absolute;
+	top:			-999em;
+	width:			16em; /* left offset of submenus need to match (see below) */
+}
+.sf-menu ul li {
+	width:			100%;
+}
+.sf-menu li:hover {
+	visibility:		inherit; /* fixes IE7 'sticky bug' */
+}
+.sf-menu li {
+	float:			left;
+	position:		relative;
+}
+.sf-menu a {
+	display:		block;
+	position:		relative;
+}
+.sf-menu li:hover ul,
+.sf-menu li.sfHover ul {
+	left:			0;
+	top:			2.5em; /* match top ul list item height */
+	z-index:		99;
+}
+ul.sf-menu li:hover li ul,
+ul.sf-menu li.sfHover li ul {
+	top:			-999em;
+}
+ul.sf-menu li li:hover ul,
+ul.sf-menu li li.sfHover ul {
+	left:			16em; /* match ul width */
+	top:			0;
+}
+ul.sf-menu li li:hover li ul,
+ul.sf-menu li li.sfHover li ul {
+	top:			-999em;
+}
+ul.sf-menu li li li:hover ul,
+ul.sf-menu li li li.sfHover ul {
+	left:			16em; /* match ul width */
+	top:			0;
+}
+
+/*** THE MainMenu ***/
+
+#mainmenu ul {
+	margin: 0;
+	padding-left: 0;
+	padding-right: 0;
+	list-style: none;
+	}
+	#mainmenu ul li {
+		display: inline;
+		height: 27px;
+		}
+		#mainmenu ul li a {
+			font-weight:normal;
+			padding: 10px;
+			color: white;
+		}
+    #mainmenu ul li a:link    { color: white; }
+    #mainmenu ul li a:hover   { color: white; }
+    #mainmenu ul li a:active  { color: white; }
+    #mainmenu ul li a:visited { color: white; }		
+		#mainmenu ul li.page_item {
+		}
+		#mainmenu ul li.page_item:hover {
+		}
+		#mainmenu ul li.page_item:active {
+		}
+		#mainmenu ul li.current_page_item {
+		}
+		#mainmenu ul li.page_last {
+		}
+
+	#mainmenu ul ul {
+		margin-top: 1em;
+		margin-left: 1em;
+		padding: 7px 0 7px 0;
+		font-size: .95em;
+		border: 1px solid #cdd;
+		-moz-border-radius-topright: 7px;
+		-webkit-border-top-right-radius: 7px;
+		-moz-border-radius-bottomleft: 7px;
+		-webkit-border-bottom-left-radius: 7px;
+		-moz-border-radius-bottomright: 7px;
+		-webkit-border-bottom-right-radius: 7px;
+		background-color: white;
+		}
+		#mainmenu ul ul ul {
+			margin-top: .3em;
+			margin-left: -1em;
+		}
+		#mainmenu ul ul li,
+		#mainmenu ul ul li.page_item,
+		#mainmenu ul ul li.page_item:hover,
+		#mainmenu ul ul li.page_item:active,
+		#mainmenu ul ul li.current_page_item {
+			background: none;
+			height: auto;
+			margin-left: 0;
+		}
+		#mainmenu ul ul li.page_item:hover {
+			background: url(../images/sys/grey-opacity50.png) repeat;
+		}
+		#mainmenu ul ul a { 
+			padding: .62em 1em .08em;
+		}
+
+.menu-shadow {
+	background:	url('../images/sys/shadow.png') no-repeat bottom right;
+	padding: 0 8px 9px 0;
+	-moz-border-radius-bottomleft: 17px;
+	-moz-border-radius-topright: 17px;
+	-webkit-border-top-right-radius: 17px;
+	-webkit-border-bottom-left-radius: 17px;
+}
+
+/*** THE UserMenu ***/
+
+#usermenu {
+	font-size: 1.22em;
+	color: white;
+	float: right;
+	margin: 0 0 0 20px;
+	padding: 5px 8px;
+}
+
+#usermenu div.caption {
+}
+#usermenu div.tab {
+}
+
+#usermenu ul {
+	margin: 0;
+	list-style: none;
+	}
+	#usermenu ul li {
+		display: inline;
+		padding-left: 1em;
+		padding-right: 1em;
+		border-right: 1px solid white;
+		}
+	#usermenu ul li.last {
+		border-right: none;
+		padding-right: 0;
+		}
+		#usermenu a, #usermenu a:link, #usermenu a:hover, #usermenu a:active, #usermenu a:visited {
+			color: white;
+		}

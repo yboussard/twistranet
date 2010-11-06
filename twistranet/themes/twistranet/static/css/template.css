@@ -1,0 +1,153 @@
+/*---------------------------------------------------------------- 
+  Copyright: 
+  Copyright (C) 2009 danielfajardo web
+  
+  License: 
+  GPL Software 
+  
+  Author: 
+  danielfajardo - http: //wwww.danielfajardo.com
+---------------------------------------------------------------- */
+
+/* Template structure
+
+	body
+		page
+			wrapper -> width: 940px;
+				header
+					head
+					mainmenu
+					search
+				wrap
+					container
+					    contextbar
+						content
+						globalbar
+				bottom
+					footer
+*/
+
+
+/* Template. Main areas
+***************************************************************************** */
+
+body {
+	margin: 0;
+	background: white url(../images/body-bg.png) top left repeat-x;
+}
+#page {
+}
+#wrapper {
+	width: 963px; /*107em*/
+	margin: 0 auto;
+	padding: 0;
+	}
+	#header {   
+		  position: relative;
+		  height: 75px;
+	  }
+		#head {
+		  }
+  		#usermenu {
+  		}
+  		#menubar {
+  			width: 778px;
+  			height: 27px;      
+  			position: absolute;
+  			top: 27px;
+  			left: 0;
+  			margin: 0;
+  			padding: 0;
+  			clear: both;
+  			background: transparent url(../images/menu-bar-bg.png) top left repeat-x;
+  			border-color: #d0b6b7;
+  			border-width: 1px 1px 0 1px;
+  			border-style: solid solid none solid;
+  			}
+  			#mainmenu {
+  			}
+		#searchform {
+			position: absolute;
+			top: 30px; 
+			right: -2px;
+			width: 182px;
+			height: 22px;
+			background: transparent url(../images/search-bg.png) top left no-repeat;
+			}
+			#search-box {
+				width: 182px;
+				height: 22px;
+			}
+			
+			#search-text {
+				background: transparent none no-repeat 0 0;
+				border: none;
+				margin: 1px 32px 4px 4px;
+				color: #777;
+				width: 110px;
+				font-size: 1.3em;
+			}
+
+	#wrap {
+		height: 100%; /* Fix IE7 */
+		padding: 0;
+		}
+		#breadcrumb {
+			font-size: 1.2em;
+      position: absolute;
+			width: 758px;
+			text-align: right;
+			top: 55px;
+		  border-color: #d0b6b7;
+			border-width: 0 1px;
+			border-style: none solid;
+			padding: 6px 10px;
+			height: 12px;
+		}
+		#globalbar {
+			width: 150px;
+			float: right;	
+			clear: right;
+			margin: 0;
+		}
+		#container {
+			margin: 0;
+			padding: 0;
+			clear: left;
+			float: left;
+			font-size: 1.22em;
+		  border-color: #d0b6b7;
+			border-width: 0 1px 1px;
+			border-style: none solid solid;	
+      width: 778px;		
+			}
+			#contextbar {
+				width: 180px;
+				float: left;	
+				margin: 0 30px 12px 0;
+			}
+  		#tn-message {
+  		  position: absolute;
+  		  top: -30px;
+  		  left: -19em;
+  		  width: 37em;
+  		  margin: 0 50%;
+        color: red;		  
+        text-align: center;
+        padding: 5px 0.5em 0;
+      }
+			#content {
+				width: 500px;
+				float: left;
+			}
+	#bottom {
+		clear: both !important;
+	}
+		#footer { 
+			margin: 15px 0 0;
+			padding: 7px 0;
+		}
+#tn-dialog-button-cancel,
+#tn-dialog-button-ok {
+  display: none;
+}
