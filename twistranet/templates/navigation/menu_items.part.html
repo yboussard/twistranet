@@ -1,12 +1,18 @@
 {% load i18n %}
-<li class="page_item"><a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a></li>
-<li class="page_item"><a href="{% url twistranet.views.communities %}">{% trans 'Communities' %}</a>
-{% if logged_account.my_communities %}
-	<ul>
-	{% for community in logged_account.my_communities %}
-		<li><a href="{% url twistranet.views.community_by_name community.name %}">{{ community }}</a></li>
-	{% endfor %}
-	</ul>
-{% endif %}
-</li>
-<li class="page_item"><a href="">{% trans 'Help' %}</a></li>
+{% load menubuilder %}
+
+{# This is a 2 levels menu #}
+{% menu main %}
+{% for item in menuitems %}
+    <li class="page_item">
+        <a href="{{ item.get_absolute_url }}">{{ item.label }}</a>
+        {% if item.has_children %}
+            <ul>
+                {% for subitem in item.children %}
+                    <li><a href="{{ subitem.get_absolute_url }}">{{ subitem.label }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}
+

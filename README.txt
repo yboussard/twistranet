@@ -53,3 +53,10 @@ SSO
 
 See http://docs.djangoproject.com/en/dev/howto/auth-remote-user/ to find what we've got to do on this topic.
 
+
+Acknoledgements
+================
+
+The Menu system is derived from http://code.google.com/p/django-menu/
+
+

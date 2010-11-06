@@ -93,6 +93,5 @@ class BaseManager(models.Manager):
             # Avoid circular refs
             stack = None
             del _locals
-        
 
         

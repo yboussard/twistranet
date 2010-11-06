@@ -6,7 +6,8 @@ import form_registry
 def security_context(request):
     """
     Retrieve the logged account and populate the variable (don't do anything with anon account by now).
-    Also get the content form available
+    Also get the content form available.
+    And get the main_menu menu manager. (XXX TODO: Cache menu items)
     """
     ret = dict()
 
@@ -18,6 +19,6 @@ def security_context(request):
     klasses = form_registry.form_registry.getFullpageForms()
     if klasses:
         ret['creatable_content_types'] = klasses
-
+        
     return ret
     

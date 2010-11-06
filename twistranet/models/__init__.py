@@ -14,6 +14,9 @@ from account import UserAccount, SystemAccount
 from community import GlobalCommunity, AdminCommunity
 from relation import Relation
 
+# Menu / Taxonomy management
+from menu import Menu, MenuItem
+
 # import permission_set
 from twistranet.lib import permissions, roles
 

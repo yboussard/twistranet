@@ -123,7 +123,50 @@ def bootstrap():
             legacy_rm.save()
             
         # Load / Update default TN resource files
-        legacy_rm.loadAll(with_aliases = True) 
+        legacy_rm.loadAll(with_aliases = True)
+        
+        # Create the main menu manager and main menu items
+        try:
+            menu = Menu.objects.get(slug = "main")
+        except ObjectDoesNotExist:
+            menu = Menu(
+                slug = "main",
+                name = "Main Menu",
+                )
+            menu.save()
+            
+            # Create default menu items
+            item = MenuItem(
+                menu = menu,
+                order = 0,
+                view_path = "twistranet.views.home",
+                title = "Home",
+                )
+            item.save()
+            item = MenuItem(
+                menu = menu,
+                order = 10,
+                view_path = 'twistranet.views.communities',
+                title = "Communities",
+                )
+            item.save()
+            subitem = MenuItem(
+                menu = menu,
+                parent = item,
+                order = 0,
+                view_path = 'twistranet.views.communities',
+                title = "View all communities",
+                )
+            subitem.save()
+            subitem = MenuItem(
+                menu = menu,
+                parent = item,
+                order = 10,
+                sibling_id = Community.objects.admin.id,
+                sibling_kind = 'A',
+                title = None,
+                )
+            subitem.save()
             
         # Check default profile pictures
         profile_picture = Resource.objects.get(alias = "default_profile_picture")

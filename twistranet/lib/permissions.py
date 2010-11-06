@@ -160,6 +160,21 @@ community_templates = PermissionTemplate((
         can_leave:          (administrator, ),
     },
     {
+        "id":               "private",
+        "name":             "Private", 
+        "description":      """
+                            A private community, visible only to its members but ruled like a workgroup otherwise.
+                            """,
+        can_create:         (administrator, ),
+        can_list:           (community_member, ),
+        can_view:           (community_member, ),
+        can_list_members:   (community_member, ),
+        can_edit:           (community_manager, ),
+        can_publish:        (community_member, ),
+        can_join:           (community_manager, ),
+        can_leave:          (community_member, ),
+    },
+    {
         "id":               "interest",
         "name":             "Interest group",
         "description":      """
