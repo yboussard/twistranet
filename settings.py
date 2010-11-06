@@ -117,6 +117,7 @@ CACHE_BACKEND = "locmem:///"
 
 ROOT_URLCONF = 'urls'
 
+#THEME_NAME = "twistranet"
 THEME_NAME = "default"
 
 TEMPLATE_DIRS = (
@@ -124,7 +125,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     "%s/twistranet/themes/%s" % (HERE, THEME_NAME, ),
-    "%s/twistranet/themes/default" % (HERE, ),
     "%s/twistranet/templates" % (HERE, ),
 )
 
@@ -138,7 +138,7 @@ HAYSTACK_SEARCH_ENGINE = "simple"
 
 # Twistranet settings
 # XXX TODO: Put this in a twistranet.settings module?
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/default/resources" % (HERE, )
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/%s/resources" % (HERE, THEME_NAME)
 TWISTRANET_ACCOUNT_MEDIA_PATH = "%s/data/media" % (HERE, )
 
 INSTALLED_APPS = (

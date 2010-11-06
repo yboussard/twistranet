@@ -51,7 +51,7 @@ urlpatterns = patterns('',
     (r'^logout/$', logout),
     
     # TwistraNet's API
-    (r'^api/',                                  include('twistranet.api.urls')),
+    (r'^api/', include('twistranet.api.urls')),
 
     # Static stuff
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
@@ -59,9 +59,9 @@ urlpatterns = patterns('',
     (r'^js/(?P<path>.*)$', 'django.views.static.serve',
             {'document_root': "%s/twistranet/themes/%s/static/js" % (os.path.dirname(__file__), settings.THEME_NAME)}),
     (r'^images/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': "%s/twistranet/themes/%s/static/images" % (os.path.dirname(__file__), settings.THEME_NAME)}),
-    # (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-    #         {'document_root': "%s/twistranet/templates/static" % (os.path.dirname(__file__))}),
+            {'document_root': "%s/twistranet/themes/%s/static/images" % (os.path.dirname(__file__), settings.THEME_NAME)}), 
+    (r'^css/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': "%s/twistranet/themes/%s/static/css" % (os.path.dirname(__file__), settings.THEME_NAME)}),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
