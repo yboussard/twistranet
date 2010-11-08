@@ -2,6 +2,12 @@
  * TwistraNet Main  javascript methods
  */
 
+
+// global vars
+
+var defaultDialogMessage = '';
+var curr_url = window.location.href;
+
 // helpers
 
 // set first and last class on subblocks
@@ -19,10 +25,6 @@ setFirstAndLast = function(block, sub, modulo) {
       }
    })
 }
-
-// global vars
-
-var defaultDialogMessage = '';
 
 // confirm boxes using jqueryui
 initConfirmBox = function(elt){
@@ -54,6 +56,36 @@ initConfirmBox = function(elt){
     dialogBox.dialog('open');
 }
 
+
+escapeHTML = function(s) {
+    return s.split('&').join('&amp;').split('<').join('&lt;').split('"').join('&quot;');
+}
+// absolutize url : the browser make the job
+absolutizeURL = function(url) {
+    var el= document.createElement('div');
+    el.innerHTML= '<a href="'+escapeHTML(url)+'">x</a>';
+    return el.firstChild.href;
+}
+
+// set selected class on a menu
+// depending on current url
+setSelectedTopic = function(menu) {   
+    selected = false;
+    jQuery('>ul>li', menu).each (function(i){
+      topic = jQuery(this);
+      jQuery('a', topic).each(function(){
+          href = jQuery(this).attr('href'); 
+          if (href && typeof href!='undefined' && ! selected) {
+             if (absolutizeURL(href) == curr_url) { 
+               selected = true;
+               topic.addClass('selected');
+               return false; }
+          } 
+      });
+    });
+    if (!selected) jQuery('>ul>li:first', menu).addClass('selected'); 
+}
+
 // main class
 var twistranet = {
     __init__: function(e) {
@@ -73,7 +105,10 @@ var twistranet = {
         } );
         jQuery([['.tn-box', '.thumbnail-32-none']]).each(function(){
            setFirstAndLast(this[0], this[1], 5);
-        } );       
+        } );   
+        /* set selected topic in menus*/    
+        setSelectedTopic(jQuery('#mainmenu'));
+        
     },
     showContentActions: function(e){
         /* show content actions on post mouseover */
