@@ -36,9 +36,15 @@ class BaseManager(models.Manager):
                         _locals = mbr[1]
     
                         # Check for a request.user User object
-                        if _locals.has_key('request') and hasattr(_locals['request'], 'user') and isinstance(_locals['request'].user, User):
-                            # We use this instead of the get_profile() method to avoid an infinite recursion here.
-                            return UserAccount.objects.__booster__.get(user__id__exact = _locals['request'].user.id)
+                        if _locals.has_key('request'):
+                            u = getattr(_locals['request'], 'user', None)
+                            if isinstance(u, User):
+                                # We use this instead of the get_profile() method to avoid an infinite recursion here.
+                                # We mimic the _profile_cache behavior of django/contrib/auth/models.py to avoid doing a lot of requests on the same object
+                                if not hasattr(u, '_account_cache'):
+                                    u._account_cache = UserAccount.objects.__booster__.get(user__id__exact = u.id)
+                                    u._account_cache.user = u
+                                return u._account_cache
                 
                         # Check for an __acount__ variable holding a generic Account object
                         if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
