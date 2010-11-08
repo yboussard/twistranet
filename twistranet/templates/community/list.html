@@ -11,7 +11,7 @@
     <h1>{% blocktrans %}Communities{% endblocktrans %}</h1>
     {% if communities %}
         {% for account in communities %}
-            {%include "community/summary.part.html" %}
+            {%include "community/summary.part.html" %}      
         {% endfor %}
     {% else %}
         <p>{% blocktrans %}No community available on your system.{% endblocktrans %}</p>
