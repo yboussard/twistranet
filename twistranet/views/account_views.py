@@ -115,7 +115,7 @@ def account_by_id(request, account_id):
     latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*select_related_summary_fields).order_by("-created_at")
 
     # Generate the view itself
-    current_account = request.user.get_profile()
+    current_account = Account.objects._getAuthenticatedAccount()
     t = loader.get_template('account/view.html')
     c = RequestContext(
         request,
@@ -124,7 +124,7 @@ def account_by_id(request, account_id):
             "content_forms": forms,
             "account": account,
             "latest_content_list": latest_list,
-            "account_in_my_network": current_account and not not current_account.network.filter(id = account.id),
+            "account_in_my_network": not current_account.is_anonymous and not not current_account.network.filter(id = account.id),
         },
         )
     return HttpResponse(t.render(c))
@@ -169,7 +169,7 @@ def home(request):
     c = RequestContext(
         request,
         {
-            "account": account,
+            "account": not account.is_anonymous and account,
             'path': request.path,
             'latest_content_list': latest_list[:TWISTRANET_CONTENT_PER_PAGE],
             'content_forms': forms,
