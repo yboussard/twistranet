@@ -82,9 +82,9 @@ body {
 			#search-text {
 				background: transparent none no-repeat 0 0;
 				border: none;
-				margin: 1px 32px 4px 4px;
+				margin: 0;
 				color: #777;
-				width: 110px;
+				width: 130px;
 			}
 
 	#wrap {
@@ -107,6 +107,7 @@ body {
 			float: right;	
 			clear: right;
 			margin: 0;
+			word-wrap: break-word;
 		}
 		#container {
 			margin: 0;
@@ -122,6 +123,7 @@ body {
 				width: 180px;
 				float: left;	
 				margin: 0 30px 12px 0;
+				word-wrap: break-word;
 			}
   		#tn-message {
   		  position: absolute;
@@ -134,7 +136,7 @@ body {
         padding: 5px 0.5em 0;
       }
 			#content {
-				width: 500px;
+				width: 565px;
 				float: left;
 			}
 	#bottom {

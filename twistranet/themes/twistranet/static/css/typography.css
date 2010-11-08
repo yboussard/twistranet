@@ -1,12 +1,5 @@
 /*---------------------------------------------------------------- 
-  Copyright: 
-  Copyright (C) 2009 danielfajardo web
-  
-  License: 
-  GPL Software 
-  
-  Author: 
-  danielfajardo - http: //wwww.danielfajardo.com
+  Global typography
 ---------------------------------------------------------------- */
 
 body {
@@ -161,13 +154,17 @@ textarea {
 ***************************************************************************** */
 
 a {	text-decoration: none; }
-	a:link    { color: #26a; }
-	a:hover   { color: #000; }
-	a:active  { color: #be261e; }
-	a:visited { color: #26a; }
+	a:link    { color: #ad1c20; }
+	a:hover   { color: #ad1c20; }
+	a:active  { color: #ad1c20; }
+	a:visited { color: #ad1c20; }
 
 a img {	border: none;	}
 
+#content a:hover,
+#content a:active {
+  text-decoration: underline;
+}
 
 /* list 
 ***************************************************************************** */
@@ -178,39 +175,6 @@ ul, ol {
 }
 
 ul { 	list-style-type: disc; }
-	ul.check, ul.arrow, ul.cross, ul.light, ul.star {
-		list-style: none;
-		margin-left: 0;
-		}
-		ul.check li, ul.arrow li, ul.cross li, ul.light li, ul.star li {
-			list-style-type: none;
-			background-repeat: no-repeat;
-			background-position: center left;
-			padding: 4px 0 3px 25px;
-			}
-			ul.check li { background-image: url(../images/list/typo_check.jpg); }
-			ul.arrow li { background-image: url(../images/list/typo_arrow.jpg); }
-			ul.cross li { background-image: url(../images/list/typo_cross.jpg); }
-			ul.light li { background-image: url(../images/list/typo_light.jpg); }
-			ul.star li  { background-image: url(../images/list/typo_star.jpg); }
-	
-	ul.check-big, ul.arrow-big, ul.cross-big, ul.light-big, ul.star-big {
-		list-style: none;
-		margin-left: 0;
-		}
-		ul.check-big li, ul.arrow-big li, ul.cross-big li, ul.light-big li, ul.star-big li {
-			list-style-type: none;
-			background-repeat: no-repeat;
-			background-position: center left;
-			padding: 11px 0 8px 50px;
-			font-size: 14px;
-			font-weight: bold;
-			}
-			ul.check-big li { background-image: url(../images/list/typo_check-big.jpg); }
-			ul.arrow-big li { background-image: url(../images/list/typo_arrow-big.jpg); }
-			ul.cross-big li { background-image: url(../images/list/typo_cross-big.jpg); }
-			ul.light-big li { background-image: url(../images/list/typo_light-big.jpg); }
-			ul.star-big li  { background-image: url(../images/list/typo_star-big.jpg); }
 
 ol { list-style-type: decimal}
 	/* on the search results page */

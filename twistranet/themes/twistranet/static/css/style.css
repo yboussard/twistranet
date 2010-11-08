@@ -462,67 +462,30 @@ formats are :
   margin-right: 0;
 }
 
-/* Sidebar
-***************************************************************************** */
-.sidebar {
-  word-wrap: break-word;
-}
-
-.sidebar ul, .sidebar ul {
-	margin: 0;
-	padding: 0;         
-	list-style-type: none;
-	list-style-image: none;
-}
-
-.sidebar ul li.sidebar-box {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-	list-style-image: none;
-	display: block;
-	clear: both;
-	padding: 0 0 0.5em;
-}
-
-
-.sidebar ul p, .sidebar ul select {
-	margin: 5px 0 8px;
-}
-
-.sidebar ul ul, .sidebar ul ol {
-	margin: 5px 0 0 0;
-}
-
-.sidebar ul ul ul, .sidebar ul ol {
-	margin: .5em 0 .5em 1em;
-}
-
-.sidebar ul ol li {
-	list-style: decimal outside;
-}
-
-.sidebar ul ul li, .sidebar ul ol li {
-	padding: 0;
-	margin: .5em 0 .5em 0;
-}
-
-.sidebar ul.thumbnails-inner {
+ul.thumbnails-inner {
   margin: 0 0 0 10px;
   padding: 0;
 }
-.sidebar ul.thumbnails-inner li {
+
+ul.thumbnails-inner li {
   list-style:             none;
   list-style-type:        none;
   display: inline;
   margin: 0;  
 }
 
-/* tn boxes (global style for any kind of boxes) */
+/* tn boxes (global style for any kind of boxes)
+***************************************************************************** */
+li.tn-box {
+  list-style: none;   
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+}
+
 .tn-box h2,
 .tn-box h3,
 .tn-box h4 {
-  border-bottom: none;
 }
 
 .tn-box h2 {         
@@ -531,57 +494,67 @@ formats are :
 }
 
 .tn-box h3 {
-  -moz-border-radius: 6px 3px 3px 3px;
-  -webkit-border-radius: 6px 3px 3px 3px;
-  border-radius: 6px 3px 3px 3px;
-  -moz-box-shadow: 3px 3px 3px #BBBBBB;
-  -webkit-box-shadow: 3px 3px 3px #BBBBBB;
-  box-shadow: 3px 3px 3px #BBBBBB;
-  background-color:#FFF9F9;
-  border:1px solid #A99392;
-  color:#5D130F;
-  font-size:11px;
+  background-color:#df2429;
+  color:white;
   padding:2px 5px;
-  text-align:center;
-  margin-bottom: 1.5em;
+  margin-bottom: 5px;
   margin-top: 0;
+  font-size: 11px;
 }
 
-/* sidebar particular boxes */
+/* different kind of boxes */
 
-.sidebar ul li.profile-box {
+.context-box h3 {
+  background-color:#df2429;
+}
+
+.incitative-box h3 {
+  background-color:#a9cc23;
+}
+
+.global-box h3 {
+  background-color:#278fb8;
+}
+
+.current-selected-box {
+  background-color:#278fb8;
+}
+
+/* particular boxes (profile and actions) */
+
+.profile-box {
   padding: 0 6px !important;
 }
 
-.sidebar ul li.profile-box .image-block {
-  margin-bottom: 1.5em !important;
+.profile-box .image-block {
+  margin-bottom: 7px !important;
 }
 
-.sidebar  ul li.actions-box {
+.actions-box {
   clear: none !important;
 }
 
-.sidebar .actions-box a:hover {
+.actions-box a:hover {
   text-decoration: underline;
 }  
 
-.sidebar .actions-box .edit-actions {
+.actions-box .edit-actions {
   margin-top: 0;
   padding-left: 63px;
 } 
 
-.sidebar .actions-box .edit-actions a {
+.actions-box .edit-actions a {
   color: #777;
 }  
 
-.sidebar .actions-box .global-actions {
+.actions-box .global-actions {
   clear: both; 
   padding: 0;
   position: relative;
   height: 20px;
 } 
 
-.sidebar .actions-box .global-actions li a {
+.actions-box .global-actions li a {
   display: block;
   position: absolute;
   width: 160px;
@@ -609,7 +582,7 @@ formats are :
       rgb(131,82,79) 82%
   );  
 }
-.sidebar .actions-box .global-actions li a:hover {  
+.actions-box .global-actions li a:hover {  
   top: 3px;
   left: 9px;
   -moz-box-shadow: -3px -3px 3px #000;
@@ -617,8 +590,8 @@ formats are :
   box-shadow: -3px -3px 3px #000;
 }
 
-.sidebar .actions-box .global-actions li a:hover,
-.sidebar .actions-box .global-actions li a.main-action {
+.actions-box .global-actions li a:hover,
+.actions-box .global-actions li a.main-action {
   text-decoration: none;
   background-color: #5D130F;
   background-image: -webkit-gradient(
@@ -636,116 +609,9 @@ formats are :
       rgb(131,82,79) 48%
   );
 }
-.sidebar .actions-box .global-actions li a.main-action:hover {
+.actions-box .global-actions li a.main-action:hover {
   background: #5D130F !important;
 }
-
-/* first column style boxes */
-
-/* second column style boxes */
-
-#globalbar .tn-box h3 {
-  -moz-border-radius:0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  font-weight: bold;
-  color:#777777;
-  background-color: transparent;
-  font-size: 11px;
-  margin-bottom: 1em;
-  padding:2px 5px 1px;
-  text-align:left;
-  border: none;
-  border-bottom: 2px solid #EEE;       
-  border-top: 1px solid #AAA;
-}
-
-#globalbar ul ul, #globalbar ul ol  {
-  margin-left: 5px;
-  font-size: 11px;
-}
-
-#globalbar ul ul a,
-#globalbar ul ul a:link,
-#globalbar ul ul a:visited {
-  color: #2266AA;
-}
-
-#globalbar ul ul a:hover {
-  color: #444;
-}
-
-/* underlined boxes = different looks
-   depending on place (left right or center)
-   the class is named risedbox */
-   
-#contextbar .rised-box {
-  background-color: #FAF9F9;
-}
-
-#contextbar .rised-box h3 {
-  background-color: #5D130F;
-  color: #FFF9F9;
-}
-
-/* Calendar */
-
-#wp-calendar {
-	empty-cells: show;
-	}
-
-#wp-calendar a {
- 	font-size: 9px;
-	display: block;
-	font-weight: bold;
-	}
-
-#wp-calendar #next a {
-	padding-right: 10px;
-	text-align: right;
-	}
-#wp-calendar #prev a {
-	padding-left: 10px;
-	text-align: left;
-	}
-
-#wp-calendar caption {
-	margin: 8px 0;
-	text-transform: uppercase;
-	letter-spacing: 0.3em;
-	font-weight: lighter;
- 	font-size: 7px;
- 	color: #444;
-	text-align: right;
-	}
-
-#wp-calendar th {
-	padding: 4px 5px 4px 6px;
-	font-weight: lighter;
- 	font-size: 7px;
- 	color: #666;
-	text-align: right;
-	background: #f4f4f4;
-}
-
-#wp-calendar td {
-	padding: 4px 5px 4px 6px;
-	text-align: right;
-	}
-	#wp-calendar td#today {
-		background: #e0e0e0;
-	}
-	#wp-calendar td#prev a {
-		padding: 0;
-		text-align: left;
-		font-weight: normal;
-	}
-	#wp-calendar td#next a {
-		padding: 0;
-		text-align: right;
-		font-weight: normal;
-}
-
 
 /* Bottom -> Footer
 ***************************************************************************** */
