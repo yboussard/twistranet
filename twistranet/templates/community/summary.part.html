@@ -5,7 +5,7 @@
 <div class="post" id="post-{{community.id}}">
     {% usemacro accountthumbnail 50 50 account %}
     <div class="entry">
-        <a class="author" href="{% url twistranet.views.account_by_id account.id %}">{{ account.screen_name }}</a>
+        <a class="author" href="{% url twistranet.views.account_by_name account.name %}">{{ account.screen_name }}</a>
         <div class="summary-content">
             {{ account.description|safe }}
         </div>
