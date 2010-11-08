@@ -23,19 +23,21 @@ class ContentManager(basemanager.BaseManager):
         # Check for anonymous query
         authenticated = self._getAuthenticatedAccount()
         base_query_set = super(ContentManager, self).get_query_set()
-        if not authenticated:
+        if not authenticated or authenticated.__class__.__name__ == "AnonymousAccount":
             # If global community is restricted, don't return anything
             if not Account.objects.filter(object_type = "GlobalCommunity"):
                 return base_query_set.none()       # An on-purpose invalid filter
             
             # Return anonymous objects if global community is listable to anonymous.
             # XXX TODO: Avoid the distinct method
+            glob = Account.objects.get(object_type = "GlobalCommunity")
             return base_query_set.filter(
                 _permissions__name = permissions.can_view,
                 _permissions__role__in = roles.content_public.implied(),
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = (roles.anonymous, ),
                 )
+        # print "no anon shortcut", authenticated, authenticated.__class__, authenticated.id, authenticated.object_type
         
         # System account: return all objects
         if authenticated.object_type == "SystemAccount":
@@ -45,11 +47,7 @@ class ContentManager(basemanager.BaseManager):
         # XXX TODO: Avoid the distinct method
         return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
         
-        
-    @property
-    def __booster__(self):
-        return super(ContentManager, self).get_query_set()
-        
+            
     def getActivityFeed(self, account):
         """
         Return activity feed content for the given account
@@ -310,13 +308,7 @@ class Content(_AbstractContent):
     def detail_view(self):
         return self.model_class.type_detail_view
         
-    def get_absolute_url(self):
-        """
-        XXX TODO: Make this a little more MVC with @permalink decorator
-        See http://docs.djangoproject.com/en/dev/ref/models/instances/#get-absolute-url
-        """
-        return "/content/%i/" % self.id
-        
+    
     #                                                                   #
     #                       Security Management                         #
     # XXX TODO: Use a more generic approach? And some caching as well?  #

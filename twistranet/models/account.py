@@ -21,9 +21,9 @@ class AccountManager(basemanager.BaseManager):
         but that'd be at the expense of speed.
         """
         # Check for anonymous query
-        authenticated = self._getAuthenticatedAccount()
+        account = self._getAuthenticatedAccount()
         base_query_set = super(AccountManager, self).get_query_set()
-        if not authenticated:
+        if not account or account.__class__.__name__ == "AnonymousAccount":
             # Return only anonymous objects and system accounts
             # Special shortcut to check if anonymous access is authorized
             # Unless we do this, we can have an infinite recursion!
@@ -49,8 +49,8 @@ class AccountManager(basemanager.BaseManager):
                 return base_query_set.none()
 
         # System account: return all objects
-        if authenticated.object_type == "SystemAccount":
-            authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
+        if account.object_type == "SystemAccount":
+            account.systemaccount     # This is one more security check, will raise if DB is not properly set
             return base_query_set           # The base qset with no filter
 
         # Regular Account filter, return only listed accounts.
@@ -58,11 +58,11 @@ class AccountManager(basemanager.BaseManager):
         from community import Community
         if issubclass(self.model, Community):
             # Community objects can use the 'members' query parameter directly
-            community_subquery = Q(members = authenticated)
+            community_subquery = Q(members = account)
         elif self.model == Account:
             # Regular Account objects must de-reference the community first
             community_subquery = Q(
-                community__members = authenticated
+                community__members = account
                 )
         else:
             # Account-derived objects that are not communities have no 'members' attribute.
@@ -72,11 +72,11 @@ class AccountManager(basemanager.BaseManager):
 
         # Perform the filter
         # XXX TODO: Avoid the distinct() method to optimize. The two last 'Q' methods are redundant.
-        # I should use & ~Q(id = authenticated.id) and restrict the roles implied
+        # I should use & ~Q(id = account.id) and restrict the roles implied
         return base_query_set.filter(
             Q(
                 # Myself
-                id = authenticated.id
+                id = account.id
             ) | (
                 Q(
                     # Public accounts, ie. stuff any auth ppl can list
@@ -88,7 +88,7 @@ class AccountManager(basemanager.BaseManager):
                     # People in account's network
                     _permissions__name = permissions.can_list,
                     _permissions__role__in = roles.account_network.implied(),
-                    initiator_whose__target = authenticated,
+                    initiator_whose__target = account,
                 )
             ) | community_subquery).distinct()
 
@@ -119,8 +119,7 @@ class _AbstractAccount(securable.Securable):
 
     # Our security model
     objects = AccountManager()
-
-
+    is_anonymous = False            # Will be overridden only in AnonymousAccount
 
 # Create your models here.
 class Account(_AbstractAccount):
@@ -137,8 +136,7 @@ class Account(_AbstractAccount):
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = "default_profile_picture"
     picture = models.ForeignKey("Resource")        # Ok, this is odd but it's because of the bootstrap.
-                                                                # XXX We should avoid the 'null' attribute someday. Not easy 'cause of the SystemAccount bootstraping...
-    objects = AccountManager()
+                                                    # XXX We should avoid the 'null' attribute someday. Not easy 'cause of the SystemAccount bootstraping...
     description = models.TextField()
     created_at = models.DateTimeField(auto_now = True, db_index = True)
 
@@ -271,7 +269,9 @@ class Account(_AbstractAccount):
         if isinstance(role, roles.Role):
             role = role.value
             
-        # Gory admin shortcuts
+        # Gory anonymous & admin shortcuts
+        if self.__class__.__name__ == "AnonymousAccount":
+            return role == roles.anonymous.value            
         if self.object_type == "SystemAccount":
             return True
             
@@ -479,7 +479,27 @@ class Account(_AbstractAccount):
         """
         from community import Community
         return Community.objects.filter(members = self)
-        
+
+
+
+class AnonymousAccount(Account):
+    """
+    Representation of an anonymous account.
+    Never instanciate that directly, the _getAuthenticatedAccount() takes care for you.
+    
+    Note that there is an AnonymousAccount table in DB, unfortunately :(
+    """
+    is_anonymous = True
+    class Meta:
+        # abstract = True
+        app_label = "twistranet"
+        managed=False
+
+    def save(self, *args, **kw):
+        """
+        Prohibit object saving.
+        """
+        raise RuntimeError("You're not allowed to save or edit the anonymous account.")
         
 class SystemAccount(Account):
     """
@@ -487,7 +507,6 @@ class SystemAccount(Account):
     There must be at least 1 system account called '_system'. It's its role to build initial content.
     System accounts can reach ALL content from ALL communities.
     """
-    objects = AccountManager()
     default_picture_resource_slug = "default_system_picture"
     
     class Meta:
@@ -512,7 +531,6 @@ class UserAccount(Account):
     A user account has languages defined so that it primarily 'sees' his favorite languages.
     """
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
-
     is_user_account = True
 
     def save(self, *args, **kw):

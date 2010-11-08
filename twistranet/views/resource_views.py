@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from twistranet.models import *
 from twistranet.forms.resource_forms import ResourceForm
+from twistranet.lib.decorators import require_access
 
 def _getResourceResponse(request, resource):
     """
@@ -16,6 +17,7 @@ def _getResourceResponse(request, resource):
         content_type = resource.mimetype,
         )
 
+@require_access
 def resource_by_id(request, resource_id):
     """
     Return a resource by id
@@ -23,6 +25,7 @@ def resource_by_id(request, resource_id):
     resource = Resource.objects.get(id = resource_id)
     return _getResourceResponse(request, resource)
 
+@require_access
 def resource_by_alias_or_id(request, alias_or_id):
     """
     Return a resource by its alias or by its id if not found
@@ -33,6 +36,7 @@ def resource_by_alias_or_id(request, alias_or_id):
         resource = by_id(request, alias_or_id)
     return _getResourceResponse(request, resource)
     
+@require_access
 def resource_by_account(request, account_id, property):
     """
     Fetch a resource by an account attribute.
@@ -45,7 +49,7 @@ def resource_by_account(request, account_id, property):
         # XXX should raise 404 if pty not found
         raise ValueError("Invalid property")
         
-        
+@require_access
 def resource_by_content(request, content_id, property):
     """
     Fetch a resource by an content attribute.
@@ -58,7 +62,7 @@ def resource_by_content(request, content_id, property):
         # XXX should raise 404 if pty not found
         raise ValueError("Invalid property")
 
-
+@require_access
 def edit_resource(request, resource_id = None):
     """
     Edit the given resource or create a new one if necessary
@@ -106,6 +110,7 @@ def edit_resource(request, resource_id = None):
         )
     return HttpResponse(t.render(c))
 
+@require_access
 def create_resource(request):
     """
     """

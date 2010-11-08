@@ -9,11 +9,12 @@ from django.db.models import Q
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from twistranet.lib.decorators import require_access
 
 from twistranet.models import Content, Account
 from twistranet.lib import form_registry
 
-
+@require_access
 def edit_content(request, content_id = None, content_type = None):
     """
     Edit the given content or create a new one if necessary
@@ -62,7 +63,7 @@ def edit_content(request, content_id = None, content_type = None):
         )
     return HttpResponse(t.render(c))
 
-
+@require_access
 def content_by_id(request, content_id):
     """
     Display a content
@@ -84,12 +85,13 @@ def content_by_id(request, content_id):
         )
     return HttpResponse(t.render(c))    
 
-
+@require_access
 def create_content(request, content_type):
     """
     """
     return edit_content(request, content_type = content_type)
 
+@require_access
 def delete_content(request, content_id):
     """
     Explicit

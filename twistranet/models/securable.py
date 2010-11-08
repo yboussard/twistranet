@@ -21,7 +21,21 @@ class Securable(models.Model):
     """
     slug = models.SlugField(unique = True, db_index = True, null = True)                 # XXX TODO: Have a more personalized slug field (allowing dots for usernames?)
     object_type = models.CharField(max_length = 64, db_index = True)
-
+    
+    def get_absolute_url(self):
+        """
+        XXX TODO: Make this a little more MVC with @permalink decorator
+        See http://docs.djangoproject.com/en/dev/ref/models/instances/#get-absolute-url
+        """
+        from twistranet.models import Content, Account, Community
+        if isinstance(self, Content):
+            return "/content/%i/" % self.id
+        elif isinstance(self, Community):
+            return "/community/%i/" % self.id
+        elif isinstance(self, Account):
+            return "/account/%i/" % self.id
+        raise NotImplementedError("Can't get absolute URL for object %s" % self)
+            
     class Meta:
         abstract = True
 

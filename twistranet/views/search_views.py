@@ -4,6 +4,7 @@ Uses haystack.
 """
 from haystack.views import SearchView
 from django.http import HttpResponse, HttpResponseRedirect
+from twistranet.lib.decorators import require_access
 
 class TwistraNetSearchView(SearchView):
     """

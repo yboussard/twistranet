@@ -23,7 +23,7 @@ class BaseManager(models.Manager):
         If you want to use a system account, declare a '__account__' variable in your caller function.
         """
         # We dig into the stack frame to find the request object.
-        from account import Account
+        from account import Account, AnonymousAccount, UserAccount
 
         frame = inspect.currentframe()
         try:
@@ -37,7 +37,8 @@ class BaseManager(models.Manager):
     
                         # Check for a request.user User object
                         if _locals.has_key('request') and hasattr(_locals['request'], 'user') and isinstance(_locals['request'].user, User):
-                            return _locals['request'].user.get_profile()
+                            # We use this instead of the get_profile() method to avoid an infinite recursion here.
+                            return UserAccount.objects.__booster__.get(user__id__exact = _locals['request'].user.id)
                 
                         # Check for an __acount__ variable holding a generic Account object
                         if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
@@ -53,6 +54,9 @@ class BaseManager(models.Manager):
                         frame = mbr[1]
                         if local_viewed:
                             break
+                            
+            # Didn't find anything. We must be anonymous.
+            return AnonymousAccount()
 
         finally:
             # Avoid circular refs
@@ -61,34 +65,7 @@ class BaseManager(models.Manager):
             del _locals
 
 
-        # _locals = {}
-        # try:
-        #     for stack in inspect.stack():
-        #         for mtype, mbr in inspect.getmembers(stack[0]):
-        #             if mtype == 'f_locals':
-        #                 _locals = mbr
-        #                 break
-        # 
-        #         # Check for a request.user User object
-        #         if _locals.has_key('request') and hasattr(_locals['request'], 'user') and isinstance(_locals['request'].user, User):
-        #             return _locals['request'].user.get_profile()
-        #             
-        #         # Check for an __acount__ variable holding a generic Account object
-        #         if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
-        #             return _locals['__account__']
-        # 
-        #         # # Check if we're called from the syncdb manager action
-        #         # # Enable this if you use the __getattribute__() method to implicitly check can_view permissions on Account objects
-        #         # f_code = [ mbr[1] for mbr in inspect.getmembers(stack[0]) if mbr[0] == 'f_code' ][0]
-        #         # co_filename = [ mbr[1] for mbr in inspect.getmembers(f_code) if mbr[0] == 'co_filename' ][0]
-        #         # if co_filename.endswith("loaddata.py"):
-        #         #     return SystemAccount()  # Return a dummy system account to pass this
-        #     
-        #         # Clean memory to avoid circular refs before continuing
-        #         del stack
-        # finally:
-        #     # Avoid circular refs
-        #     stack = None
-        #     del _locals
-
-        
+    # Backdoor for performance purposes. Use it at your own risk as it breaks security.
+    @property
+    def __booster__(self):
+        return super(BaseManager, self).get_query_set()

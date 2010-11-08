@@ -17,6 +17,8 @@ from twistranet.lib import permissions
 from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
 from twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
 
+import settings
+
 def repair():
     """
     Repair a possibly damaged database.
@@ -73,134 +75,116 @@ def bootstrap():
     This should be called every time twistranet is started!
     """
     try:
-        # Create the main system account if it doesn't exist
-        # try:
-        #     __account__ = SystemAccount.objects.get()
-        # except ObjectDoesNotExist:
-        #     _system = SystemAccount()
-        #     __account__ = _system
-        #     _system.permissions = "public"
-        #     _system.screen_name = "TwistraNet System"
-        #     _system.name = "system"
-        #     _system.save()
+        # Let's log in.
         __account__ = SystemAccount.get()
-        
-        # Create Legacy Resource Manager if doesn't exist.
-        # If one exists it must be attach to no community.
-        # We save back the __account__ system object to ensure proper resource loading
-        try:
-            legacy_rm = ReadOnlyFilesystemResourceManager.objects.get()
-        except ObjectDoesNotExist:
-            legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
-            legacy_rm.save()
-        legacy_rm.loadAll(with_slug = True)
-        __account__.save()
-            
-        # Now create the bootstrap / default / help fixture objects.
-        for obj in BOOTSTRAP_FIXTURES:
-            obj.apply()
-            
-        for obj in HELP_EN_FIXTURES:
-            obj.apply()
-            
-        # XXX TODO: Add an 'if settings.IMPORT_SAMPLE_DATA' somewhere...
-        if True:
-            from twistranet.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
-            for obj in SAMPLE_DATA_FIXTURES:
-                obj.apply()
-            
-            # Add relations bwn users
-            # A <=> admin
-            # B  => admin
-            A = UserAccount.objects.get(slug = "A")
-            B = UserAccount.objects.get(slug = "B")
-            admin = UserAccount.objects.get(slug = "admin")
-            A.follow(admin)
-            admin.follow(A)
-            B.follow(admin)
-            
-            # Check default profile pictures
-            profile_picture = Resource.objects.get(slug = "default_profile_picture")
-            community_picture = Resource.objects.get(slug = "default_community_picture")
-
-            # Change A / B / TN profile pictures if they're not set
-            admin.picture = Resource.objects.get(slug = "default_admin_picture")
-            admin.save()
-            A.picture = Resource.objects.get(slug = "default_a_picture")
-            A.save()
-            B.picture = Resource.objects.get(slug = "default_b_picture")
-            B.save()            
-
-        # Create the main menu manager and main menu items. Create help menu structure as well.
-        try:
-            menu = Menu.objects.get(slug = "main")
-        except ObjectDoesNotExist:
-            menu = Menu(
-                slug = "main",
-                name = "Main Menu",
-                )
-            menu.save()
-            
-            # Create default menu items
-            item = MenuItem(
-                menu = menu,
-                order = 0,
-                view_path = "twistranet.views.home",
-                title = "Home",
-                )
-            item.save()
-            item = MenuItem(
-                menu = menu,
-                order = 10,
-                view_path = 'twistranet.views.communities',
-                title = "Communities",
-                )
-            item.save()
-            subitem = MenuItem(
-                menu = menu,
-                parent = item,
-                order = 0,
-                view_path = 'twistranet.views.communities',
-                title = "View all communities",
-                )
-            subitem.save()
-            subitem = MenuItem(
-                menu = menu,
-                parent = item,
-                order = 10,
-            )
-            subitem.target = Community.objects.admin
-            subitem.save()
-            
-        # Create / update the menu items
-        # XXX TODO: use help_en.MENU_STRUCTURE
-        # for obj in help_objects.values():
-        #     try:
-        #         item = MenuItem.objects.get(slug = obj.slug)
-        #     except ObjectDoesNotExist:
-        #         item = MenuItem(
-        #             menu = menu,
-        #             order = 90,
-        #             title = "Help",
-        #             slug = obj.slug,
-        #             )
-        #         item.target = obj
-        #         item.save()
-            
-           
-    except DatabaseError:
-        # XXX TODO: Check the actual error to avoid fake postifives.
-        # If we reach there we should meet the 'no such table' error
+    except ObjectDoesNotExist, DatabaseError:
+        # Default fixture probably not installed yet. Don't do anything yet.
         print "DatabaseError while bootstraping. Your tables are probably not created yet."
-        traceback.print_exc()
-            
-    except:
-        print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."
-        traceback.print_exc()
+        # traceback.print_exc()
+        return
+    
+    # Create Legacy Resource Manager if doesn't exist.
+    # If one exists it must be attach to no community.
+    # We save back the __account__ system object to ensure proper resource loading
+    try:
+        legacy_rm = ReadOnlyFilesystemResourceManager.objects.get()
+    except ObjectDoesNotExist:
+        legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
+        legacy_rm.save()
+    legacy_rm.loadAll(with_slug = True)
+    __account__.save()
         
-    else:
-        # print "Initialized DB successfuly"
-        pass
+    # Now create the bootstrap / default / help fixture objects.
+    for obj in BOOTSTRAP_FIXTURES:
+        obj.apply()
+        
+    for obj in HELP_EN_FIXTURES:
+        obj.apply()
+        
+    # Sample data only imported if asked to in settings.py
+    if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
+        from twistranet.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
+        for obj in SAMPLE_DATA_FIXTURES:
+            obj.apply()
+        
+        # Add relations bwn users
+        # A <=> admin
+        # B  => admin
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        A.follow(admin)
+        admin.follow(A)
+        B.follow(admin)
+        
+        # Check default profile pictures
+        profile_picture = Resource.objects.get(slug = "default_profile_picture")
+        community_picture = Resource.objects.get(slug = "default_community_picture")
+
+        # Change A / B / TN profile pictures if they're not set
+        admin.picture = Resource.objects.get(slug = "default_admin_picture")
+        admin.save()
+        A.picture = Resource.objects.get(slug = "default_a_picture")
+        A.save()
+        B.picture = Resource.objects.get(slug = "default_b_picture")
+        B.save()            
+
+    # Create the main menu manager and main menu items. Create help menu structure as well.
+    try:
+        menu = Menu.objects.get(slug = "main")
+    except ObjectDoesNotExist:
+        menu = Menu(
+            slug = "main",
+            name = "Main Menu",
+            )
+        menu.save()
+        
+        # Create default menu items
+        item = MenuItem(
+            menu = menu,
+            order = 0,
+            view_path = "twistranet.views.home",
+            title = "Home",
+            )
+        item.save()
+        item = MenuItem(
+            menu = menu,
+            order = 10,
+            view_path = 'twistranet.views.communities',
+            title = "Communities",
+            )
+        item.save()
+        subitem = MenuItem(
+            menu = menu,
+            parent = item,
+            order = 0,
+            view_path = 'twistranet.views.communities',
+            title = "View all communities",
+            )
+        subitem.save()
+        subitem = MenuItem(
+            menu = menu,
+            parent = item,
+            order = 10,
+        )
+        subitem.target = Community.objects.admin
+        subitem.save()
+        
+    # Create / update the menu items
+    # XXX TODO: use help_en.MENU_STRUCTURE
+    # for obj in help_objects.values():
+    #     try:
+    #         item = MenuItem.objects.get(slug = obj.slug)
+    #     except ObjectDoesNotExist:
+    #         item = MenuItem(
+    #             menu = menu,
+    #             order = 90,
+    #             title = "Help",
+    #             slug = obj.slug,
+    #             )
+    #         item.target = obj
+    #         item.save()
+        
     
 def check_consistancy():
     """

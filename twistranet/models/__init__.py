@@ -3,7 +3,7 @@
 # Low-level stuff
 import _permissionmapping
 from securable import Securable
-from account import Account
+from account import Account, AnonymousAccount
 from content import Content
 from community import Community
 from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager

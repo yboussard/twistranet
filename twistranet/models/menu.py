@@ -77,7 +77,7 @@ class Menu(models.Model, AbstractMenuItem):
 class MenuItem(models.Model, AbstractMenuItem):
     menu = models.ForeignKey(Menu)
     order = models.IntegerField()
-    title = models.CharField(max_length=100, null = True)   # If null and a target is used, will use target's title
+    title = models.CharField(max_length=100, null = True, blank = False)   # If null and a target is used, will use target's title
     slug = models.SlugField()
 
     # Target URL / Object / Permissions
@@ -113,6 +113,7 @@ class MenuItem(models.Model, AbstractMenuItem):
                 self.target_kind = 'A'
             else:
                 raise AssertionError("Unknown target type")
+                
         elif (not self.url_name and not self.view_path and not self.link_url):
             raise ValueError("Should have at least one target or path specified for the menu")
         
@@ -143,7 +144,7 @@ class MenuItem(models.Model, AbstractMenuItem):
         target = self.get_target()
         if target:
             if self.target_kind == 'A':
-                return target.name
+                return target.screen_name
             elif self.target_kind == 'C':
                 return target.text_title
                 

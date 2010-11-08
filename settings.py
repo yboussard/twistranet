@@ -117,8 +117,8 @@ CACHE_BACKEND = "locmem:///"
 
 ROOT_URLCONF = 'urls'
 
-#THEME_NAME = "twistranet"
-THEME_NAME = "default"
+THEME_NAME = "twistranet"
+#THEME_NAME = "default"
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -140,6 +140,7 @@ HAYSTACK_SEARCH_ENGINE = "simple"
 # XXX TODO: Put this in a twistranet.settings module?
 TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/%s/resources" % (HERE, THEME_NAME)
 TWISTRANET_ACCOUNT_MEDIA_PATH = "%s/data/media" % (HERE, )
+TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't want sample data when bootstraping
 
 INSTALLED_APPS = (
     'django.contrib.auth',

@@ -23,7 +23,7 @@
     {# Display the 'join'/'leave' links #}
     <ul class="global-actions">
 
-        {% if not i_am_in %}
+        {% if not is_member %}
             {% if community.can_join %}
                 <li>
                   <a href="" 

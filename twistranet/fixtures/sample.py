@@ -33,7 +33,7 @@ FIXTURES = [
         slug = "B",
         screen_name = "Bernard Dubois De La Fontaine",
 		description = "A twistranet sample user",
-        permissions = "public",
+        permissions = "intranet",
         user = User.objects.get(id = 3),
     ),
     

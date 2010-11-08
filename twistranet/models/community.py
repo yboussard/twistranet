@@ -45,9 +45,6 @@ class Community(_AbstractCommunity):
     A simple community class.
     A community is an account which have members. Members are User accounts.
     """
-    # Managers overloading
-    objects = CommunityManager()
-    
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
     default_picture_resource_slug = "default_community_picture"
@@ -256,10 +253,10 @@ class GlobalCommunity(Community):
         default = "Enjoy working in team.",
         )
 
-    @staticmethod
-    def get():
+    @classmethod
+    def get(cls):
         """Return main (and only) system account. Will raise if several are set."""
-        return self.__class__.objects.get()
+        return cls.objects.get()
         
 AccountRegistry.register(GlobalCommunity)
 

@@ -166,7 +166,7 @@ class SecurityTest(TestCase):
         Check if anonymous can read public content on an internet mode.
         """
         # Default is intranet. Check that we have access to no content.
-        self.failIf(StatusUpdate.objects.count())
+        self.failUnlessEqual(StatusUpdate.objects.count(), 0)
         
         # Become an internet. There should be some content available
         __account__ = self.system

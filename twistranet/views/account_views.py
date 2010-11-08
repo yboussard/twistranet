@@ -2,13 +2,15 @@
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
-from twistranet.models import Content, StatusUpdate, Community, Account, Community
+from twistranet.models import *
 from twistranet.lib import form_registry
+from twistranet.lib.decorators import require_access
 
+# XXX Move this is settings
+TWISTRANET_CONTENT_PER_PAGE = 25
 
 select_related_summary_fields = (
     "notification",
@@ -23,6 +25,7 @@ class MustRedirect(Exception):
     """
     pass
 
+@require_access
 def _getInlineForms(request, publisher = None):
     """
     - a forms list ; empty list if no form to display ;
@@ -32,7 +35,9 @@ def _getInlineForms(request, publisher = None):
     'publisher' is the account we're going to publish on. If none, assume it's the current user.
     """
     # Account information used to build the wall view
-    account = request.user.get_profile()
+    account = Account.objects._getAuthenticatedAccount()
+    if not account or account.is_anonymous:
+        return []       # Anonymous can't do that much things...
     if not publisher:
         publisher = account
             
@@ -74,12 +79,14 @@ def _getInlineForms(request, publisher = None):
     # Return the forms
     return forms
 
+@require_access
 def account_by_alias_or_id(request, alias):
     """
     XXX TODO
     """
     raise NotImplementedError
 
+@require_access
 def account_by_id(request, account_id):
     """
     Account (user/profile) page.
@@ -89,7 +96,6 @@ def account_by_id(request, account_id):
     """
     # Get the OBJECT himself
     account = Account.objects.select_related('useraccount').get(id = account_id).object
-    current_account = request.user.get_profile()
     
     # If we're on a community, we should redirect
     if isinstance(account, Community):
@@ -104,11 +110,12 @@ def account_by_id(request, account_id):
     # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
     # This way, we just issue a couple of queries instead of a bunch of requests!
     # This replaces the following line:
-    # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:25]
-    latest_ids = Content.objects.getActivityFeed(account).values_list('id', flat = True).order_by("-created_at").distinct()[:25]
+    # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:TWISTRANET_CONTENT_PER_PAGE]
+    latest_ids = Content.objects.getActivityFeed(account).values_list('id', flat = True).order_by("-created_at").distinct()[:TWISTRANET_CONTENT_PER_PAGE]
     latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*select_related_summary_fields).order_by("-created_at")
 
     # Generate the view itself
+    current_account = request.user.get_profile()
     t = loader.get_template('account/view.html')
     c = RequestContext(
         request,
@@ -117,12 +124,12 @@ def account_by_id(request, account_id):
             "content_forms": forms,
             "account": account,
             "latest_content_list": latest_list,
-            "account_in_my_network": not not current_account.network.filter(id = account.id),
+            "account_in_my_network": current_account and not not current_account.network.filter(id = account.id),
         },
         )
     return HttpResponse(t.render(c))
     
-    
+@require_access
 def account_by_slug(request, slug):
     """
     XXX TODO: Make this more efficient?
@@ -130,37 +137,41 @@ def account_by_slug(request, slug):
     account = Account.objects.get(slug = slug)
     return account_by_id(request, account.id)
 
-@login_required     # XXX TODO: Use the correct decorator to avoid the login_required obligation
+@require_access
 def home(request):
     """
     The HOME page. This is the activity feed of the currently logged user.
     """
     # Account information used to build the wall view
-    account = request.user.get_profile()
     try:
         forms = _getInlineForms(request)
     except MustRedirect:
         return HttpResponseRedirect(request.path)
     
-    # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
-    # This way, we just issue a couple of queries instead of a bunch of requests!
-    # We also do the discinct part by hand, assuming each content can be duplicated at most 10 times XXX Calculate that more precisely!
-    # This replaces the following line:
-    # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:25]
-    latest_ids = account.content.followed.values_list('id', flat = True).order_by("-created_at")[:25 * 10]
-    latest = {}
-    [ latest.__setitem__(i, None) for i in latest_ids ]
-    latest_list = Content.objects.__booster__.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
-
+    account = Account.objects._getAuthenticatedAccount()
+    if account and not isinstance(account, AnonymousAccount):
+        # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
+        # This way, we just issue a couple of queries instead of a bunch of requests!
+        # We also do the discinct part by hand, assuming each content can be duplicated at most 10 times XXX Calculate that more precisely!
+        # This replaces the following line:
+        # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:TWISTRANET_CONTENT_PER_PAGE]
+        latest_ids = account.content.followed.values_list('id', flat = True).order_by("-created_at")[:TWISTRANET_CONTENT_PER_PAGE * 10]
+        latest = {}
+        [ latest.__setitem__(i, None) for i in latest_ids ]
+        latest_list = Content.objects.__booster__.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
+    else:
+        # Just return public content
+        latest_list = Content.objects.order_by("-created_at")
+        
     # Render the template
     communities_list = Community.objects.get_query_set()
     t = loader.get_template('wall.html')
     c = RequestContext(
         request,
         {
+            "account": account,
             'path': request.path,
-            'account': account,
-            'latest_content_list': latest_list[:25],
+            'latest_content_list': latest_list[:TWISTRANET_CONTENT_PER_PAGE],
             'content_forms': forms,
         },
         )

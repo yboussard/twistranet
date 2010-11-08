@@ -272,7 +272,7 @@ global_community_templates = PermissionTemplate((
                             Global community content will still be restricted to auth people.
                             """,
         can_list:           (anonymous, ),
-        can_view:           (authenticated, ),
+        can_view:           (anonymous, ),
         can_list_members:   (authenticated, ),
         can_edit:           (administrator, ),
         can_publish:        (administrator, ),

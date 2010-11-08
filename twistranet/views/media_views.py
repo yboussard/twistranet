@@ -8,7 +8,9 @@ from django.core.urlresolvers import reverse
 
 from twistranet.models import *
 from twistranet.forms.resource_forms import MediaForm
+from twistranet.lib.decorators import require_access
 
+@require_access
 def edit_media(request, resource_id = None):
     """
     Edit the given media resource or create a new one if necessary
@@ -64,12 +66,13 @@ def edit_media(request, resource_id = None):
         )
     return HttpResponse(t.render(c))
 
+@require_access
 def create_media(request):
     """
     """
     return edit_media(request)
 
-
+@require_access
 def view_media_library(request, account_id):
     """
     View a media library for the given account.
