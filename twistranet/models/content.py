@@ -3,13 +3,13 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html
-import basemanager
+import _basemanager
 import securable
 from account import Account
 from resource import Resource
 from twistranet.lib import roles, permissions, languages, utils
 
-class ContentManager(basemanager.BaseManager):
+class ContentManager(_basemanager.BaseManager):
     """
     This manager is used for secured content (via the secured()) method.
     Methods are useable if the _account attribute is set.

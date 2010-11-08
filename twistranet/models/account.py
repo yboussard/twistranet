@@ -4,13 +4,13 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
-import basemanager
+import _basemanager
 import securable
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
 from django.db.utils import DatabaseError
 
-class AccountManager(basemanager.BaseManager):
+class AccountManager(_basemanager.BaseManager):
     """
     This manager is used for secured account.
     """
