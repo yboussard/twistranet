@@ -28,7 +28,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 ***************************************************************************** */
 
 #head a.logotext { 
-  font-size: 1.56em;
+  font-size: 14px;
 	padding: 5px 0 5px 8px;
 	display: block;
 	cursor: pointer;
@@ -50,14 +50,6 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	font-variant: small-caps;
 	font-weight: lighter;
 }
-
-#mainmenu ul {
-	font-size: 1.2em;
-	}
-	#mainmenu ul li a {
-		padding-left: 2em;
-		padding-right: 2em;
-	}
 
 
 /* Breadcrumb NavXT plugin
@@ -126,7 +118,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	margin: 0 0 20px 50px;
 	width: 590px;
 	height: 22px;
-	font-size: 1.0em;
+	font-size: 9px;
 	border: 1px solid #dee;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;   
@@ -143,14 +135,13 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	#pagenavigator span.pages   {}
 
 .entry {
-	font-size: 1.3em;
 	line-height: 1.3em;
 	}
 	.entry blockquote {
-		font-size: .9em;
+		font-size: 9px;
 	}
 	.entry blockquote blockquote {
-		font-size: .9em;
+		font-size: 9px;
 	}
 	.entry fieldset {
 		padding: 1em 1em 1em 2em;
@@ -175,7 +166,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		border-width: 0 1px 1px 0;
 		border-style: solid;
 		border-color: #ccc;
-		font-size: 0.9em;
+		font-size: 9px;
 	}
 	.entry table tr td {
 		padding: 5px 10px;
@@ -207,8 +198,8 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		}
 
 .notice {
-		font-size: 1.4em;
-		line-height: 1.4em;
+		font-size: 12px;
+		line-height: 12px;
 		padding: 2em 1em 1em 0;
 		border: 1px solid #ccc;
 		-moz-border-radius: 5px;
@@ -261,7 +252,7 @@ img.centered {
 ***************************************************************************** */
 
 #comments {
-	font-size: 1em;
+	font-size: 9px;
 	line-height: 1.4em;
 	margin: 0 0 20px 50px;
 	padding: 20px 0 0 0;
@@ -290,7 +281,6 @@ li.comment {
 	border-radius: 5px;
 	margin-bottom: 20px;
 	padding-top: 1em;
-	font-size: 12px;
 	}
 	li.comment div, li.pingback div {
 	}
@@ -303,13 +293,12 @@ li.comment {
 	}
 	.vcard cite {
 		font-weight: bold;
-		font-size: 12px;
 	}
 	.vcard span {
-		font-size: 10px;
+		font-size: 9px;
 	}
 	.commentmetadata {
-		font-size: 10px;
+		font-size: 9px;
 	}
 	
 	li.comment p {
@@ -318,7 +307,7 @@ li.comment {
 	
 	li.comment blockquote {
 		clear: both;
-		font-size: 12px;
+		font-size: 10px;
 		min-height: 2em;
 	}
 	.reply {
@@ -359,17 +348,6 @@ ul.children li {
 
 #commentform {
 	padding-bottom: 30px;
-}
-
-.sidebar ul.thumbnails-inner {
-  margin: 0 0 0 10px;
-  padding: 0;
-}
-.sidebar ul.thumbnails-inner li {
-  list-style:             none;
-  list-style-type:        none;
-  display: inline;
-  margin: 0;  
 }
 
 /* image tags can be displayed also outside thumbnails parts
@@ -539,6 +517,17 @@ formats are :
 	margin: .5em 0 .5em 0;
 }
 
+.sidebar ul.thumbnails-inner {
+  margin: 0 0 0 10px;
+  padding: 0;
+}
+.sidebar ul.thumbnails-inner li {
+  list-style:             none;
+  list-style-type:        none;
+  display: inline;
+  margin: 0;  
+}
+
 /* tn boxes (global style for any kind of boxes) */
 .tn-box h2,
 .tn-box h3,
@@ -547,8 +536,7 @@ formats are :
 }
 
 .tn-box h2 {         
-  font-weight: bold;
-  font-size: 1.3em;
+  font-size: 14px;
   clear: none;
 }
 
@@ -562,7 +550,7 @@ formats are :
   background-color:#FFF9F9;
   border:1px solid #A99392;
   color:#5D130F;
-  font-size:1.1em;
+  font-size:11px;
   padding:2px 5px;
   text-align:center;
   margin-bottom: 1.5em;
@@ -581,7 +569,6 @@ formats are :
 
 .sidebar  ul li.actions-box {
   clear: none !important;
-  font-size: 11px;
 }
 
 .sidebar .actions-box a:hover {
@@ -674,7 +661,7 @@ formats are :
   font-weight: bold;
   color:#777777;
   background-color: transparent;
-  font-size:1.2em;
+  font-size: 11px;
   margin-bottom: 1em;
   padding:2px 5px 1px;
   text-align:left;
@@ -714,12 +701,11 @@ formats are :
 /* Calendar */
 
 #wp-calendar {
- 	font-size: 1.2em;
 	empty-cells: show;
 	}
 
 #wp-calendar a {
- 	font-size: 1.0em;
+ 	font-size: 9px;
 	display: block;
 	font-weight: bold;
 	}
@@ -738,7 +724,7 @@ formats are :
 	text-transform: uppercase;
 	letter-spacing: 0.3em;
 	font-weight: lighter;
- 	font-size: .8em;
+ 	font-size: 7px;
  	color: #444;
 	text-align: right;
 	}
@@ -746,7 +732,7 @@ formats are :
 #wp-calendar th {
 	padding: 4px 5px 4px 6px;
 	font-weight: lighter;
- 	font-size: .8em;
+ 	font-size: 7px;
  	color: #666;
 	text-align: right;
 	background: #f4f4f4;
@@ -777,12 +763,12 @@ formats are :
 #footer span {
 	color: #888;
 	text-align: left;
-	font-size: .9em;
+	font-size: 8px;
 	line-height: 1.6em;
 	}
 	#footer .copyright {
 		color: #666;
-		font-size: 1.111em;
+		font-size: 10px;
 	}
 
 

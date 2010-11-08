@@ -85,7 +85,6 @@ body {
 				margin: 1px 32px 4px 4px;
 				color: #777;
 				width: 110px;
-				font-size: 1.3em;
 			}
 
 	#wrap {
@@ -93,7 +92,6 @@ body {
 		padding: 0;
 		}
 		#breadcrumb {
-			font-size: 1.2em;
       position: absolute;
 			width: 758px;
 			text-align: right;
@@ -115,7 +113,6 @@ body {
 			padding: 0;
 			clear: left;
 			float: left;
-			font-size: 1.22em;
 		  border-color: #d0b6b7;
 			border-width: 0 1px 1px;
 			border-style: none solid solid;	

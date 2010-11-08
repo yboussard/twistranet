@@ -18,11 +18,11 @@ div.wrap {
 	clear: both;
 }
 .notice {
-	font-size: 1.2em;
+	font-size: 11px;
 	color: green;
 }
 .alert {
-	font-size: 1.44em;
+	font-size: 13px;
 	color: red;
 }
 .title {

@@ -1,10 +1,5 @@
 /* Content-related stuff, including small content views */
 
-.account-picture {
-    float: left;
-    margin: 0 5px 5px 0;
-}
-
 .post {
 	margin-top: 1.5em;
 	padding: 5px;
@@ -20,15 +15,6 @@
   border-radius: 5px;
 }
 
-.entry {
-    margin: 0;
-}
-
-.entry h3 {
-    font-size: 14px;
-    font-weight: normal;
-/*    display: inline;*/
-}
 
 .author {
     font-weight: bold;

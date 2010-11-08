@@ -11,7 +11,7 @@
 
 body {
 	font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
-	font-size: 9px; /* Resets 1em to 9px */
+	font-size: 11px;
 	color: #444;
 	}
   
@@ -21,29 +21,28 @@ h1,h2,h3,h4,h5,h6 {
 	color: #444;
 	font-weight: normal;
 	line-height: 1.2em;
-    color: #be261e;
 	margin:0.5em 0 0.2em;
 	clear: both;
 }
 	
-h1 { font-size: 2.4em; }
-h2 { font-size: 2.0em; }
-h3 { font-size: 1.6em; }
-h4 { font-size: 1.2em; }
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
+h4 { font-size: 14px; }
 
 	
 h5 { 
-	font-size: 1.0em;
+	font-size: 12px;
 	font-weight: bold; }
 	
 h6 { 
-	font-size: 0.9em;
+	font-size: 11px;
 	font-weight: bold; }
 
 code, pre {
 	margin: 1em 0;
 	font-family: "Courier New", Courier, monospace;
-	font-size: 1em;
+	font-size: 11px;
 	color: #000;
 	}
 
@@ -68,7 +67,7 @@ blockquote {
 
 acronym, abbr
 {
-	font-size: 0.9em;
+	font-size: 9px;
 	letter-spacing: .07em;
 	cursor: help;
 	border-bottom: 1px dashed #999;
@@ -95,9 +94,9 @@ strong {
 	
 em { font-style: italic; }
 
-.small { font-size: .8em; color: #666; }
+.small { font-size: 9px; color: #666; }
 
-.large { font-size: 1.2em; }
+.large { font-size: 12px; }
 
 .resalted { font-weight: bold; }
 
@@ -115,7 +114,7 @@ em { font-style: italic; }
 
 input, select, textarea {
   font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
-  font-size: 1em;
+  font-size: 11px;
 }
 
 input {
@@ -204,7 +203,7 @@ ul { 	list-style-type: disc; }
 			background-repeat: no-repeat;
 			background-position: center left;
 			padding: 11px 0 8px 50px;
-			font-size: 1.4em;
+			font-size: 14px;
 			font-weight: bold;
 			}
 			ul.check-big li { background-image: url(../images/list/typo_check-big.jpg); }
