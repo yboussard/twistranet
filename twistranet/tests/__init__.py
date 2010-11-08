@@ -1,6 +1,6 @@
+from security import SecurityTest
 from content import ContentTest
 from wall import SimpleTest
-from security import SecurityTest
 from resources import ResourcesTest
 from account_security import AccountSecurityTest
 from menu import MenuTest
