@@ -11,8 +11,8 @@ from twistranet.lib import dbsetup
 class SecurityTest(TestCase):
     """
     Just to remember:
-    A <=> PJ
-    B  => PJ
+    A <=> admin
+    B  => admin
     """
     
     def setUp(self):
@@ -25,8 +25,7 @@ class SecurityTest(TestCase):
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
-        self.admin = self.PJ
+        self.admin = UserAccount.objects.get(user__username = "admin").account_ptr
         
     def test_has_role(self):
         """
@@ -36,17 +35,17 @@ class SecurityTest(TestCase):
         obj = GlobalCommunity.objects.get()
         self.failUnless(self.system.has_role(roles.system, obj))
         self.failUnless(self.system.has_role(roles.administrator, obj))
-        self.failIf(self.PJ.has_role(roles.system, obj))
-        self.failUnless(self.PJ.has_role(roles.administrator, obj))
-        self.failUnless(self.PJ.has_role(roles.community_member, obj))
-        self.failIf(self.PJ.has_role(roles.community_manager, obj))
+        self.failIf(self.admin.has_role(roles.system, obj))
+        self.failUnless(self.admin.has_role(roles.administrator, obj))
+        self.failUnless(self.admin.has_role(roles.community_member, obj))
+        self.failIf(self.admin.has_role(roles.community_manager, obj))
         
     def test_can_join(self,):
         """
         Check if can_join permissions seem ok.
         """
         __account__ = self.A
-        adm = Community.objects.get(name = "administrators")
+        adm = Community.objects.get(slug = "administrators")
         self.failIf(adm.can_join)
         self.failIf(adm.can_leave)
         __account__ = self.admin
@@ -58,7 +57,7 @@ class SecurityTest(TestCase):
         Check some basic edition rights
         """
         __account__ = self.A
-        adm = Community.objects.get(name = "administrators")
+        adm = Community.objects.get(slug = "administrators")
         self.failIf(adm.can_edit)
         __account__ = self.A
         self.failIf(adm.is_manager)
@@ -81,7 +80,7 @@ class SecurityTest(TestCase):
         self.failUnless(s.content_ptr in Content.objects.all())
         
         # twistranet must not see it
-        __account__ = self.PJ
+        __account__ = self.admin
         self.failUnless(s.content_ptr not in Content.objects.all())
         
         # B must not see it
@@ -93,7 +92,7 @@ class SecurityTest(TestCase):
         s = StatusUpdate.objects.create(text = "Hello", permissions = "private")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
-        __account__ = self.PJ
+        __account__ = self.admin
         self.failUnless(s.content_ptr not in Content.objects.all())
         __account__ = self.A
         self.failUnless(s.content_ptr not in Content.objects.all())
@@ -114,7 +113,7 @@ class SecurityTest(TestCase):
         
         # Check if 'view' permission is ok in permissionmapping
         self.failUnless(s.content_ptr in Content.objects.all())
-        __account__ = self.PJ       # PJ is in A's network
+        __account__ = self.admin       # admin is in A's network
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.B        # B is not
         self.failUnless(s.content_ptr not in Content.objects.all())
@@ -139,7 +138,7 @@ class SecurityTest(TestCase):
         s = StatusUpdate(text = "Hello, World!", permissions = "public")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
-        __account__ = self.PJ       # PJ is in A's network
+        __account__ = self.admin       # admin is in A's network
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.B        # B is not
         self.failUnless(s.content_ptr in Content.objects.all())
@@ -157,7 +156,7 @@ class SecurityTest(TestCase):
         self.failIf(StatusUpdate.objects.filter(id = _id))
         
         # I shouldn't be able to delete a content I didn't write
-        c = StatusUpdate.objects.filter(author = self.PJ)[0]
+        c = StatusUpdate.objects.filter(author = self.admin)[0]
         _id = c.id
         self.assertRaises(Exception, c.delete, ())
         self.failUnless(StatusUpdate.objects.filter(id = _id))
@@ -207,10 +206,10 @@ class SecurityTest(TestCase):
         AND the system account must see them all.
         """
         __account__ = self.system
-        self.failUnlessEqual(len(AdminCommunity.objects.filter(account_type = "AdminCommunity")), 1)
-        self.failUnlessEqual(len(GlobalCommunity.objects.filter(account_type = "GlobalCommunity")), 1)
-        self.failUnlessEqual(Community.objects.admin.account_type, "AdminCommunity")
-        self.failUnlessEqual(Community.objects.global_.account_type, "GlobalCommunity")
+        self.failUnlessEqual(len(AdminCommunity.objects.filter(object_type = "AdminCommunity")), 1)
+        self.failUnlessEqual(len(GlobalCommunity.objects.filter(object_type = "GlobalCommunity")), 1)
+        self.failUnlessEqual(Community.objects.admin.object_type, "AdminCommunity")
+        self.failUnlessEqual(Community.objects.global_.object_type, "GlobalCommunity")
         
     def test_communities(self):
         """
@@ -223,7 +222,7 @@ class SecurityTest(TestCase):
     def test_membership(self):
         __account__ = self.system
         self.failUnlessEqual(len(self.A.communities), 1)
-        c = Community.objects.create(name = "Test Community", permissions = "ou")
+        c = Community.objects.create(screen_name = "Test Community", permissions = "ou")
         c.save()
         c.join(self.A)
         self.failUnless(self.A in c.members.all())

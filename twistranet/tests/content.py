@@ -6,6 +6,7 @@ from twistranet.models import *
 from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
+from helloworld.models import HelloWorld
 
 from twistranet.lib import dbsetup
 
@@ -15,7 +16,6 @@ class ContentTest(TestCase):
     A <=> admin
     B  => admin
     """
-    
     def setUp(self, ):
         """
         Get A and B users
@@ -39,9 +39,19 @@ class ContentTest(TestCase):
             on_who = self.B,
             )
         n.save()
-        self.failUnlessEqual(n.text, "@A joined @B")
-        self.failUnlessEqual(n.html_headline, """<a href="/account/A/">Albert</a> joined <a href="/account/B/">Bernard</a>""", )
+        self.failUnlessEqual(n.text_headline, "Albert Durand joined Bernard Dubois De La Fontaine")
+        self.failUnlessEqual(n.html_headline, """<a href="/account/A/">Albert Durand</a> joined <a href="/account/B/">Bernard Dubois De La Fontaine</a>""", )
         self.failUnlessEqual(n.html_summary, "", )
+        
+    def test_helloworld_headline(self,):
+        """
+        Check our example product's headline.
+        """
+        __account__ = self.admin
+        h = HelloWorld()
+        h.save()
+        c = Content.objects.get(id = h.id)
+        self.failUnlessEqual(c.text_headline, "Hello, World!")
         
         
         

@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from resourcemanager import ResourceManager
 from twistranet.lib import languages
 import basemanager 
+import securable
 
 class ResourceObjectsManager(basemanager.BaseManager):
     """
@@ -32,7 +33,7 @@ class ResourceObjectsManager(basemanager.BaseManager):
     #             )
     #         ).distinct()
 
-class Resource(models.Model):
+class Resource(securable.Securable):
     """
     A resource object.
     See doc/DESIGN.txt for design considerations
@@ -41,7 +42,6 @@ class Resource(models.Model):
     # Locator is a (possibly looong) string used by the manager to find the resource
     manager = models.ForeignKey(ResourceManager)
     locator = models.CharField(max_length = 1024, unique = True)                    # If not set, will be content's id
-    alias = models.CharField(max_length = 1024, unique = True, null = True)         # An optional alias to get the resource
     md5 = models.CharField(max_length = 32, unique = False)
     original_filename = models.CharField(max_length = 1024, null = True)            # Original filename if given
     original_url = models.URLField(max_length = 1024, null = True)                  # Original URL if given

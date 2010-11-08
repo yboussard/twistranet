@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     
     # Account pages
     (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),              # The 'profile' page
-    (r'^account/(\w+)/$',                       'twistranet.views.account_by_name'),
+    (r'^account/(\w+)/$',                       'twistranet.views.account_by_slug'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),
@@ -41,7 +41,7 @@ urlpatterns = patterns('',
     (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),
     (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
-    (r'^community/(\w+)$',                      'twistranet.views.community_by_name'),
+    (r'^community/(\w+)$',                      'twistranet.views.community_by_slug'),
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),

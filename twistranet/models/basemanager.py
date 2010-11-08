@@ -12,7 +12,7 @@ def _getAuthenticatedAccount():
     XXX TODO: Check against circular references!
     """
     # We dig into the stack frame to find the request object.
-    from account import Account, SystemAccount
+    from account import Account
     _locals = {}
     try:
         for stack in inspect.stack():
@@ -60,7 +60,6 @@ class BaseManager(models.Manager):
         
         Views with a "request" parameter magically works with that.
         If you want to use a system account, declare a '__account__' variable in your caller function.
-        XXX TODO: Check against circular references!
         """
         # We dig into the stack frame to find the request object.
         from account import Account, SystemAccount

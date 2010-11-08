@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
 import basemanager
+import securable
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
 from django.db.utils import DatabaseError
@@ -30,7 +31,7 @@ class AccountManager(basemanager.BaseManager):
             import _permissionmapping
             try:
                 if _permissionmapping._AccountPermissionMapping._objects.filter(
-                    target__account_type = "GlobalCommunity",
+                    target__object_type = "GlobalCommunity",
                     name = permissions.can_list,
                     role = roles.anonymous,
                     ).count():
@@ -42,13 +43,13 @@ class AccountManager(basemanager.BaseManager):
                 else:
                     # Just return the system account, as we must be able to bootstrap with it ?
                     # XXX Maybe we should not even return that!
-                    return base_query_set.filter(account_type = "SystemAccount")
+                    return base_query_set.filter(object_type = "SystemAccount")
             except DatabaseError:
                 # Avoid bootstrap quircks. XXX VERY DANGEROUS, should limit that to table doesn't exist errors!
                 return base_query_set.none()
 
         # System account: return all objects
-        if authenticated.account_type == "SystemAccount":
+        if authenticated.object_type == "SystemAccount":
             authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
             return base_query_set           # The base qset with no filter
 
@@ -91,16 +92,15 @@ class AccountManager(basemanager.BaseManager):
                 )
             ) | community_subquery).distinct()
 
-class _AbstractAccount(models.Model):
+class _AbstractAccount(securable.Securable):
     """
     We use this to enforce using our manager on subclasses.
     This way, we avoid enforcing you to re-declare objects = AccountManager() on each account class!
 
     See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
     """
-    
     # We keep the following code if we ever need to enforce more powerful security (at the expense of speed)    
-    # can_view_fields = ('id', 'account_type', 'name', 'picture', 'user', )
+    # can_view_fields = ('id', 'object_type', 'slug', 'picture', 'user', )
     # def __getattribute__(self, key):
     #     """
     #     Protect fields that have to be protected with the can_view permission but not the can_list permission.
@@ -108,7 +108,7 @@ class _AbstractAccount(models.Model):
     #     in the 'can_view_fields' pty of the class.
     #     """
     #     super_getattr = super(_AbstractAccount, self).__getattribute__
-    #     if key in [ f.name for f in super_getattr("_meta").fields ]:
+    #     if key in [ f.slug for f in super_getattr("_meta").fields ]:
     #         if not key in super_getattr("__class__").can_view_fields:
     #             if not super_getattr("can_view"):
     #                 raise PermissionDenied("Unauthorized field access: %s" % key)
@@ -129,18 +129,15 @@ class Account(_AbstractAccount):
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
     """
-    account_type = models.CharField(max_length = 64, db_index = True)
-    screen_name = models.CharField(max_length = 64, db_index = True, null = False, blank = False)             # The screenname (ie. the 'pseudo' used to display the account name).
-                                                                # This may be translatable someday.
-    name = models.SlugField(unique = True, db_index = True)                 # The actual name used for logging-in and addressing the account by name.
-                                                                            # XXX TODO: Slug may be too restrictive 'cause it doesn't allow dots.
-    
+    screen_name = models.CharField(max_length = 64, db_index = True, null = False, blank = False)               # The screenname (ie. the 'pseudo' used to display the account name).
+                                                                                                                # This may be translatable someday.
+                                                                    
     # Picture management.
-    # If None, will use the default_picture_resource_alias attribute.
+    # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
-    default_picture_resource_alias = "default_profile_picture"
-    _picture = models.ForeignKey("Resource", null = True)       # Ok, this is odd but it's because of the bootstrap.
-                                                                # We'll avoid the 'null' attribute someday.
+    default_picture_resource_slug = "default_profile_picture"
+    picture = models.ForeignKey("Resource")        # Ok, this is odd but it's because of the bootstrap.
+                                                                # XXX We should avoid the 'null' attribute someday. Not easy 'cause of the SystemAccount bootstraping...
     objects = AccountManager()
     description = models.TextField()
     created_at = models.DateTimeField(auto_now = True, db_index = True)
@@ -181,16 +178,6 @@ class Account(_AbstractAccount):
         # Return it
         return self._media_resource_manager
     
-    @property
-    def picture(self):
-        """
-        Return the resource id for the proper picture image.
-        Will safely use default picture if necessary
-        """
-        if self._picture:
-            return self._picture
-        return Resource.objects.get(alias = self.object.default_picture_resource_alias)
-    
     class Meta:
         app_label = 'twistranet'
 
@@ -204,22 +191,26 @@ class Account(_AbstractAccount):
         import _permissionmapping
         
         # Check account subtype
-        if not self.account_type:
+        if not self.object_type:
             if self.__class__.__name__ == Account.__name__:
                 raise RuntimeError("You can't directly save an account object. Use 'account.object.save()' method instead.")
-            self.account_type = self.__class__.__name__
+            self.object_type = self.__class__.__name__
         
         # Validate screen_name / slug
         if not self.screen_name:
-            if not self.name:
-                raise ValidationError("You must provide either a name or a screen_name for an account")
-            self.screen_name = self.name
-        elif not self.name:
-            self.name = utils.slugify(self.screen_name)
+            if not self.slug:
+                raise ValidationError("You must provide either a slug or a screen_name for an account")
+            self.screen_name = self.slug
+        elif not self.slug:
+            self.slug = utils.slugify(self.screen_name)
             
         # Default permissions
         if not self.permissions:
             self.permissions = self.permission_templates.get_default()
+            
+        # Set default picture if not set
+        if not self.picture_id and not self.object_type == 'SystemAccount':
+            self.picture = Resource.objects.get(slug = self.default_picture_resource_slug)
             
         # Call parent
         ret = super(Account, self).save(*args, **kw)
@@ -233,14 +224,7 @@ class Account(_AbstractAccount):
         """
         Return the subobject model class
         """
-        return AccountRegistry.getModelClass(self.account_type)
-        
-    @property
-    def object_type(self):
-        """
-        XXX TODO: Rename the actual DB field name to account_type!
-        """
-        return self.account_type
+        return AccountRegistry.getModelClass(self.object_type)
         
     @property
     def object(self):
@@ -288,7 +272,7 @@ class Account(_AbstractAccount):
             role = role.value
             
         # Gory admin shortcuts
-        if self.account_type == "SystemAccount":
+        if self.object_type == "SystemAccount":
             return True
             
         # Global roles.
@@ -300,15 +284,15 @@ class Account(_AbstractAccount):
             return Account.objects._getAuthenticatedAccount() == self      # Don't cache that
         
         if role == roles.administrator.value:
-            if self.account_type == "SystemAccount":
+            if self.object_type == "SystemAccount":
                 return True
-            elif self.my_communities.filter(account_type = "AdminCommunity"):
+            elif self.my_communities.filter(object_type = "AdminCommunity"):
                 return True
             else:
                 return False
                 
         if role == roles.system.value:
-            return self.account_type == "SystemAccount"
+            return self.object_type == "SystemAccount"
     
         # Account-related roles
         if isinstance(obj, Account):
@@ -403,6 +387,30 @@ class Account(_AbstractAccount):
     #                                           #
     #           Relations management            #
     #                                           #
+    
+    def follow(self, account):
+        """
+        Ask this account to follow another one.
+        """
+        # XXX TODO: CHECK SECURITY HERE!
+        from twistranet.models.relation import Relation
+        me_to_you = Relation.objects.filter(initiator = self, target = account)
+        if me_to_you.exists():
+            # Already exists
+            return
+        
+        # If the given account already follows me, then we consider the relation as approved
+        you_to_me = Relation.objects.filter(initiator = account, target = self)
+        if you_to_me.exists():
+            you_to_me = you_to_me.get()
+            you_to_me.approved = True
+            you_to_me.save()
+            approved = True
+        else:
+            approved = False
+        me_to_you = Relation(initiator = self, target = account, approved = approved)
+        me_to_you.save()
+    
     @property
     def my_relations(self):
         """
@@ -480,7 +488,7 @@ class SystemAccount(Account):
     System accounts can reach ALL content from ALL communities.
     """
     objects = AccountManager()
-    default_picture_resource_alias = "default_system_picture"
+    default_picture_resource_slug = "default_system_picture"
     
     class Meta:
         app_label = "twistranet"
@@ -511,9 +519,19 @@ class UserAccount(Account):
         """
         Set the 'name' attibute from User Source.
         We don't bother checking the security here, ther parent will do it.
+        If this is a creation, ensure we join the GlobalCommunity as well.
         """
-        self.name = self.user.username
-        return super(UserAccount, self).save(*args, **kw)
+        from twistranet.models import community
+        self.slug = self.user.username
+        creation = not self.id
+    
+        # Actually supersave the account before joining glob. comm.
+        ret = super(UserAccount, self).save(*args, **kw)
+        if creation:
+            glob = community.GlobalCommunity.objects.get()
+            glob.join(self)
+        
+        return ret
 
     class Meta:
         app_label = 'twistranet'

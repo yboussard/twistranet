@@ -47,12 +47,12 @@ class _PermissionMappingManager(BaseManager):
         # XXX TODO: Make this more efficient and less 'magic'!
         # XXX For example, move this code into Content and Account as a 'model_class' attribute?
         permission_templates = None
-        klasses = ((Content, 'content_type'), (Account, 'account_type'))
+        klasses = (Content, Account)
         for k in klasses:
-            if isinstance(target, k[0]):
-                t = getattr(target, k[1], None)
+            if isinstance(target, k):
+                t = getattr(target, 'object_type', None)
                 if not t:
-                    raise ValueError("You can't apply permissions before setting your %s" % k[1])
+                    raise ValueError("You can't apply permissions before setting your object_type")
                 if t == target.__class__.__name__:
                     permission_templates = target.__class__.permission_templates
                     break

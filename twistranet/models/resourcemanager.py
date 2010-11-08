@@ -48,7 +48,7 @@ class ResourceManager(models.Model):
         # Avoid creation by non-admin
         from resource import Resource
         authenticated = Resource.objects._getAuthenticatedAccount()
-        if not authenticated.account_type == "SystemAccount":
+        if not authenticated.object_type == "SystemAccount":
             # XXX TODO: Non-admin check ;)
             # Maybe that's just a matter of checking the can_edit permission on an account?
             # raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
@@ -105,7 +105,7 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
     class Meta:
         app_label = 'twistranet'
 
-    def loadAll(self, with_aliases = False):
+    def loadAll(self, with_slug = False):
         """
         Special method to load all the filesystem content and transform each file into a file resource.
         Must be called from a SystemAccount for security reasons, all generated resources will belong to SystemAccount.
@@ -113,7 +113,7 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
         # Security check
         from resource import Resource
         authenticated = Resource.objects._getAuthenticatedAccount()
-        if not authenticated.account_type == "SystemAccount":
+        if not authenticated.object_type == "SystemAccount":
             raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
 
         # Load each file, avoiding to replace it
@@ -128,16 +128,16 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
                 }
                 if not mimetype:
                     continue
-                if with_aliases:
-                    alias = os.path.splitext(os.path.split(fname)[1])[0]
-                    defaults['alias'] = alias
+                if with_slug:
+                    slug = os.path.splitext(os.path.split(fname)[1])[0]
+                    defaults['slug'] = slug
                     objects = Resource.objects.filter(
                         manager = self, 
-                        alias = alias,
+                        slug = slug,
                         )
                     if objects:
                         if len(objects) > 1:
-                            raise IntegrityError("More than one resource with '%s' alias" % alias)
+                            raise IntegrityError("More than one resource with '%s' slug" % slug)
                         r = objects[0]
                     else:
                         r = Resource()
@@ -145,13 +145,13 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
                     # Set pties and save
                     r.manager = self
                     r.locator = fname
-                    r.alias = alias
+                    r.slug = slug
                     r.original_filename = fname
                     r.mimetype = mimetype
                     r.encoding = encoding
                     r.save()
                 else:
-                    raise NotImplementedError("Should implement w/o aliases")
+                    raise NotImplementedError("Should implement w/o slugs")
                     Resource.objects.get_or_create(
                         manager = self, 
                         locator = fname,

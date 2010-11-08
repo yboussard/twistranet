@@ -5,7 +5,7 @@
     <li id="account-profile-box" class="tn-box profile-box">
       {% usemacro accountthumbnail 50 50 account %}                                         
       <h2 class="box-header">
-        <a href="{% url twistranet.views.account_by_name account.name %}">
+        <a href="{% url twistranet.views.account_by_slug account.slug %}">
           {{ account }}
         </a>
       </h2>

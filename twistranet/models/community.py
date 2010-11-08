@@ -17,14 +17,14 @@ class CommunityManager(AccountManager):
         """
         Return the global community. May raise if no access right.
         """
-        return self.get(account_type = "GlobalCommunity")
+        return self.get(object_type = "GlobalCommunity")
 
     @property
     def admin(self):
         """
         Return the admin community / communities
         """
-        return self.get(account_type = "AdminCommunity")
+        return self.get(object_type = "AdminCommunity")
 
 class _AbstractCommunity(Account):
     """
@@ -50,7 +50,7 @@ class Community(_AbstractCommunity):
     
     # Usual metadata
     date = models.DateTimeField(auto_now = True)
-    default_picture_resource_alias = "default_community_picture"
+    default_picture_resource_slug = "default_community_picture"
     
     # Members & security management
     members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")

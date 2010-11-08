@@ -39,7 +39,7 @@ def get_model_class(ob, base_class, type_value):
 
 url_regex = re.compile( r"(?P<Protocol>(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?)(?P<UsernamePassword>(?:\w+:\w+@)?)(?P<Subdomains>(?:(?:[-\w]+\.)+)(?P<TopLevelDomains>(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2})))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?"
 )
-user_regex = re.compile(r"@(?P<name>[a-zA-Z_]\w*)")
+user_regex = re.compile(r"@(?P<slug>[a-zA-Z_]\w*)")
 
 def escape_links(text):
     """
@@ -57,14 +57,14 @@ def escape_links(text):
     match = user_regex.search(text) 
     while match is not None:
         try:
-            account = Account.objects.distinct().get(name = match.group(0)[1:])
+            account = Account.objects.distinct().get(slug = match.group(0)[1:])
         except ObjectDoesNotExist:
             # No account matching, we week things that way
             match =  user_regex.search(text, match.end())
             continue
         
         # Ok, serious stuff start now!
-        replacement = '<a href="%s">%s</a>' % (reverse('twistranet.views.account_by_name', args = (account.name,)), account.screen_name)
+        replacement = '<a href="%s">%s</a>' % (reverse('twistranet.views.account_by_slug', args = (account.slug,)), account.screen_name)
         text = "%s%s%s" % (
             text[0:match.start()],
             replacement,

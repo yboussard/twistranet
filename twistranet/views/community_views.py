@@ -61,12 +61,12 @@ def community_by_id(request, community_id):
     return HttpResponse(t.render(c))
     
 
-def community_by_name(request, community_name):
+def community_by_slug(request, slug):
     """
     (not very very efficent)
     """
     account = request.user.get_profile()
-    community = Community.objects.get(name = community_name)
+    community = Community.objects.get(name = slug)
     return community_by_id(request, community.id)
 
     

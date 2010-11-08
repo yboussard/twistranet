@@ -1,6 +1,4 @@
 [
-
-
     {
         "model": "auth.User",
         "pk": 1,
@@ -13,48 +11,12 @@
         }
     },
     {
-        "model": "twistranet.Account",
-        "pk":   1,
-        "fields":   {
-            "account_type": "UserAccount",
-            "name": "admin",
-            "screen_name": "Administrator",
-			"description": "A twistranet manager",
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "twistranet.UserAccount",
-        "pk":   1,
-        "fields":   {
-            "user":  1
-        }
-    },
-    {
         "model": "auth.User",
         "pk": 2,
         "fields": {
             "username": "A",
             "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
             "email": "test@test.com"
-        }
-    },
-    {
-        "model": "twistranet.Account",
-        "pk":   2,
-        "fields":   {        
-            "account_type": "UserAccount",
-            "name": "A",
-            "screen_name": "Albert",
-			"description": "A twistranet user",
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "twistranet.UserAccount",
-        "pk":   2,
-        "fields":   {
-            "user":  2
         }
     },
     {
@@ -65,172 +27,24 @@
             "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
             "email": "test@test.com"
         }
-    },
+    },    
+    
     {
-        "model": "twistranet.Account",
-        "pk":   3,
-        "fields":   {        
-            "account_type": "UserAccount",
-            "name": "B",
-            "screen_name": "Bernard",
-			"description": "A twistranet user",
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "twistranet.UserAccount",
-        "pk":   3,
+        "model":    "twistranet.Account",
+        "pk":       1,
         "fields":   {
-            "user":  3
-        }
-    },
-    
-    
-    
-    {
-        "model": "twistranet.Relation",
-        "pk":   0,
-        "fields": {
-            "initiator":    2,
-            "target":       1,
-            "approved":     1
+            "object_type":  "SystemAccount",
+            "slug":         "system",
+            "screen_name":  "System Account",
+            "description":  "TwistraNet system account",
+            "permissions":  "public",
+            "picture":      -1
         }
     },
     {
-        "model": "twistranet.Relation",
-        "pk":   1,
-        "fields": {
-            "initiator":    1,
-            "target":       2,
-            "approved":     1
-        }
-    },
-    {
-        "model": "twistranet.Relation",
-        "pk":   2,
-        "fields": {
-            "initiator":    3,
-            "target":       1,
-            "approved":     0
-        }
-    },
-    
-    
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 1,
-        "fields": {
-            "created_at": "2010-01-01",
-            "content_type": "HelloWorld",
-            "publisher": 1,
-            "author": 1,
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "helloworld.HelloWorld",
-        "pk": 1,
-        "fields": {
-        }
-    },
-    
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 2,
-        "fields": {
-            "created_at": "2010-02-01",
-            "content_type": "HelloWorld",
-            "publisher": 1,
-            "author": 1,
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "helloworld.HelloWorld",
-        "pk": 2,
-        "fields": {
-        }
-    },
-
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 3,
-        "fields": {
-            "created_at": "2010-02-01",
-            "content_type": "StatusUpdate",
-            "publisher": 1,
-            "author": 1,
-            "text": "This is a public status update",
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "twistranet.StatusUpdate",
-        "pk": 3,
-        "fields": {
-        }
-    },
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 4,
-        "fields": {
-            "created_at": "2010-02-01",
-            "content_type": "StatusUpdate",
-            "publisher": 1,
-            "author": 1,
-            "text": "This is a private status update",
-            "permissions": "private"
-        }
-    },
-    {
-        "model": "twistranet.StatusUpdate",
-        "pk": 4,
-        "fields": {
-        }
-    },
-  
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 4,
-        "fields": {
-            "created_at": "2010-02-01",
-            "content_type": "StatusUpdate",
-            "publisher": 3,
-            "author": 3,
-            "text": "This is a network-only status update from B",
-            "permissions": "network"
-        }
-    },
-    {
-        "model": "twistranet.StatusUpdate",
-        "pk": 4,
-        "fields": {
-        }
-    },
-
-    
-    {
-        "model": "twistranet.Content",
-        "pk": 5,
-        "fields": {
-            "created_at": "2010-02-01",
-            "content_type": "StatusUpdate",
-            "publisher": 3,
-            "author": 3,
-            "text": "This is a public status update from B",
-            "permissions": "public"
-        }
-    },
-    {
-        "model": "twistranet.StatusUpdate",
-        "pk": 5,
-        "fields": {
+        "model":    "twistranet.SystemAccount",
+        "pk":       1,
+        "fields":   {
         }
     }
-    
 ]

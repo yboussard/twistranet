@@ -3,7 +3,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html
-import basemanager 
+import basemanager
+import securable
 from account import Account
 from resource import Resource
 from twistranet.lib import roles, permissions, languages, utils
@@ -24,8 +25,8 @@ class ContentManager(basemanager.BaseManager):
         base_query_set = super(ContentManager, self).get_query_set()
         if not authenticated:
             # If global community is restricted, don't return anything
-            if not Account.objects.filter(account_type = "GlobalCommunity"):
-                return base_query_set.filter(id = -1)       # An on-purpose invalid filter
+            if not Account.objects.filter(object_type = "GlobalCommunity"):
+                return base_query_set.none()       # An on-purpose invalid filter
             
             # Return anonymous objects if global community is listable to anonymous.
             # XXX TODO: Avoid the distinct method
@@ -37,7 +38,7 @@ class ContentManager(basemanager.BaseManager):
                 )
         
         # System account: return all objects
-        if authenticated.account_type == "SystemAccount":
+        if authenticated.object_type == "SystemAccount":
             authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
             return base_query_set           # The base qset with no filter
         
@@ -152,7 +153,7 @@ class ContentManager(basemanager.BaseManager):
             )
         
 
-class _AbstractContent(models.Model):
+class _AbstractContent(securable.Securable):
     """
     We use this to enforce using our manager on subclasses.
     This way, we avoid enforcing you to re-declare objects = ContentManager() on each content class!
@@ -169,13 +170,14 @@ class _AbstractContent(models.Model):
 class Content(_AbstractContent):
     """
     Abstract content representation class.
+    
+    If you want to create your own text-based content type, just add a text = models.TextField() line in your subclass.
     """
     # The publisher this content is published for
     publisher = models.ForeignKey(Account)                      # The account this content is published for.
 
     # Usual metadata
     created_at = models.DateTimeField(auto_now = True, db_index = True)
-    content_type = models.CharField(max_length = 64, db_index = True)
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)
 
@@ -187,9 +189,8 @@ class Content(_AbstractContent):
     # We store summary and headline in DB for performance and searchability reasons.
     # Heavy @-querying will be done at save time, not at display-time.
     # Both of them can contain links and minimal HTML formating.
-    # Use setHTMLHeadline and setHTMLSummary (and setText if you want) to set those two values.
     # Never let your users edit those fields directly, as they'll be flagged as html-safe!
-    text = models.TextField()
+    # If you want to change behaviour of those fields, override the preprocess_xxx methods.
     html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
     html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
     text_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
@@ -216,10 +217,6 @@ class Content(_AbstractContent):
         blank = True,
         )
     
-    # End-user behavior. You can override those values in your subclasses
-    inline_creation = False             # Set to true if you want to add an inline creation form XXX TODO: Replace that by the form itself?
-    regular_creation = True               # Set to true if you want your content type to be globaly creatable XXX TODO: Replace that by the form itself?
-    
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
@@ -238,10 +235,10 @@ class Content(_AbstractContent):
     type_summary_view = "content/summary.part.html"
     type_detail_view = "content/view.html"
     
-    is_content = True
+    is_content = True   # XXX TODO: What is this for, BTW??
     
     def __unicode__(self):
-        return "%s %d by %s" % (self.content_type, self.id, self.author)
+        return "%s %d by %s" % (self.object_type, self.id, self.author)
     
     class Meta:
         app_label = 'twistranet'
@@ -250,59 +247,60 @@ class Content(_AbstractContent):
     #                       Display management                      #
     # You can override this in your content types.                  #
     #                                                               #
-
-    def setText(self):
+    
+    def preprocess_html_headline(self, text = None):
         """
-        Override this to not use the 'text' attribute of the super class.
-        Normally you shouldn't have to do it except for a content type not having a kind of a 'body' attribute.
+        preprocess_html_headline => unicode string.
         
-        The order of method callings is very important:
-        - setText() is called first
-        - setHTMLHeadline() is called second
-        - setHTMLSummary() is called third
-        """
-        # Or you can do self.text = ''
-        pass
-        
-    def setHTMLHeadline(self,):
-        """
-        Use this to compute the headline displayed.
+        Used to compute the headline displayed.
         You can have some logic to display a different headline according to the content's properties.
         Default is to display the 140 first characters (or so) of the raw text content.
+        
+        You can override this in your own content types if you want.
         """
+        if text is None:
+            text = getattr(self, "text", "")
         MAX_HEADLINE_LENGTH = 140 - 5
-        text = html.escape(self.text)
+        text = html.escape(text)
         if len(text) >= MAX_HEADLINE_LENGTH:
             text = u"%s [...]" % text[:MAX_HEADLINE_LENGTH]
         text = utils.escape_links(text)
-        self.html_headline = text
+        return text
         
-    def setTextHeadline(self,):
+    def preprocess_text_headline(self, text = None):
         """
         Default is just tag-stripping
         """
-        self.text_headline = html.strip_tags(self.html_headline)
+        if text is None:
+            text = self.preprocess_html_headline()
+        return html.strip_tags(text)
         
-    def setHTMLSummary(self,):
+    def preprocess_html_summary(self, text = None):
         """
         Return an HTML-safe summary.
         Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
         PLUS don't set the summary if it's the same as the headline!
         """
+        if text is None:
+            text = getattr(self, "text", "")
+
         MAX_SUMMARY_LENGTH = 1024 - 10
-        text = html.escape(self.text)
+        text = html.escape(text)
         if len(text) >= MAX_SUMMARY_LENGTH:
             text = u"%s [...]" % text[:MAX_SUMMARY_LENGTH]
         text = utils.escape_links(text)
-        if text == self.html_headline:
+        if text == self.preprocess_html_headline():
             text = ""
-        self.html_summary = text
+
+        return text
         
-    def setTextSummary(self,):
+    def preprocess_text_summary(self, text = None):
         """
         Default is just tag-stripping
         """
-        self.text_headline = html.strip_tags(self.html_headline)
+        if text is None:
+            text = self.preprocess_html_summary()
+        return html.strip_tags(text)
         
     @property
     def summary_view(self):
@@ -312,9 +310,17 @@ class Content(_AbstractContent):
     def detail_view(self):
         return self.model_class.type_detail_view
         
-    #                                                               #
-    #                       Security Management                     #
-    #                                                               #
+    def get_absolute_url(self):
+        """
+        XXX TODO: Make this a little more MVC with @permalink decorator
+        See http://docs.djangoproject.com/en/dev/ref/models/instances/#get-absolute-url
+        """
+        return "/content/%i/" % self.id
+        
+    #                                                                   #
+    #                       Security Management                         #
+    # XXX TODO: Use a more generic approach? And some caching as well?  #
+    #                                                                   #
     
     @property
     def can_list(self):
@@ -339,6 +345,10 @@ class Content(_AbstractContent):
     def can_edit(self):
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_edit, self)
+        
+        
+    # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!    
+    
 
     #                                                               #
     #                   Content internal stuff                      #
@@ -349,71 +359,65 @@ class Content(_AbstractContent):
         """
         Return the subobject model class
         """
-        return utils.get_model_class(self, Content, self.content_type)        
+        return utils.get_model_class(self, Content, self.object_type)        
 
     @property
     def object(self):
         """
         Return the exact subclass this object belongs to.
         Use this to display it.
-        
-        XXX TODO: Make this more efficient!
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
-        # return self.model_class.objects.get(id = self.id)
-        return getattr(self, self.content_type.lower())
-        
-    @property
-    def permissions_list(self):
-        # import _permissionmapping
-        # return _permissionmapping._ContentPermissionMapping.objects._get_detail(self.id)
-        return self._permissions
-        
+        return getattr(self, self.object_type.lower())
+                
     def save(self, *args, **kw):
         """
         Populate special content information before saving it.
+        See Content class documentation for more information on that.
         """
         import _permissionmapping
         
         # Confirm publishing rights
         authenticated = Content.objects._getAuthenticatedAccount()
+        if not authenticated:
+            raise PermissionDenied("Anonymous user can't publish anything.")
         if self.publisher_id is None:
             if not authenticated.can_publish:
-                raise RuntimeError("%s can't publish anything." % (authenticated, ))
+                raise PermissionDenied("%s can't publish anything." % (authenticated, ))
         else:
             if not self.publisher.can_publish:
-                raise RuntimeError("%s can't publish on %s." % (authenticated, self.publisher, ))
-        
-        # XXX TODO: Check permission template first?
-        if self.__class__.__name__ == Content.__name__:
-            raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
-        self.content_type = self.__class__.__name__
+                raise PermissionDenied("%s can't publish on %s." % (authenticated, self.publisher, ))
 
-        # Check if I have content edition rights
-        if not authenticated:
-            raise ValidationError("You can't save a content anonymously.")
+        # Set author
         if self.author_id is None:
             self.author = authenticated
         else:
-            if self.author != authenticated:
-                if not self.id:
-                    raise RuntimeError("You're not allowed to save this content.")
-                elif not self.can_edit:
-                    raise RuntimeError("You're not allowed to modify this content.")
+            if not self.id:
+                raise PermissionDenied("You're not allowed to set the content author by yourself.")
+        
+        # Check if user has modification rights for existing content
+        if self.id:
+            if not self.can_edit:
+                raise PermissionDenied("You're not allowed to edit this content.")
+        
+        # Check if we're saving a real object and not a generic Content one (which is prohibited).
+        # This must be a programming error, then.
+        if self.__class__.__name__ == Content.__name__:
+            raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
+        self.object_type = self.__class__.__name__
                 
         # Set publisher
         if self.publisher_id is None:
             self.publisher = self.author
             
         # Set headline and summary cached values
-        self.setText()
-        self.setHTMLHeadline()
-        self.setHTMLSummary()
-        self.setTextHeadline()
-        self.setTextSummary()
+        self.html_headline = self.preprocess_html_headline()
+        self.text_headline = self.preprocess_text_headline()
+        self.html_summary = self.preprocess_html_summary()
+        self.text_summary = self.preprocess_text_summary()
         
-        # Actually saves stuff
+        # Actually save stuff
         ret = super(Content, self).save(*args, **kw)
         
         # Set/reset permissions. We do it last to be sure we've got an id.
@@ -425,7 +429,7 @@ class Content(_AbstractContent):
         """
         Delete object after we've checked security
         """
-        authenticated = Content.objects._getAuthenticatedAccount()
-        if not authenticated.has_permission(permissions.can_delete, self):
-            raise PermissionDenied("You're not allowed to delete this object.")
+        if self.id:
+            if not self.can_delete:
+                raise PermissionDenied("You're not allowed to delete this object.")
         return super(Content, self).delete()

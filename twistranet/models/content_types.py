@@ -14,6 +14,7 @@ class StatusUpdate(Content):
     It provides a good example of what you can do with a content type.
     """
     type_detail_view = None
+    text = models.TextField()       # The basic text of the status update.
 
     class Meta:
         app_label = 'twistranet'
@@ -50,17 +51,18 @@ class Notification(Content):
     def __unicode__(self,):
         return u"Notification %d: %s" % (self.id, self.getText())
     
-    def setText(self):
+    def preprocess_html_headline(self, text = None):
         """
         XXX TODO: Translate the sentence using gettext!
         """
         from django.core.urlresolvers import reverse
         if self.on_who:
-            self.text = "@%s %s @%s" % (self.who.name, self.did_what, self.on_who.name)
+            text = "@%s %s @%s" % (self.who.slug, self.did_what, self.on_who.slug)
         elif self.on_what:
-            self.text = "@%s %s %s" % (self.who.name, self.did_what, self.on_what.id)
+            text = "@%s %s %s" % (self.who.slug, self.did_what, self.on_what.id)
         else:
-            self.text = "@%s" % (self.who, )
+            text = "@%s" % (self.who, )
+        return super(Notification, self).preprocess_html_headline(text)
     
     class Meta:
         app_label = "twistranet"
@@ -77,15 +79,14 @@ class Document(Content):
     class Meta:
         app_label = 'twistranet'
 
-    title = models.CharField(max_length = 255)
-    doc_summary = models.TextField()
-    
+    title = models.CharField(max_length = 255)    
+    text = models.TextField()
 
-    def setHTMLHeadline(self,):
+    def preprocess_html_headline(self,):
         """
         Default is just tag-stripping without any HTML formating
         """
-        self.html_headline = html.escape(self.title)
+        return html.escape(self.title)
 
 
 # class Link(Content):

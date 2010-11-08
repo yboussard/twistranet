@@ -71,7 +71,7 @@ class AccountSecurityTest(TestCase):
         c = Community()
         c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
         c.save()
-        self.failUnlessEqual(c.name, "my_a_community_it_has_a_very_long_title_so_its_goi")
+        self.failUnlessEqual(c.slug, "my_a_community_it_has_a_very_long_title_so_its_goi")
         c = Community()
         c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
         try:
@@ -90,11 +90,11 @@ class AccountSecurityTest(TestCase):
         """
         # Check if we find the admin community
         __account__ = self.A
-        admin = Community.objects.get(name = "administrators")
+        admin = Community.objects.get(slug = "administrators")
         self.failIf(admin.can_view)
 
         # Create a community and perform the same kind of checks
-        c = Community.objects.create(name = "My Workgroup", permissions = "workgroup")
+        c = Community.objects.create(slug = "My Workgroup", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_view)
         __account__ = self.B
@@ -102,9 +102,9 @@ class AccountSecurityTest(TestCase):
         __account__ = self.PJ
         self.failIf(c.can_view)
         
-        # Check community name, then the protected 'description' attribute
+        # Check community slug, then the protected 'description' attribute
         # DISABLED FOR PERFORMANCE REASONS
-        # self.failUnless(admin.name == "Administrators")
+        # self.failUnless(admin.slug == "Administrators")
         # try:
         #     admin.description
         # except PermissionDenied:
@@ -124,7 +124,7 @@ class AccountSecurityTest(TestCase):
         self.failUnless(self.admin.can_publish)
         
         # Try to write on a wg community
-        c = Community(name = "wkg", permissions = "workgroup")
+        c = Community(slug = "wkg", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_publish)
         __account__ = self.B
@@ -136,7 +136,7 @@ class AccountSecurityTest(TestCase):
         
         # Try to publish on an 'ou' community as a simple member ; must be forbidden
         __account__ = self.A
-        c = Community(name = "ou", permissions = "ou")
+        c = Community(slug = "ou", permissions = "ou")
         c.save()
         self.failUnless(c.can_publish)
         __account__ = self.B
@@ -152,7 +152,7 @@ class AccountSecurityTest(TestCase):
         We create a community and check basic stuff
         """
         __account__ = self.A
-        c = Community.objects.create(name = "My Workgroup", permissions = "workgroup")
+        c = Community.objects.create(slug = "My Workgroup", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_view)
         self.failUnless(c.is_manager)

@@ -11,8 +11,16 @@ class HelloWorld(Content):
     """
     type_detail_view = None
     
-    def setText(self):
-        """This always return the same boring text.
+    def preprocess_html_headline(self,):
         """
-        self.text = "Hello, World"
-
+        Default is just to display "Hello, World!" as a headline.
+        """
+        return "Hello, World!"
+        
+    def preprocess_html_summary(self,):
+        """
+        Display a cheering text.
+        """
+        return "Hello, this is a <em>sample</em> content type for TwistraNet."
+    
+    

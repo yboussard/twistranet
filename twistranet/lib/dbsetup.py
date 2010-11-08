@@ -11,15 +11,11 @@ from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
 
 from twistranet.models import *
-# .content import Content
-# from twistranet.models.account import Account, UserAccount, SystemAccount
-# from twistranet.models.relation import Relation
-# from community import Community, GlobalCommunity, AdminCommunity
-# from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
-# from resource import Resource
 from twistranet.models import _permissionmapping
 from twistranet.lib import permissions
 
+from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
+from twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
 
 def repair():
     """
@@ -31,42 +27,42 @@ def repair():
     
     Will not erase data it doesn't know how to handle.
     """
-    # Login
+    # # Login
     __account__ = SystemAccount.objects.get()
 
     # Put all Django admin users inside the first admin community
-    # and create accounts for them accordingly.
     django_admins = UserAccount.objects.filter(user__is_superuser = True)
     for user in django_admins:
         if not Community.objects.admin in user.my_communities:
             Community.objects.admin.join(user, manager = True)
-        
-    # All user accounts must (explicitly) belong to the global community.
-    # XXX There should be a more efficient way to do this ;)
-    global_ = Community.objects.global_
-    if UserAccount.objects.count() <> global_.members.count():
-        # print "All accounts are not in the global comm. We manually add them"
-        for account in UserAccount.objects.get_query_set():
-            if global_ not in account.communities:
-                # print "Force user %s to join global" % account
-                global_.join(account)
-                
-    # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security and cache
-    for content in Content.objects.get_query_set():
-        content.object.save()
-        # try:
-        #     _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content.object)
-        # except ValidationError:
-        #     print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-        #     traceback.print_exc()
-    for account in Account.objects.get_query_set():
-        try:
-            _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account.object)
-        except ValidationError:
-            print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-            traceback.print_exc()
-                
-    # XXX TODO: Check if approved relations are symetrical
+    #     
+    # # All user accounts must (explicitly) belong to the global community.
+    # # XXX There should be a more efficient way to do this ;)
+    # global_ = Community.objects.global_
+    # if UserAccount.objects.count() <> global_.members.count():
+    #     # print "All accounts are not in the global comm. We manually add them"
+    #     for account in UserAccount.objects.get_query_set():
+    #         if global_ not in account.communities:
+    #             # print "Force user %s to join global" % account
+    #             global_.join(account)
+    #             
+    # # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security and cache
+    # for content in Content.objects.get_query_set():
+    #     content.object.save()
+    #     # try:
+    #     #     _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content.object)
+    #     # except ValidationError:
+    #     #     print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+    #     #     traceback.print_exc()
+    # for account in Account.objects.get_query_set():
+    #     try:
+    #         _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account.object)
+    #     except ValidationError:
+    #         print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
+    #         traceback.print_exc()
+    #             
+    # # XXX TODO: Check if approved relations are symetrical
+
 
 
 def bootstrap():
@@ -78,54 +74,64 @@ def bootstrap():
     """
     try:
         # Create the main system account if it doesn't exist
-        try:
-            __account__ = SystemAccount.objects.get()
-        except ObjectDoesNotExist:
-            _system = SystemAccount()
-            __account__ = _system
-            _system.permissions = "listed"
-            _system.screen_name = "TwistraNet System"
-            _system.name = "system"
-            _system.save()
-        _system = SystemAccount.get()
-    
-        # Create the global community if it doesn't exist.
-        try:
-            global_ = Community.objects.global_
-        except ObjectDoesNotExist:
-            global_ = GlobalCommunity(
-                name = "all_twistranet",
-                screen_name = "All TwistraNet Members",
-                description = "This community contains all TwistraNet members. It's mainly used for critical information."
-                )
-            global_.permissions = "intranet"        # Default permissions = intranet
-            global_.save()
-    
-        # Create the admin community if it doesn't exist.
-        try:
-            admincommunity = Community.objects.admin
-        except ObjectDoesNotExist:
-            c = AdminCommunity(
-                name = "administrators",
-                screen_name = "Administrators",
-                description = "TwistraNet admin team",
-                )
-            c.permissions = "workgroup"
-            c.save()
-        admincommunity = Community.objects.admin
+        # try:
+        #     __account__ = SystemAccount.objects.get()
+        # except ObjectDoesNotExist:
+        #     _system = SystemAccount()
+        #     __account__ = _system
+        #     _system.permissions = "public"
+        #     _system.screen_name = "TwistraNet System"
+        #     _system.name = "system"
+        #     _system.save()
+        __account__ = SystemAccount.get()
         
         # Create Legacy Resource Manager if doesn't exist.
         # If one exists it must be attach to no community.
+        # We save back the __account__ system object to ensure proper resource loading
         try:
             legacy_rm = ReadOnlyFilesystemResourceManager.objects.get()
         except ObjectDoesNotExist:
             legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
             legacy_rm.save()
+        legacy_rm.loadAll(with_slug = True)
+        __account__.save()
             
-        # Load / Update default TN resource files
-        legacy_rm.loadAll(with_aliases = True)
-        
-        # Create the main menu manager and main menu items
+        # Now create the bootstrap / default / help fixture objects.
+        for obj in BOOTSTRAP_FIXTURES:
+            obj.apply()
+            
+        for obj in HELP_EN_FIXTURES:
+            obj.apply()
+            
+        # XXX TODO: Add an 'if settings.IMPORT_SAMPLE_DATA' somewhere...
+        if True:
+            from twistranet.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
+            for obj in SAMPLE_DATA_FIXTURES:
+                obj.apply()
+            
+            # Add relations bwn users
+            # A <=> admin
+            # B  => admin
+            A = UserAccount.objects.get(slug = "A")
+            B = UserAccount.objects.get(slug = "B")
+            admin = UserAccount.objects.get(slug = "admin")
+            A.follow(admin)
+            admin.follow(A)
+            B.follow(admin)
+            
+            # Check default profile pictures
+            profile_picture = Resource.objects.get(slug = "default_profile_picture")
+            community_picture = Resource.objects.get(slug = "default_community_picture")
+
+            # Change A / B / TN profile pictures if they're not set
+            admin.picture = Resource.objects.get(slug = "default_admin_picture")
+            admin.save()
+            A.picture = Resource.objects.get(slug = "default_a_picture")
+            A.save()
+            B.picture = Resource.objects.get(slug = "default_b_picture")
+            B.save()            
+
+        # Create the main menu manager and main menu items. Create help menu structure as well.
         try:
             menu = Menu.objects.get(slug = "main")
         except ObjectDoesNotExist:
@@ -162,44 +168,31 @@ def bootstrap():
                 menu = menu,
                 parent = item,
                 order = 10,
-                sibling_id = Community.objects.admin.id,
-                sibling_kind = 'A',
-                title = None,
-                )
+            )
+            subitem.target = Community.objects.admin
             subitem.save()
             
-        # Check default profile pictures
-        profile_picture = Resource.objects.get(alias = "default_profile_picture")
-        community_picture = Resource.objects.get(alias = "default_community_picture")
-        a_picture = Resource.objects.get(alias = "default_a_picture")
-        b_picture = Resource.objects.get(alias = "default_b_picture")
-        admin_picture = Resource.objects.get(alias = "default_admin_picture")
-        tn_picture = Resource.objects.get(alias = "default_tn_picture")
-        
-        # Change A / B / TN profile pictures if they're not set
-        if UserAccount.objects.filter(name = 'admin').exists():
-            A = UserAccount.objects.get(name = 'admin')
-            if not A._picture:
-                A._picture = admin_picture
-                A.save()
-        if UserAccount.objects.filter(name = 'A').exists():
-            A = UserAccount.objects.get(name = 'A')
-            if not A._picture:
-                A._picture = a_picture
-                A.save()
-        if UserAccount.objects.filter(name = 'B').exists():
-            B = UserAccount.objects.get(name = 'B')
-            if not B._picture:
-                B._picture = b_picture
-                B.save()
-        if not _system._picture:
-            _system._picture = tn_picture
-            _system.save()
+        # Create / update the menu items
+        # XXX TODO: use help_en.MENU_STRUCTURE
+        # for obj in help_objects.values():
+        #     try:
+        #         item = MenuItem.objects.get(slug = obj.slug)
+        #     except ObjectDoesNotExist:
+        #         item = MenuItem(
+        #             menu = menu,
+        #             order = 90,
+        #             title = "Help",
+        #             slug = obj.slug,
+        #             )
+        #         item.target = obj
+        #         item.save()
+            
            
     except DatabaseError:
         # XXX TODO: Check the actual error to avoid fake postifives.
         # If we reach there we should meet the 'no such table' error
         print "DatabaseError while bootstraping. Your tables are probably not created yet."
+        traceback.print_exc()
             
     except:
         print "UNABLE TO LOAD INITIAL DATA. YOUR SYSTEM IS IN AN UNSTABLE STATE."

@@ -31,7 +31,7 @@ class MenuTest(TestCase):
         """
         __account__ = self.admin
         c = Community(
-            name = "Test community",
+            screen_name = "Test community",
             permissions = "private",
             )
         c.save()
@@ -46,16 +46,15 @@ class MenuTest(TestCase):
         item = MenuItem(
             menu = menu,
             order = 0,
-            sibling_id = cid,
-            sibling_kind = 'A',
             title = None,
             )
+        item.target = c
         item.save()
-        self.failUnless(cid in [ item.sibling_id for item in menu.children ])
+        self.failUnless(cid in [ item.target_id for item in menu.children ])
         
         # Check if sbd who can't see the community can't access the menu
         __account__ = self.A
-        self.failIf(cid in [ item.sibling_id for item in menu.children ])
+        self.failIf(cid in [ item.target_id for item in menu.children ])
         
     def test_public_resource(self):
         """
