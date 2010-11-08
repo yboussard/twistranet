@@ -2,7 +2,7 @@
 {% if account %}
   {% load macros %}
   {% loadmacros "thumbnails/main-macro.html" %}
-    <li id="account-profile-box" class="tn-box sidebar-box profile-box">
+    <li id="account-profile-box" class="tn-box profile-box">
       {% usemacro accountthumbnail 50 50 account %}                                         
       <h2 class="box-header">
         <a href="{% url twistranet.views.account_by_name account.name %}">

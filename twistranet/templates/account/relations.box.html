@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load macros %}
 {% loadmacros "thumbnails/main-macro.html" %}
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box relations-box">
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     {% else %}
@@ -16,7 +16,7 @@
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     {%else%}
@@ -31,7 +31,7 @@
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}You follow them{% endblocktrans %}</h3>
     {%else%}
@@ -46,7 +46,7 @@
     </ul>
     <div class="clearfix"><!-- --></div>
 </li>
-<li class="tn-box sidebar-box relations-box">
+<li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}They follow you{% endblocktrans %}</h3>
     {%else%}
