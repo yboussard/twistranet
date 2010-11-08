@@ -96,10 +96,11 @@ var twistranet = {
         twistranet.initformserrors();
     },
     finalizestyles: function(e) {
-        /* some first and last classes  */
-        jQuery([['.content-actions', 'li']]).each(function(){
+        /* set some first and last classes  */
+        jQuery([['.content-actions', 'li'],['#mainmenu > ul > li', '> ul> li']]).each(function(){
            setFirstAndLast(this[0], this[1]);
-        } );  
+        } );         
+        // set how many thumbs by line in different blocks
         jQuery([['.tn-box', '.thumbnail-50-bottom']]).each(function(){
            setFirstAndLast(this[0], this[1], 3);
         } );

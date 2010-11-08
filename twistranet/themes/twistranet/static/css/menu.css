@@ -42,8 +42,8 @@
 }
 .sf-menu li:hover ul,
 .sf-menu li.sfHover ul {
-	left:			0;
-	top:			2.5em; /* match top ul list item height */
+	left:			-1px;
+	top:			27px; /* match top ul list item height */
 	z-index:		99;
 }
 ul.sf-menu li:hover li ul,
@@ -75,69 +75,49 @@ ul.sf-menu li li li.sfHover ul {
 	}
 	#mainmenu ul li {
 		display: inline;
-		height: 27px;
 		}
 		#mainmenu ul li a {
 			font-weight:normal;
 			padding: 8px 20px;
 			color: white;
 		}
-    #mainmenu ul li a:link    { color: white; }
-    #mainmenu ul li a:hover   { color: white; }
-    #mainmenu ul li a:active  { color: white; }
-    #mainmenu ul li a:visited { color: white; }		
-		#mainmenu ul li.page_item {
-		}
-		#mainmenu ul li.page_item:hover {
-		}
-		#mainmenu ul li.page_item:active {
-		}
-		#mainmenu ul li.current_page_item {
-		}
-		#mainmenu ul li.page_last {
-		}
+    #mainmenu ul li a:link    { color: white; }  
+    #mainmenu ul li a:visited { color: white; }	
+    #mainmenu ul li.selected > a,
+    #mainmenu ul li.sfHover > a,
+    #mainmenu ul li a:hover,
+    #mainmenu ul li a:active   { 
+      background-color: #df2429;
+      color: white;
+      }	
 
 	#mainmenu ul ul {
-		margin-top: 1em;
-		margin-left: 1em;
-		padding: 7px 0 7px 0;
-		border: 1px solid #cdd;
-		-moz-border-radius-topright: 7px;
-		-webkit-border-top-right-radius: 7px;
-		-moz-border-radius-bottomleft: 7px;
-		-webkit-border-bottom-left-radius: 7px;
-		-moz-border-radius-bottomright: 7px;
-		-webkit-border-bottom-right-radius: 7px;
-		background-color: white;
+		margin: 0;
+		padding: 0;
+		opacity:0.97;
+		border: 1px solid white;
+		background-color: #db8689;
+		background-image: -webkit-gradient(
+                      linear,
+                      left bottom,
+                      right top,
+                      color-stop(0.26, rgb(220,129,132)),
+                      color-stop(0.72, rgb(248,118,124))
+                      );
+		background-image: -moz-linear-gradient(
+                          left bottom,
+                          rgb(220,129,132) 26%,
+                          rgb(248,118,124) 72%
+                      ) ;
 		}
-		#mainmenu ul ul ul {
-			margin-top: .3em;
-			margin-left: -1em;
+		#mainmenu ul ul a {
+      padding: 8px 10px;
+      border-bottom: 1px solid white;
 		}
-		#mainmenu ul ul li,
-		#mainmenu ul ul li.page_item,
-		#mainmenu ul ul li.page_item:hover,
-		#mainmenu ul ul li.page_item:active,
-		#mainmenu ul ul li.current_page_item {
-			background: none;
-			height: auto;
-			margin-left: 0;
-		}
-		#mainmenu ul ul li.page_item:hover {
-			background: url(../images/sys/grey-opacity50.png) repeat;
-		}
-		#mainmenu ul ul a { 
-			padding: .62em 1em .08em;
+		#mainmenu ul ul li.last a {
+      border-bottom: none;
 		}
 
-.menu-shadow {
-	background:	url('../images/sys/shadow.png') no-repeat bottom right;
-	padding: 0 8px 9px 0;
-	-moz-border-radius-bottomleft: 17px;
-	-moz-border-radius-topright: 17px;
-	-webkit-border-top-right-radius: 17px;
-	-webkit-border-bottom-left-radius: 17px;
-}
 
 /*** THE UserMenu ***/
 
@@ -156,11 +136,14 @@ ul.sf-menu li li li.sfHover ul {
 #usermenu ul {
 	margin: 0;
 	list-style: none;
+	height: 11px;
+	overflow: hidden;
 	}
 	#usermenu ul li {
 		display: inline;
 		padding: 0 5px;
 		border-right: 1px solid #f38389;
+		line-height: 8px;
 		}
 	#usermenu ul li.last {
 		border-right: none;
