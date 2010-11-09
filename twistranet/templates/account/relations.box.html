@@ -7,14 +7,16 @@
     {% else %}
         <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul class="thumbnails-inner">
-      <li>
-        {% for community in account.my_communities %}
-            {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community %}
-        {% endfor %}
-      </li>
-    </ul>
-    <div class="clearfix"><!-- --></div>
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
+        <li>
+          {% for community in account.my_communities %}
+              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community %}
+          {% endfor %}
+        </li>
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
 </li>
 <li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
@@ -22,14 +24,16 @@
     {%else%}
         <h3>{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul class="thumbnails-inner">
-      <li>
-        {% for account in account.getMyNetwork %}
-            {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %}
-        {% endfor %}
-      </li>
-    </ul>
-    <div class="clearfix"><!-- --></div>
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
+        <li>
+          {% for account in account.getMyNetwork %}
+              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %}
+          {% endfor %}
+        </li>
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
 </li>
 <li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
@@ -37,14 +41,16 @@
     {%else%}
         <h3>{% blocktrans %}He/She follows them{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul class="thumbnails-inner">
-      <li>
-        {% for account in account.getMyFollowed %}
-            {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
-        {% endfor %}
-      </li>
-    </ul>
-    <div class="clearfix"><!-- --></div>
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
+        <li>
+          {% for account in account.getMyFollowed %}
+              {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
+          {% endfor %}
+        </li>
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
 </li>
 <li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
@@ -52,12 +58,14 @@
     {%else%}
         <h3>{% blocktrans %}They follow him/her{% endblocktrans %}</h3>
     {%endifequal%}
-    <ul class="thumbnails-inner">
-      <li>
-        {% for account in account.getMyFollowers %}
-            {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
-        {% endfor %}
-      </li>
-    </ul>
-    <div class="clearfix"><!-- --></div>
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
+        <li>
+          {% for account in account.getMyFollowers %}
+              {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
+          {% endfor %}
+        </li>
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
 </li>

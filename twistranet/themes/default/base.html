@@ -90,15 +90,14 @@
             <div id="wrap">
                 <div id="container">
 
-                    <div id="contextbar" class="sidebar">
+                    <div id="contextbar" class="sidebar">     
+                      <ul>
                         {% block contextbar %}
-                            <ul>
-                                {% include 'account/profile.box.html' %}
-                                {% include 'account/actions.box.html' %}
-                                {% include "account/relations.box.html" %}
-                            </ul>
-                        {% endblock %}
-                        </ul>
+                            {% include 'account/profile.box.html' %}
+                            {% include 'account/actions.box.html' %}
+                            {% include "account/relations.box.html" %}
+                        {% endblock %}                                    
+                      </ul>
                     </div>
                     
                     {% if messages %}

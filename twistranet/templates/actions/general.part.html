@@ -1,17 +1,41 @@
 {% load i18n %}
-<li class="tn-box general-box">
+<li class="tn-box global-box general-box">
     <h3>{% trans "Communities" %}</h3>
-    <ul>
-        <li><a href="{% url twistranet.views.communities %}">{% blocktrans %}View all communities{% endblocktrans %}</a></li>
-        <li><a href="{% url twistranet.views.create_community %}">{% blocktrans %}Create a community{% endblocktrans %}</a></li>
-    </ul>
+    <div class="tn-box-content">
+      <ul>
+        <li>
+          <a class="action"
+             href="{% url twistranet.views.communities %}">
+           {% blocktrans %}View all communities{% endblocktrans %}
+          </a>
+        </li>
+        <li>
+          <a class="action"
+             href="{% url twistranet.views.create_community %}">
+            {% blocktrans %}Create a community{% endblocktrans %}
+          </a>
+        </li>
+      </ul>
+    </div>
 </li>
 {% if logged_account %}
-<li class="tn-box general-box">
+<li class="tn-box global-box general-box">
     <h3>{% trans "My files" %}</h3>
-    <ul>
-        <li><a href="{% url twistranet.views.view_media_library logged_account.id %}">{% blocktrans %}Browse files{% endblocktrans %}</a></li>
-        <li><a href="{% url twistranet.views.create_media %}">{% blocktrans %}Upload files{% endblocktrans %}</a></li>
-    </ul>
+    <div class="tn-box-content">
+      <ul>
+        <li>
+          <a class="action"
+             href="{% url twistranet.views.view_media_library logged_account.id %}">
+             {% blocktrans %}Browse files{% endblocktrans %}
+          </a>
+        </li>
+        <li>
+          <a class="action"
+             href="{% url twistranet.views.create_media %}">
+            {% blocktrans %}Upload files{% endblocktrans %}
+          </a>
+        </li>
+      </ul>
+    </div>
 </li>
 {% endif %}

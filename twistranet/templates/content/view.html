@@ -17,12 +17,10 @@
 {% endblock %}
 
 {% block contextbar %}
-    <ul>
-        {% with logged_account as account %}
-            {% include 'account/profile.box.html' %}
-        {% endwith %}
-        {% include 'content/actions.box.html' %}
-        {# {% include 'content/metadata.box.html' %} #}
-    </ul>
+    {% with logged_account as account %}
+        {% include 'account/profile.box.html' %}
+    {% endwith %}
+    {% include 'content/actions.box.html' %}
+    {# {% include 'content/metadata.box.html' %} #}
 {% endblock %}
 

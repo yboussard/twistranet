@@ -1,39 +1,9 @@
-/*---------------------------------------------------------------- 
-  Copyright: 
-  Copyright (C) 2009 danielfajardo web
-  
-  License: 
-  GPL Software 
-  
-  Author: 
-  danielfajardo - http: //wwww.danielfajardo.com
----------------------------------------------------------------- */
-
-/* Template structure
-
-	body
-		page
-			wrapper -> width: 940px;
-				header
-					head
-					mainmenu
-					search
-				wrap
-					container
-					    contextbar
-						content
-						globalbar
-				bottom
-					footer
-*/
-
-
 /* Template. Main areas
 ***************************************************************************** */
 
 body {
 	margin: 0;
-	background: white url(../images/body-bg.png) top left repeat-x;
+	background: #f9f9f9 url(../images/body-bg.png) top left repeat-x;
 }
 #page {
 }
@@ -51,7 +21,7 @@ body {
   		#usermenu {
   		}
   		#menubar {
-  			width: 778px;
+  			width: 776px;
   			height: 27px;      
   			position: absolute;
   			top: 27px;
@@ -89,11 +59,10 @@ body {
 
 	#wrap {
 		height: 100%; /* Fix IE7 */
-		padding: 0;
 		}
 		#breadcrumb {
       position: absolute;
-			width: 758px;
+			width: 756px;
 			text-align: right;
 			top: 55px;
 		  border-color: #d0b6b7;
@@ -101,9 +70,13 @@ body {
 			border-style: none solid;
 			padding: 6px 10px;
 			height: 12px;
-		}
+			background-color: white;
+		  }
+		  #breadcrumb a {
+        color: #686868;
+        }
 		#globalbar {
-			width: 150px;
+			width: 181px;
 			float: right;	
 			clear: right;
 			margin: 0;
@@ -111,16 +84,17 @@ body {
 		}
 		#container {
 			margin: 0;
-			padding: 0;
+			padding: 0 0 15px;
 			clear: left;
 			float: left;
-		  border-color: #d0b6b7;
+		  border-color: #d0b6b7;  
+			background-color: white;
 			border-width: 0 1px 1px;
 			border-style: none solid solid;	
-      width: 778px;		
+      width: 776px;		
 			}
 			#contextbar {
-				width: 180px;
+				width: 181px;
 				float: left;	
 				margin: 0 30px 12px 0;
 				word-wrap: break-word;

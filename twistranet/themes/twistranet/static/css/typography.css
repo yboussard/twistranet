@@ -3,9 +3,9 @@
 ---------------------------------------------------------------- */
 
 body {
-	font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
+	font-family: "Lucida Grande",tahoma,"Lucida Sans Unicode","bitstream vera sans",arial,helvetica,geneva,sans-serif;
 	font-size: 11px;
-	color: #444;
+	color: black;
 	}
   
 /* Headings
@@ -14,11 +14,11 @@ h1,h2,h3,h4,h5,h6 {
 	color: #444;
 	font-weight: normal;
 	line-height: 1.2em;
-	margin:0.5em 0 0.2em;
+	margin:5px 0 3px;
 	clear: both;
 }
 	
-h1 { font-size: 24px; }
+h1 { font-size: 24px; margin-top: 0; }
 h2 { font-size: 20px; }
 h3 { font-size: 16px; }
 h4 { font-size: 14px; }

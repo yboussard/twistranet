@@ -77,24 +77,23 @@
 
             <div id="wrap">                 
                 <div id="globalbar" class="sidebar">
-                    {% block globalbar %}
-                        <ul>
+                    <ul class="tn-box-container">  
+                        {% block globalbar %}
                             {% include "actions/general.part.html" %}
                             {% include "content/content_creation.box.html" %}
-                        </ul>
-                    {% endblock %}
+                        {% endblock %}
+                    </ul>
                 </div>
                 <div id="container">
 
-                    <div id="contextbar" class="sidebar">
-                        {% block contextbar %}
-                            <ul>
-                                {% include 'account/profile.box.html' %}
-                                {% include 'account/actions.box.html' %}
-                                {% include "account/relations.box.html" %}
-                            </ul>
-                        {% endblock %}
-                        </ul>
+                    <div id="contextbar" class="sidebar">  
+                      <ul class="tn-box-container">
+                          {% block contextbar %}
+                              {% include 'account/profile.box.html' %}
+                              {% include 'account/actions.box.html' %}
+                              {% include "account/relations.box.html" %}
+                          {% endblock %}      
+                       </ul>
                     </div>
                     
                     {% if messages %}

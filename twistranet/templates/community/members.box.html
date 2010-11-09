@@ -3,9 +3,12 @@
 {% loadmacros "thumbnails/main-macro.html" %}
 <li id="community-members-box" class="tn-box members-box">
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
-    <ul class="thumbnails-inner">
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
         {% for account in members %}
             {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %}
         {% endfor %}
-    </ul>
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
 </li>

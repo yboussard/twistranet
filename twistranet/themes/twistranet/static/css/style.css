@@ -33,6 +33,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 	display: block;
 	cursor: pointer;
 	color: white;
+	letter-spacing: 0.1em;
   }
   #head a.logotext div {
     display: inline;
@@ -74,34 +75,32 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 
 .postmetadata {
 	margin: 0;
-	font-size: 1.2em;
-	line-height:1.6em;
-	color: #888;
+	color: #999;
 	}
 	.postmetadata .date, .postmetadata .author, .postmetadata .comment, .postmetadata .category, .postmetadata .tag, .postmetadata .edit {
 		margin:  0 0 0 2px;
 		padding: 0 0 0 20px;
 	}
-	.postmetadata .date           { background: url(images/icons/icons-normal.png) 0 0 no-repeat; }
-	.postmetadata .date:hover     { background: url(images/icons/icons-hover.png) 0 0 no-repeat;	}
+	.postmetadata .date           { background: url(../images/icons/icons-normal.png) 0 0 no-repeat; }
+	.postmetadata .date:hover     { background: url(../images/icons/icons-hover.png) 0 0 no-repeat;	}
 
-	.postmetadata .author         { background: url(images/icons/icons-normal.png) 0 -16px no-repeat; }
-	.postmetadata .author:hover   { background: url(images/icons/icons-hover.png) 0 -16px no-repeat;	}
+	.postmetadata .author         { background: url(../images/icons/icons-normal.png) 0 -16px no-repeat; }
+	.postmetadata .author:hover   { background: url(../images/icons/icons-hover.png) 0 -16px no-repeat;	}
 
-	.postmetadata .comment        { background: url(images/icons/icons-normal.png) 0 -32px no-repeat; }
-	.postmetadata .comment:hover  { background: url(images/icons/icons-hover.png) 0 -32px no-repeat;	}   
+	.postmetadata .comment        { background: url(../images/icons/icons-normal.png) 0 -32px no-repeat; }
+	.postmetadata .comment:hover  { background: url(../images/icons/icons-hover.png) 0 -32px no-repeat;	}   
 
-	.postmetadata .target        { background: url(images/icons/icons-normal.png) 0 -32px no-repeat; }
-	.postmetadata .target:hover  { background: url(images/icons/icons-hover.png) 0 -32px no-repeat;	}
+	.postmetadata .target        { background: url(../images/icons/icons-normal.png) 0 -32px no-repeat; }
+	.postmetadata .target:hover  { background: url(../images/icons/icons-hover.png) 0 -32px no-repeat;	}
 
-	.postmetadata .category       { background: url(images/icons/icons-normal.png) 0 -48px no-repeat; }
-	.postmetadata .category:hover { background: url(images/icons/icons-hover.png) 0 -48px no-repeat;	}
+	.postmetadata .category       { background: url(../images/icons/icons-normal.png) 0 -48px no-repeat; }
+	.postmetadata .category:hover { background: url(../images/icons/icons-hover.png) 0 -48px no-repeat;	}
 
-	.postmetadata .tag            { background: url(images/icons/icons-normal.png) 0 -64px no-repeat; }
-	.postmetadata .tag:hover      { background: url(images/icons/icons-hover.png) 0 -64px no-repeat;	}
+	.postmetadata .tag            { background: url(../images/icons/icons-normal.png) 0 -64px no-repeat; }
+	.postmetadata .tag:hover      { background: url(../images/icons/icons-hover.png) 0 -64px no-repeat;	}
 
-	.postmetadata .edit           { background: url(images/icons/icons-normal.png) 0 -80px no-repeat; }
-	.postmetadata .edit:hover     { background: url(images/icons/icons-hover.png) 0 -80px no-repeat;	}
+	.postmetadata .edit           { background: url(../images/icons/icons-normal.png) 0 -80px no-repeat; }
+	.postmetadata .edit:hover     { background: url(../images/icons/icons-hover.png) 0 -80px no-repeat;	}
 
 #pagenavigator {
 	clear: both;
@@ -202,7 +201,7 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 		margin-left: 20px;
 		width: 48px;
 		height: 48px;
-		background: url(images/icons/notice.png) 0 0 no-repeat;
+		background: url(../images/icons/notice.png) 0 0 no-repeat;
 	}
 	.notice div#box {
 		float: right;
@@ -227,13 +226,13 @@ img.centered {
 ***************************************************************************** */
 
 .icon-delete {
-  background-image: url(images/icons/delete.png);
+  background-image: url(../images/icons/delete.png);
   background-repeat: no-repeat;
   background-position: center left;
   color: #7a4c4a;
 }
 .icon-delete:hover {
-  background-image: url(images/icons/delete-hover.png);
+  background-image: url(../images/icons/delete-hover.png);
   color: white;
   background-color: #83524f;
 }
@@ -397,19 +396,19 @@ formats are :
   overflow:hidden;
 }
 .thumbnail-account-part label {     
-  font-weight: lighter;
 }
 
 .thumbnail-50-bottom {
-  width: 50px;;
+  width: 50px;
   margin-right: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 5px;    
 }
 .thumbnail-50-bottom label {
   text-align: center;
-  font-size: 9px;
   clear: left;
-  padding-top: 2px;
+  padding-top: 2px;     
+  font-weight: lighter;     
+  font-size: 10px;
 }
 
 .thumbnail-50-none {
@@ -463,29 +462,33 @@ formats are :
 }
 
 ul.thumbnails-inner {
-  margin: 0 0 0 10px;
-  padding: 0;
 }
 
 ul.thumbnails-inner li {
-  list-style:             none;
-  list-style-type:        none;
   display: inline;
-  margin: 0;  
+  line-height: 10px; 
 }
 
 /* tn boxes (global style for any kind of boxes)
 ***************************************************************************** */
-li.tn-box {
+ul.tn-box-container,
+li.tn-box,
+ul.tn-box-container ul,
+ul.tn-box-container ul li {
   list-style: none;   
   list-style-image: none;
   margin: 0;
-  padding: 0;
+  padding: 0;  
+}
+
+.tn-box {
+  clear: both;
 }
 
 .tn-box h2,
 .tn-box h3,
 .tn-box h4 {
+  margin: 0;
 }
 
 .tn-box h2 {         
@@ -497,9 +500,12 @@ li.tn-box {
   background-color:#df2429;
   color:white;
   padding:2px 5px;
-  margin-bottom: 5px;
-  margin-top: 0;
   font-size: 11px;
+}
+
+.tn-box-content {
+  background-color: #f9f9f9;
+  padding: 5px 10px 20px; 
 }
 
 /* different kind of boxes */
@@ -520,97 +526,52 @@ li.tn-box {
   background-color:#278fb8;
 }
 
-/* particular boxes (profile and actions) */
+/* particular boxes */
 
 .profile-box {
-  padding: 0 6px !important;
+  padding: 0 10px 0 !important;
+}
+.profile-box h2 {
+  padding-left: 57px;  
+  line-height: 1.2em;  
+}
+.profile-box p {
+  margin: 3px 0 0;
+  line-height: 1.2em;   
+  padding-left: 57px;
 }
 
 .profile-box .image-block {
-  margin-bottom: 7px !important;
+  margin-bottom: 0 !important;
 }
 
 .actions-box {
-  clear: none !important;
+  padding: 5px 10px 20px !important;
 }
 
-.actions-box a:hover {
-  text-decoration: underline;
-}  
+/* particular links */
 
-.actions-box .edit-actions {
-  margin-top: 0;
-  padding-left: 63px;
-} 
-
-.actions-box .edit-actions a {
-  color: #777;
-}  
-
-.actions-box .global-actions {
-  clear: both; 
-  padding: 0;
-  position: relative;
-  height: 20px;
-} 
-
-.actions-box .global-actions li a {
+a.action {
+  color: #686868;
   display: block;
-  position: absolute;
-  width: 160px;
-  left: 6px;
-  text-align: center;
-  padding: 2px 5px;
-  background-color: #A99392;
-  color: white;
-  text-decoration: none;
-  -moz-border-radius : 9px; 
-  -webkit-border-radius : 9px;
-  border-radius : 9px;
-  background-image: -webkit-gradient(
-      linear,
-      left top,
-      right top,
-      color-stop(0.26, rgb(169,147,146)),
-      color-stop(0.63, rgb(169,147,146)),
-      color-stop(0.82, rgb(131,82,79))
-  );
-  background-image: -moz-linear-gradient(
-      left center,
-      rgb(169,147,146) 26%,
-      rgb(169,147,146) 63%,
-      rgb(131,82,79) 82%
-  );  
+  padding: 3px 0;
 }
-.actions-box .global-actions li a:hover {  
-  top: 3px;
-  left: 9px;
-  -moz-box-shadow: -3px -3px 3px #000;
-  -webkit-box-shadow: -3px -3px 3px #000;
-  box-shadow: -3px -3px 3px #000;
+a.action:hover {
+  text-decoration: underline;
+} 
+a.main-action {
+  font-weight: bolder;
+} 
+
+/* particular text */
+
+.discreet {
+  color: #999;
 }
 
-.actions-box .global-actions li a:hover,
-.actions-box .global-actions li a.main-action {
-  text-decoration: none;
-  background-color: #5D130F;
-  background-image: -webkit-gradient(
-      linear,
-      left top,
-      right top,
-      color-stop(0.26, rgb(169,147,146)),
-      color-stop(0.08, rgb(169,147,146)),
-      color-stop(0.48, rgb(131,82,79))
-  );
-  background-image: -moz-linear-gradient(
-      left center,
-      rgb(169,147,146) 26%,
-      rgb(169,147,146) 8%,
-      rgb(131,82,79) 48%
-  );
+a.main-action {
 }
-.actions-box .global-actions li a.main-action:hover {
-  background: #5D130F !important;
+a.main-action:hover {
 }
 
 /* Bottom -> Footer
