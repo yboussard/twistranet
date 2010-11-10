@@ -9,9 +9,6 @@
     {% endif %}
 {% endblock %}
 
-{% block breadcrumb %}
-    <a href="/">Home</a> > {% if content %}{{ content.headline }}{% else %}{%blocktrans%}New {{content_type}}{%endblocktrans%}{% endif %}
-{% endblock %}
 {% load i18n %}
 
 {% block content %}

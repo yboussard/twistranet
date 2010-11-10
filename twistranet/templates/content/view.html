@@ -2,17 +2,18 @@
 
 {% block title %}{{ content.text_headline }}{% endblock %}
 
-{% block breadcrumb %}
-    <a href="/">Home</a> > {{ content.text_headline }}
-{% endblock %}
 {% load i18n %}
 
 {% block content %}
-    <h1>{{ content.html_headline }}</h1>
+    <h1>{{ content.html_headline|safe }}</h1>
 
-    {{ content.html_summary }}
+    <div class="content-summary">
+        {{ content.html_summary|safe }}
+    </div>
     
-    {{ content.text }}
+    <div class="content-text">
+        {{ content.text|safe }}
+    </div>
 
 {% endblock %}
 
@@ -21,6 +22,6 @@
         {% include 'account/profile.box.html' %}
     {% endwith %}
     {% include 'content/actions.box.html' %}
-    {# {% include 'content/metadata.box.html' %} #}
+    {% include 'content/metadata.box.html' %}
 {% endblock %}
 

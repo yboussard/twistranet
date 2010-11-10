@@ -58,7 +58,6 @@ def edit_media(request, resource_id = None):
     c = RequestContext(
         request,
         {
-            "path": request.path,
             "account": account,
             "media": media,
             "form": form,

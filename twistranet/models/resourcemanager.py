@@ -64,7 +64,15 @@ class ResourceManager(models.Model):
 
     class Meta:
         app_label = 'twistranet'
-        
+
+
+class TranslationResourceManager(ResourceManager):
+    """
+    This is used to store translations in database.
+    It's meant to be very efficient when shortcutted!
+    """
+
+
 class _AbstractFilesystemResourceManager(ResourceManager):
     # Default value is TN's default resources path
     path = models.CharField(max_length = 512, default = settings.TWISTRANET_DEFAULT_RESOURCES_DIR)

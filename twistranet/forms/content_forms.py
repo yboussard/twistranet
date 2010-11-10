@@ -20,8 +20,11 @@ class DocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.models.content_types import Document
         model = Document
-        fields = ('title', ) + BaseRegularForm.Meta.fields + ('resources', )
-        widgets = BaseRegularForm.Meta.widgets
+        fields = ('title', 'summary', ) + BaseRegularForm.Meta.fields + ('resources', )
+        widgets = {
+            'summary':      widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+            'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
+        }
 
 form_registry.register(StatusUpdateForm)
 form_registry.register(DocumentForm)

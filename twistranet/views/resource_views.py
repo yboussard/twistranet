@@ -102,7 +102,6 @@ def edit_resource(request, resource_id = None):
     c = RequestContext(
         request,
         {
-            "path": request.path,
             "account": account,
             "resource": resource,
             "form": form,

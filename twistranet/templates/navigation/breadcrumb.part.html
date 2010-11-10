@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
+{% if content %}
+    &gt;
+    <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">
+        {{ content.publisher }}
+    </a>
+    &gt;
+    {{ content.text_headline }}
+{% else %}
+    {% if community %}
+        &gt;
+        {{ community }}
+    {% else %}
+        {% if account %}
+            {%ifequal account.id logged_account.id %}
+                &gt;
+                {% blocktrans %}My wall{% endblocktrans %}
+            {%else%}
+                &gt;
+                {% blocktrans %}{{ account }}'s Profile{% endblocktrans %}
+            {%endifequal%}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+
+
+

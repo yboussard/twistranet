@@ -1,11 +1,11 @@
 {% load i18n %}
-{% with content.content_type as content_type %}
+{% with content.object_type as object_type %}
 <li id="content-actions-box" class="tn-box actions-box">
     <ul class="global-actions">   
     {% if content.can_edit %}
         <li>
             <a href="{% url twistranet.views.edit_content content.id %}" class="action">
-                {% blocktrans %}Edit {{content_type}}{% endblocktrans %}
+                {% blocktrans %}Edit {{ object_type }}{% endblocktrans %}
             </a>
         </li>
     {% else %}

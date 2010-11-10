@@ -17,6 +17,7 @@ FIXTURES = [
 		description = "A twistranet manager",
         permissions = "public",
         user = User.objects.get(id = 1),
+        picture = Resource.objects.filter(slug = "default_admin_picture"),
     ),
     
     Fixture(
@@ -26,6 +27,7 @@ FIXTURES = [
 		description = "A twistranet sample user",
         permissions = "public",
         user = User.objects.get(id = 2),
+        picture = Resource.objects.filter(slug = "default_a_picture"),
     ),
     
     Fixture(
@@ -33,8 +35,9 @@ FIXTURES = [
         slug = "B",
         screen_name = "Bernard Dubois De La Fontaine",
 		description = "A twistranet sample user",
-        permissions = "intranet",
+        permissions = "listed",
         user = User.objects.get(id = 3),
+        picture = Resource.objects.filter(slug = "default_b_picture"),
     ),
     
     Fixture(

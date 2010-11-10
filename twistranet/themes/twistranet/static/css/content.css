@@ -47,6 +47,14 @@
 	width: 450px;
 }
 
+.content-summary {
+    margin: 1em 0 1em 0;
+}
+
+.content-text {
+    margin: 1em 0 1em 0;
+}
+
 .content-actions {
   float: right;
   margin: 1em 0 0 0.5em;

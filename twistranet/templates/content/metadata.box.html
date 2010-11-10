@@ -1,0 +1,27 @@
+{% load i18n %}
+<li id="content-metadata-box" class="tn-box metadata-box">
+    <ul class="global-actions">   
+    {% if content.can_view %}
+        <li>
+            {% blocktrans %}Author:{% endblocktrans %}
+            <a href="{% url twistranet.views.account_by_slug content.author.slug %}">
+                {{ content.author }}
+            </a>
+        </li>
+        <li>
+            {% blocktrans %}Published on:{% endblocktrans %}
+            <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">
+                {{ content.publisher }}
+            </a>
+        </li>
+        <li>
+            {% blocktrans %}Created:{% endblocktrans %}
+                {{ content.created_at }}
+        </li>
+        <li>
+            {% blocktrans %}Permissions:{% endblocktrans %}
+                {{ content.permissions }}
+        </li>
+    {% endif %}
+    </ul>         
+</li>

@@ -27,7 +27,7 @@ def edit_content(request, content_id = None, content_type = None):
             raise NotImplementedError("Should implement a permission denied exception here")
         if not content.can_edit:
             raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
-        form_entry = form_registry.getFormEntries(content.content_type)[0]
+        form_entry = form_registry.getFormEntries(content.object_type)[0]
     else:
         # XXX TODO: Check some kind of "can_create_content" permission?
         content = None
@@ -54,7 +54,6 @@ def edit_content(request, content_id = None, content_type = None):
     c = RequestContext(
         request,
         {
-            "path": request.path,
             "account": account,
             "content": content,
             "content_type": form_entry['content_type'],
@@ -73,13 +72,15 @@ def content_by_id(request, content_id):
     content = Content.objects.distinct().get(id = content_id)
     if not content.can_view:
         raise NotImplementedError("Should raise permission denied here.")
+
+    # Dereference the actual underlying content object
+    content = content.object
     
     # Display the view template (given by the detail_view pty of the content)
     t = loader.get_template(content.detail_view)
     c = RequestContext(
         request,
         {
-            "path": request.path,
             "content": content,
         },
         )
@@ -98,7 +99,7 @@ def delete_content(request, content_id):
     """
     account = request.user.get_profile()
     content = Content.objects.distinct().get(id = content_id)
-    name = content.content_type
+    name = content.object_type
     content.delete()
     messages.info(request, _('The %(name)s has been deleted.' % {'name': name}))
     return HttpResponseRedirect(reverse('twistranet.views.home', ))

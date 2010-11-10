@@ -3,10 +3,6 @@
 
 {% block title %}{% blocktrans %}Activity Feed{% endblocktrans %}{% endblock %}
 
-{% block breadcrumb %}
-    <a href="/">Home</a> > {{ account }}
-{% endblock %}
-
 {% block contextbar %}
     {% include 'account/profile.box.html' %}
     {% include 'account/actions.box.html' %}

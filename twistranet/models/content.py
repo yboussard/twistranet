@@ -37,7 +37,6 @@ class ContentManager(_basemanager.BaseManager):
                 publisher___permissions__name = permissions.can_view,
                 publisher___permissions__role__in = (roles.anonymous, ),
                 )
-        # print "no anon shortcut", authenticated, authenticated.__class__, authenticated.id, authenticated.object_type
         
         # System account: return all objects
         if authenticated.object_type == "SystemAccount":
@@ -195,7 +194,7 @@ class Content(_AbstractContent):
     text_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
     
     # Resources associated to this content
-    resources = models.ManyToManyField(Resource)
+    resources = models.ManyToManyField(Resource, blank = True, null = True)
     
     # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
     source = "web"

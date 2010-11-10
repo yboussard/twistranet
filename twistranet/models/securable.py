@@ -29,11 +29,11 @@ class Securable(models.Model):
         """
         from twistranet.models import Content, Account, Community
         if isinstance(self, Content):
-            return "/content/%i/" % self.id
+            return "/content/%i" % self.id
         elif isinstance(self, Community):
-            return "/community/%i/" % self.id
+            return "/community/%i" % self.id
         elif isinstance(self, Account):
-            return "/account/%i/" % self.id
+            return "/account/%i" % self.id
         raise NotImplementedError("Can't get absolute URL for object %s" % self)
             
     class Meta:

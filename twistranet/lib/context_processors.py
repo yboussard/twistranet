@@ -19,6 +19,9 @@ def security_context(request):
     klasses = form_registry.form_registry.getFullpageForms()
     if klasses:
         ret['creatable_content_types'] = klasses
-        
+    
+    # Various shortcuts
+    ret['path'] = request.path
+    
     return ret
     

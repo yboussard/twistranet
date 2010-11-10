@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 
 class Fixture(object):
     """
@@ -17,12 +18,16 @@ class Fixture(object):
         """
         Create / update model. Use the 'slug' attribute to define unicity of the content.
         """
+        from twistranet.models import Account
         slug = self.dict.get('slug', None)
         obj = None
         
+        # Check if slug is given. Mandatory.
+        if not self.dict.has_key('slug'):
+            raise ValueError("You can't apply this fixture without a slug attribute")
+        
         # Set auth if necessary
         if self.logged_account:
-            from twistranet.models import Account
             __account__ = Account.objects.get(slug = self.logged_account)
         
         # Create/get object
@@ -38,6 +43,8 @@ class Fixture(object):
             
         # Set properties & save
         for k, v in self.dict.items():
+            if isinstance(v, QuerySet):
+                v = v.get()
             setattr(obj, k, v)
         obj.save()
 

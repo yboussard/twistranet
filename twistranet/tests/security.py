@@ -6,7 +6,7 @@ from twistranet.models import *
 from twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from twistranet.lib import dbsetup
+from twistranet.lib import dbsetup, notifier
 
 class SecurityTest(TestCase):
     """
@@ -228,4 +228,23 @@ class SecurityTest(TestCase):
         self.failUnless(self.A in c.members.all())
         self.failUnlessEqual(len(self.A.communities), 2)
         
+    def test_notification(self):
+        """
+        Check if a notification for B is seen only by those who can see B
+        """
+        __account__ = self.B
+        self.B.permissions = "listed"
+        self.B.save()
+        hello = StatusUpdate(text = "Hello there", permissions = "public")
+        hello.save()
+        n = notifier.likes(self.B, hello)
+        nid = n.id
+        self.failUnless(Content.objects.filter(id = nid).exists())
+        __account__ = self.A
+        self.failIf(Content.objects.filter(id = nid).exists())
+        
+
+
+
+
 

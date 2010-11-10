@@ -11,27 +11,27 @@ class ResourceObjectsManager(basemanager.BaseManager):
     """
     XXX TODO: Securize resource access
     """
-    # def get_query_set(self,):
-    #     """
-    #     Resources are either bound (to a content) or not.
-    #     An unbound resource has the scope of its owner account.
-    #     A bound resource has the scope of all its related content (the most "opened" one).
-    #     """
-    #     from content import Content
-    #     from account import Account
-    #     authenticated = self._getAuthenticatedAccount()
-    #     return super(ResourceObjectsManager, self).get_query_set().filter(
-    #         (
-    #             # Bound content
-    #             Q(bound = True, content__in = Content.objects.get_query_set())
-    #             ) | (
-    #             # Unbound content
-    #             Q(bound = False, owner__in = Account.objects.get_query_set())
-    #             ) | (
-    #             # Content I own (just to be sure)
-    #             Q(owner = authenticated)
-    #             )
-    #         ).distinct()
+    def get_query_set(self,):
+        """
+        Resources are either bound (to a content) or not.
+        An unbound resource has the scope of its owner account.
+        A bound resource has the scope of all its related content (the most "opened" one).
+        """
+        from content import Content
+        from account import Account
+        authenticated = self._getAuthenticatedAccount()
+        return super(ResourceObjectsManager, self).get_query_set().filter(
+            (
+                # Bound content
+                Q(bound = True, content__in = Content.objects.get_query_set())
+                ) | (
+                # Unbound content
+                Q(bound = False, owner__in = Account.objects.get_query_set())
+                ) | (
+                # Content I own (just to be sure)
+                Q(owner = authenticated)
+                )
+            ).distinct()
 
 class Resource(securable.Securable):
     """

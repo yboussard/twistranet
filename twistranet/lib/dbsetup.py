@@ -14,9 +14,6 @@ from twistranet.models import *
 from twistranet.models import _permissionmapping
 from twistranet.lib import permissions
 
-from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
-from twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
-
 import settings
 
 def repair():
@@ -92,14 +89,23 @@ def bootstrap():
         legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
         legacy_rm.save()
     legacy_rm.loadAll(with_slug = True)
+    __account__.picture = Resource.objects.get(slug = "default_tn_picture")
     __account__.save()
         
     # Now create the bootstrap / default / help fixture objects.
-    for obj in BOOTSTRAP_FIXTURES:
-        obj.apply()
-        
-    for obj in HELP_EN_FIXTURES:
-        obj.apply()
+    # Import your fixture there, if you don't do so they may not be importable.
+    from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
+    from twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
+    from twistranet.fixtures.help_fr import FIXTURES as HELP_FR_FIXTURES
+
+    # Check if default profile pictures are correctly imported
+    profile_picture = Resource.objects.get(slug = "default_profile_picture")
+    community_picture = Resource.objects.get(slug = "default_community_picture")
+    
+    # Load fixtures
+    for obj in BOOTSTRAP_FIXTURES:  obj.apply()
+    for obj in HELP_EN_FIXTURES:    obj.apply()
+    for obj in HELP_FR_FIXTURES:    obj.apply()
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
@@ -117,74 +123,15 @@ def bootstrap():
         admin.follow(A)
         B.follow(admin)
         
-        # Check default profile pictures
-        profile_picture = Resource.objects.get(slug = "default_profile_picture")
-        community_picture = Resource.objects.get(slug = "default_community_picture")
+        # 
+        # # Change A / B / TN profile pictures if they're not set
+        # admin.picture = Resource.objects.get(slug = "default_admin_picture")
+        # admin.save()
+        # A.picture = Resource.objects.get(slug = "default_a_picture")
+        # A.save()
+        # B.picture = Resource.objects.get(slug = "default_b_picture")
+        # B.save()
 
-        # Change A / B / TN profile pictures if they're not set
-        admin.picture = Resource.objects.get(slug = "default_admin_picture")
-        admin.save()
-        A.picture = Resource.objects.get(slug = "default_a_picture")
-        A.save()
-        B.picture = Resource.objects.get(slug = "default_b_picture")
-        B.save()            
-
-    # Create the main menu manager and main menu items. Create help menu structure as well.
-    try:
-        menu = Menu.objects.get(slug = "main")
-    except ObjectDoesNotExist:
-        menu = Menu(
-            slug = "main",
-            name = "Main Menu",
-            )
-        menu.save()
-        
-        # Create default menu items
-        item = MenuItem(
-            menu = menu,
-            order = 0,
-            view_path = "twistranet.views.home",
-            title = "Home",
-            )
-        item.save()
-        item = MenuItem(
-            menu = menu,
-            order = 10,
-            view_path = 'twistranet.views.communities',
-            title = "Communities",
-            )
-        item.save()
-        subitem = MenuItem(
-            menu = menu,
-            parent = item,
-            order = 0,
-            view_path = 'twistranet.views.communities',
-            title = "View all communities",
-            )
-        subitem.save()
-        subitem = MenuItem(
-            menu = menu,
-            parent = item,
-            order = 10,
-        )
-        subitem.target = Community.objects.admin
-        subitem.save()
-        
-    # Create / update the menu items
-    # XXX TODO: use help_en.MENU_STRUCTURE
-    # for obj in help_objects.values():
-    #     try:
-    #         item = MenuItem.objects.get(slug = obj.slug)
-    #     except ObjectDoesNotExist:
-    #         item = MenuItem(
-    #             menu = menu,
-    #             order = 90,
-    #             title = "Help",
-    #             slug = obj.slug,
-    #             )
-    #         item.target = obj
-    #         item.save()
-        
     
 def check_consistancy():
     """

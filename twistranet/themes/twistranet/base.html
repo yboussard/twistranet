@@ -69,7 +69,7 @@
 
                 <div id="breadcrumb">
                     {% block breadcrumb %}
-                        <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
+                        {% include "navigation/breadcrumb.part.html" %}
                     {% endblock %}
                 </div>
             
