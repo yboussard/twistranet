@@ -36,6 +36,16 @@ class Securable(models.Model):
             return "/account/%i" % self.id
         raise NotImplementedError("Can't get absolute URL for object %s" % self)
             
+    @property
+    def object(self):
+        """
+        Return the exact subclass this object belongs to.
+        """
+        if self.id is None:
+            raise RuntimeError("You can't get subclass until your object is saved in database.")
+        return getattr(self, self.object_type.lower())
+            
+            
     class Meta:
         abstract = True
 

@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils import html
+from django.utils import html, translation
 import _basemanager
 import securable
 from account import Account
@@ -207,12 +207,20 @@ class Content(_AbstractContent):
         default = languages.available_languages[0][0],
         db_index = True,
         )
-    translation_of = models.ForeignKey(
-        "Content",
-        related_name = "translations",
-        null = True,
-        blank = True,
-        )
+    # List of field name / generation method name. This is very useful when translating content.
+    auto_values = (
+        ("html_headline", "preprocess_html_headline", ),
+        ("text_headline", "preprocess_text_headline", ),
+        ("html_summary", "preprocess_html_summary", ),
+        ("text_summary", "preprocess_text_summary", ),
+    )
+    # Not implemented yet
+    # translation_of = models.ForeignKey(
+    #     "Content",
+    #     related_name = "translations",
+    #     null = True,
+    #     blank = True,
+    #     )
     
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
@@ -338,8 +346,45 @@ class Content(_AbstractContent):
         return auth.has_permission(permissions.can_edit, self)
         
         
-    # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!    
+    # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!
     
+    @property
+    def translation(self,):
+        """
+        Return the translated version of the content.
+        Example: doc.translated.title => Return the translated version of the title.
+        Use this in your templates. Use the _translated() method below in your python code or your tests.
+        Please note that this doesnt de-reference your original object: you still have to de-reference it with content.object
+        to get it. But you'll have access to translated fields anyway with the parent Content object.
+        
+        The translation object is always read-only!
+        
+        XXX TODO: Keep this in cache to avoid overhead
+        """
+        return self._translation(None)
+    
+    def _translation(self, language = None):
+        """
+        Return the translated version of your content.
+        Example: doc.translated('fr').title => Return the translated version of the title.
+        """
+        # No translation available? Return the identity object.
+        try:
+            from twistrans.lib import _TranslationWrapper
+        except ImportError:
+            return self
+
+        # If language is None, guess it
+        if language is None:
+            language = translation.get_language()
+        
+        # If language is the same as the content, return the content itself
+        if language == self.language:
+            return self
+        
+        # Return the wrapper around translated resources.
+        return _TranslationWrapper(self, language)
+            
 
     #                                                               #
     #                   Content internal stuff                      #

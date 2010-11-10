@@ -24,7 +24,7 @@ class Fixture(object):
         
         # Check if slug is given. Mandatory.
         if not self.dict.has_key('slug'):
-            raise ValueError("You can't apply this fixture without a slug attribute")
+            raise ValueError("You can't apply this fixture without a slug attribute. This is so to avoid duplicates.")
         
         # Set auth if necessary
         if self.logged_account:
@@ -47,4 +47,9 @@ class Fixture(object):
                 v = v.get()
             setattr(obj, k, v)
         obj.save()
-
+        
+        # Special treatment for translation stuff
+        if obj.__class__.__name__ == "TranslationResource":
+            obj.original_content._translation(language = obj.language).save()
+        
+        return obj

@@ -77,7 +77,9 @@ def bootstrap():
     except ObjectDoesNotExist, DatabaseError:
         # Default fixture probably not installed yet. Don't do anything yet.
         print "DatabaseError while bootstraping. Your tables are probably not created yet."
-        # traceback.print_exc()
+        print ">>>>>"
+        traceback.print_exc()
+        print "<<<<<"
         return
     
     # Create Legacy Resource Manager if doesn't exist.
@@ -96,7 +98,12 @@ def bootstrap():
     # Import your fixture there, if you don't do so they may not be importable.
     from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
     from twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
-    from twistranet.fixtures.help_fr import FIXTURES as HELP_FR_FIXTURES
+    # XXX TODO: Make a fixture registry? Or fix fixture import someway?
+    try:
+        from twistrans.fixtures.help_fr import FIXTURES as HELP_FR_FIXTURES
+    except ImportError:
+        HELP_FR_FIXTURES = []
+        print "twistrans not installed"
 
     # Check if default profile pictures are correctly imported
     profile_picture = Resource.objects.get(slug = "default_profile_picture")

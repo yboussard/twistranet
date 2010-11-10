@@ -40,8 +40,8 @@ class Resource(securable.Securable):
     """
     # Resource location descriptors.
     # Locator is a (possibly looong) string used by the manager to find the resource
-    manager = models.ForeignKey(ResourceManager)
-    locator = models.CharField(max_length = 1024, unique = True)                    # If not set, will be content's id
+    manager = models.ForeignKey(ResourceManager, null = True, blank = True)         # If None, then the resource is DB-only. Field name is given by the accessor attribute.
+    locator = models.CharField(max_length = 1024, unique = True)
     md5 = models.CharField(max_length = 32, unique = False)
     original_filename = models.CharField(max_length = 1024, null = True)            # Original filename if given
     original_url = models.URLField(max_length = 1024, null = True)                  # Original URL if given
@@ -88,19 +88,17 @@ class Resource(securable.Securable):
                 if not self.owner.is_admin:
                     raise RuntimeError("You're not allowed to edit this resource. XXX TODO: Resource delegation?")
                     
-        # Check if we've got a manager set on the resource
-        if not self.manager:
-            raise ValueError("You must have a manager on a resource.")
-
         # Actually save it
         return super(Resource, self).save(*args, **kw)
-
 
     def get(self):
         """
         Return a stream pointing to this resource's raw content
         """
-        return self.manager.subclass.readResource(self)
+        if self.manager:
+            return self.manager.subclass.readResource(self)
+        else:
+            return getattr(self.object, self.locator)
     
     
     

@@ -161,5 +161,6 @@ INSTALLED_APPS = (
     'twistranet',
     
     # TwistraNet extensions
+    'twistrans',
     'helloworld',
 )
