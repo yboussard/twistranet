@@ -146,7 +146,7 @@ class MenuItem(models.Model, AbstractMenuItem):
             if self.target_kind == 'A':
                 return target.screen_name
             elif self.target_kind == 'C':
-                return target.text_title
+                return target.translation.text_title
                 
         # Uh oh, shouldn't reach there
         raise AssertionError("Shouldn't reach here with %s" % self.id)

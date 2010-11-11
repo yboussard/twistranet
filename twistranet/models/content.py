@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html, translation
 import _basemanager
-import securable
+import twistable
 from account import Account
 from resource import Resource
 from twistranet.lib import roles, permissions, languages, utils
@@ -150,7 +150,7 @@ class ContentManager(_basemanager.BaseManager):
             )
         
 
-class _AbstractContent(securable.Securable):
+class _AbstractContent(twistable.Twistable):
     """
     We use this to enforce using our manager on subclasses.
     This way, we avoid enforcing you to re-declare objects = ContentManager() on each content class!
@@ -197,7 +197,7 @@ class Content(_AbstractContent):
     resources = models.ManyToManyField(Resource, blank = True, null = True)
     
     # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
-    source = "web"
+    # source = "web"
     
     # I18N support
     language = models.CharField(
@@ -347,44 +347,6 @@ class Content(_AbstractContent):
         
         
     # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!
-    
-    @property
-    def translation(self,):
-        """
-        Return the translated version of the content.
-        Example: doc.translated.title => Return the translated version of the title.
-        Use this in your templates. Use the _translated() method below in your python code or your tests.
-        Please note that this doesnt de-reference your original object: you still have to de-reference it with content.object
-        to get it. But you'll have access to translated fields anyway with the parent Content object.
-        
-        The translation object is always read-only!
-        
-        XXX TODO: Keep this in cache to avoid overhead
-        """
-        return self._translation(None)
-    
-    def _translation(self, language = None):
-        """
-        Return the translated version of your content.
-        Example: doc.translated('fr').title => Return the translated version of the title.
-        """
-        # No translation available? Return the identity object.
-        try:
-            from twistrans.lib import _TranslationWrapper
-        except ImportError:
-            return self
-
-        # If language is None, guess it
-        if language is None:
-            language = translation.get_language()
-        
-        # If language is the same as the content, return the content itself
-        if language == self.language:
-            return self
-        
-        # Return the wrapper around translated resources.
-        return _TranslationWrapper(self, language)
-            
 
     #                                                               #
     #                   Content internal stuff                      #

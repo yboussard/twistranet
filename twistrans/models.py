@@ -11,15 +11,16 @@ class TranslationResource(Resource):
     """
     This is the actual translated stuff.
     """
-    translation = models.TextField()
-    original_field = models.CharField(max_length = 64, db_index = True)                                     # id. of the field in the original content
-    original_content = models.ForeignKey("twistranet.Content", related_name = "_field_translations")        # Pointer to the very original content this is a translation of.
+    translated_text = models.TextField()
+    original = models.ForeignKey("twistranet.Twistable", related_name = "_field_translations")      # Pointer to the very original content this is a translation of.
+    original_field = models.CharField(max_length = 64, db_index = True)                             # name of the field in the original content
+    original_content = models.TextField()                                                           # Original translated content, used as a reference. Never set that.
 
     def get(self,):
         """
         Shortcut to content
         """
-        return self.content
+        return self.original
         
     def save(self, *args, **kw):
         """
@@ -32,11 +33,12 @@ class TranslationResource(Resource):
         self.manager = None             # Translations are resources stored in the main database
         self.mimetype = "text/plain"
         self.encoding = "utf8"
-        self.locator = "translation/%i/%s/%s" % (self.original_content.id, self.original_field, self.language, )
+        # self.original_content = getattr(self.original, self.original_field)     # Hum, maybe not efficient enough?
+        self.locator = "translation/%i/%s/%s" % (self.original.id, self.original_field, self.language, )
         try:
             self.owner
         except ObjectDoesNotExist:
-            self.owner = self.original_content.author
+            self.owner = self.original.author
         
         # Call parent's save method
         return super(TranslationResource, self).save(*args, **kw)

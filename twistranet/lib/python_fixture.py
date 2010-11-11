@@ -50,6 +50,6 @@ class Fixture(object):
         
         # Special treatment for translation stuff
         if obj.__class__.__name__ == "TranslationResource":
-            obj.original_content._translation(language = obj.language).save()
+            obj.original._translation(language = obj.language).save()
         
         return obj

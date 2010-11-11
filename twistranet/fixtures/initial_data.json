@@ -30,10 +30,17 @@
     },    
     
     {
+        "model":    "twistranet.Twistable",
+        "pk":       1,
+        "fields":   {
+            "object_type":  "SystemAccount"
+        }
+    },
+    
+    {
         "model":    "twistranet.Account",
         "pk":       1,
         "fields":   {
-            "object_type":  "SystemAccount",
             "slug":         "system",
             "screen_name":  "System Account",
             "description":  "TwistraNet system account",

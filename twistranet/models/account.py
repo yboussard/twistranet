@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
 import _basemanager
-import securable
+import twistable
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
 from django.db.utils import DatabaseError
@@ -92,7 +92,7 @@ class AccountManager(_basemanager.BaseManager):
                 )
             ) | community_subquery).distinct()
 
-class _AbstractAccount(securable.Securable):
+class _AbstractAccount(twistable.Twistable):
     """
     We use this to enforce using our manager on subclasses.
     This way, we avoid enforcing you to re-declare objects = AccountManager() on each account class!

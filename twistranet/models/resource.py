@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from resourcemanager import ResourceManager
 from twistranet.lib import languages
 import basemanager 
-import securable
+import twistable
 
 class ResourceObjectsManager(basemanager.BaseManager):
     """
@@ -33,7 +33,7 @@ class ResourceObjectsManager(basemanager.BaseManager):
                 )
             ).distinct()
 
-class Resource(securable.Securable):
+class Resource(twistable.Twistable):
     """
     A resource object.
     See doc/DESIGN.txt for design considerations

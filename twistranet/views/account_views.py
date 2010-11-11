@@ -12,9 +12,11 @@ from twistranet.lib.decorators import require_access
 # XXX Move this is settings
 TWISTRANET_CONTENT_PER_PAGE = 25
 
+# XXX For some obscure reason, I've got a dirty django error when trying to select_related content_types.
+# I have to find how and why... but perhaps subtypes are not needed in account page, thanks to the xxx_summary/xxx_headline fields?
 select_related_summary_fields = (
-    "notification",
-    "statusupdate",
+    # "notification",
+    # "statusupdate",
     "author",
     "publisher",
 )
@@ -95,7 +97,11 @@ def account_by_id(request, account_id):
         - Check if account is listed and permit only if approved
     """
     # Get the OBJECT himself
-    account = Account.objects.select_related('useraccount').get(id = account_id).object
+    # XXX Same as select_related_summary_fields: I've got a "'account' is not an ancestor of this model" error from django
+    # when trying to select related useraccount field. Grrr.
+    # By adding "return None" in django/db/models/options.py:433 (in get_base_chain), it seems to work.
+    # account = Account.objects.select_related('useraccount').get(id = account_id).object
+    account = Account.objects.get(id = account_id).object
     
     # If we're on a community, we should redirect
     if isinstance(account, Community):

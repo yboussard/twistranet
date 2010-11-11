@@ -17,9 +17,9 @@ FIXTURES = [
         force_update = True,
         slug = "help_title_fr",
         language = "fr-fr",
-        original_content = Document.objects.filter(slug = "help"),
+        original = Document.objects.filter(slug = "help"),
         original_field = "title",
-        translation = "Aide de TwistraNet",
+        translated_text = "Aide de TwistraNet",
     ),
     
     Fixture(
@@ -27,9 +27,9 @@ FIXTURES = [
         force_update = True,
         slug = "help_summary_fr",
         language = "fr-fr",
-        original_content = Document.objects.filter(slug = "help"),
+        original = Document.objects.filter(slug = "help"),
         original_field = "summary",
-        translation = "Twistranet est un réseau social simple mais efficace, "
+        translated_text = "Twistranet est un réseau social simple mais efficace, "
             "taillé pour l'entreprise. Ce document vous aidera à prendre TwistraNet en main.",
     ),
 
@@ -38,9 +38,9 @@ FIXTURES = [
         force_update = True,
         slug = "help_text_fr",
         language = "fr-fr",
-        original_content = Document.objects.filter(slug = "help"),
+        original = Document.objects.filter(slug = "help"),
         original_field = "text",
-        translation = """
+        translated_text = """
         Si vous pouvez lire ce document, c'est que vous êtes déjà connecté à TwistraNet !
         Si vous n'êtes pas déjà identifié, utilisez le lien "me connecter" de cette page pour entrer vos identifiants.
         

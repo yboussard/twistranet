@@ -19,13 +19,13 @@ class _TranslationWrapper(object):
         self._content = content
         self._language = language
         self._translations = {}
-        for trans in content._field_translations.values("language", "original_field", "translation"):
+        for trans in content._field_translations.values("language", "original_field", "translated_text"):
             # We do this to ensure that for eg. 'fr-fr' will always match 'fr'
             if trans['language'][:2] == language[:2]:
                 if self._translations.has_key(trans['original_field']):
                     if trans['language'][3:] <> language[3:]:
                         continue    # We have another match
-                self._translations[trans['original_field']] = trans['translation']
+                self._translations[trans['original_field']] = trans['translated_text']
 
     def __getattr__(self, attr):
         """
@@ -75,10 +75,10 @@ class _TranslationWrapper(object):
                 resource = TranslationResource(
                     language = self._language,
                     original_field = field,
-                    original_content = self._content,
+                    original = self._content,
                     locator = "translation/%i/%s/%s" % (self._content.id, field, self._language, ),
                     )
-            resource.translation = getattr(translated_copy, field)
+            resource.translated_text = getattr(translated_copy, field)
             resource.save()
             
         # Ok, done!

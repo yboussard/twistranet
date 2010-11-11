@@ -110,7 +110,7 @@ class SearchField(object):
             template_name = self.template_name
         else:
             template_name = 'search/indexes/%s/%s_%s.txt' % (obj._meta.app_label, obj._meta.module_name, self.instance_name)
-        
+
         t = loader.get_template(template_name)
         return t.render(Context({'object': obj}))
     

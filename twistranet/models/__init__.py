@@ -2,7 +2,7 @@
 
 # Low-level stuff
 import _permissionmapping
-from securable import Securable
+from twistable import Twistable
 from account import Account, AnonymousAccount
 from content import Content
 from community import Community
