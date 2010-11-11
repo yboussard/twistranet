@@ -11,7 +11,7 @@
       <ul class="thumbnails-inner">
         <li>
           {% for community in account.my_communities %}
-              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community %}
+              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community.translation %}
           {% endfor %}
         </li>
       </ul>

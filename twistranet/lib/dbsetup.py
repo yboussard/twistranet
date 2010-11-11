@@ -101,8 +101,10 @@ def bootstrap():
     # XXX TODO: Make a fixture registry? Or fix fixture import someway?
     try:
         from twistrans.fixtures.help_fr import FIXTURES as HELP_FR_FIXTURES
+        from twistrans.fixtures.bootstrap_fr import FIXTURES as BOOTSTRAP_FR_FIXTURES
     except ImportError:
         HELP_FR_FIXTURES = []
+        BOOTSTRAP_FR_FIXTURES = []
         print "twistrans not installed"
 
     # Check if default profile pictures are correctly imported
@@ -110,9 +112,10 @@ def bootstrap():
     community_picture = Resource.objects.get(slug = "default_community_picture")
     
     # Load fixtures
-    for obj in BOOTSTRAP_FIXTURES:  obj.apply()
-    for obj in HELP_EN_FIXTURES:    obj.apply()
-    for obj in HELP_FR_FIXTURES:    obj.apply()
+    for obj in BOOTSTRAP_FIXTURES:          obj.apply()
+    for obj in BOOTSTRAP_FR_FIXTURES:       obj.apply()
+    for obj in HELP_EN_FIXTURES:            obj.apply()
+    for obj in HELP_FR_FIXTURES:            obj.apply()
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
