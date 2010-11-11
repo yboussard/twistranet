@@ -5,13 +5,13 @@ This is directly inspired from http://code.google.com/p/django-menu/
 
 XXX TODO: Make this translatable
 """
-
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core import urlresolvers
+from twistranet.models import Twistable, Content, Account
+from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
-
-class AbstractMenuItem(object):
+class _MenuItemContainer(object):
     """
     Used to make the subitem possible on the root Menu object
     """
@@ -42,10 +42,7 @@ class AbstractMenuItem(object):
         return ret
 
 
-class Menu(models.Model, AbstractMenuItem):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField()
-    base_url = models.CharField(max_length=100, blank=True, null=True)
+class Menu(Twistable, _MenuItemContainer):
     description = models.TextField(blank=True, null=True)
 
     class Admin:
@@ -55,7 +52,7 @@ class Menu(models.Model, AbstractMenuItem):
         app_label = "twistranet"
  
     def __unicode__(self):
-        return _("%s" % self.name)
+        return _("%s" % self.slug)
  
     def save(self):
         """
@@ -74,19 +71,16 @@ class Menu(models.Model, AbstractMenuItem):
  
  
  
-class MenuItem(models.Model, AbstractMenuItem):
+class MenuItem(Twistable, _MenuItemContainer):
     menu = models.ForeignKey(Menu)
     order = models.IntegerField()
     title = models.CharField(max_length=100, null = True, blank = False)   # If null and a target is used, will use target's title
-    slug = models.SlugField()
 
     # Target URL / Object / Permissions
-    # XXX TODO: Make the target stuff more robust
     url_name = models.CharField(max_length=100, help_text='URL Name for Reverse Lookup, eg comments.comment_was_posted', blank=True, null=True, )
     view_path = models.CharField(max_length=100, help_text='Python Path to View to Render, eg django.contrib.admin.views.main.index', blank=True, null=True, )
     link_url = models.CharField(max_length=100, help_text='URL or URI to the content, eg /about/ or http://foo.com/', blank=True, null=True, )
-    target_id = models.IntegerField(null = True)
-    target_kind = models.CharField(max_length = 1)     # C for content, A for account. Anyway, use a 'target' attribute instead of those.
+    target = models.ForeignKey("Twistable", related_name = "menu_items", null = True)
     
     # Parenting stuff
     parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
@@ -97,7 +91,6 @@ class MenuItem(models.Model, AbstractMenuItem):
     def __unicode__(self):
         return _("%s %s. %s" % (self.menu.slug, self.order, self.title))
         
-        
     def save(self, *args, **kw):
         """
         Ensure DB consistancy
@@ -106,14 +99,7 @@ class MenuItem(models.Model, AbstractMenuItem):
         
         # Check if there's at least one access method and dereference target if needed.
         if hasattr(self, 'target'):
-            self.target_id = self.target.id
-            if isinstance(self.target, Content):
-                self.target_kind = 'C'
-            elif isinstance(self.target, Account):
-                self.target_kind = 'A'
-            else:
-                raise AssertionError("Unknown target type")
-                
+            pass    # Err, in fact, nothing more to do here.
         elif (not self.url_name and not self.view_path and not self.link_url):
             raise ValueError("Should have at least one target or path specified for the menu")
         
@@ -125,54 +111,36 @@ class MenuItem(models.Model, AbstractMenuItem):
         """
         XXX Todo: check if has can_view permission
         """
-        if self.target_id:
-            target = self.get_target()
-            if target:
-                return target.can_view
-            return False    # 'cause get_target() will return None if object is not found.
-            
-        # XXX No target => return True. We can imagine better.
+        t = self.target
+        if t:
+            return t.object.can_view
+
+        # No target => We can see it anyway
+        # XXX TODO: Implement a better security model on Menu items?
         return True
         
     @property
     def label(self):
         """
-        Use this in your templates instead of title as some pre-processing occurs
+        Use this in your templates instead of title as some pre-processing occurs.
         """
         if self.title:
-            return self.title
-        target = self.get_target()
-        if target:
-            if self.target_kind == 'A':
-                return target.screen_name
-            elif self.target_kind == 'C':
-                return target.translation.text_title
+            return self.translation.title
+        
+        # We've got a target, return its title
+        t = self.target.object
+        if isinstance(t, Content):
+            return t.text_headline
+        elif isinstance(t, Account):
+            return t.screen_name
                 
         # Uh oh, shouldn't reach there
-        raise AssertionError("Shouldn't reach here with %s" % self.id)
-    
-    def get_target(self, ):
-        """
-        XXX TODO: Make this far more efficient.
-        Here we have no less than 2 queries per menu item :(
-        """
-        from twistranet.models import Account, Content
-        
-        if self.target_id:
-            if self.target_kind == 'A':
-                if Account.objects.filter(id = self.target_id).exists():
-                    return Account.objects.get(id = self.target_id)
-            elif self.target_kind == 'C':
-                if Content.objects.filter(id = self.target_id).exists():
-                    return Content.objects.get(id = self.target_id)
-        return None
+        raise AssertionError("Shouldn't reach here with MenuItem %s" % self.id)
 
     def get_absolute_url(self):
-        # Got a target id?
-        target = self.get_target()
-        if target:
-            return target.get_absolute_url()
-                    
+        """
+        Return absolute URL according to the given information
+        """
         # Regular path resolution
         if self.url_name:
             return urlresolvers.reverse(self.url_name)
@@ -180,6 +148,10 @@ class MenuItem(models.Model, AbstractMenuItem):
             return urlresolvers.reverse(self.view_path)
         elif self.link_url:
             return self.link_url
+            
+        # No fast shortcut. Got a target id instead?
+        return self.target.get_absolute_url()
+
     
     
     

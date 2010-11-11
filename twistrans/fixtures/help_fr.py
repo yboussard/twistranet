@@ -47,4 +47,14 @@ FIXTURES = [
         Vous pouvez commencer à travailler avec TwistraNet !
         """,
     ),
+
+    Fixture(
+        TranslationResource,
+        force_update = True,
+        slug = "menuitem_help_title_fr",
+        language = "fr-fr",
+        original = MenuItem.objects.filter(slug = "menuitem_help"),
+        original_field = "title",
+        translated_text = "Aide",
+    ),
 ]

@@ -33,12 +33,8 @@ class TranslationResource(Resource):
         self.manager = None             # Translations are resources stored in the main database
         self.mimetype = "text/plain"
         self.encoding = "utf8"
-        # self.original_content = getattr(self.original, self.original_field)     # Hum, maybe not efficient enough?
+        # self.original_content = getattr(self.original.object, self.original_field)     # Hum, maybe not efficient enough?
         self.locator = "translation/%i/%s/%s" % (self.original.id, self.original_field, self.language, )
-        try:
-            self.owner
-        except ObjectDoesNotExist:
-            self.owner = self.original.author
         
         # Call parent's save method
         return super(TranslationResource, self).save(*args, **kw)

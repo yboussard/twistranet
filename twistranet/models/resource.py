@@ -58,14 +58,6 @@ class Resource(twistable.Twistable):
     bound = models.BooleanField(default = False)
     owner = models.ForeignKey("Account", related_name = "owned_resources")
     objects = ResourceObjectsManager()
-    
-    # I18N support
-    language = models.CharField(
-        max_length = 10,
-        blank = True,
-        choices = languages.available_languages,
-        default = languages.available_languages[0][0],
-        )
 
     def __unicode__(self):
         return "%s:%s" % (self.manager, self.locator)

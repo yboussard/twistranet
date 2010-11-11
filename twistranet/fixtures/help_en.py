@@ -36,11 +36,11 @@ If you want to configure and adminitrate TwistraNet, please read the /content/ad
     
     Fixture(
         MenuItem,
+        slug = "menuitem_help",
         menu = Menu.objects.filter(slug = "main"),
-        order = 10,
+        order = 90,
         target = Document.objects.filter(slug = "help"),
         title = "Help",
-        slug = "help",
     ),
 ]
 

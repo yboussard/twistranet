@@ -11,6 +11,8 @@ class _TranslationWrapper(object):
     
     It also simulates part of the save() behavior 
     by creating/updating the xxx_headline and xxx_summary fields.
+    
+    XXX TODO: Make this more optimal by reducing the number of calls: the wrapper must be cached!
     """
     def __init__(self, content, language):
         """
@@ -26,6 +28,7 @@ class _TranslationWrapper(object):
                     if trans['language'][3:] <> language[3:]:
                         continue    # We have another match
                 self._translations[trans['original_field']] = trans['translated_text']
+        self._fake = self._fake_copy(content)
 
     def __getattr__(self, attr):
         """
@@ -37,7 +40,25 @@ class _TranslationWrapper(object):
         try:
             return self._translations[attr]
         except KeyError:
-            return getattr(self._content, attr)
+            return getattr(self._fake, attr)
+            
+    def _fake_copy(self, original):
+        """
+        Create a fake copy form the original object.
+        This creates a 'fake' object still bearing interesting methods.
+        Useful for 'auto" fields.
+        """
+        args = []
+        for f in original._meta.fields:
+            try:
+                v = self._translations[f.name]
+            except KeyError:
+                v = f.value_from_object(original)
+            args.append(v)
+        translated_copy = original.__class__(*args)
+        translated_copy.save = None                             # We prevent saving by removing the save() method.
+                                                                # Ok, it's not perfect, but it should work.
+        return translated_copy
 
     def save(self,):
         """
@@ -52,20 +73,17 @@ class _TranslationWrapper(object):
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
         
         # Create a fake content around the translated one
-        args = []
-        for f in self._content._meta.fields:
-            args.append(getattr(self, f.name))
-        translated_copy = self._content.__class__(*args)
-        translated_copy.save = None                           # We prevent saving by removing the save() method.
-                                                            # Ok, it's not perfect, but it should work.
+        translated_copy = self._fake_copy(self._content)
         
-        # Call the generation methods and create Resource objects for each
-        for field, method in translated_copy.auto_values:
+        # Call the generation methods and create Resource objects for each.
+        # twistable.auto_values is a sequence of (field, generator_method) tuples.
+        # We call generator_method to populate the field.
+        for field, method in getattr(translated_copy, 'auto_values', []):
             meth = getattr(translated_copy, method)
             setattr(translated_copy, field, meth())
             
         # We loop twice to ensure a proper order (is it really necessary? not sure...)
-        for field, method in self._content.auto_values:
+        for field, method in getattr(translated_copy, 'auto_values', []):
             r = TranslationResource.objects.filter(
                 locator = "translation/%i/%s/%s" % (self._content.id, field, self._language, )
                 )

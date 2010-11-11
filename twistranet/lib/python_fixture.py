@@ -1,4 +1,5 @@
 from django.db.models.query import QuerySet
+from twistranet.models import Twistable
 
 class Fixture(object):
     """
@@ -32,7 +33,7 @@ class Fixture(object):
         
         # Create/get object
         if slug:
-            obj_q = self.model.objects.filter(slug = slug)
+            obj_q = Twistable.objects.filter(slug = slug)
             if obj_q.exists():
                 if not self.force_update:
                     # Object already exists and we don't want to update. Keep it that way.
@@ -43,6 +44,7 @@ class Fixture(object):
             
         # Set properties & save
         for k, v in self.dict.items():
+            # print self.model, k, v
             if isinstance(v, QuerySet):
                 v = v.get()
             setattr(obj, k, v)

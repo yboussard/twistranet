@@ -199,15 +199,9 @@ class Content(_AbstractContent):
     # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
     # source = "web"
     
-    # I18N support
-    language = models.CharField(
-        max_length = 10,
-        blank = True,
-        choices = languages.available_languages,
-        default = languages.available_languages[0][0],
-        db_index = True,
-        )
     # List of field name / generation method name. This is very useful when translating content.
+    # See twistrans.lib for more information
+    # XXX TODO: Document and/or rename that?
     auto_values = (
         ("html_headline", "preprocess_html_headline", ),
         ("text_headline", "preprocess_text_headline", ),
@@ -315,37 +309,7 @@ class Content(_AbstractContent):
     def detail_view(self):
         return self.model_class.type_detail_view
         
-    
-    #                                                                   #
-    #                       Security Management                         #
-    # XXX TODO: Use a more generic approach? And some caching as well?  #
-    #                                                                   #
-    
-    @property
-    def can_list(self):
-        """
-        Same as can_view for content objects?
-        XXX TODO: Clean that a little bit?
-        """
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_view, self)
-
-    @property
-    def can_view(self):
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_view, self)
-
-    @property
-    def can_delete(self):
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_delete, self)
-
-    @property
-    def can_edit(self):
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_edit, self)
-        
-        
+            
     # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!
 
     #                                                               #
