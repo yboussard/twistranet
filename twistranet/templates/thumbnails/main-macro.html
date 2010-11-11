@@ -45,7 +45,7 @@
   </div>
 {% endmacro %}
 {# for an account or a community thumbnail block  #}
-{# TODO: use the thumbblock more generic macro above }
+{# TODO: use the thumbblock more generic macro above #}
 {% macro accountblock blocktype imgwidth imgheight accountobject %}
   <div class="thumbnail-account-part {{blocktype}}">
       <a href="{% url twistranet.views.account_by_slug accountobject.slug %}" class="image-block image-block-{{imgwidth}}-{{imgheight}}">

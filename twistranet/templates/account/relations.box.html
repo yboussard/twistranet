@@ -28,7 +28,8 @@
       <ul class="thumbnails-inner">
         <li>
           {% for account in account.getMyNetwork %}
-              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %}
+            {% include 'thumbnails/medium.html' %}
+              {# {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %} #}
           {% endfor %}
         </li>
       </ul>
