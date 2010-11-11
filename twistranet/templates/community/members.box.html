@@ -1,12 +1,10 @@
 {% load i18n %}
-{% load macros %}
-{% loadmacros "thumbnails/main-macro.html" %}
 <li id="community-members-box" class="tn-box members-box">
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         {% for account in members %}
-            {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %}
+            {% include "thumbnails/medium.html" %}
         {% endfor %}
       </ul>
       <div class="clearfix"><!-- --></div>
