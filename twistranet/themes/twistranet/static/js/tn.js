@@ -136,6 +136,9 @@ var twistranet = {
           close: function(ev, ui) { 
             jQuery('#tn-dialog-message').text(defaultDialogMessage);
             jQuery(this).hide(); 
+          },
+          focus: function(event, ui) { 
+            ;
           }
         });
         links = 'a.confirmbefore';

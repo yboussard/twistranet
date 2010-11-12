@@ -103,4 +103,4 @@
 }
 
 /* for now the only action is "delete", just an icon without text */
-.content-actions ul li span {display: none}
+.content-actions ul li span {}

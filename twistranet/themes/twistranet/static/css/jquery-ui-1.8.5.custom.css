@@ -58,7 +58,9 @@
 ----------------------------------*/
 .ui-widget { font-size: 1.1em; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {  }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {  } 
+.ui-widget input[type="submit"], .ui-widget button { background: #efefef; border: 1px solid #999; color: #999; -moz-border-radius: 5px; -webkit-border-radius:5px; border-radius: 5px; } 
+.ui-widget input[type="submit"]:focus, .ui-widget button:focus { -moz-outline: none !important; outline: none !important; background-color: #278fb8; color: white }
 .ui-widget-content { background: #f9ffff url(../images/jquery-ui/ui-bg_flat_75_f9ffff_40x100.png) 50% 50% repeat-x; color: #222222; }
 .ui-widget-content a { color: #222222; }
 .ui-widget-header { background-color: #df2429; color: white; font-weight: bold; }
