@@ -130,7 +130,8 @@ var twistranet = {
           resizable: false,
           draggable: false,
           autoOpen: false,
-          height: 130,
+          height: 120,
+          width: 410,
           modal: true,
           close: function(ev, ui) { 
             jQuery('#tn-dialog-message').text(defaultDialogMessage);

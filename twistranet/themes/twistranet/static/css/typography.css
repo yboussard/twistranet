@@ -87,7 +87,7 @@ em { font-style: italic; }
 /* General elements
 ***************************************************************************** */
 
-input, select, textarea {
+input, select, textarea, button {
   font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
   font-size: 11px;
 }
@@ -136,10 +136,10 @@ textarea {
 ***************************************************************************** */
 
 a {	text-decoration: none; }
-	a:link    { color: #ad1c20; }
+	a:link    { color: #ad1c20; }     
+	a:visited { color: #ad1c20; }
 	a:hover   { color: #ad1c20; }
 	a:active  { color: #ad1c20; }
-	a:visited { color: #ad1c20; }
 
 a img {	border: none;	}
 

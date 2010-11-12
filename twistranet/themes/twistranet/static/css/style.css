@@ -653,11 +653,10 @@ a.main-action {
 }
 
 #tn-dialog-blockmessage {
-  margin-top: 1em;
-  padding: 0.5em;
+  margin: 0;
+  padding: 0;
 }
 
 #tn-dialog-blockmessage .ui-icon {
-  float: left;
-  margin: 0 0.7em 0.7em 0;
+  display: none;
 }
