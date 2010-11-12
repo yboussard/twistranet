@@ -123,7 +123,7 @@ def bootstrap():
         for obj in SAMPLE_DATA_FIXTURES:
             obj.apply()
         
-        # Add relations bwn users
+        # Add relations bwn sample users
         # A <=> admin
         # B  => admin
         A = UserAccount.objects.get(slug = "A")
@@ -132,15 +132,6 @@ def bootstrap():
         A.follow(admin)
         admin.follow(A)
         B.follow(admin)
-        
-        # 
-        # # Change A / B / TN profile pictures if they're not set
-        # admin.picture = Resource.objects.get(slug = "default_admin_picture")
-        # admin.save()
-        # A.picture = Resource.objects.get(slug = "default_a_picture")
-        # A.save()
-        # B.picture = Resource.objects.get(slug = "default_b_picture")
-        # B.save()
 
     
 def check_consistancy():

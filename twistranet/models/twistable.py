@@ -58,6 +58,22 @@ class Twistable(models.Model):
             return "/account/%i" % self.id
         raise NotImplementedError("Can't get absolute URL for object %s" % self)
             
+    #                                                                   #
+    #           Internal management, ensuring DB consistancy            #    
+    #                                                                   #
+
+    def save(self, *args, **kw):
+        """
+        Set various object attributes
+        """
+        # Check if we're saving a real object and not a generic Content one (which is prohibited).
+        # This must be a programming error, then.
+        # XXX TODO: Check that type doesn't change. Also check that if id is None, type is None as well.
+        if self.__class__.__name__ == Twistable.__name__:
+            raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
+        self.object_type = self.__class__.__name__
+        return super(Twistable, self).save(*args, **kw)
+            
     @property
     def object(self):
         """
@@ -66,19 +82,29 @@ class Twistable(models.Model):
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
+        type_field = self.object_type.lower()
+        type_field_id = "%s_id" % type_field
+            
         # XXX Ultra ugly but temporary until I find a way to implement inheritance here
-        try:
-            return getattr(self, self.object_type.lower())
-        except AttributeError:
-            pass
-        try:
-            return getattr(self.content, self.object_type.lower())
-        except ObjectDoesNotExist:
-            pass
-        try:
-            return getattr(self.account, self.object_type.lower())
-        except ObjectDoesNotExist:
-            raise
+        # Direct types (Resource, MenuItem, ...)
+        try:                        return getattr(self, type_field)
+        except AttributeError:      pass
+
+        # 1st level inheritance
+        for first_level in ('content', 'account', 'resource', 'menuitem'):
+            try:                            obj1 = getattr(self, first_level)
+            except ObjectDoesNotExist:      continue
+            try:                            return getattr(obj1, type_field)
+            except AttributeError:          pass
+            
+            # 2nd level inheritance
+            for second_level in ('community', ):
+                try:                        obj2 = getattr(obj1, second_level)
+                except ObjectDoesNotExist:  continue
+                return getattr(obj2, type_field)
+
+        # Arf, didn't find.
+        raise AttributeError("Unable ot find object for %s:%s:%s:%s %s" % (self, self.object_type, self.id, self.slug, dir(self) ))
             
     class Meta:
         app_label = "twistranet"

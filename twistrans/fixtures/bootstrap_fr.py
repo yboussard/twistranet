@@ -28,5 +28,12 @@ FIXTURES = [
         language = "fr-fr",
         original_field = "title",
         translated_text = "Toutes les communautés",
-    )
+    ),
+    
+    TranslationFixture(
+        original_slug = "administrators",
+        language = "fr-fr",
+        original_field = "screen_name",
+        translated_text = "Les administrateurs",
+    ),
 ]

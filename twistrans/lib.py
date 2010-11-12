@@ -40,7 +40,7 @@ class TranslationFixture(Fixture):
         """
         # Special treatment for translation stuff
         obj = super(TranslationFixture, self).apply()
-        obj.original._translation(language = obj.language).save()
+        obj.original.object._translation(language = obj.language).save()
 
 
 class _TranslationWrapper(object):

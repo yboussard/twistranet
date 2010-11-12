@@ -362,13 +362,7 @@ class Content(_AbstractContent):
         if self.id:
             if not self.can_edit:
                 raise PermissionDenied("You're not allowed to edit this content.")
-        
-        # Check if we're saving a real object and not a generic Content one (which is prohibited).
-        # This must be a programming error, then.
-        if self.__class__.__name__ == Content.__name__:
-            raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
-        self.object_type = self.__class__.__name__
-                
+                    
         # Set publisher
         if self.publisher_id is None:
             self.publisher = self.author

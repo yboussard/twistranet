@@ -38,7 +38,7 @@ class Fixture(object):
                 if not self.force_update:
                     # Object already exists and we don't want to update. Keep it that way.
                     return
-                obj = obj_q.get()
+                obj = obj_q.get().object
         if not obj:
             obj = self.model()
             
