@@ -26,6 +26,7 @@
             {% blocktrans %}{{ account }}'s Profile{% endblocktrans %}
         {%endifequal%}
     </h1>
+    <p class="discreet">&nbsp;</p>
     {% if account.can_publish %}
         {% include "content/content_forms.part.html" %}
     {% endif %}

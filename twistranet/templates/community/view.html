@@ -6,6 +6,7 @@
 
 {% block content %}
     <h1>{{ community.screen_name }}</h1>
+    <p class="discreet">&nbsp;</p>
     {% if community.can_publish %}
         {% include "community/community_forms.part.html" %}
     {% endif %}
