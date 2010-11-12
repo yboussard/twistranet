@@ -8,10 +8,10 @@
     <div class="entry">
         {% with content.translation as content %}
         <div class="entry-main">
-            <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.screen_name }}</a>
+            <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.translation.screen_name }}</a>
             {% if not content.author == content.publisher %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.screen_name }}</a>
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.screen_name }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">
