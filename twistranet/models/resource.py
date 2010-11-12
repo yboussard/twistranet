@@ -48,11 +48,8 @@ class Resource(twistable.Twistable):
     
     # Title / Description are optional resource description information.
     # May be given by the manager, BUT will be stored in TN.
-    title = models.CharField(max_length = 255)
-    description = models.TextField()
     mimetype = models.CharField(max_length = 64)
     encoding = models.CharField(max_length = 64, null = True)
-    created_at = models.DateTimeField(auto_now = True, db_index = True)    
 
     # Resource owner and securization
     bound = models.BooleanField(default = False)

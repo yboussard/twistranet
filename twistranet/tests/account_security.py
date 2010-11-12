@@ -69,11 +69,11 @@ class AccountSecurityTest(TestCase):
         """
         __account__ = self.admin
         c = Community()
-        c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
+        c.title = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
         c.save()
         self.failUnlessEqual(c.slug, "my_a_community_it_has_a_very_long_title_so_its_goi")
         c = Community()
-        c.screen_name = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
+        c.title = u"My @\xc3\xa2 Community ! It has a very long title so it's going to be heavily sluggified!"
         try:
             c.save()
         except:

@@ -9,7 +9,7 @@ FIXTURES = [
         slug = "help",
         publisher = GlobalCommunity.objects.get_query_set(),
         title = "TwistraNet Help",
-        summary = "TwistraNet is a simple yet very efficient social network "
+        description = "TwistraNet is a simple yet very efficient social network "
         "tailored for enterprise needs. This document will get you started at using it.",
         text = """<h2>Getting started</h2>
 

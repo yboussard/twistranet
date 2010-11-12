@@ -31,9 +31,15 @@ class Twistable(models.Model):
     """
     objects = _basemanager.BaseManager()
 
+    # Object management. Slug is optional (id is not ;))
     slug = models.SlugField(unique = True, db_index = True, null = True)                 # XXX TODO: Have a more personalized slug field (allowing dots for usernames?)
     object_type = models.CharField(max_length = 64, db_index = True)
 
+    # Basic metadata shared by all Twist objects.
+    # Title is mandatory.
+    title = models.CharField(max_length = 255)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now = True, db_index = True)
     language = models.CharField(
         max_length = 10,
         blank = True,

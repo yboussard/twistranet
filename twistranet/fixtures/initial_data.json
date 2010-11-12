@@ -33,7 +33,9 @@
         "model":    "twistranet.Twistable",
         "pk":       1,
         "fields":   {
-            "object_type":  "SystemAccount"
+            "object_type":  "SystemAccount",
+            "title":        "System Account",
+            "description":  "TwistraNet system account"
         }
     },
     
@@ -42,10 +44,8 @@
         "pk":       1,
         "fields":   {
             "slug":         "system",
-            "screen_name":  "System Account",
-            "description":  "TwistraNet system account",
-            "permissions":  "public",
-            "picture":      -1
+            "picture":      -1,
+            "permissions":  "public"
         }
     },
     {

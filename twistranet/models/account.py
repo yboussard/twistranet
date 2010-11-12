@@ -128,8 +128,10 @@ class Account(_AbstractAccount):
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
     """
-    screen_name = models.CharField(max_length = 64, db_index = True, null = False, blank = False)               # The screenname (ie. the 'pseudo' used to display the account name).
-                                                                                                                # This may be translatable someday.
+    # XXX TODO: Definitely rename this into 'title'
+    @property
+    def screen_name(self):
+        return self.title
                                                                     
     # Picture management.
     # If None, will use the default_picture_resource_slug attribute.
@@ -195,12 +197,12 @@ class Account(_AbstractAccount):
             self.object_type = self.__class__.__name__
         
         # Validate screen_name / slug
-        if not self.screen_name:
+        if not self.title:
             if not self.slug:
-                raise ValidationError("You must provide either a slug or a screen_name for an account")
-            self.screen_name = self.slug
+                raise ValidationError("You must provide either a slug or a title for an account")
+            self.title = self.slug
         elif not self.slug:
-            self.slug = utils.slugify(self.screen_name)
+            self.slug = utils.slugify(self.title)
             
         # Default permissions
         if not self.permissions:
@@ -242,7 +244,7 @@ class Account(_AbstractAccount):
         return AccountRegistry.getModelClass(self.object_type).objects.get(id = self.id)
     
     def __unicode__(self):
-        return u"%s" % (self.screen_name, )
+        return u"%s" % (self.title, )
 
     #                                                       #
     #               Rights / Security management            #

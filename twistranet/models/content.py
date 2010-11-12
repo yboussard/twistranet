@@ -172,9 +172,9 @@ class Content(_AbstractContent):
     """
     # The publisher this content is published for
     publisher = models.ForeignKey(Account)                      # The account this content is published for.
+    
 
     # Usual metadata
-    created_at = models.DateTimeField(auto_now = True, db_index = True)
     author = models.ForeignKey(Account, related_name = "by")    # The original author account, 
                                                                 # not necessarily the publisher (esp. for auto producers or communities)
 
@@ -253,11 +253,13 @@ class Content(_AbstractContent):
         
         Used to compute the headline displayed.
         You can have some logic to display a different headline according to the content's properties.
-        Default is to display the 140 first characters (or so) of the raw text content.
+        Default is to display the first characters (or so) of the title, or of raw text content if title is empty.
         
         You can override this in your own content types if you want.
         """
         if text is None:
+            text = getattr(self, "title", "")
+        if not text:
             text = getattr(self, "text", "")
         MAX_HEADLINE_LENGTH = 140 - 5
         text = html.escape(text)
@@ -278,9 +280,10 @@ class Content(_AbstractContent):
         """
         Return an HTML-safe summary.
         Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
-        PLUS don't set the summary if it's the same as the headline!
         """
         if text is None:
+            text = getattr(self, "description", "")
+        if not text:
             text = getattr(self, "text", "")
 
         MAX_SUMMARY_LENGTH = 1024 - 10

@@ -13,7 +13,7 @@ FIXTURES = [
     Fixture(
         UserAccount,
         slug = "admin",
-        screen_name = "Administrator",
+        title = "Administrator",
 		description = "A twistranet manager",
         permissions = "public",
         user = User.objects.get(id = 1),
@@ -23,7 +23,7 @@ FIXTURES = [
     Fixture(
         UserAccount,
         slug = "A",
-        screen_name = "Albert Durand",
+        title = "Albert Durand",
 		description = "A twistranet sample user",
         permissions = "public",
         user = User.objects.get(id = 2),
@@ -33,7 +33,7 @@ FIXTURES = [
     Fixture(
         UserAccount,
         slug = "B",
-        screen_name = "Bernard Dubois De La Fontaine",
+        title = "Bernard Dubois De La Fontaine",
 		description = "A twistranet sample user",
         permissions = "listed",
         user = User.objects.get(id = 3),
@@ -85,8 +85,6 @@ FIXTURES = [
         text = "This is a public status update from B",
         permissions = "public",
     ),
-    
-    
     
 ]
 

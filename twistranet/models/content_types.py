@@ -72,28 +72,24 @@ class Document(Content):
     """
     A document is a (possibly long) text/html content associated with resource,
     with all the bells and whistle a CMS is expected to carry.
-    
-    Docs have a title so that's what is used (by now) as a headline.
     """
     
     class Meta:
         app_label = 'twistranet'
 
-    title = models.CharField(max_length = 255)
-    summary = models.TextField()
     text = models.TextField()
 
-    def preprocess_html_headline(self,):
-        """
-        Default is just tag-stripping without any HTML formating
-        """
-        return html.escape(self.title)
-
-    def preprocess_html_summary(self,):
-        """
-        Same as regular summary but with our new field
-        """
-        return html.escape(self.summary)
+    # def preprocess_html_headline(self,):
+    #     """
+    #     Default is just tag-stripping without any HTML formating
+    #     """
+    #     return html.escape(self.title)
+    # 
+    # def preprocess_html_summary(self,):
+    #     """
+    #     Same as regular summary but with our new field
+    #     """
+    #     return html.escape(self.description)
 
 
 # class Link(Content):

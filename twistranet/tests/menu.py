@@ -31,14 +31,14 @@ class MenuTest(TestCase):
         """
         __account__ = self.admin
         c = Community(
-            screen_name = "Test community",
+            title = "Test community",
             permissions = "private",
             )
         c.save()
         cid = c.id
         menu = Menu(
             slug = "test",
-            name = "Test Menu",
+            title = "Test Menu",
             )
         menu.save()
         
@@ -46,7 +46,7 @@ class MenuTest(TestCase):
         item = MenuItem(
             menu = menu,
             order = 0,
-            title = None,
+            title = "",
             )
         item.target = c
         item.save()

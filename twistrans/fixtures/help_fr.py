@@ -15,7 +15,7 @@ FIXTURES = [
     TranslationFixture(
         language = "fr-fr",
         original_slug = "help",
-        original_field = "summary",
+        original_field = "description",
         translated_text = "Twistranet est un réseau social simple mais efficace, "
             "taillé pour l'entreprise. Ce document vous aidera à prendre TwistraNet en main.",
     ),

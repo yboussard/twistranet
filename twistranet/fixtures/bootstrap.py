@@ -11,7 +11,7 @@ FIXTURES = [
     Fixture(
         GlobalCommunity,
         slug = "all_twistranet",
-        screen_name = "All TwistraNet Members",
+        title = "All TwistraNet Members",
         description = "This community contains all TwistraNet members. It's mainly used for critical information.",
         permissions = "intranet",
     ),
@@ -19,7 +19,7 @@ FIXTURES = [
     Fixture(
         AdminCommunity,
         slug = "administrators",
-        screen_name = "Administrators",
+        title = "Administrators",
         description = "TwistraNet admin team",
         permissions = "workgroup",
     ),
@@ -28,7 +28,7 @@ FIXTURES = [
     Fixture(
         Menu,
         slug = "menu_main",
-        name = "Main Menu",
+        title = "Main Menu",
     ),
 
     Fixture(

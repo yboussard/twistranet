@@ -222,7 +222,7 @@ class SecurityTest(TestCase):
     def test_membership(self):
         __account__ = self.system
         self.failUnlessEqual(len(self.A.communities), 1)
-        c = Community.objects.create(screen_name = "Test Community", permissions = "ou")
+        c = Community.objects.create(title = "Test Community", permissions = "ou")
         c.save()
         c.join(self.A)
         self.failUnless(self.A in c.members.all())

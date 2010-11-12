@@ -43,8 +43,6 @@ class _MenuItemContainer(object):
 
 
 class Menu(Twistable, _MenuItemContainer):
-    description = models.TextField(blank=True, null=True)
-
     class Admin:
         pass
         
@@ -72,9 +70,12 @@ class Menu(Twistable, _MenuItemContainer):
  
  
 class MenuItem(Twistable, _MenuItemContainer):
+    """
+    A menu can point either to a view, an internal or external URL or a Twistable object.
+    In the latter case, the menu label is determine by the Twistable's title.
+    """
     menu = models.ForeignKey(Menu)
     order = models.IntegerField()
-    title = models.CharField(max_length=100, null = True, blank = False)   # If null and a target is used, will use target's title
 
     # Target URL / Object / Permissions
     url_name = models.CharField(max_length=100, help_text='URL Name for Reverse Lookup, eg comments.comment_was_posted', blank=True, null=True, )
