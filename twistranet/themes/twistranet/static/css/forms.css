@@ -53,8 +53,8 @@ ul.inline-form li label {
 }
 
 .fieldWrapper {
-  margin-bottom: 2em;
-  padding: 0.5em;
+  margin-bottom: 10px;
+  padding: 10px 0;
 }
 
 .fieldWrapperWithError {
