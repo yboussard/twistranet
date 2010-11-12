@@ -1,31 +1,37 @@
 /* Fieldset for form containment */
 
 fieldset {
-	padding: 1em 1em 1em 1em;
-	margin: 2em 3em 3em 1em;
+	padding: 0 5px 5px;
+	margin: 0 0 15px;
 	border: 1px dashed #ccc;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
 }
 
 fieldset legend {
-	font-weight: bold;
-	text-transform: uppercase;
-	margin: -.25em 0 -.25em -3em;
-	padding: .25em 1em .25em 1em;
-	background-color: white;
-	border: 1px solid #ccc;
+	text-transform: capitalize;
+	margin: -3px 0 -3px -1px;
+	padding: 1px 1px 2px;
+	background-color: #efefef;
+	border: 1px solid #999;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 fieldset legend a,
+fieldset legend a:link,
+fieldset legend a:hover,
+fieldset legend a:visited,
 fieldset legend span {
-  padding-right: 1em;
+  padding: 0 7px; 
+  color: #686868;
+  text-decoration: none;
 }
 
-fieldset legend a:link {
-  font-weight: normal;
+fieldset legend span {
+  font-weight: bold;
 }
 
 ul.inline-form {

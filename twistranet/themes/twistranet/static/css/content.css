@@ -44,7 +44,8 @@
 }
  
 #content textarea {
-	width: 450px;
+	width: 550px;
+	padding: 5px;
 }
 
 .content-summary {

@@ -18,7 +18,7 @@ h1,h2,h3,h4,h5,h6 {
 	clear: both;
 }
 	
-h1 { font-size: 24px; margin-top: 0; }
+h1 { font-size: 24px; margin: 0 0 0 5px; }
 h2 { font-size: 20px; }
 h3 { font-size: 16px; }
 h4 { font-size: 14px; }
@@ -70,13 +70,9 @@ acronym, abbr
 /* General elements
 ***************************************************************************** */
 p {
-	margin: .5em 0 1em 0;
-	line-height: 1.5em;
+	margin: 2px 0 4px;
 }
-	p.last { margin-bottom: 0!important; }
-	p img {
-		/* margin: 0 15px 10px 0; */
-		padding: 0; }
+
 
 hr { display: none; }
 
@@ -86,20 +82,6 @@ strong {
 }
 	
 em { font-style: italic; }
-
-.small { font-size: 9px; color: #666; }
-
-.large { font-size: 12px; }
-
-.resalted { font-weight: bold; }
-
-.highlight  { background: #e7feb1; padding: 0 .25em; margin: 0 .25em; }
-
-.center { text-align: center;	}
-
-.hidden {	display: none; }
-
-.underlined { border-bottom: 1px solid #cdd; }
 
 
 /* General elements
@@ -143,11 +125,11 @@ label {
 }
 
 textarea {
-	padding: 9px;
-	border: 1px solid #cdd;
+	border: 1px solid #ccc;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	background: #f9ffff;
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+	background: white;
 }
 
 /* Links

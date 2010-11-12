@@ -529,12 +529,13 @@ ul.tn-box-container ul li {
 /* particular boxes */
 
 .profile-box {
-  padding: 0 10px 0 !important;
+  padding: 0 0 0 10px !important;
 }
 .profile-box h2 {
   padding-left: 57px;  
   line-height: 1.2em;  
 }
+
 .profile-box p {
   margin: 3px 0 0;
   line-height: 1.2em;   
@@ -563,16 +564,27 @@ a.main-action {
   font-weight: bolder;
 } 
 
-/* particular text */
+/* particular text classes */
 
 .discreet {
   color: #999;
 }
 
-a.main-action {
-}
-a.main-action:hover {
-}
+.small { font-size: 9px; color: #666; }
+
+.large { font-size: 12px; }
+
+.resalted { font-weight: bold; }
+
+.highlight  { background: #e7feb1; padding: 0 .25em; margin: 0 .25em; }
+
+.center { text-align: center;	}
+
+.hidden {	display: none; }
+
+.underlined { border-bottom: 1px solid #cdd; }
+
+
 
 /* Bottom -> Footer
 ***************************************************************************** */
