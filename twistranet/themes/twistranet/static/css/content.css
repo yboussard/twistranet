@@ -58,10 +58,10 @@
 
 .content-actions {
   float: right;
-  margin: 1em 0 0 0.5em;
+  margin: 0 0 0 0.5em;
   visibility: hidden;
   font-size: 10px;
-  min-width: 200px;
+  min-width: 20px;
   text-align: right;
 }
 
@@ -87,8 +87,9 @@
   white-space: no-wrap;
 }
 
-.content-actions ul li a {
-  color: #7a4c4a;
+.content-actions ul li a:link,
+.content-actions ul li a:visited {
+  color: #686868;
   text-align: right;
   padding: 2px 2px 2px 14px;
   white-space: no-wrap;
@@ -97,9 +98,9 @@
 .content-actions ul li.first a {  
 }
 .content-actions ul li a:hover {
-  color: white;
-  background-color: #7a4c4a;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;   
-	border-radius: 3px;
+  color: #ad1c20;
+  text-decoration: none !important;
 }
+
+/* for now the only action is "delete", just an icon without text */
+.content-actions ul li span {display: none}

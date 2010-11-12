@@ -226,15 +226,12 @@ img.centered {
 ***************************************************************************** */
 
 .icon-delete {
-  background-image: url(../images/icons/delete.png);
+  background-image: url(../images/icons/icons-normal.png);
   background-repeat: no-repeat;
-  background-position: center left;
-  color: #7a4c4a;
+  background-position: 0 -96px;
 }
 .icon-delete:hover {
-  background-image: url(../images/icons/delete-hover.png);
-  color: white;
-  background-color: #83524f;
+  background-image: url(../images/icons/icons-hover.png);
 }
 
 /* Comments
@@ -550,7 +547,7 @@ ul.tn-box-container ul li {
   padding: 5px 10px 20px !important;
 }
 
-/* particular links */
+/* particular links */  
 
 a.action {
   color: #686868;
