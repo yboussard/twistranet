@@ -84,16 +84,6 @@ ul.inline-form li label {
   margin-bottom: 0.5em;
 }
 
-input[type="submit"] {
-  background-color:#278fb8;
-  border-color:#999;
-  cursor:pointer;
-  float: right;
-  color: white;
-  height: 24px;
-  padding: 0 5px
-}
-
 ul.errorlist {
   float: right;
   color: #BE261E;

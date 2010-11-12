@@ -100,22 +100,20 @@ input {
 	border-radius: 5px;
 	background: #f9ffff;
 }
-input.button {
-	float: right;
-	padding: 4px 8px;
-	border: 1px solid #cdd;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	background: #26a;
-	color: #cdd;
+
+input[type="submit"] {
+  background-color:#278fb8;
+  border-color:#999;
+  cursor:pointer;
+  float: right;
+  color: white;
+  height: 24px;
+  padding: 0 5px
 }
-input.button:hover {
-	background: #be261e;
-	color: #fff;
-}
-input.button:active {
-	background: #333;
-	color: #fff;
+
+input[type="submit"]:active,
+button:active {
+  background-color: #165169;
 }
 
 label {
