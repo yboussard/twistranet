@@ -6,7 +6,10 @@
 <div class="post" id="post-{{content.id}}">
     {% usemacro accountthumbnail 50 50 content.author %}
     <div class="entry">
-        {% with content.translation as content %}
+        {% with content.translation as content %}         
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
+        </div>
         <div class="entry-main">
             <a class="author" href="{% url twistranet.views.account_by_id content.author_id %}">{{ content.author.translation.screen_name }}</a>
             {% if not content.author == content.publisher %}
@@ -29,9 +32,6 @@
                 {{ content.html_summary|safe }}
             </div>
             {% endif %}
-        </div>
-        <div class="content-actions">
-            {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="postmetadata">
             <ul>
