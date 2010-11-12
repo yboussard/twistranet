@@ -7,20 +7,7 @@ from twistranet.lib import permissions
 
 class CommunityForm(forms.ModelForm):
     """
-    Create a form instance from POST data.
-    >>> request = self.request
-    >>> f = CommunityForm(request.POST)
-    Save a new Community object from the form's data.
-    >>> new_community = f.save()
-    Create a form to edit an existing Community.
-    >>> c = Community.objects.get(pk=1)
-    >>> f = CommunityForm(instance=c)
-    >>> f.save()
-    Create a form to edit an existing Community, but use
-    POST data to populate the form.
-    >>> c = Community.objects.get(pk=1)
-    >>> f = CommunityForm(request.POST, instance=c)
-    >>> f.save()
+    Community edition
     """    
     error_css_class = 'error'
     required_css_class = 'required'
@@ -31,6 +18,7 @@ class CommunityForm(forms.ModelForm):
         model = Community
         fields = ('title', 'description', 'picture', 'permissions', )
 
+        # fields = ('text', 'permissions', 'language', )
         widgets = {
             'permissions':     widgets.Select(),
         }
