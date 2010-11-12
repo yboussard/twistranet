@@ -3,6 +3,45 @@ Content translation helper.
 This is a wrapper around a real content object which provides some helpful methods.
 """
 from twistrans.models import TranslationResource
+from twistranet.lib.python_fixture import Fixture
+
+class TranslationFixture(Fixture):
+    """
+    Helper for translation in fixtures.
+    Just provide original_slug, original_field and translated_text, the rest is computed for ya.
+    """
+
+    def __init__(self, language, original_slug, original_field, translated_text, force_update = True):
+        """
+        Compute initial data.
+        
+        TranslationResource,
+        force_update = True,
+        slug = "menuitem_home_fr_fr",
+        language = "fr-fr",
+        original = Twistable.objects.filter(slug = "home"),
+        original_field = "title",
+        translated_text = "Accueil",
+        """
+        from twistranet.models import Twistable
+        super(TranslationFixture, self).__init__(
+            TranslationResource,
+            force_update = force_update,
+            slug = "%s_%s_%s" % (original_slug, original_field, language.replace("-", "_"), ),
+            language = language,
+            original = Twistable.objects.filter(slug = original_slug),
+            original_field = original_field,
+            translated_text = translated_text,
+        )
+    
+    def apply(self,):
+        """
+        Handle attributes according to initial data
+        """
+        # Special treatment for translation stuff
+        obj = super(TranslationFixture, self).apply()
+        obj.original._translation(language = obj.language).save()
+
 
 class _TranslationWrapper(object):
     """

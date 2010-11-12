@@ -33,7 +33,7 @@ class Fixture(object):
         
         # Create/get object
         if slug:
-            obj_q = Twistable.objects.filter(slug = slug)
+            obj_q = Twistable.objects.__booster__.filter(slug = slug)
             if obj_q.exists():
                 if not self.force_update:
                     # Object already exists and we don't want to update. Keep it that way.
@@ -49,9 +49,5 @@ class Fixture(object):
                 v = v.get()
             setattr(obj, k, v)
         obj.save()
-        
-        # Special treatment for translation stuff
-        if obj.__class__.__name__ == "TranslationResource":
-            obj.original._translation(language = obj.language).save()
         
         return obj

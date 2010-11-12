@@ -2,43 +2,27 @@
 """
 This is used to translate the EN version into FR
 """
-from twistranet.models import *
-from twistranet.lib.python_fixture import Fixture
-from twistrans.models import *
-
-try:
-    __account__ = SystemAccount.get()
-except:
-    print "SystemAccount not set yet"
+from twistrans.lib import TranslationFixture
 
 FIXTURES = [
-    Fixture(
-        TranslationResource,
-        force_update = True,
-        slug = "help_title_fr",
+    TranslationFixture(
         language = "fr-fr",
-        original = Document.objects.filter(slug = "help"),
+        original_slug = "help",
         original_field = "title",
         translated_text = "Aide de TwistraNet",
     ),
     
-    Fixture(
-        TranslationResource,
-        force_update = True,
-        slug = "help_summary_fr",
+    TranslationFixture(
         language = "fr-fr",
-        original = Document.objects.filter(slug = "help"),
+        original_slug = "help",
         original_field = "summary",
         translated_text = "Twistranet est un réseau social simple mais efficace, "
             "taillé pour l'entreprise. Ce document vous aidera à prendre TwistraNet en main.",
     ),
 
-    Fixture(
-        TranslationResource,
-        force_update = True,
-        slug = "help_text_fr",
+    TranslationFixture(
         language = "fr-fr",
-        original = Document.objects.filter(slug = "help"),
+        original_slug = "help",
         original_field = "text",
         translated_text = """
         Si vous pouvez lire ce document, c'est que vous êtes déjà connecté à TwistraNet !
@@ -48,12 +32,9 @@ FIXTURES = [
         """,
     ),
 
-    Fixture(
-        TranslationResource,
-        force_update = True,
-        slug = "menuitem_help_title_fr",
+    TranslationFixture(
         language = "fr-fr",
-        original = MenuItem.objects.filter(slug = "menuitem_help"),
+        original_slug = "menuitem_help",
         original_field = "title",
         translated_text = "Aide",
     ),

@@ -27,36 +27,36 @@ FIXTURES = [
     # Default menu items
     Fixture(
         Menu,
-        slug = "main",
+        slug = "menu_main",
         name = "Main Menu",
     ),
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "main"),
+        menu = Menu.objects.filter(slug = "menu_main"),
         order = 0,
         view_path = "twistranet.views.home",
         title = "Home",
-        slug = "home",
+        slug = "menuitem_home",
     ),
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "main"),
+        menu = Menu.objects.filter(slug = "menu_main"),
         order = 10,
         view_path = 'twistranet.views.communities',
         title = "Communities",
-        slug = "communities",
+        slug = "menuitem_communities",
     ),
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "main"),
-        parent = MenuItem.objects.filter(slug = "communities"),
+        menu = Menu.objects.filter(slug = "menu_main"),
+        parent = MenuItem.objects.filter(slug = "menuitem_communities"),
         order = 0,
         view_path = 'twistranet.views.communities',
         title = "View all communities",
-        slug = "all_communities",
+        slug = "menuitem_all_communities",
     ),
     
 ]
