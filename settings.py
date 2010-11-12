@@ -117,7 +117,7 @@ CACHE_BACKEND = "locmem:///"
 
 ROOT_URLCONF = 'urls'
 
-THEME_NAME = "twistranet"
+THEME_NAME = "redbook"
 #THEME_NAME = "default"
 
 TEMPLATE_DIRS = (
