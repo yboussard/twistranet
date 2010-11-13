@@ -15,11 +15,17 @@
 
 {% block content %}
     {% if resource %}
-        <h1><a href="{% url twistranet.views.resource_by_id resource.id %}">{%blocktrans%}Edit Resource{%endblocktrans%}</a></h1>
-        <form enctype="multipart/form-data" action="{{ path }}" method="post">
+        <h1><a href="{% url twistranet.views.resource_by_id resource.id %}">{%blocktrans%}Edit Resource{%endblocktrans%}</a></h1>     
+        <form enctype="multipart/form-data"
+              action="{{ path }}"
+              method="post"
+              class="edit-form">
     {% else %}
         <h1>{%blocktrans%}New Resource{%endblocktrans%}</h1>
-        <form enctype="multipart/form-data" action="{{ path }}" method="post">
+        <form enctype="multipart/form-data"
+              action="{{ path }}"
+              method="post"
+              class="edit-form">
     {% endif %}
         <fieldset>
         {% for field in form %}
@@ -29,7 +35,10 @@
             </div>
         {% endfor %}
         {% csrf_token %}
-        <input type="submit" value="Save" />
+        <div class="form-controls">
+          <input type="submit" value="{% trans 'Save' %}" /> 
+          <input type="reset" value="{% trans 'Undo' %}" />
+        </div>
         </fieldset>
     </form>
     

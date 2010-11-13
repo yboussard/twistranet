@@ -14,12 +14,16 @@
 {% block content %}
     {% if content %}
         {%with content.text_headline as headline%}
-            <h1><a href="{% url twistranet.views.content_by_id content.id %}">{%blocktrans%}Edit "{{ headline }}"{%endblocktrans%}</a></h1>
+            <h1><a href="{% url twistranet.views.content_by_id content.id %}">{%blocktrans%}Edit "{{ headline }}"{%endblocktrans%}</a></h1>   
         {%endwith%}
-        <form action="{% url twistranet.views.edit_content content.id %}" method="post">
+        <form action="{% url twistranet.views.edit_content content.id %}"
+              method="post"
+              class="edit-form">
     {% else %}
         <h1>{%blocktrans%}New {{content_type}}{%endblocktrans%}</h1>
-        <form action="{% url twistranet.views.create_content content_type %}" method="post">
+        <form action="{% url twistranet.views.create_content content_type %}"
+              method="post"
+              class="edit-form">
     {% endif %}
         <fieldset>
         {% for field in form %}
@@ -29,7 +33,10 @@
             </div>
         {% endfor %}
         {% csrf_token %}
-        <input type="submit" value="Save" />
+        <div class="form-controls">
+          <input type="submit" value="{% trans 'Save' %}" /> 
+          <input type="reset" value="{% trans 'Undo' %}" />
+        </div>
         </fieldset>
     </form>
     

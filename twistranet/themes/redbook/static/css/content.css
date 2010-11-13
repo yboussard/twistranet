@@ -9,7 +9,7 @@
 }
 
 .activepost {
-  background-color: #F2F2F8;
+  background-color: #F2F2F2;
   -moz-border-radius: 5px; 
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -41,11 +41,6 @@
 
 .notification .postmetadata ul {
   display: inline;
-}
- 
-#content textarea {
-	width: 550px;
-	padding: 5px;
 }
 
 .content-summary {
