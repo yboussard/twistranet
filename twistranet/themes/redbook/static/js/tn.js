@@ -110,7 +110,7 @@ var twistranet = {
         /* set selected topic in menus*/    
         setSelectedTopic(jQuery('#mainmenu'));
         /* set classes for some inline fields */
-        jQuery('ul.inline-form select#id_permissions, ul.inline-form select#id_language, ul.inline-form :submit').each(function(){
+        jQuery('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
           jQuery(this).parents('li').addClass('inlinefield');
         });
         

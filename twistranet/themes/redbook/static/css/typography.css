@@ -95,7 +95,7 @@ input, select, textarea, button {
 }
 
 input[type="text"] {
-	padding:  2px 5px;
+	padding:  1px 5px;
 	background-color: white; 
 }
 
