@@ -8,8 +8,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from twistranet.lib import roles
 from twistranet.lib import permissions
-from account import Account
-from content import Content
+from twistable import Twistable
 from basemanager import BaseManager
 
 class _PermissionMappingManager(BaseManager):
@@ -44,24 +43,13 @@ class _PermissionMappingManager(BaseManager):
         XXX TODO: Make it far more efficient ; maybe replace perm names by ids to speed things up
         """
         # Get permissions for actual model class.
-        # XXX TODO: Make this more efficient and less 'magic'!
-        # XXX For example, move this code into Content and Account as a 'model_class' attribute?
-        permission_templates = None
-        klasses = (Content, Account)
-        for k in klasses:
-            if isinstance(target, k):
-                t = getattr(target, 'object_type', None)
-                if not t:
-                    raise ValueError("You can't apply permissions before setting your object_type")
-                if t == target.__class__.__name__:
-                    permission_templates = target.__class__.permission_templates
-                    break
-                for sub in target.__class__.__subclasses__():
-                    if sub.__name__ == t:
-                        permission_templates = sub.permission_templates
-                        break
+        permission_templates = target.model_class.permission_templates
         if not permission_templates:
             raise ValueError("Can't find permission templates for %s" % target.__class__)
+            
+        # Get default if not set
+        if not target.permissions:
+            target.permissions = permission_templates.get_default()
         
         # Get template
         tpl = [ t for t in permission_templates.permissions() if t["id"] == target.permissions ]
@@ -87,46 +75,24 @@ class _PermissionMappingManager(BaseManager):
                     )
                 m.save()
                     
-class _BasePermissionMapping(models.Model):
+class _PermissionMapping(models.Model):
     """
     model_type => object_id => permission => role
     """    
     class Meta:
-        abstract = True
+        app_label = "twistranet"
+        unique_together = ('target', 'name', 'role', )
 
     # The objects overloading
     objects = _PermissionMappingManager()
     _objects = models.Manager()
         
     # Don't forget to define your content type and content foreign key in subclasses
+    target = models.ForeignKey("Twistable", related_name = "_permissions")
     name = models.CharField(max_length = 32, db_index = True)
     role = models.IntegerField(db_index = True)
     
     def __unicode__(self):
         # Meant to be called on subclasses only (where 'target' is defined)
         return "%s %s '%s'" % (self.role, self.name, self.target, )
-
-class _ContentPermissionMapping(_BasePermissionMapping):
-    """
-    Permission for content types
-    """
-    class Meta:
-        app_label = "twistranet"
-        unique_together = ('target', 'name', 'role', )
-        
-    target = models.ForeignKey(Content, related_name = "_permissions")
-    dont_apply_on = (Content, )
-
-    
-class _AccountPermissionMapping(_BasePermissionMapping):
-    """
-    Permission for accounts
-    """
-    class Meta:
-        app_label = "twistranet"
-        unique_together = ('target', 'name', 'role', )
-
-    target = models.ForeignKey(Account, related_name = "_permissions")
-    dont_apply_on = (Account, )
-
 

@@ -45,10 +45,12 @@ class ResourceManager(models.Model):
         """
         Populate special content information before saving it.
         """
+        import account
+        
         # Avoid creation by non-admin
         from resource import Resource
         authenticated = Resource.objects._getAuthenticatedAccount()
-        if not authenticated.object_type == "SystemAccount":
+        if not issubclass(authenticated.model_class, account.SystemAccount):
             # XXX TODO: Non-admin check ;)
             # Maybe that's just a matter of checking the can_edit permission on an account?
             # raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
@@ -120,8 +122,9 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
         """
         # Security check
         from resource import Resource
+        import account
         authenticated = Resource.objects._getAuthenticatedAccount()
-        if not authenticated.object_type == "SystemAccount":
+        if not issubclass(authenticated.model_class, account.SystemAccount):
             raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
 
         # Load each file, avoiding to replace it

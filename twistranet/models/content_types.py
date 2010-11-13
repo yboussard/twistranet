@@ -49,7 +49,7 @@ class Notification(Content):
     type_detail_view = None
     
     def __unicode__(self,):
-        return u"Notification %d: %s" % (self.id, self.getText())
+        return u"Notification %d: %s" % (self.id, self.did_what)
     
     def preprocess_html_headline(self, text = None):
         """

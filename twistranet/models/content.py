@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html, translation
 import _basemanager
 import twistable
-from account import Account
+from account import Account, SystemAccount
 from resource import Resource
 from twistranet.lib import roles, permissions, languages, utils
 
@@ -20,17 +20,18 @@ class ContentManager(_basemanager.BaseManager):
         """
         Return a queryset of 100%-authorized objects.
         """
+        import community
+        
         # Check for anonymous query
         authenticated = self._getAuthenticatedAccount()
         base_query_set = super(ContentManager, self).get_query_set()
         if not authenticated or authenticated.__class__.__name__ == "AnonymousAccount":
             # If global community is restricted, don't return anything
-            if not Account.objects.filter(object_type = "GlobalCommunity"):
+            if not community.GlobalCommunity.objects.exists():
                 return base_query_set.none()       # An on-purpose invalid filter
             
             # Return anonymous objects if global community is listable to anonymous.
             # XXX TODO: Avoid the distinct method
-            glob = Account.objects.get(object_type = "GlobalCommunity")
             return base_query_set.filter(
                 _permissions__name = permissions.can_view,
                 _permissions__role__in = roles.content_public.implied(),
@@ -39,8 +40,7 @@ class ContentManager(_basemanager.BaseManager):
                 )
         
         # System account: return all objects
-        if authenticated.object_type == "SystemAccount":
-            authenticated.systemaccount     # This is one more security check, will raise if DB is not properly set
+        if issubclass(authenticated.model_class, SystemAccount):
             return base_query_set           # The base qset with no filter
         
         # XXX TODO: Avoid the distinct method
@@ -107,9 +107,13 @@ class ContentManager(_basemanager.BaseManager):
                 publisher___permissions__role__in = roles.community_manager.implied(),
             )
         ) | (
-            # And, of course, what I wrote !
+            # And, of course, what I wrote or what I'm publishing!
             Q(
                 author = account,
+            )
+        ) | (
+            Q(
+                publisher = account,
             )
         )
     
@@ -219,12 +223,6 @@ class Content(_AbstractContent):
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
-    permissions = models.CharField(
-        max_length = 32,
-        choices = permissions.content_templates.get_choices(), 
-        default = permissions.content_templates.get_default(),
-        db_index = True,
-        )
         
     # View overriding support.
     # This will be saved into the Content object for performance reasons.
@@ -237,7 +235,7 @@ class Content(_AbstractContent):
     is_content = True   # XXX TODO: What is this for, BTW??
     
     def __unicode__(self):
-        return "%s %d by %s" % (self.object_type, self.id, self.author)
+        return "%s %d by %s" % (self.model_name, self.id, self.author)
     
     class Meta:
         app_label = 'twistranet'
@@ -319,30 +317,11 @@ class Content(_AbstractContent):
     #                   Content internal stuff                      #
     #                                                               #
 
-    @property
-    def model_class(self):
-        """
-        Return the subobject model class
-        """
-        return utils.get_model_class(self, Content, self.object_type)        
-
-    @property
-    def object(self):
-        """
-        Return the exact subclass this object belongs to.
-        Use this to display it.
-        """
-        if self.id is None:
-            raise RuntimeError("You can't get subclass until your object is saved in database.")
-        return getattr(self, self.object_type.lower())
-                
     def save(self, *args, **kw):
         """
         Populate special content information before saving it.
         See Content class documentation for more information on that.
-        """
-        import _permissionmapping
-        
+        """        
         # Confirm publishing rights
         authenticated = Content.objects._getAuthenticatedAccount()
         if not authenticated:
@@ -377,12 +356,8 @@ class Content(_AbstractContent):
         self.text_summary = self.preprocess_text_summary()
         
         # Actually save stuff
-        ret = super(Content, self).save(*args, **kw)
+        return super(Content, self).save(*args, **kw)
         
-        # Set/reset permissions. We do it last to be sure we've got an id.
-        _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(self)
-        return ret
-
 
     def delete(self,):
         """

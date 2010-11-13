@@ -33,7 +33,8 @@
         "model":    "twistranet.Twistable",
         "pk":       1,
         "fields":   {
-            "object_type":  "SystemAccount",
+            "app_label":    "twistranet",
+            "model_name":   "SystemAccount",
             "title":        "System Account",
             "description":  "TwistraNet system account"
         }

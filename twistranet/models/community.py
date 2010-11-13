@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 
 from account import Account, AccountManager, UserAccount, SystemAccount
 import basemanager
-from twistranet.lib import permissions, roles, notifier, AccountRegistry
+from twistranet.lib import permissions, roles, notifier
 
 class CommunityManager(AccountManager):
     """
@@ -17,14 +17,14 @@ class CommunityManager(AccountManager):
         """
         Return the global community. May raise if no access right.
         """
-        return self.get(object_type = "GlobalCommunity")
+        return self.get(app_label = "twistranet", model_name = "GlobalCommunity")
 
     @property
     def admin(self):
         """
         Return the admin community / communities
         """
-        return self.get(object_type = "AdminCommunity")
+        return self.get(app_label = "twistranet", model_name = "AdminCommunity")
 
 class _AbstractCommunity(Account):
     """
@@ -202,9 +202,6 @@ class Community(_AbstractCommunity):
         for mbr in CommunityMembership.objects.filter(account = account, community = self):
             mbr.delete()
 
-# XXX TODO: Use a class decorator instead (if it ever exists?)
-AccountRegistry.register(Community)
-
 class CommunityMembership(models.Model):
     """
     Community Membership association class.
@@ -258,8 +255,6 @@ class GlobalCommunity(Community):
         """Return main (and only) system account. Will raise if several are set."""
         return cls.objects.get()
         
-AccountRegistry.register(GlobalCommunity)
-
 class AdminCommunity(Community):
     """
     Community in which users gain admin rights.
@@ -273,8 +268,6 @@ class AdminCommunity(Community):
         """Return main (and only) system account. Will raise if several are set."""
         return self.__class__.objects.get()
 
-        
-AccountRegistry.register(AdminCommunity)
 
     
 

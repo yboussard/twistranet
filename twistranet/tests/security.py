@@ -206,10 +206,10 @@ class SecurityTest(TestCase):
         AND the system account must see them all.
         """
         __account__ = self.system
-        self.failUnlessEqual(len(AdminCommunity.objects.filter(object_type = "AdminCommunity")), 1)
-        self.failUnlessEqual(len(GlobalCommunity.objects.filter(object_type = "GlobalCommunity")), 1)
-        self.failUnlessEqual(Community.objects.admin.object_type, "AdminCommunity")
-        self.failUnlessEqual(Community.objects.global_.object_type, "GlobalCommunity")
+        self.failUnlessEqual(len(AdminCommunity.objects.filter(model_name = "AdminCommunity")), 1)
+        self.failUnlessEqual(len(GlobalCommunity.objects.filter(model_name = "GlobalCommunity")), 1)
+        self.failUnlessEqual(Community.objects.admin.model_name, "AdminCommunity")
+        self.failUnlessEqual(Community.objects.global_.model_name, "GlobalCommunity")
         
     def test_communities(self):
         """
@@ -227,6 +227,18 @@ class SecurityTest(TestCase):
         c.join(self.A)
         self.failUnless(self.A in c.members.all())
         self.failUnlessEqual(len(self.A.communities), 2)
+        
+        
+    def test_can_view(self):
+        """
+        Check if can_view permission works as expected
+        """
+        __account__ = self.B
+        self.B.permissions = "listed"
+        self.B.save()
+        hello = StatusUpdate(text = "Hello there", permissions = "public")
+        hello.save()
+        self.failUnless(hello.can_view)
         
     def test_notification(self):
         """

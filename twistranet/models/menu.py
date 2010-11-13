@@ -109,14 +109,13 @@ class MenuItem(Twistable, _MenuItemContainer):
 
     @property
     def can_view(self):
-        """
-        XXX Todo: check if has can_view permission
+        """Here, if a target is set, we check if it has can_view permission.
         """
         t = self.target
         if t:
-            return t.object.can_view
+            return t.can_view
 
-        # No target => We can see it anyway
+        # No target => We can see it anyway (by now)
         # XXX TODO: Implement a better security model on Menu items?
         return True
         

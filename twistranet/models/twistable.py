@@ -12,6 +12,7 @@ such as the slug management, prepares translation management and so on.
 
 from django.db import models
 from django.db.models import Q
+from django.db.models import loading
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
@@ -26,14 +27,16 @@ class Twistable(models.Model):
     your dereferenced class when you can do so!
     
     All Content and Account classes derive from this.
-    XXX TODO: Make resource inherit from that too?
     XXX TODO: Securise the base manager!
     """
     objects = _basemanager.BaseManager()
 
     # Object management. Slug is optional (id is not ;))
     slug = models.SlugField(unique = True, db_index = True, null = True)                 # XXX TODO: Have a more personalized slug field (allowing dots for usernames?)
-    object_type = models.CharField(max_length = 64, db_index = True)
+    
+    # This is a way to de-reference the underlying model rapidly
+    app_label = models.CharField(max_length = 64, db_index = True)
+    model_name = models.CharField(max_length = 64, db_index = True)
 
     # Basic metadata shared by all Twist objects.
     # Title is mandatory.
@@ -47,6 +50,15 @@ class Twistable(models.Model):
         default = languages.available_languages[0][0],
         db_index = True,
         )
+    
+    # Our security model.
+    # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
+    # XXX because there's a problem here as choices cannot be re-defined for subclasses.
+    permission_templates = ()       # Define this in your subclasses
+    permissions = models.CharField(
+        max_length = 32,
+        db_index = True,
+    )
     
     def get_absolute_url(self):
         """
@@ -72,45 +84,79 @@ class Twistable(models.Model):
         """
         Set various object attributes
         """
+        import _permissionmapping
+        
         # Check if we're saving a real object and not a generic Content one (which is prohibited).
         # This must be a programming error, then.
         # XXX TODO: Check that type doesn't change. Also check that if id is None, type is None as well.
         if self.__class__.__name__ == Twistable.__name__:
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
-        self.object_type = self.__class__.__name__
-        return super(Twistable, self).save(*args, **kw)
             
+        # Set information used to retreive the actual subobject
+        self.model_name = self._meta.object_name
+        self.app_label = self._meta.app_label
+        
+        # Set permissions; we will apply them last to ensure we have an id
+        if not self.permissions:
+            perm_template = self.model_class.permission_templates
+            if perm_template:
+                self.permissions = perm_template.get_default()
+        
+        ret = super(Twistable, self).save(*args, **kw)
+
+        # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
+        if self.permissions:
+            _permissionmapping._PermissionMapping.objects._applyPermissionsTemplate(self)
+        return ret
+            
+    @property
+    def model_class(self):
+        """
+        Return the actual model's class.
+        This method issues no DB query.
+        XXX TODO: Cache this (not critical, though)
+        """
+        return loading.get_model(self.app_label, self.model_name)
+        
     @property
     def object(self):
         """
         Return the exact subclass this object belongs to.
-        XXX TODO: Implement inheritance here correctly
+        
+        IT MAY ISSUE DB QUERY, so you should always consider using model_class instead if you can.
+        This is quite complex actually: since we want like to minimize database overhead,
+        we can't allow a "Model.objects.get(id = x)" call.
+        So, instead, we walk through object inheritance to fetch the right attributes.
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
-        type_field = self.object_type.lower()
-        type_field_id = "%s_id" % type_field
-            
-        # XXX Ultra ugly but temporary until I find a way to implement inheritance here
-        # Direct types (Resource, MenuItem, ...)
-        try:                        return getattr(self, type_field)
-        except AttributeError:      pass
 
-        # 1st level inheritance
-        for first_level in ('content', 'account', 'resource', 'menuitem'):
-            try:                            obj1 = getattr(self, first_level)
-            except ObjectDoesNotExist:      continue
-            try:                            return getattr(obj1, type_field)
-            except AttributeError:          pass
-            
-            # 2nd level inheritance
-            for second_level in ('community', ):
-                try:                        obj2 = getattr(obj1, second_level)
-                except ObjectDoesNotExist:  continue
-                return getattr(obj2, type_field)
-
-        # Arf, didn't find.
-        raise AttributeError("Unable ot find object for %s:%s:%s:%s %s" % (self, self.object_type, self.id, self.slug, dir(self) ))
+        # Get model class, then walk through ancestors
+        # XXX I can cache MRO resolution, I guess, though it might not be very expensive
+        model = loading.get_model(self.app_label, self.model_name)
+        if isinstance(self, model):
+            return self
+        return model.objects.get(id = self.id)
+        
+        # XXX I keep the following code under my pillow. Looks like it's not efficient enough (yet!)
+        # model_mro = list(model.__mro__)
+        # model_mro.reverse()
+        # obj = None
+        # for base_cls in model_mro:
+        #     # Don't do anything until we find the Twistable class.
+        #     if not obj:
+        #         if issubclass(base_cls, Twistable):
+        #             obj = self
+        #         continue
+        #     
+        #     # Here isinstance() is ok as we have 'older' ancestors first.
+        #     if issubclass(base_cls, Twistable):
+        #         if base_cls._meta.abstract:
+        #             continue
+        #         ancestor_fied = base_cls._meta.object_name.lower()
+        #         obj = getattr(obj, ancestor_fied)
+        #
+        # return obj
             
     class Meta:
         app_label = "twistranet"
@@ -122,29 +168,41 @@ class Twistable(models.Model):
     #                                                                   #
 
     @property
-    def can_list(self):
-        """
-        Same as can_view for content objects?
-        XXX TODO: Clean that a little bit?
-        """
-        
-        auth = Twistable.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_view, self)
-
-    @property
     def can_view(self):
+        if not self.id: return  True        # Can always view an unsaved object
         auth = Twistable.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_view, self)
 
     @property
     def can_delete(self):
+        if not self.id: return  True        # Can always delete an unsaved object
         auth = Twistable.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_delete, self)
 
     @property
     def can_edit(self):
+        if not self.id: return  True        # Can always edit an unsaved object
         auth = Twistable.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_edit, self)
+
+    @property
+    def can_publish(self):
+        """
+        True if authenticated account can publish on the current account object
+        """
+        if not self.id: return  False        # Can NEVER publish an unsaved object
+        auth = Twistable.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_publish, self)
+
+    @property
+    def can_list(self):
+        """
+        Return true if the current account can list the current object.
+        """
+        if not self.id: return  True        # Can always list an unsaved object
+        auth = Twistable.objects._getAuthenticatedAccount()
+        return auth.has_permission(permissions.can_list, self)
+
 
 
     #                                                                   #

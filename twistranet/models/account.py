@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 import _basemanager
 import twistable
 from resource import Resource
-from twistranet.lib import permissions, roles, languages, utils, AccountRegistry
+from twistranet.lib import permissions, roles, languages, utils
 from django.db.utils import DatabaseError
 
 class AccountManager(_basemanager.BaseManager):
@@ -30,8 +30,10 @@ class AccountManager(_basemanager.BaseManager):
             # XXX TODO: Improve this to avoid a possibly unncessary query; cache it?
             import _permissionmapping
             try:
-                if _permissionmapping._AccountPermissionMapping._objects.filter(
-                    target__object_type = "GlobalCommunity",
+                # XXX TODO: Use Glob.Com. id instead of text matching
+                if _permissionmapping._PermissionMapping._objects.filter(
+                    target__model_name = "GlobalCommunity",
+                    target__app_label = "twistranet",
                     name = permissions.can_list,
                     role = roles.anonymous,
                     ).count():
@@ -43,14 +45,13 @@ class AccountManager(_basemanager.BaseManager):
                 else:
                     # Just return the system account, as we must be able to bootstrap with it ?
                     # XXX Maybe we should not even return that!
-                    return base_query_set.filter(object_type = "SystemAccount")
+                    return base_query_set.filter(app_label = "twistranet", model_name = "SystemAccount")
             except DatabaseError:
                 # Avoid bootstrap quircks. XXX VERY DANGEROUS, should limit that to table doesn't exist errors!
                 return base_query_set.none()
 
         # System account: return all objects
-        if account.object_type == "SystemAccount":
-            account.systemaccount     # This is one more security check, will raise if DB is not properly set
+        if issubclass(account.model_class, SystemAccount):
             return base_query_set           # The base qset with no filter
 
         # Regular Account filter, return only listed accounts.
@@ -146,10 +147,6 @@ class Account(_AbstractAccount):
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
     # XXX because there's a problem here as choices cannot be re-defined for subclasses.
     permission_templates = permissions.account_templates
-    permissions = models.CharField(
-        max_length = 32,
-        db_index = True,
-        )
     
     # View overriding support
     # XXX TODO: Find a way to optimize this without having to query the underlying object
@@ -189,13 +186,7 @@ class Account(_AbstractAccount):
         """
         # XXX TODO: Check security
         import _permissionmapping
-        
-        # Check account subtype
-        if not self.object_type:
-            if self.__class__.__name__ == Account.__name__:
-                raise RuntimeError("You can't directly save an account object. Use 'account.object.save()' method instead.")
-            self.object_type = self.__class__.__name__
-        
+                
         # Validate screen_name / slug
         if not self.title:
             if not self.slug:
@@ -203,48 +194,16 @@ class Account(_AbstractAccount):
             self.title = self.slug
         elif not self.slug:
             self.slug = utils.slugify(self.title)
-            
-        # Default permissions
-        if not self.permissions:
-            self.permissions = self.permission_templates.get_default()
-            
+                
         # Set default picture if not set
-        if not self.picture_id and not self.object_type == 'SystemAccount':
+        if not self.picture_id: # and not self.object_type == 'SystemAccount':
             self.picture = Resource.objects.get(slug = self.default_picture_resource_slug)
             
         # Call parent
         ret = super(Account, self).save(*args, **kw)
             
-        # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
-        _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(self)
-        return ret
-        
-    @property
-    def model_class(self):
-        """
-        Return the subobject model class
-        """
-        return AccountRegistry.getModelClass(self.object_type)
-        
-    @property
-    def object(self):
-        """
-        Return the actual object type.
-        XXX Should be more efficient and/or more error-proof?
-        """
-        if self.id is None:
-            raise RuntimeError("You can't get subclass until your object is saved in database.")
-            
-        # Shortcuts for performance reasons
-        if self.object_type == self.__class__.__name__:
-            return self
-        obj = getattr(self, self.object_type.lower(), None)
-        if obj:
-            return obj
-        return AccountRegistry.getModelClass(self.object_type).objects.get(id = self.id)
-    
-    def __unicode__(self):
-        return u"%s" % (self.title, )
+        def __unicode__(self):
+            return u"%s" % (self.title, )
 
     #                                                       #
     #               Rights / Security management            #
@@ -273,8 +232,8 @@ class Account(_AbstractAccount):
             
         # Gory anonymous & admin shortcuts
         if self.__class__.__name__ == "AnonymousAccount":
-            return role == roles.anonymous.value            
-        if self.object_type == "SystemAccount":
+            return role == roles.anonymous.value
+        if issubclass(self.model_class, SystemAccount):
             return True
             
         # Global roles.
@@ -283,24 +242,28 @@ class Account(_AbstractAccount):
                                     # Should not be cached, BTW
         
         if role == roles.authenticated.value:
-            return Account.objects._getAuthenticatedAccount() == self      # Don't cache that
+            return Account.objects._getAuthenticatedAccount().id == self.id      # Don't cache that
         
         if role == roles.administrator.value:
-            if self.object_type == "SystemAccount":
+            if issubclass(self.model_class, SystemAccount):
                 return True
-            elif self.my_communities.filter(object_type = "AdminCommunity"):
+            elif self.my_communities.filter(app_label = "twistranet", model_name = "AdminCommunity"):
                 return True
             else:
                 return False
                 
         if role == roles.system.value:
-            return self.object_type == "SystemAccount"
+            return issubclass(self.model_class, SystemAccount)
     
         # Account-related roles
-        if isinstance(obj, Account):
+        if issubclass(obj.model_class, Account):
             if role == roles.account_network.value:
+                if obj.id == self.id:
+                    return True     # Assume I'm in my own network
                 return not not obj.network.filter(id = self.id)
             if role == roles.owner.value:
+                if obj.id == self.id:
+                    return True     # Assume I'm my own owner (though this has not so much sense)
                 return obj.id == self.id
         
             # Community-related roles
@@ -311,7 +274,9 @@ class Account(_AbstractAccount):
             
         # Content-related roles
         import content
-        if isinstance(obj, content.Content):
+        if issubclass(obj.model_class, content.Content):
+            # Here we have no choice but to de-reference obj to get its publisher
+            obj = obj.object
             if role == roles.content_public.value:
                 return self.has_permission(permissions.can_view, obj.publisher)
             if role == roles.content_network.value:
@@ -333,7 +298,7 @@ class Account(_AbstractAccount):
         XXX TODO: Heavily optimize and use caching!
         """
         # Check roles, strongest first to optimize caching.
-        p_template = obj.object.permission_templates.get(obj.permissions)
+        p_template = obj.model_class.permission_templates.get(obj.permissions)
         for role in p_template[permission]:         # Will raise if permission is not set on the given content
             if self.has_role(role, obj):
                 return True
@@ -345,38 +310,6 @@ class Account(_AbstractAccount):
         
         # Didn't find, we disallow
         return False
-
-    @property
-    def can_publish(self):
-        """
-        True if authenticated account can publish on the current account object
-        """
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_publish, self)
-
-    @property
-    def can_list(self):
-        """
-        Return true if the current account can list the current object.
-        """
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_list, self)
-
-    @property
-    def can_view(self):
-        """
-        Return true if the current account can view the current object.
-        """
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_view, self)
-
-    @property
-    def can_edit(self):
-        """
-        Return true if the current account can view the current object.
-        """
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_edit, self)
 
     @property
     def is_admin(self):
@@ -522,7 +455,6 @@ class SystemAccount(Account):
     def __unicode__(self):
         return "SystemAccount (%d)" % self.id
         
-AccountRegistry.register(SystemAccount)
         
         
 class UserAccount(Account):
@@ -578,5 +510,4 @@ class AccountLanguage(models.Model):
         return self.language
 
         
-AccountRegistry.register(UserAccount)
 
