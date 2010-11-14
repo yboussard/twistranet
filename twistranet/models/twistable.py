@@ -50,6 +50,9 @@ class Twistable(models.Model):
         default = languages.available_languages[0][0],
         db_index = True,
         )
+        
+    # Performance optimizer : we store the publisher here so that we can de-reference it without getting the content object.
+    publisher = models.ForeignKey("Account", null = True)                      # The account this content is published for.
     
     # Our security model.
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
@@ -229,6 +232,8 @@ class Twistable(models.Model):
         Return the translated version of your content.
         Example: doc.translated('fr').title => Return the translated version of the title.
         """
+        # return self
+        
         # No translation available? Return the identity object.
         try:
             from twistrans.lib import _TranslationWrapper
@@ -244,6 +249,7 @@ class Twistable(models.Model):
             return self
         
         # Return the wrapper around translated resources.
-        return _TranslationWrapper(self, language)
-            
+        if not hasattr(self, '_translation_cache'):
+            self._translation_cache = _TranslationWrapper(self, language)
+        return self._translation_cache
     

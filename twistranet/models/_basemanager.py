@@ -1,6 +1,7 @@
 import inspect, pprint
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Count
 
 class BaseManager(models.Manager):
     """

@@ -44,7 +44,7 @@ class ContentManager(_basemanager.BaseManager):
             return base_query_set           # The base qset with no filter
         
         # XXX TODO: Avoid the distinct method
-        return base_query_set.filter(self._getViewFilter(authenticated)).distinct()
+        return base_query_set.filter(self._getViewFilter(authenticated)).select_related('author', 'publisher').distinct()
         
             
     def getActivityFeed(self, account):
@@ -175,7 +175,7 @@ class Content(_AbstractContent):
     If you want to create your own text-based content type, just add a text = models.TextField() line in your subclass.
     """
     # The publisher this content is published for
-    publisher = models.ForeignKey(Account)                      # The account this content is published for.
+    # publisher = models.ForeignKey(Account)                      # The account this content is published for.
     
 
     # Usual metadata

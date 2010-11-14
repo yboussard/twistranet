@@ -210,7 +210,7 @@ class Account(_AbstractAccount):
     #                                                       #
 
 
-    def has_role(self, role, obj = None):
+    def has_role(self, role, obj = None, obj_id = None):
         """
         Return if SELF account has the given role on the given object.
         XXX TODO Heavily uses caching and optimize queries
@@ -222,10 +222,17 @@ class Account(_AbstractAccount):
         from the authenticated user or not. We should only cache calls made
         from currently authenticated user.
         
-        If a user has a role on an object, that doesn't means he has a permision.
+        If a user has a role on an object, that doesn't means he has a permision...
+        
+        You can pass either an obj or a twistable id (to avoid dereferencing the
+        underlying object if we can, for performance reasons).
         
         XXX TODO: Oh, BTW, we should check if the role actually exists!
         """
+        # Fetch the object id is not given
+        if obj is not None:
+            obj_id = obj.id    
+        
         # Role computing
         if isinstance(role, roles.Role):
             role = role.value
@@ -256,37 +263,47 @@ class Account(_AbstractAccount):
             return issubclass(self.model_class, SystemAccount)
     
         # Account-related roles
-        if issubclass(obj.model_class, Account):
-            if role == roles.account_network.value:
-                if obj.id == self.id:
-                    return True     # Assume I'm in my own network
-                return not not obj.network.filter(id = self.id)
-            if role == roles.owner.value:
-                if obj.id == self.id:
-                    return True     # Assume I'm my own owner (though this has not so much sense)
-                return obj.id == self.id
-        
-            # Community-related roles
-            if role == roles.community_member.value:
-                return self.my_communities.filter(id = obj.id).exists()
-            if role == roles.community_manager.value:
-                return self.my_managed_communities.filter(id = obj.id).exists()
+        # if issubclass(obj.model_class, Account):
+        if role == roles.account_network.value:
+            if obj_id == self.id:
+                return True     # Assume I'm in my own network
+            if not obj:
+                obj = twistable.Twistable.objects.get(id = obj_id)
+            return not not obj.network.filter(id = self.id)
+        if role == roles.owner.value:
+            if obj_id == self.id:
+                return True     # Assume I'm my own owner (though this has not so much sense)
+            # XXX Warning, this belongs to the Content section!
+            # Also, we should try not to de-reference that to boost performance
+            if not obj:
+                obj = twistable.Twistable.objects.get(id = obj_id)
+            return obj.author_id == self.id
+    
+        # Community-related roles
+        if role == roles.community_member.value:
+            return self.my_communities.filter(id = obj_id).exists()
+        if role == roles.community_manager.value:
+            return self.my_managed_communities.filter(id = obj_id).exists()
             
         # Content-related roles
         import content
-        if issubclass(obj.model_class, content.Content):
-            # Here we have no choice but to de-reference obj to get its publisher
-            obj = obj.object
-            if role == roles.content_public.value:
-                return self.has_permission(permissions.can_view, obj.publisher)
-            if role == roles.content_network.value:
-                return self.has_role(roles.network, obj.publisher)
-            if role == roles.content_community_member.value:
-                return self.has_role(roles.community_member, obj.publisher)
-            if role == roles.content_community_manager.value:
-                return self.has_role(roles.community_manager, obj.publisher)
-            if role == roles.owner.value:
-                return obj.author.id == self.id
+        # if issubclass(obj.model_class, content.Content):
+        # Here we have no choice but to de-reference obj to get its publisher
+        # XXX This is the place we have to speed-up things
+        if not obj:
+            obj = twistable.Twistable.objects.get(id = obj_id)
+        if role == roles.content_public.value:
+            return self.has_permission(permissions.can_view, obj = obj.publisher)
+        if role == roles.content_network.value:
+            return self.has_role(roles.network, obj_id = obj.publisher_id)
+        if role == roles.content_community_member.value:
+            return self.has_role(roles.community_member, obj_id = obj.publisher_id)
+        if role == roles.content_community_manager.value:
+            return self.has_role(roles.community_manager, obj_id = obj.publisher_id)
+        # # (moved in the upper section)
+        # if role == roles.owner.value:
+        #     obj = obj.object
+        #     return obj.author_id == self.id
 
         # We shouldn't reach there
         raise RuntimeError("Unexpected role (%d) asked for object '%s' (%d)") % (role, obj and obj.__class__.__name__, obj and obj.id)

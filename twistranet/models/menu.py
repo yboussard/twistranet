@@ -8,8 +8,8 @@ XXX TODO: Make this translatable
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core import urlresolvers
-from twistranet.models import Twistable, Content, Account
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
+from twistranet.models import Twistable, Content, Account, _basemanager
 
 class _MenuItemContainer(object):
     """
@@ -27,20 +27,31 @@ class _MenuItemContainer(object):
         """
         You can override this, maybe?
         """
-        ret = []
         if isinstance(self, MenuItem):
-            for child in self._children.order_by('order'):
-                if child.can_view:
-                    ret.append(child)
+            q = self._children.order_by('order')
         elif isinstance(self, Menu):
-            for child in MenuItem.objects.filter(menu = self.id, parent = None).order_by('order'):
-                if child.can_view:
-                    ret.append(child)
+            q = MenuItem.objects.filter(menu = self.id, parent = None).order_by('order')
         else:
             raise AssertionError("Inherits from this class without a reason")
+
+        ret = []
+        for child in q:
+            if child.can_view:          # XXX This is suboptimal
+                ret.append(child)
             
         return ret
 
+class MenuItemManager(_basemanager.BaseManager):
+    """
+    Shortcuts to populate menu objects along with menuitem objects
+    """
+    def get_query_set(self,):
+        """
+        Each time we get a menu item, try to get the menu as well.
+        """
+        base_query_set = super(MenuItemManager, self).get_query_set()
+        return base_query_set.select_related("menu")
+        
 
 class Menu(Twistable, _MenuItemContainer):
     class Admin:
@@ -86,6 +97,9 @@ class MenuItem(Twistable, _MenuItemContainer):
     # Parenting stuff
     parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
 
+    # Optimization of parent menu access
+    objects = MenuItemManager()
+    
     class Meta:
         app_label = "twistranet"
  
