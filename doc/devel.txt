@@ -1,17 +1,17 @@
-NOTES FOR DEVELOPPERS
-=====================
+TWISTRANET : NOTES FOR DEVELOPPERS
+==================================
 
 Devel platform installation
 ----------------------------
 
 Prerequis:: 
 
-subversion, wget, python2.6-dev, gettext, easy_install, virtualenv
+subversion, wget, python2.6-dev, gettext, virtualenv
 
 Create a virtual env for the application
 
-    >> virtualenv twistranet
-    >> cd twistranet
+    >> virtualenv twistranet-devel
+    >> cd twistranet-devel
 
 Always use the python binaries from this new virtualenv
 (Each time you will want to work with your app you will need this command line)
@@ -22,18 +22,14 @@ Under  windows, the command is :
 
     >> Scripts\activate.bat
 
-Install last Django version in this virtualenv    
+Download Twistranet from svn
 
-    (twistranet) >> easy_install Django
+    (twistranet-devel) >> svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+    (twistranet-devel) >> cd TwistraNet
 
-Instead you can install a particular Django version    
+Install dependencies (django, debug_toolbar, piston, ...)
 
-    (twistranet) >> easy_install Django==1.2.3
-
-Install Twistranet from svn
-
-    (twistranet) >> svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
-    (twistranet) >> cd TwistraNet
+    (twistranet-devel) >> pip install -r requires.txt    
 
 Create Twistranet Database
 Reply "no" to the question about superuser creation  

@@ -1,0 +1,53 @@
+Twistranet - Installation
+=========================
+
+Requirements
+------------
+
+  - python2.6
+  
+  - pip
+
+  - an internet connection
+
+Installation
+------------
+
+Open a command line
+
+  >> pip install Twistranet
+
+Twistranet and all dependencies are downloaded and installed
+in your python path ::
+
+  - django
+  
+  - piston
+  
+  - ...
+
+launch at command prompt 
+
+  >> twistranet startproject mysite
+
+This will install all twistranet django stuff in 'mysite' folder.
+
+Create Twistranet Database
+Reply "no" to the question about superuser creation  
+(because the AUTH_PROFILE_MODULE has changed, it doesn't work)  
+The data is stored in data/tn.db when using sqlite
+    
+    >> cd mysite
+    >> python manage.py syncdb
+
+Bootstrap the first data
+The structure by default is set in twistranet/fixtures/initial_data.json
+You can define in this file a new superuser (by default admin/azerty1234)
+    
+    >> python manage.py twistranet_bootstrap
+
+Run the server in foreground
+
+    (twistranet) >> python manage.py runserver
+
+ 
