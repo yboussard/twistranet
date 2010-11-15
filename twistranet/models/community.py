@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 
 from account import Account, AccountManager, UserAccount, SystemAccount
-import basemanager
+import _basemanager
 from twistranet.lib import permissions, roles, notifier
 
 class CommunityManager(AccountManager):

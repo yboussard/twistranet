@@ -4,10 +4,10 @@ from django.core.exceptions import ValidationError
 
 from resourcemanager import ResourceManager
 from twistranet.lib import languages
-import basemanager 
+from _basemanager import BaseManager
 import twistable
 
-class ResourceObjectsManager(basemanager.BaseManager):
+class ResourceObjectsManager(BaseManager):
     """
     XXX TODO: Securize resource access
     """

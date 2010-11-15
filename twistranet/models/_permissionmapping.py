@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError, SuspiciousOperation
 from twistranet.lib import roles
 from twistranet.lib import permissions
 from twistable import Twistable
-from basemanager import BaseManager
+from _basemanager import BaseManager
 
 class _PermissionMappingManager(BaseManager):
     """

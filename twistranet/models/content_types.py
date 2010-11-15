@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html
-import basemanager
+import _basemanager
 from account import Account
 from content import Content
 from twistranet.lib import roles, permissions, languages
