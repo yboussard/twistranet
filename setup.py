@@ -9,8 +9,15 @@ setup(name='Twistranet',
       long_description=open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
+        "Framework :: Django",
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+        "Topic :: Internet :: WWW/HTTP :: WSGI",
+        "Topic :: Software Development :: Libraries :: "
+                                            "Application Frameworks",
+        "Topic :: Software Development :: Libraries :: Python Modules",        
         ],
       keywords='Twistranet Django Social CMS',
       author='Numericube',
@@ -29,7 +36,7 @@ setup(name='Twistranet',
       ],
       entry_points="""
       # -*- Entry points: -*-
-      [z3c.autoinclude.plugin]
-      target = plone
+      [console_scripts]
+      twistranet_project=twistscripts.twistranet_project:create_project
       """,
       )

@@ -14,8 +14,14 @@ Installation
 ------------
 
 Open a command line
+To install the last Twistranet released version
 
   >> pip install Twistranet
+
+Or to install the devel version from svn
+
+  >> svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+  >> pip install ./Twistranet 
 
 Twistranet and all dependencies are downloaded and installed
 in your python path ::
@@ -26,23 +32,40 @@ in your python path ::
   
   - ...
 
+
+Create a new Twistranet project
+-------------------------------
+
 launch at command prompt 
 
-  >> twistranet startproject mysite
+  >> twistranet_project mysite
 
 This will install all twistranet django stuff in 'mysite' folder.
 
+If you need to customize css and templates
+You can initialize this work with standard Twistranet templates
+and themes in 'mysite' folder, just replace the previous command
+with
+
+  >>  twistranet_project -t mysite
+
+-t option can replaced by --copy-templates
+More options will came in future
+
+
+Initialize the project
+----------------------
+
 Create Twistranet Database
-Reply "no" to the question about superuser creation  
-(because the AUTH_PROFILE_MODULE has changed, it doesn't work)  
-The data is stored in data/tn.db when using sqlite
     
     >> cd mysite
     >> python manage.py syncdb
 
+Reply "no" to the question about superuser creation  
+(because the AUTH_PROFILE_MODULE has changed, it doesn't work)  
+The data is stored in data/tn.db when using sqlite
+
 Bootstrap the first data
-The structure by default is set in twistranet/fixtures/initial_data.json
-You can define in this file a new superuser (by default admin/azerty1234)
     
     >> python manage.py twistranet_bootstrap
 
@@ -50,4 +73,24 @@ Run the server in foreground
 
     (twistranet) >> python manage.py runserver
 
+
+Connect to your site
+--------------------
+
+With your favorite browser
+
+http://localhost:8000
+
+admin / azerty1234
+
+
+You can change admin name email && password using admin interface.
+
+http://localhost:8000/admin
+
+
+Change your local settings
+--------------------------
+
+Customize the file local_settings.py  to change the themes and/or templates
  

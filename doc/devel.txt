@@ -33,8 +33,7 @@ Install dependencies (django, debug_toolbar, piston, ...)
 
 Create Twistranet Database
 Reply "no" to the question about superuser creation  
-(since the AUTH_PROFILE_MODULE has changed, it doesn't work,
-see next line)  
+(since the AUTH_PROFILE_MODULE has changed, it doesn't work)  
 By default (using sqlite), the data is stored in tn.db
     
     (twistranet) >> python manage.py syncdb
