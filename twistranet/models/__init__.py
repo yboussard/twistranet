@@ -1,7 +1,6 @@
 # Importing all models from submodules
 
 # Low-level stuff
-import _permissionmapping
 from twistable import Twistable
 from account import Account, AnonymousAccount
 from content import Content

@@ -10,11 +10,12 @@ This abstract class provides a lot of little tricks to handle view/model articul
 such as the slug management, prepares translation management and so on.
 """
 
-import inspect, pprint
+import inspect, pprint, pickle
 from django.db import models
 from django.db.models import Q, loading
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
+from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
 from twistranet.lib import roles, permissions, languages, utils
@@ -33,7 +34,7 @@ class TwistableManager(models.Manager):
     # Disabled for performance reasons.
     # use_for_related_fields = True
     
-    def get_anonymous_filter(self, auth = None):
+    def get_anonymous_filter(self, auth = None, ):
         """
         Return only visible-to-anonymous objects.
         It's easy:
@@ -49,15 +50,14 @@ class TwistableManager(models.Manager):
             app_label = "twistranet",
             model_name = "SystemAccount",
         ) | Q(
-            _permissions__role = roles.public,
+            _p_can_list = roles.public,
             publisher__id = None,
         ) | Q(
-            _permissions__role = roles.public,
-            publisher___permissions__name = permissions.can_view,
-            publisher___permissions__role = roles.public,
-            publisher__publisher__id = None,
+            _p_can_list = roles.public,
+            publisher___p_can_view = roles.public,
+            publisher__publisher__isnull = True,
         )
-    
+
     def get_public_filter(self, auth = None):
         """
         1- A 'public' role is granted to me on an object if either:
@@ -68,21 +68,21 @@ class TwistableManager(models.Manager):
         if auth is None:
             auth = self._getAuthenticatedAccount()
         
-        return Q(
-            _permissions__role = roles.public,
-            publisher__id = None,
-        ) | Q(
-            _permissions__role = roles.public,
-            publisher___permissions__name = permissions.can_view,
-            publisher___permissions__role = roles.public,
-        ) | Q(
-            _permissions__role = roles.public,
-            publisher___permissions__name = permissions.can_view,
-            publisher___permissions__role = roles.network,
-            publisher__targeted_network__target__id = auth.id,
+        return (
+            Q(
+                _p_can_list = roles.public,
+                publisher__id = None,
+            ) | Q(
+                _p_can_list = roles.public,
+                publisher___p_can_view = roles.public,
+            ) | Q(
+                _p_can_list = roles.public,
+                publisher___p_can_view = roles.network,
+                publisher__targeted_network__target = auth,
+            )
         )
 
-    def get_network_filter(self, auth = None):
+    def get_network_filter(self, auth = None, ):
         """
         # 2- A 'network' role is granted to me on an object if (the subtelty here is that non-account do not have a network):
         #   a/ the object IS an Account AND i'm in the object's network ;
@@ -92,46 +92,46 @@ class TwistableManager(models.Manager):
             auth = self._getAuthenticatedAccount()
         
         return Q(
-            _permissions__role__lte = roles.network,
+            _p_can_list__lte = roles.network,
             account_object__isnull = False,
-            account_object__targeted_network__target__id = auth.id,
+            account_object__targeted_network__target = auth,
         ) | Q(
-            _permissions__role__lte = roles.network,
+            _p_can_list__lte = roles.network,
             account_object__isnull = True,
-            publisher__targeted_network__target__id = auth.id,
+            publisher__targeted_network__target = auth,
         )
 
-    def get_owner_filter(self, auth = None):
+    def get_owner_filter(self, auth = None, ):
         """
         # 3- An 'owner' role is granted to me on an object if:
         #   a/ the object's owner is me
         #   b/ I own the object's publisher ; this way I can always see what's published on me ;
-        #   c/ I'm a member of its owner (useful for communities)
-        #   d/ ME ;)
+        #   c/ I AM the objec's publisher (same idea as c/)
+        #   d/ I'm a member of its owner (useful for communities)
+        #   e/ ME ;)
         """
         if auth is None:
             auth = self._getAuthenticatedAccount()
         
         return Q(
-            _permissions__role__lte = roles.owner,
-            owner__id = auth.id,
+            owner = auth,
         ) | Q(
-            _permissions__role__lte = roles.owner,
-            publisher__owner__id = auth.id,
+            publisher__owner = auth,
         ) | Q(
-            _permissions__role__lte = roles.owner,
-            publisher__id = auth.id,
+            publisher = auth,
         ) | Q(
-            owner__targeted_network__target__id = auth.id,
+            owner__targeted_network__target = auth,
             owner__is_community = True,
         ) | Q(
             id = auth.id,
         )
 
-    def get_query_set(self):
+    def duplicate_query_set(self):
         """
         Return a queryset of 100%-authorized objects. All (should) have the can_list perm to True.
-        This is in fact the 'has_permission(can_list)' method!
+        This is in fact a kind of 'has_permission(can_list)' method!
+        
+        This method WILL return duplicates. Use this if you don't want to check unicity of a content.
         """
         # Check for anonymous query
         import community, account
@@ -177,16 +177,22 @@ class TwistableManager(models.Manager):
         #       DEFAULT:
         #           - Non-UserAccount objects: owner = the authenticated user creating the content.
         #           - UserAccount: owner = AdminCommunity.
-
-        public_filter = self.get_public_filter(auth)
-        network_filter = self.get_network_filter(auth)
-        owner_filter = self.get_owner_filter(auth)
         
-        perm_filter = Q(_permissions__name = permissions.can_list)
-        
+        # We should cache as much as we could.
+        # cache_key = "%i_%s_query_set" % (auth.id, self.model.__name__)
+        # cache_value = cache.get(cache_key)
+        # if cache_value:
+        #     return pickle.loads(cache_value)
+        public_filter = self.get_public_filter(auth, )
+        network_filter = self.get_network_filter(auth, )
+        owner_filter = self.get_owner_filter(auth, )
+    
         # 4 (shunted)- The 'system' role is granted to SystemAccount only. That's a huge shunt.
-        qs = base_query_set.filter(perm_filter & (public_filter | network_filter | owner_filter))
-        return qs.distinct()             # XXX Optimization trick: remove this f* distinct() filter
+        return base_query_set.filter(public_filter | network_filter | owner_filter)
+
+
+    def get_query_set(self,):
+        return self.duplicate_query_set().distinct()
 
     def _getAuthenticatedAccount(self):
         """
@@ -311,6 +317,16 @@ class Twistable(_AbstractTwistable):
         db_index = True,
     )
     
+    # The roles. It's strongly unrecommended to edit those roles by hand, use the 'permissions' property instead.
+    _p_can_view = models.IntegerField(default = 15)
+    _p_can_edit = models.IntegerField(default = 15)
+    _p_can_list = models.IntegerField(default = 15)
+    _p_can_list_members = models.IntegerField(default = 15)
+    _p_can_publish = models.IntegerField(default = 15)
+    _p_can_join = models.IntegerField(default = 15)
+    _p_can_leave = models.IntegerField(default = 15)
+    _p_can_create = models.IntegerField(default = 15)
+    
     def get_absolute_url(self):
         """
         XXX TODO: Make this a little more MVC with @permalink decorator
@@ -335,7 +351,7 @@ class Twistable(_AbstractTwistable):
         """
         Set various object attributes
         """
-        import _permissionmapping, account, community
+        import account, community
         self_owner = False
         self_publisher = False
         
@@ -369,18 +385,23 @@ class Twistable(_AbstractTwistable):
             if not perm_template:
                 raise ValueError("permission_templates not defined on class %s" % self.__class__.__name__)
             self.permissions = perm_template.get_default()
+        tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.permissions ]
+        if not tpl:
+            raise ValueError("Unable to find permission template %s in %s" % (self.permissions, self.permission_templates))
+        for perm, role in tpl[0].items():
+            if perm.startswith("can_"):
+                setattr(self, "_p_%s" % perm, role)
         
         if self.id:
             creation = False
         else:
             creation = True
+            
         ret = super(Twistable, self).save(*args, **kw)
         if creation and isinstance(self, account.Account):
             self.account_object = self
             super(Twistable, self).save()
 
-        # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
-        _permissionmapping._PermissionMapping.objects._applyPermissionsTemplate(self)
         return ret
             
     @property

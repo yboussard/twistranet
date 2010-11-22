@@ -93,7 +93,7 @@ class Community(Account):
             account = Community.objects._getAuthenticatedAccount()
             if not account:
                 return False    # Anon user
-        flt = Account.objects.filter(
+        flt = Account.objects.__booster__.filter(
             targeted_network__target__id = self.id,
             targeted_network__client__id = account.id,
             requesting_network__client__id = self.id,
@@ -179,8 +179,8 @@ class Community(Account):
             else:
                 raise PermissionDenied("You're not allowed to leave this community")
         
-        Network.objects.filter(client__id = self.id, target__id = account.id).delete()
-        Network.objects.filter(target__id = self.id, client__id = account.id).delete()
+        Network.objects.__booster__.filter(client__id = self.id, target__id = account.id).delete()
+        Network.objects.__booster__.filter(target__id = self.id, client__id = account.id).delete()
 
 
 class GlobalCommunity(Community):

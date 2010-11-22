@@ -164,8 +164,8 @@ def home(request):
 
         latest_ids = account.followed_content.values_list('id', flat = True).order_by("-created_at")[:TWISTRANET_CONTENT_PER_PAGE * 10]
         latest = {}
-        [ latest.__setitem__(i, None) for i in latest_ids ]
-        latest_list = Content.objects.__booster__.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
+        for i in latest_ids: latest.__setitem__(i, None)
+        latest_list = Content.objects.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
         # latest_list = account.followed_content.select_related(*select_related_summary_fields)[:TWISTRANET_CONTENT_PER_PAGE * 10]
     else:
         # Just return public content

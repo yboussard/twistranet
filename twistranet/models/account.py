@@ -35,6 +35,8 @@ class Account(twistable.Twistable):
     # View overriding support
     type_summary_view = "account/summary.part.html"
     
+    _role_cache = {}
+    
     @property
     def media_resource_manager(self,):
         """
@@ -108,17 +110,12 @@ class Account(twistable.Twistable):
         
         XXX TODO: Oh, BTW, we should check if the role actually exists!
         """
+        auth = self
         if obj is None and obj_id is None:
             obj = self
         if obj_id is None:
             obj_id = obj.id
-            
-        # Role computing XXX TODO: Remove the 'role' object, it only takes more time
-        if isinstance(role, roles.Role):
-            role = role.value
-        auth = self
-        #twistable.Twistable.objects._getAuthenticatedAccount()
-
+                
         # We've been given an id instead of an object:
         # Then we'll issue an explicit and possibly complex query to find the role.
         # if obj is None:
@@ -129,47 +126,47 @@ class Account(twistable.Twistable):
             # XXX Can't be true, Anon. may not have owner or nwk roles!
             flt = twistable.Twistable.objects.get_anonymous_filter(auth)
             raise NotImplementedError("todo")
-        else:
-            if role == roles.owner.value:
+            
+        # Procedural method if obj is already given.
+        # We use this as a shortcut to avoid issuing costly queries.
+        has_role = None
+        if obj is not None:
+            if role <= roles.owner:
+                if obj.owner_id == auth.id:
+                    has_role = True
+                elif obj.publisher_id == auth.id:
+                    has_role = True
+                elif obj_id == auth.id:
+                    has_role = True
+                    
+            if role <= roles.public:
+                if not obj.publisher_id:
+                    has_role = True
+            
+        # Didn't find the role. We must issue a query.
+        if has_role is None:
+            if role == roles.owner:
                 flt = twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.network.value:
+            elif role == roles.network:
                 flt = twistable.Twistable.objects.get_network_filter(auth) | \
                     twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.public.value:
+            elif role == roles.public:
                 flt = twistable.Twistable.objects.get_public_filter(auth) | \
                     twistable.Twistable.objects.get_network_filter(auth) | \
                     twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.system.value:
+            elif role == roles.system:
                 return False        # System account must have been shunted before
             else:
                 raise NotImplementedError("Role %s not implemented", role)
                 
-        return twistable.Twistable.objects.__booster__.filter(      # XXX I could use __booster__ here to avoid a pain-in-the-ass query?
-            Q(id = obj_id,) & flt
-        ).exists()
-
-        # # Procedure tests. This is meant to be as fast as possible but MAY be heavily querying the DB.
-        # auth = twistable.Twistable._getAuthenticatedAccount()
-        # if role <= roles.owner.value:
-        #     if self.id == auth.id:
-        #         return True
-        #     if self.owner.id == auth.id:
-        #         return True
-        #     if self.publisher and self.publisher.owner.id == auth.id:
-        #         return True
-        #     # XXX TODO: Check owner__targeted_network__target__id (costly!)
-        #         
-        # if role <= roles.network.value:
-        #     
-        #     
-        # if role <= roles.public.value:
-        #     
-        # if isinstance(self, AnonymousAccount):
-        #     if isinstance(self, SystemAccount):
-        #         return True
-        #     if not self.publisher:
-        #         return True            
+            # Issue the query to find role value
+            # print "QUERY!", self, "has_role", role, "on", obj_id
+            has_role = twistable.Twistable.objects.__booster__.filter(
+                Q(id = obj_id,) & flt
+            ).exists()
             
+        return has_role
+
         # We shouldn't reach there
         raise RuntimeError("Unexpected role (%s) asked for object '%s' (%s)" % (role, obj and obj.__class__.__name__, obj and obj.id))
 
@@ -200,9 +197,8 @@ class Account(twistable.Twistable):
         """
         # Check roles, strongest first to optimize caching.
         p_template = obj.model_class.permission_templates.get(obj.permissions)
-        for role in p_template[permission]:         # Will raise if permission is not set on the given content
-            if self.has_role(role, obj):
-                return True
+        if self.has_role(p_template[permission], obj):
+            return True
         
         # Didn't find, we disallow
         return False
@@ -269,7 +265,7 @@ class Account(twistable.Twistable):
         XXX TODO: Cache this
         """
         return UserAccount.objects.filter(requesting_network__client__id = self.id)
-    
+        
     @property
     def content(self):
         """
@@ -286,7 +282,7 @@ class Account(twistable.Twistable):
         from content import Content
         return Content.objects.filter(
             Content.objects.get_follow_filter(self),
-            )
+        )
         
     @property
     def communities(self):
