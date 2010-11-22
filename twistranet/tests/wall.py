@@ -5,7 +5,7 @@ from django.test import TestCase
 from twistranet.models import *
 from twistranet.lib import dbsetup
 
-class SimpleTest(TestCase):
+class WallTest(TestCase):
     
     def setUp(self):
         """
@@ -17,21 +17,22 @@ class SimpleTest(TestCase):
         self._system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.PJ = UserAccount.objects.get(user__username = "admin").account_ptr
+        self.admin = UserAccount.objects.get(user__username = "admin").account_ptr
         
-    def test_followed_private_content(self):
+    def test_00_followed_private_content(self):
         """
-        A and PJ are in the same network.
-        If A creates a private, it must not be visible in PJ's wall (even with A account)
+        A and admin are in the same network.
+        If A creates a private, it must not be visible in admin's wall (even with A account)
         """
         __account__ = self.A
         s = StatusUpdate(text = "Private", permissions = "private")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         self.failUnless(s.content_ptr in Content.objects.followed.all())
-        self.failUnless(s.content_ptr not in Content.objects.getFollowedBy(self.PJ).all())
+        self.failIf(s.content_ptr in self.admin.followed_content.all())
+        self.failIf(s.content_ptr in self.admin.followed_content.all())
         
-    def test_followed_content_availability(self):
+    def test_01_followed_content_availability(self):
         """
         Check if public content is available in the other walls.
         We check everything from A's eyes
@@ -42,21 +43,20 @@ class SimpleTest(TestCase):
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         self.failUnless(s.content_ptr in Content.objects.followed.all())        # Do I follow my own content?
-        self.failUnless(s.content_ptr in Content.objects.getFollowedBy(self.A).all())
-        self.failUnless(s.content_ptr in Content.objects.getFollowedBy(self.PJ).all())
-        self.failUnless(s.content_ptr not in Content.objects.getFollowedBy(self.B).all())
+        self.failUnless(s.content_ptr in Content.objects.followed.all())
+        self.failUnless(s.content_ptr in self.admin.followed_content.all())
+        self.failUnless(s.content_ptr not in self.B.followed_content.all())
         
         # Check public content availability
         s = StatusUpdate(text = "PUB", permissions = "public")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         self.failUnless(s.content_ptr in Content.objects.followed.all())
-        self.failUnless(s.content_ptr in Content.objects.getFollowedBy(self.A).all())
-        self.failUnless(s.content_ptr in Content.objects.getFollowedBy(self.PJ).all())
-        self.failUnless(s.content_ptr not in Content.objects.getFollowedBy(self.B).all())
+        self.failUnless(s.content_ptr in self.A.followed_content.all())
+        self.failUnless(s.content_ptr in self.admin.followed_content.all())
+        self.failUnless(s.content_ptr not in self.B.followed_content.all())
         
-        
-    def test_simple_wall(self):
+    def test_02_simple_wall(self):
         """
         We look at B's wall and perform some actions to see what's going on.
         We use the default fixture to check stuff.
@@ -74,7 +74,7 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(len(latest), 5)
         self.failUnless(latest[0].created_at >= latest[3].created_at, "Invalid date order for the wall")
         
-    def test_wall_security(self):
+    def test_03_wall_security(self):
         """
         Ensure that two users cannot see each other's 
         """
@@ -82,7 +82,7 @@ class SimpleTest(TestCase):
         from twistranet.models import StatusUpdate
         __account__ = self.B
         b_initial_list = self.B.content.all()
-        b_initial_followed = self.B.content.followed.all()
+        b_initial_followed = self.B.followed_content.all()
         
         # Test content creation
         __account__ = self.A
@@ -90,7 +90,7 @@ class SimpleTest(TestCase):
         s.text = "Hello, this is A speaking"
         s.permissions = "private"
         s.save()
-        self.failUnlessEqual(s.author, self.A)
+        self.failUnlessEqual(s.owner, self.A)
         self.failUnlessEqual(s.publisher, self.A)
         
         # Check if B can see A's content (it shouldn't, as it's private
@@ -107,12 +107,10 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(len(b_initial_list) + 1, len(b_final_list))
 
         # ...but that shouldn't change anything for followed content
-        self.failUnless(self.A not in self.B.getMyFollowed())
-        self.failUnless(self.PJ in self.B.getMyFollowed())
-        b_final_followed = self.B.content.followed
+        b_final_followed = self.B.followed_content
         self.failUnlessEqual(len(b_initial_followed), len(b_final_followed))
 
-    def test_my_content(self):
+    def test_04_my_content(self):
         """
         Check if content I write is displayed
         """
@@ -123,7 +121,7 @@ class SimpleTest(TestCase):
         s.permissions = "private"
         s.save()
         self.failUnless(s.content_ptr in self.A.content.all())
-        self.failUnless(s.content_ptr not in Content.objects.getFollowedBy(self.B))
+        self.failIf(s.content_ptr in self.B.followed_content.all())
         
         
         

@@ -46,28 +46,31 @@ class Role:
         return permission_set.filter(role = self.value).exists()
         
 
-# Global roles
-anonymous = Role(1)
-authenticated = Role(2, implied = (anonymous, ))
+# Global roles.
+public = Role(1)
+network = Role(3)
+owner = Role(4)
+system = Role(15)
 
-# Account roles
-account_network = Role(3, implied = (authenticated, ))          # Accessible only for ppl in my network
 
-# Community roles
-community_member = Role(4, implied = (authenticated, ))
-community_manager = Role(5, implied = (community_member, ))
-
-# Account roles from a content point of view
-content_public = Role(6, implied = (authenticated, ))    # Special permission: same as publishers's account can_view permission
-content_network = Role(7, implied = (authenticated, ))
-content_community_member = Role(8, implied = (authenticated, ))             # Same as content_network but for community members
-content_community_manager = Role(9, implied = (content_community_member, )) # Content restricted to community managers
-content_author = Role(10, implied = (content_network, ))                    # Synonymous for roles.owner
-
-# The great chiefs (for both account and content stuff)
-owner = content_author                                                      # For actions of the author or owner of an element
-administrator = Role(14, implied = (content_network, content_community_manager, community_manager, ))
-system = Role(15, implied = (administrator, content_author, ))
+# # Account roles
+# account_network = Role(3, implied = (authenticated, ))          # Accessible only for ppl in my network
+# 
+# # Community roles
+# community_member = Role(4, implied = (authenticated, ))         # === ntwk ?
+# community_manager = Role(5, implied = (community_member, ))     # === owner(s) ?
+# 
+# # Account roles from a content point of view
+# content_public = Role(6, implied = (authenticated, ))    # Special permission: same as publishers's account can_view permission
+# content_network = Role(7, implied = (authenticated, ))
+# content_community_member = Role(8, implied = (authenticated, ))             # Same as content_network but for community members
+# content_community_manager = Role(9, implied = (content_community_member, )) # Content restricted to community managers
+# content_author = Role(10, implied = (content_network, ))                    # Synonymous for roles.owner
+# 
+# # The great chiefs (for both account and content stuff)
+# owner = content_author                                                      # For actions of the author or owner of an element
+# administrator = Role(14, implied = (content_network, content_community_manager, community_manager, ))
+# system = Role(15, implied = (administrator, content_author, ))
 
 
 

@@ -9,9 +9,8 @@ from django.core.exceptions import ValidationError, SuspiciousOperation
 from twistranet.lib import roles
 from twistranet.lib import permissions
 from twistable import Twistable
-from _basemanager import BaseManager
 
-class _PermissionMappingManager(BaseManager):
+class _PermissionMappingManager(models.Manager):
     """
     Ensure that security is applied: we can't manipulate unauthorized objects.
     """
@@ -94,5 +93,12 @@ class _PermissionMapping(models.Model):
     
     def __unicode__(self):
         # Meant to be called on subclasses only (where 'target' is defined)
-        return "%s %s '%s'" % (self.role, self.name, self.target, )
+        r = {
+            1: "public",
+            3: "network",
+            4: "owner",
+            15: "system",
+        }
+            
+        return "%s %s '%s'" % (r[self.role], self.name, self.target.slug or self.target.id, )
 

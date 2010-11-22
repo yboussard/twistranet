@@ -10,16 +10,257 @@ This abstract class provides a lot of little tricks to handle view/model articul
 such as the slug management, prepares translation management and so on.
 """
 
+import inspect, pprint
 from django.db import models
-from django.db.models import Q
-from django.db.models import loading
+from django.db.models import Q, loading
 from django.contrib.auth.models import User
+from django.db.utils import DatabaseError
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
 from twistranet.lib import roles, permissions, languages, utils
-from twistranet.models import _basemanager
 
-class Twistable(models.Model):
+class TwistableManager(models.Manager):
+    """
+    It's the base of the security model!!
+    
+    The base manager assumes that:
+    - it's called from a view having an authenticated user
+    - its target model has a manager called _objects which return the unprotected objects.
+    - the target model has a 'scope' property which is used to define the model's object visibility.
+        Must be one of ACCOUNTSCOPE_ANONYMOUS, ACCOUNTSCOPE_AUTHENTICATED or ACCOUNTSCOPE_MEMBERS for account
+        or must be CONTENTSCOPE_PUBLIC, CONTENTSCOPE_NETWORK or CONTENTSCOPE_PRIVATE for content
+    """
+    # Disabled for performance reasons.
+    # use_for_related_fields = True
+    
+    def get_anonymous_filter(self, auth = None):
+        """
+        Return only visible-to-anonymous objects.
+        It's easy:
+          a/ The SystemAccount (always visible)
+          b/ publisher = None 
+          c/ objects with perm = public and publisher's publisher = None.
+        """
+        if auth is None:
+            auth = self._getAuthenticatedAccount()
+
+        return Q(
+            # We use this supplementary query because permissions are not implemented in the JSON fixture for system
+            app_label = "twistranet",
+            model_name = "SystemAccount",
+        ) | Q(
+            _permissions__role = roles.public,
+            publisher__id = None,
+        ) | Q(
+            _permissions__role = roles.public,
+            publisher___permissions__name = permissions.can_view,
+            publisher___permissions__role = roles.public,
+            publisher__publisher__id = None,
+        )
+    
+    def get_public_filter(self, auth = None):
+        """
+        1- A 'public' role is granted to me on an object if either:
+           a/ the object's publisher is None (in this case, the "public" role is given to anonymous users as well)
+           b/ the object's publisher is in can_view = public ;
+           c/ the object's publisher is in can_view = network and publisher is in my network ;
+        """
+        if auth is None:
+            auth = self._getAuthenticatedAccount()
+        
+        return Q(
+            _permissions__role = roles.public,
+            publisher__id = None,
+        ) | Q(
+            _permissions__role = roles.public,
+            publisher___permissions__name = permissions.can_view,
+            publisher___permissions__role = roles.public,
+        ) | Q(
+            _permissions__role = roles.public,
+            publisher___permissions__name = permissions.can_view,
+            publisher___permissions__role = roles.network,
+            publisher__targeted_network__target__id = auth.id,
+        )
+
+    def get_network_filter(self, auth = None):
+        """
+        # 2- A 'network' role is granted to me on an object if (the subtelty here is that non-account do not have a network):
+        #   a/ the object IS an Account AND i'm in the object's network ;
+        #   b/ the object is NOT an Account and the object's publisher can_view is (network or public) and publisher is in my network ;
+        """
+        if auth is None:
+            auth = self._getAuthenticatedAccount()
+        
+        return Q(
+            _permissions__role__lte = roles.network,
+            account_object__isnull = False,
+            account_object__targeted_network__target__id = auth.id,
+        ) | Q(
+            _permissions__role__lte = roles.network,
+            account_object__isnull = True,
+            publisher__targeted_network__target__id = auth.id,
+        )
+
+    def get_owner_filter(self, auth = None):
+        """
+        # 3- An 'owner' role is granted to me on an object if:
+        #   a/ the object's owner is me
+        #   b/ I own the object's publisher ; this way I can always see what's published on me ;
+        #   c/ I'm a member of its owner (useful for communities)
+        #   d/ ME ;)
+        """
+        if auth is None:
+            auth = self._getAuthenticatedAccount()
+        
+        return Q(
+            _permissions__role__lte = roles.owner,
+            owner__id = auth.id,
+        ) | Q(
+            _permissions__role__lte = roles.owner,
+            publisher__owner__id = auth.id,
+        ) | Q(
+            _permissions__role__lte = roles.owner,
+            publisher__id = auth.id,
+        ) | Q(
+            owner__targeted_network__target__id = auth.id,
+            owner__is_community = True,
+        ) | Q(
+            id = auth.id,
+        )
+
+    def get_query_set(self):
+        """
+        Return a queryset of 100%-authorized objects. All (should) have the can_list perm to True.
+        This is in fact the 'has_permission(can_list)' method!
+        """
+        # Check for anonymous query
+        import community, account
+        auth = self._getAuthenticatedAccount()
+        base_query_set = super(TwistableManager, self).get_query_set()
+        
+        # This is a performance boost for anonymous accounts: we don't bother computing ALL the filters.
+        anon_filter = self.get_anonymous_filter(auth)
+        if not auth or isinstance(auth, account.AnonymousAccount):
+            try:
+                return base_query_set.filter(anon_filter).distinct()        # XXX TODO: avoid this distinct() call
+            except DatabaseError:
+                # Avoid bootstrap quircks. XXX VERY DANGEROUS, should limit that to table doesn't exist errors!
+                print "DB ERROR"
+                return base_query_set.none()
+    
+        # System account: return all objects without asking any question.
+        if auth.model_name == "SystemAccount":
+            return base_query_set           # The base qset with no filter
+                        
+        # Ok, so the struggle begins!
+        #
+        # Just to remember, basic roles are "public", "network", "owner" and "system".
+        # What is used to find the role on an object is:
+        #   - its 'publisher' account. The general rule here is that the publisher acts as a "filter" on an object's visibility.
+        #       Unless you're the owner of an object, you can never get a more "powerful" role on an object than on it's publisher's.
+        #       If publisher is None/Null then the object is visible EVEN TO ANONYMOUS. Careful, then!
+        #       A content's publisher defines where it can be seen.
+        #       An account can be its own publisher. This can be used to make an account less visible, but usually
+        #       an account is published on a community (default is all_twistranet). This is a way to define the "homeland" of a UserAccount,
+        #       and a way to have accounts who can't see/list between them.
+        #       A User Source define where the UserAccounts are published by default. This is useful to given a common set of
+        #       rights to all users coming from a same source (LDAP, SQL, ...)
+        #       A Community's publisher can define a degree of "officialty" to the community.
+        #       DEFAULT:
+        #           - Content/Community:  default publisher = the auth account creating it.
+        #           - UserAccount: default publisher = GlobalCommunity.
+        #  - its network (for an account) or the publisher's NW (for a content).
+        #       Beeing in the network usually give you some privileges. And more if the nwk relation has the is_manager flag.
+        #  - its owner. The owner has the licence to kill on the object.
+        #       An account is always his own owner!
+        #       And you can add as an owner either the SystemAccount, a UserAccount or the AdminCommunity object.
+        #       DEFAULT:
+        #           - Non-UserAccount objects: owner = the authenticated user creating the content.
+        #           - UserAccount: owner = AdminCommunity.
+
+        public_filter = self.get_public_filter(auth)
+        network_filter = self.get_network_filter(auth)
+        owner_filter = self.get_owner_filter(auth)
+        
+        perm_filter = Q(_permissions__name = permissions.can_list)
+        
+        # 4 (shunted)- The 'system' role is granted to SystemAccount only. That's a huge shunt.
+        qs = base_query_set.filter(perm_filter & (public_filter | network_filter | owner_filter))
+        return qs.distinct()             # XXX Optimization trick: remove this f* distinct() filter
+
+    def _getAuthenticatedAccount(self):
+        """
+        Dig the stack to find the authenticated account object.
+        Return either a (possibly generic) account object or None.
+        
+        Views with a "request" parameter magically works with that.
+        If you want to use a system account, declare a '__account__' variable in your caller function.
+        """
+        # We dig into the stack frame to find the request object.
+        from account import Account, AnonymousAccount, UserAccount
+
+        frame = inspect.currentframe()
+        try:
+            while frame:
+                next_found = False
+                local_viewed = False
+                for mbr in inspect.getmembers(frame):
+                    if mbr[0] == 'f_locals':
+                        local_viewed = True
+                        _locals = mbr[1]
+    
+                        # Check for a request.user User object
+                        if _locals.has_key('request'):
+                            u = getattr(_locals['request'], 'user', None)
+                            if isinstance(u, User):
+                                # We use this instead of the get_profile() method to avoid an infinite recursion here.
+                                # We mimic the _profile_cache behavior of django/contrib/auth/models.py to avoid doing a lot of requests on the same object
+                                if not hasattr(u, '_account_cache'):
+                                    u._account_cache = UserAccount.objects.__booster__.get(user__id__exact = u.id)
+                                    u._account_cache.user = u
+                                return u._account_cache
+                
+                        # Check for an __acount__ variable holding a generic Account object
+                        if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
+                            return _locals['__account__']
+                    
+                        # Locals inspected and next found => break here
+                        if next_found:
+                            break
+        
+                    if mbr[0] == 'f_back':
+                        # Inspect caller
+                        next_found = True
+                        frame = mbr[1]
+                        if local_viewed:
+                            break
+                            
+            # Didn't find anything. We must be anonymous.
+            return AnonymousAccount()
+
+        finally:
+            # Avoid circular refs
+            frame = None
+            stack = None
+            del _locals
+
+
+    # Backdoor for performance purposes. Use it at your own risk as it breaks security.
+    @property
+    def __booster__(self):
+        return super(TwistableManager, self).get_query_set()
+
+
+
+class _AbstractTwistable(models.Model):
+    """
+    We use this abstract class to enforce use of our manager in all our subclasses.
+    """
+    objects = TwistableManager()
+    class Meta:
+        abstract = True
+
+class Twistable(_AbstractTwistable):
     """
     Base (an abstract) type for rich, inheritable and securable TN objects.
     
@@ -29,15 +270,16 @@ class Twistable(models.Model):
     All Content and Account classes derive from this.
     XXX TODO: Securise the base manager!
     """
-    objects = _basemanager.BaseManager()
-
     # Object management. Slug is optional (id is not ;))
     slug = models.SlugField(unique = True, db_index = True, null = True)                 # XXX TODO: Have a more personalized slug field (allowing dots for usernames?)
     
     # This is a way to de-reference the underlying model rapidly
     app_label = models.CharField(max_length = 64, db_index = True)
     model_name = models.CharField(max_length = 64, db_index = True)
-
+    # Pointer to the underlying account, to allow the filter to work with all derived objects.
+    account_object = models.OneToOneField("Account", db_index = True, null = True, related_name = "+")
+    is_community = models.BooleanField(default = False, db_index = True, )
+    
     # Basic metadata shared by all Twist objects.
     # Title is mandatory.
     title = models.CharField(max_length = 255)
@@ -52,7 +294,13 @@ class Twistable(models.Model):
         )
         
     # Performance optimizer : we store the publisher here so that we can de-reference it without getting the content object.
-    publisher = models.ForeignKey("Account", null = True)                      # The account this content is published for.
+    # These are two security flags.
+    #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
+    publisher = models.ForeignKey("Account", null = True, related_name = "published_twistables", db_index = True, ) 
+
+    # Security / Role shortcuts. These are the ppl/account the Owner / Network are given to.
+    # The account this object belongs to (ie. the actual author)
+    owner = models.ForeignKey("Account", related_name = "by", db_index = True, )                               
     
     # Our security model.
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
@@ -87,7 +335,9 @@ class Twistable(models.Model):
         """
         Set various object attributes
         """
-        import _permissionmapping
+        import _permissionmapping, account, community
+        self_owner = False
+        self_publisher = False
         
         # Check if we're saving a real object and not a generic Content one (which is prohibited).
         # This must be a programming error, then.
@@ -98,18 +348,39 @@ class Twistable(models.Model):
         # Set information used to retreive the actual subobject
         self.model_name = self._meta.object_name
         self.app_label = self._meta.app_label
-        
+        self.is_community = isinstance(self, community.Community)
+
+        # Set owner & publisher upon object creation. Publisher is NEVER set as None by default.
+        if self.id is None:
+            self.owner = self.getDefaultOwner()
+            if not self.publisher_id:
+                self.publisher = self.getDefaultPublisher()
+            else:
+                if not self.publisher.can_publish:
+                    raise PermissionDenied("You're not allowed to publish on %s" % self.publisher)
+        else:
+            # XXX TODO: Check that nobody sets /unsets the owner or the publisher of an object
+            # raise PermissionDenied("You're not allowed to set the content owner by yourself.")
+            pass
+    
         # Set permissions; we will apply them last to ensure we have an id
         if not self.permissions:
             perm_template = self.model_class.permission_templates
-            if perm_template:
-                self.permissions = perm_template.get_default()
+            if not perm_template:
+                raise ValueError("permission_templates not defined on class %s" % self.__class__.__name__)
+            self.permissions = perm_template.get_default()
         
+        if self.id:
+            creation = False
+        else:
+            creation = True
         ret = super(Twistable, self).save(*args, **kw)
+        if creation and isinstance(self, account.Account):
+            self.account_object = self
+            super(Twistable, self).save()
 
         # Set/reset permissions. We do it last to ensure we have an id. Ignore AttributeError from object pty
-        if self.permissions:
-            _permissionmapping._PermissionMapping.objects._applyPermissionsTemplate(self)
+        _permissionmapping._PermissionMapping.objects._applyPermissionsTemplate(self)
         return ret
             
     @property
@@ -134,41 +405,44 @@ class Twistable(models.Model):
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
 
-        # Get model class, then walk through ancestors
-        # XXX I can cache MRO resolution, I guess, though it might not be very expensive
+        # Get model class directly
         model = loading.get_model(self.app_label, self.model_name)
         if isinstance(self, model):
             return self
         return model.objects.get(id = self.id)
-        
-        # XXX I keep the following code under my pillow. Looks like it's not efficient enough (yet!)
-        # model_mro = list(model.__mro__)
-        # model_mro.reverse()
-        # obj = None
-        # for base_cls in model_mro:
-        #     # Don't do anything until we find the Twistable class.
-        #     if not obj:
-        #         if issubclass(base_cls, Twistable):
-        #             obj = self
-        #         continue
-        #     
-        #     # Here isinstance() is ok as we have 'older' ancestors first.
-        #     if issubclass(base_cls, Twistable):
-        #         if base_cls._meta.abstract:
-        #             continue
-        #         ancestor_fied = base_cls._meta.object_name.lower()
-        #         obj = getattr(obj, ancestor_fied)
-        #
-        # return obj
+            
+    def __unicode__(self,):
+        """
+        Return model_name: id (slug)
+        """
+        if not self.app_label or not self.model_name:
+            return "Unsaved %s" % self.__class__
+        if self.slug:
+            return "%s.%s: %s (%i)" % (self.app_label, self.model_name, self.slug, self.id)
+        else:
+            return "%s.%s: %i" % (self.app_label, self.model_name, self.id)            
             
     class Meta:
         app_label = "twistranet"
 
     #                                                                   #
     #                       Security Management                         #
+    #                                                                   #
     # XXX TODO: Use a more generic approach? And some caching as well?  #
     # XXX Also, must check that permissions are valid for the given obj #
     #                                                                   #
+
+    def getDefaultOwner(self,):
+        """
+        General case: owner is the auth account (or SystemAccount if not found?)
+        """
+        return Twistable.objects._getAuthenticatedAccount()
+        
+    def getDefaultPublisher(self,):
+        """
+        General case: publisher is the auth account (or SystemAccount if not found?)
+        """
+        return Twistable.objects._getAuthenticatedAccount()
 
     @property
     def can_view(self):
@@ -206,6 +480,17 @@ class Twistable(models.Model):
         auth = Twistable.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_list, self)
 
+    #                                                                   #
+    #                           Views relations                         #
+    #                                                                   #
+
+    @property
+    def summary_view(self):
+        return self.model_class.type_summary_view
+
+    @property
+    def detail_view(self):
+        return self.model_class.type_detail_view
 
 
     #                                                                   #
@@ -232,7 +517,7 @@ class Twistable(models.Model):
         Return the translated version of your content.
         Example: doc.translated('fr').title => Return the translated version of the title.
         """
-        # return self
+        return self
         
         # No translation available? Return the identity object.
         try:

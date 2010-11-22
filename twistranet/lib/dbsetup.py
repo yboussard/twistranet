@@ -31,10 +31,11 @@ def repair():
 
     # Put all Django admin users inside the first admin community
     django_admins = UserAccount.objects.filter(user__is_superuser = True)
+    admin_community = AdminCommunity.objects.get()
     for user in django_admins:
-        if not Community.objects.admin in user.my_communities:
-            Community.objects.admin.join(user, manager = True)
-    #     
+        if not admin_community in user.communities:
+            admin_community.join(user, is_manager = True)
+
     # # All user accounts must (explicitly) belong to the global community.
     # # XXX There should be a more efficient way to do this ;)
     # global_ = Community.objects.global_
@@ -74,12 +75,10 @@ def bootstrap():
     try:
         # Let's log in.
         __account__ = SystemAccount.get()
-    except ObjectDoesNotExist, DatabaseError:
+    except:
         # Default fixture probably not installed yet. Don't do anything yet.
         print "DatabaseError while bootstraping. Your tables are probably not created yet."
-        print ">>>>>"
-        traceback.print_exc()
-        print "<<<<<"
+        # traceback.print_exc()
         return
     
     # Create Legacy Resource Manager if doesn't exist.
@@ -106,16 +105,26 @@ def bootstrap():
         HELP_FR_FIXTURES = []
         BOOTSTRAP_FR_FIXTURES = []
         print "twistrans not installed"
-
+        
     # Check if default profile pictures are correctly imported
     profile_picture = Resource.objects.get(slug = "default_profile_picture")
     community_picture = Resource.objects.get(slug = "default_community_picture")
     
     # Load fixtures
     for obj in BOOTSTRAP_FIXTURES:          obj.apply()
-    for obj in BOOTSTRAP_FR_FIXTURES:       obj.apply()
+
+    # Special treatment for bootstrap: Set the GlobalCommunity owner = AdminCommunity
+    glob = GlobalCommunity.objects.get()
+    admin = AdminCommunity.objects.get()
+    glob.owner = admin
+    glob.publisher = glob
+    glob.save()
+    admin.publisher = glob
+    admin.save()
+
+    # for obj in BOOTSTRAP_FR_FIXTURES:       obj.apply()
     for obj in HELP_EN_FIXTURES:            obj.apply()
-    for obj in HELP_FR_FIXTURES:            obj.apply()
+    # for obj in HELP_FR_FIXTURES:            obj.apply()
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:

@@ -41,6 +41,16 @@ FIXTURES = [
     ),
     
     Fixture(
+        UserAccount,
+        slug = "C",
+        title = "Chris Williams",
+		description = "A twistranet sample user who doesn't want to show you that much things.",
+        permissions = "private",
+        user = User.objects.get(id = 4),
+        picture = Resource.objects.filter(slug = "default_b_picture"),
+    ),
+
+    Fixture(
         HelloWorld,
         logged_account = "admin",
         slug = "hello1",

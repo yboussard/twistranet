@@ -49,8 +49,9 @@ content_templates = PermissionTemplate((
         "id":               "public",
         "name":             "Public content", 
         "description":      "Content visible to anyone who can view this page.",
-        can_view:           (content_public, ),
-        can_edit:           (content_author, ),
+        can_list:           (public, ),
+        can_view:           (public, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "network",
@@ -59,8 +60,9 @@ content_templates = PermissionTemplate((
                             Content visible only to my network.
                             For community content, use 'Members-only content' instead.
                             """,
-        can_view:           (content_network, ),
-        can_edit:           (content_author, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "members",
@@ -69,15 +71,17 @@ content_templates = PermissionTemplate((
                             Content visible only to community members.
                             For regular wall content, use 'Network-only content' instead.
                             """,
-        can_view:           (content_community_member, ),
-        can_edit:           (content_author, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "private",
         "name":             "Private",
         "description":      "Content visible only for the author",
-        can_view:           (content_author, ),
-        can_edit:           (content_author, ),
+        can_list:           (owner, ),
+        can_view:           (owner, ),
+        can_edit:           (owner, ),
     },
 ))
 
@@ -89,37 +93,37 @@ account_templates = PermissionTemplate((
         "id":               "public",
         "name":             "Public account",
         "description":      "Account listed and accessible to anyone who has access to TwistraNet (public if TwistraNet is in internet mode).",
-        can_view:           (anonymous, ),
-        can_list:           (anonymous, ),
-        can_publish:        (owner, account_network, ),
-        can_edit:           (owner, administrator, ),
+        can_view:           (public, ),
+        can_list:           (public, ),
+        can_publish:        (network, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "intranet",
         "name":             "Restricted intranet account",
         "description":      "Account listed and accessible to anyone who is logged into to TwistraNet.",
-        can_view:           (authenticated, ),
-        can_list:           (authenticated, ),
-        can_publish:        (owner, administrator, account_network, ),
-        can_edit:           (owner, administrator, ),
+        can_view:           (network, ),
+        can_list:           (network, ),
+        can_publish:        (owner, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "listed",
         "name":             "Private but searchable", 
         "description":      "Account listed BUT NOT necessarily accessible to anyone who is logged into TwistraNet: Must be in his network to see it.",
-        can_view:           (account_network, ),
-        can_list:           (authenticated, ),
-        can_publish:        (owner, administrator, account_network, ),
-        can_edit:           (owner, administrator, ),
+        can_view:           (network, ),
+        can_list:           (public, ),
+        can_publish:        (owner, ),
+        can_edit:           (owner, ),
     },
     {
         "id":               "private",
         "name":             "Private, unsearchable account (except for administrators and ppl in account's network). They cannot write on their wall, only on the communities they're in.",
         "description":      "Ghost account.",
-        can_view:           (account_network, ),
-        can_list:           (account_network, ),
-        can_publish:        (administrator, account_network, ),
-        can_edit:           (administrator, ),
+        can_view:           (network, ),
+        can_list:           (network, ),
+        can_publish:        (owner, ),
+        can_edit:           (owner, ),
     },
 ))
 
@@ -134,14 +138,14 @@ community_templates = PermissionTemplate((
                             Members have a very high autonomy level and can do many things on their own.
                             Content is usually restricted to members only.
                             """,
-        can_create:         (administrator, ),
-        can_list:           (authenticated, ),
-        can_view:           (community_member, ),
-        can_list_members:   (authenticated, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_member, ),
-        can_join:           (community_member, ),
-        can_leave:          (community_member, ),
+        # can_create:         (administrator, ),
+        can_list:           (public, ),
+        can_view:           (network, ),
+        can_list_members:   (public, ),
+        can_edit:           (owner, ),
+        can_publish:        (network, ),
+        can_join:           (network, ),
+        can_leave:          (network, ),
     },
     {
         "id":               "ou",
@@ -150,14 +154,14 @@ community_templates = PermissionTemplate((
                             A great way of managing a service or division communication for a SBE.
                             Content is public and discussable, membership is managed by the application administrators only.
                             """,
-        can_create:         (administrator, ),
-        can_list:           (authenticated, ),
-        can_view:           (authenticated, ),
-        can_list_members:   (authenticated, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_manager, ),
-        can_join:           (community_manager, ),
-        can_leave:          (administrator, ),
+        # can_create:         (administrator, ),
+        can_list:           (public, ),
+        can_view:           (public, ),
+        can_list_members:   (public, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
+        can_join:           (owner, ),
+        can_leave:          (owner, ),
     },
     {
         "id":               "private",
@@ -165,14 +169,14 @@ community_templates = PermissionTemplate((
         "description":      """
                             A private community, visible only to its members but ruled like a workgroup otherwise.
                             """,
-        can_create:         (administrator, ),
-        can_list:           (community_member, ),
-        can_view:           (community_member, ),
-        can_list_members:   (community_member, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_member, ),
-        can_join:           (community_manager, ),
-        can_leave:          (community_member, ),
+        # can_create:         (administrator, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_list_members:   (network, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
+        can_join:           (owner, ),
+        can_leave:          (network, ),
     },
     {
         "id":               "interest",
@@ -182,14 +186,14 @@ community_templates = PermissionTemplate((
                             Very useful for extra-professionnal communities.
                             All authenticated people can create an interest group.
                             """,
-        can_create:         (authenticated, ),
-        can_list:           (authenticated, ),
-        can_view:           (authenticated, ),
-        can_list_members:   (authenticated, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_member, ),
-        can_join:           (authenticated, ),
-        can_leave:          (community_member, ),
+        # can_create:         (public, ),
+        can_list:           (public, ),
+        can_view:           (public, ),
+        can_list_members:   (public, ),
+        can_edit:           (owner, ),
+        can_publish:        (network, ),
+        can_join:           (public, ),
+        can_leave:          (network, ),
     },
     {
         "id":               "blog",
@@ -198,14 +202,14 @@ community_templates = PermissionTemplate((
                             The way a blog usually works: PUBLIC (even for anonymous if the site is opened) content,
                             community managers as main editors, plus a few contributors who can join the blog.
                             """,
-        can_create:         (administrator, ),
-        can_list:           (anonymous, ),
-        can_view:           (anonymous, ),
-        can_list_members:   (anonymous, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_member, ),
-        can_join:           (community_manager, ),
-        can_leave:          (community_member, ),
+        # can_create:         (administrator, ),
+        can_list:           (public, ),
+        can_view:           (public, ),
+        can_list_members:   (public, ),
+        can_edit:           (owner, ),
+        can_publish:        (network, ),
+        can_join:           (owner, ),
+        can_leave:          (network, ),
     },
     {
         "id":               "darkroom",
@@ -216,14 +220,14 @@ community_templates = PermissionTemplate((
                             Don't forget to mark your users as 'unlisted' to ensure complete isolation.
                             Content is usually private to the group.
                             """,
-        can_create:         (administrator, ),
-        can_list:           (community_member, ),
-        can_view:           (community_member, ),
-        can_list_members:   (community_manager, ),
-        can_edit:           (community_manager, ),
-        can_publish:        (community_manager, ),
-        can_join:           (community_manager, ),
-        can_leave:          (community_manager, ),
+        # can_create:         (administrator, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_list_members:   (owner, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
+        can_join:           (owner, ),
+        can_leave:          (owner, ),
     },
 ))
 
@@ -237,11 +241,11 @@ global_community_templates = PermissionTemplate((
                             Everybody is listed, although some accounts can be private.
                             This is usually how an intranet site works.
                             """,
-        can_list:           (authenticated, ),
-        can_view:           (authenticated, ),
-        can_list_members:   (authenticated, ),
-        can_edit:           (administrator, ),
-        can_publish:        (administrator, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_list_members:   (network, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },
@@ -252,11 +256,11 @@ global_community_templates = PermissionTemplate((
                             Use this to have your TwistraNet site opened to your customers and partners.
                             Customers must not see each other. So they can't be listed in there.
                             """,
-        can_list:           (authenticated, ),
-        can_view:           (authenticated, ),
-        can_list_members:   (community_manager, ),
-        can_edit:           (administrator, ),
-        can_publish:        (administrator, ),
+        can_list:           (network, ),
+        can_view:           (network, ),
+        can_list_members:   (owner, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },
@@ -271,11 +275,11 @@ global_community_templates = PermissionTemplate((
                             
                             Global community content will still be restricted to auth people.
                             """,
-        can_list:           (anonymous, ),
-        can_view:           (anonymous, ),
-        can_list_members:   (authenticated, ),
-        can_edit:           (administrator, ),
-        can_publish:        (administrator, ),
+        can_list:           (public, ),
+        can_view:           (public, ),
+        can_list_members:   (network, ),
+        can_edit:           (owner, ),
+        can_publish:        (owner, ),
         can_join:           (system, ),             # Mandatory for global community.
         can_leave:          (system, ),             # Mandatory for global community.
     },

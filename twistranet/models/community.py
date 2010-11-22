@@ -2,45 +2,12 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
-
-from account import Account, AccountManager, UserAccount, SystemAccount
-import _basemanager
+from account import Account, UserAccount, SystemAccount
+from network import Network
+from twistable import Twistable
 from twistranet.lib import permissions, roles, notifier
 
-class CommunityManager(AccountManager):
-    """
-    Useful shortcuts for community management.
-    The manager itself only return 100% public communities when secured
-    """
-    @property
-    def global_(self,):
-        """
-        Return the global community. May raise if no access right.
-        """
-        return self.get(app_label = "twistranet", model_name = "GlobalCommunity")
-
-    @property
-    def admin(self):
-        """
-        Return the admin community / communities
-        """
-        return self.get(app_label = "twistranet", model_name = "AdminCommunity")
-
-class _AbstractCommunity(Account):
-    """
-    We use this to enforce using our manager on subclasses.
-    This way, we avoid enforcing you to re-declare objects = AccountManager() on each account class!
-
-    See: http://docs.djangoproject.com/en/1.2/topics/db/managers/#custom-managers-and-model-inheritance
-    """
-    class Meta:
-        abstract = True
-
-    # Our security model
-    objects = CommunityManager()
-
-
-class Community(_AbstractCommunity):
+class Community(Account):
     """
     A simple community class.
     A community is an account which have members. Members are User accounts.
@@ -50,7 +17,7 @@ class Community(_AbstractCommunity):
     default_picture_resource_slug = "default_community_picture"
     
     # Members & security management
-    members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
+    # members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
     # XXX user_source = (OPTIONAL)
     permission_templates = permissions.community_templates
 
@@ -61,7 +28,14 @@ class Community(_AbstractCommunity):
     
     @property
     def managers(self):
-        return CommunityMembership.objects.filter(community = self, is_manager = True)
+        return self.members.filter(targeted_network__is_manager = True)
+        
+    @property
+    def members(self):
+        return Account.objects.filter(
+            targeted_network__target__id = self.id,
+            requesting_network__client__id = self.id,
+        )
 
     class Meta:
         app_label = 'twistranet'
@@ -70,19 +44,26 @@ class Community(_AbstractCommunity):
         """
         Populate special content information before saving it.
         """
-        auth = Community.objects._getAuthenticatedAccount()
         ret = super(Community, self).save(*args, **kw)
-        if isinstance(auth.object, UserAccount) and not self.isMember(auth):
-            CommunityMembership.objects.create(
-                account = auth,
-                community = self,
-                is_manager = True,
-            )
+        if not self.is_member:
+            auth = Twistable.objects._getAuthenticatedAccount()
+            if not isinstance(auth, SystemAccount):
+                Network.objects.create(
+                    client = auth,
+                    target = self,
+                    is_manager = True,
+                )
+                Network.objects.create(
+                    client = self,
+                    target = auth,
+                    is_manager = False,
+                )
         return ret
         
     def delete(self, ):
         """
-        Check the can_delete permission before dumping content
+        Check the can_delete permission before dumping content.
+        XXX Todo: delete nwk as well
         """
         if not self.can_delete:
             raise PermissionDenied("You're not allowed to delete this community")
@@ -106,19 +87,25 @@ class Community(_AbstractCommunity):
         """
         Return True if given account is member.
         If account is None, assume it's current authenticated.
+        XXX HAVE TO OPTIMIZE (PRE-LOAD?) THIS!
         """
         if not account:
             account = Community.objects._getAuthenticatedAccount()
             if not account:
                 return False    # Anon user
-                
-        qs = CommunityMembership.objects.filter(
-            account = account, 
-            community = self,    
-            )
+        flt = Account.objects.filter(
+            targeted_network__target__id = self.id,
+            targeted_network__client__id = account.id,
+            requesting_network__client__id = self.id,
+            requesting_network__target__id = account.id,
+        )
+
         if is_manager:
-            qs = qs.filter(is_manager = True)
-        return qs.exists()
+            flt = flt.filter(
+                targeted_network__is_manager = True,
+            )
+
+        return flt.exists()
 
             
     @property
@@ -133,13 +120,8 @@ class Community(_AbstractCommunity):
         Same as join() but as a manager.
         Only a community manager (or the first community member) can do that.
         """
-        return self.join(account, manager = True)
-        
-    @property
-    def can_edit(self):
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_edit, self)
-        
+        return self.join(account, is_manager = True)
+                
     @property
     def can_join(self):
         auth = Account.objects._getAuthenticatedAccount()
@@ -147,7 +129,7 @@ class Community(_AbstractCommunity):
         
     @property
     def can_leave(self):
-        # Special check if we're not the last manager inside
+        # Special check if we're not the last (human) manager inside
         if self.is_manager:
             if self.managers.count() == 1:
                 return False
@@ -155,13 +137,8 @@ class Community(_AbstractCommunity):
         # Regular checks
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_leave, self)
-        
-    @property
-    def can_delete(self):
-        auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_delete, self)
-    
-    def join(self, account = None, manager = False):
+            
+    def join(self, account = None, is_manager = False):
         """
         Join the community.
         If account is None, assume it current authenticated account.
@@ -176,13 +153,17 @@ class Community(_AbstractCommunity):
         if not account:
             account = Account.objects._getAuthenticatedAccount()
 
-        # Actually add
-        mbr = CommunityMembership(
-            account = account,
-            community = self,
-            is_manager = manager,
-            )
-        mbr.save()
+        # Actually add (symetrically)
+        Network.objects.create(
+            client = account,
+            target = self,
+            is_manager = is_manager,
+        )
+        Network.objects.create(
+            client = self,
+            target = account,
+            is_manager = False,
+        )
         
         # Post join message
         notifier.joined(account, self)
@@ -197,31 +178,10 @@ class Community(_AbstractCommunity):
                 raise PermissionDenied("You're not allowed to exclude somebody from this community.")
             else:
                 raise PermissionDenied("You're not allowed to leave this community")
-            
-        # Quick security check, then delete membership info
-        for mbr in CommunityMembership.objects.filter(account = account, community = self):
-            mbr.delete()
+        
+        Network.objects.filter(client__id = self.id, target__id = account.id).delete()
+        Network.objects.filter(target__id = self.id, client__id = account.id).delete()
 
-class CommunityMembership(models.Model):
-    """
-    Community Membership association class.
-    This is a many to many asso class
-    """
-    account = models.ForeignKey(Account)
-    community = models.ForeignKey(Community, related_name = "membership_manager")
-    date_joined = models.DateField(auto_now_add = True)
-    is_manager = models.BooleanField(default = False)               # True if community manager
-    # is_invitation_pending = models.BooleanField(default = False)    # True if invited by sbd
-    # invitation_from = models.ForeignKey(Account, related_name = "invite_to_community_membership")
-
-    def __unicode__(self):
-        if self.is_manager:
-            return "%s is a community manager for %s" % (self.account, self.community, )
-        return "%s is member of %s" % (self.account, self.community, )
-
-    class Meta:
-        app_label = 'twistranet'
-        unique_together = ('account', 'community')
 
 class GlobalCommunity(Community):
     """
@@ -268,8 +228,6 @@ class AdminCommunity(Community):
         """Return main (and only) system account. Will raise if several are set."""
         return self.__class__.objects.get()
 
-
-    
 
 
 

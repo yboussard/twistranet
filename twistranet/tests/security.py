@@ -23,8 +23,9 @@ class SecurityTest(TestCase):
         dbsetup.repair()
         __account__ = SystemAccount.get()
         self.system = __account__
-        self.B = UserAccount.objects.get(user__username = "B").account_ptr
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
+        self.B = UserAccount.objects.get(user__username = "B").account_ptr
+        self.C = UserAccount.objects.get(user__username = "C").account_ptr
         self.admin = UserAccount.objects.get(user__username = "admin").account_ptr
         
     def test_has_role(self):
@@ -34,11 +35,11 @@ class SecurityTest(TestCase):
         __account__ = self.system
         obj = GlobalCommunity.objects.get()
         self.failUnless(self.system.has_role(roles.system, obj))
-        self.failUnless(self.system.has_role(roles.administrator, obj))
+        self.failUnless(self.system.has_role(roles.owner, obj))
         self.failIf(self.admin.has_role(roles.system, obj))
-        self.failUnless(self.admin.has_role(roles.administrator, obj))
-        self.failUnless(self.admin.has_role(roles.community_member, obj))
-        self.failIf(self.admin.has_role(roles.community_manager, obj))
+        self.failUnless(self.admin.has_role(roles.owner, obj))
+        self.failUnless(self.admin.has_role(roles.network, obj))
+        self.failIf(self.A.has_role(roles.owner, obj))
         
     def test_can_join(self,):
         """
@@ -64,7 +65,9 @@ class SecurityTest(TestCase):
         self.failIf(adm.can_edit)
         __account__ = self.admin
         self.failUnless(adm.is_manager)
-        self.failUnless(adm.can_edit)
+        # The two following may be true or false depending wether admin is a community manager on administrators.
+        self.failIf(self.admin.has_role(roles.owner, adm))
+        self.failIf(adm.can_edit)
     
     def test_private_content(self):
         """
@@ -112,7 +115,7 @@ class SecurityTest(TestCase):
         s.save()
         
         # Check if 'view' permission is ok in permissionmapping
-        self.failUnless(s.content_ptr in Content.objects.all())
+        self.failUnless(Content.objects.filter(id = s.id))
         __account__ = self.admin       # admin is in A's network
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.B        # B is not
@@ -150,13 +153,13 @@ class SecurityTest(TestCase):
         # I should be able to delete a content I wrote
         __account__ = self.A
         StatusUpdate(text = "Hi, there.").save()
-        c = StatusUpdate.objects.filter(author = self.A)[0]
+        c = StatusUpdate.objects.filter(owner = self.A)[0]
         _id = c.id
         c.delete()
         self.failIf(StatusUpdate.objects.filter(id = _id))
         
         # I shouldn't be able to delete a content I didn't write
-        c = StatusUpdate.objects.filter(author = self.admin)[0]
+        c = StatusUpdate.objects.filter(owner = self.admin)[0]
         _id = c.id
         self.assertRaises(Exception, c.delete, ())
         self.failUnless(StatusUpdate.objects.filter(id = _id))
@@ -174,7 +177,7 @@ class SecurityTest(TestCase):
         glob.permissions = "internet"
         glob.save()
         del __account__
-        self.failUnless(StatusUpdate.objects.count())
+        self.failUnlessEqual(StatusUpdate.objects.count(), 0)
 
         # Get back to intranet. No more content please.
         __account__ = self.system
@@ -182,7 +185,7 @@ class SecurityTest(TestCase):
         glob.permissions = "intranet"
         glob.save()
         del __account__
-        self.failIf(StatusUpdate.objects.count())
+        self.failUnlessEqual(list(StatusUpdate.objects.all()), [])
         
     def test_hassystem_account(self):
         """
@@ -208,8 +211,8 @@ class SecurityTest(TestCase):
         __account__ = self.system
         self.failUnlessEqual(len(AdminCommunity.objects.filter(model_name = "AdminCommunity")), 1)
         self.failUnlessEqual(len(GlobalCommunity.objects.filter(model_name = "GlobalCommunity")), 1)
-        self.failUnlessEqual(Community.objects.admin.model_name, "AdminCommunity")
-        self.failUnlessEqual(Community.objects.global_.model_name, "GlobalCommunity")
+        self.failUnlessEqual(AdminCommunity.objects.get().model_name, "AdminCommunity")
+        self.failUnlessEqual(GlobalCommunity.objects.get().model_name, "GlobalCommunity")
         
     def test_communities(self):
         """
@@ -235,7 +238,7 @@ class SecurityTest(TestCase):
         """
         __account__ = self.B
         self.B.permissions = "listed"
-        self.B.save()
+        self.B.object.save()
         hello = StatusUpdate(text = "Hello there", permissions = "public")
         hello.save()
         self.failUnless(hello.can_view)
@@ -244,19 +247,13 @@ class SecurityTest(TestCase):
         """
         Check if a notification for B is seen only by those who can see B
         """
-        __account__ = self.B
-        self.B.permissions = "listed"
-        self.B.save()
-        hello = StatusUpdate(text = "Hello there", permissions = "public")
+        __account__ = self.C
+        hello = StatusUpdate(text = "Hello there", permissions = "private")
         hello.save()
-        n = notifier.likes(self.B, hello)
+        n = notifier.likes(self.C, hello)
         nid = n.id
         self.failUnless(Content.objects.filter(id = nid).exists())
         __account__ = self.A
         self.failIf(Content.objects.filter(id = nid).exists())
         
-
-
-
-
 

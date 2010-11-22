@@ -1,3 +1,2 @@
-import account,\
-       community,\
-       relation
+import account
+import community

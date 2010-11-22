@@ -38,7 +38,7 @@ class Notifier(object):
 
     def likes(self, account, content):
         """
-        Say an account likes the given object
+        Say an account likes the given object.
         """
         return self._notify(
             publisher = account,

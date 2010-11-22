@@ -10,7 +10,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for community in account.my_communities %}
+          {% for community in account.communities %}
               {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community.translation %}
           {% endfor %}
         </li>
@@ -27,7 +27,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for account in account.getMyNetwork %}
+          {% for account in account.network %}
             {% include 'thumbnails/medium.html' %}
               {# {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %} #}
           {% endfor %}
@@ -45,7 +45,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for account in account.getMyFollowed %}
+          {% for account in account.following %}
               {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
           {% endfor %}
         </li>
@@ -62,7 +62,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for account in account.getMyFollowers %}
+          {% for account in account.followers %}
               {% usemacro accountblock 'thumbnail-32-none' 32 32 account %}
           {% endfor %}
         </li>

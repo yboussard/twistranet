@@ -15,13 +15,13 @@ FIXTURES = [
         description = "This community contains all TwistraNet members. It's mainly used for critical information.",
         permissions = "intranet",
     ),
-    
     Fixture(
         AdminCommunity,
         slug = "administrators",
         title = "Administrators",
         description = "TwistraNet admin team",
         permissions = "workgroup",
+        publisher = GlobalCommunity.objects.filter(),
     ),
 
     # Default menu items
@@ -33,7 +33,7 @@ FIXTURES = [
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "menu_main"),
+        parent = Menu.objects.filter(slug = "menu_main"),
         order = 0,
         view_path = "twistranet.views.home",
         title = "Home",
@@ -42,7 +42,7 @@ FIXTURES = [
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "menu_main"),
+        parent = Menu.objects.filter(slug = "menu_main"),
         order = 10,
         view_path = 'twistranet.views.communities',
         title = "Communities",
@@ -51,7 +51,6 @@ FIXTURES = [
 
     Fixture(
         MenuItem,
-        menu = Menu.objects.filter(slug = "menu_main"),
         parent = MenuItem.objects.filter(slug = "menuitem_communities"),
         order = 0,
         view_path = 'twistranet.views.communities',

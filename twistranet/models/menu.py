@@ -9,12 +9,58 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core import urlresolvers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
-from twistranet.models import Twistable, Content, Account, _basemanager
+from twistranet.models import Twistable, Content, Account
+from twistranet.lib import permissions
 
-class _MenuItemContainer(object):
+ 
+class MenuItem(Twistable):
     """
-    Used to make the subitem possible on the root Menu object
+    A menu can point either to a view, an internal or external URL or a Twistable object.
+    In the latter case, the menu label is determine by the Twistable's title.
     """
+    order = models.IntegerField(default = 0)
+
+    # Target URL / Object / Permissions
+    url_name = models.CharField(max_length=100, help_text='URL Name for Reverse Lookup, eg comments.comment_was_posted', blank=True, null=True, )
+    view_path = models.CharField(max_length=100, help_text='Python Path to View to Render, eg django.contrib.admin.views.main.index', blank=True, null=True, )
+    link_url = models.CharField(max_length=100, help_text='URL or URI to the content, eg /about/ or http://foo.com/', blank=True, null=True, )
+    target = models.ForeignKey("Twistable", related_name = "menu_items", null = True)
+    
+    # Parenting stuff
+    parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
+
+    permission_templates = permissions.content_templates        # This is the lazy man's solution, we use same perms as content ;)
+    
+    class Meta:
+        app_label = "twistranet"
+         
+    def save(self, *args, **kw):
+        """
+        Ensure DB consistancy
+        """
+        # Check that we're not trying to set a parent on a pure Menu object
+        if isinstance(self, Menu):
+            if self.parent or self.parent_id:
+                raise ValidationError("A Menu must not have a parent.")
+        else:
+            if not self.parent_id and not self.parent:
+                raise ValidationError("A MenuItem must have a parent.")
+        
+        # Check if there's at least one access method and dereference target if needed.
+        if self.target:
+            # If target is set, we set the publisher to the same value.
+            # This way, the menu item has the same visibility as its target (if its publisher doesn't change)
+            if isinstance(self.target, Account):
+                self.publisher = self.target
+            else:
+                self.publisher = self.target.publisher
+        elif (not self.url_name and not self.view_path and not self.link_url):
+            if not isinstance(self, Menu):
+                raise ValueError("Should have at least one target or path specified for the menu item")
+        
+        # Call the super
+        super(MenuItem, self).save(*args, **kw)
+        
     @property
     def has_children(self):
         """
@@ -27,112 +73,8 @@ class _MenuItemContainer(object):
         """
         You can override this, maybe?
         """
-        if isinstance(self, MenuItem):
-            q = self._children.order_by('order')
-        elif isinstance(self, Menu):
-            q = MenuItem.objects.filter(menu = self.id, parent = None).order_by('order')
-        else:
-            raise AssertionError("Inherits from this class without a reason")
+        return MenuItem.objects.filter(parent = self).order_by('order')
 
-        ret = []
-        for child in q:
-            if child.can_view:          # XXX This is suboptimal
-                ret.append(child)
-            
-        return ret
-
-class MenuItemManager(_basemanager.BaseManager):
-    """
-    Shortcuts to populate menu objects along with menuitem objects
-    """
-    def get_query_set(self,):
-        """
-        Each time we get a menu item, try to get the menu as well.
-        """
-        base_query_set = super(MenuItemManager, self).get_query_set()
-        return base_query_set.select_related("menu")
-        
-
-class Menu(Twistable, _MenuItemContainer):
-    class Admin:
-        pass
-        
-    class Meta:
-        app_label = "twistranet"
- 
-    def __unicode__(self):
-        return _("%s" % self.slug)
- 
-    def save(self):
-        """
-        Re-order all items at from 10 upwards, at intervals of 10.
-        This makes it easy to insert new items in the middle of
-        existing items without having to manually shuffle
-        them all around.
-        """
-        super(Menu, self).save()
- 
-        current = 10
-        for item in MenuItem.objects.filter(menu=self).order_by('order'):
-            item.order = current
-            item.save()
-            current += 10
- 
- 
- 
-class MenuItem(Twistable, _MenuItemContainer):
-    """
-    A menu can point either to a view, an internal or external URL or a Twistable object.
-    In the latter case, the menu label is determine by the Twistable's title.
-    """
-    menu = models.ForeignKey(Menu)
-    order = models.IntegerField()
-
-    # Target URL / Object / Permissions
-    url_name = models.CharField(max_length=100, help_text='URL Name for Reverse Lookup, eg comments.comment_was_posted', blank=True, null=True, )
-    view_path = models.CharField(max_length=100, help_text='Python Path to View to Render, eg django.contrib.admin.views.main.index', blank=True, null=True, )
-    link_url = models.CharField(max_length=100, help_text='URL or URI to the content, eg /about/ or http://foo.com/', blank=True, null=True, )
-    target = models.ForeignKey("Twistable", related_name = "menu_items", null = True)
-    
-    # Parenting stuff
-    parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
-
-    # Optimization of parent menu access
-    objects = MenuItemManager()
-    
-    class Meta:
-        app_label = "twistranet"
- 
-    def __unicode__(self):
-        return _("%s %s. %s" % (self.menu.slug, self.order, self.title))
-        
-    def save(self, *args, **kw):
-        """
-        Ensure DB consistancy
-        """
-        from twistranet.models import Content, Account
-        
-        # Check if there's at least one access method and dereference target if needed.
-        if hasattr(self, 'target'):
-            pass    # Err, in fact, nothing more to do here.
-        elif (not self.url_name and not self.view_path and not self.link_url):
-            raise ValueError("Should have at least one target or path specified for the menu")
-        
-        # Call the super
-        super(MenuItem, self).save(*args, **kw)
-
-    @property
-    def can_view(self):
-        """Here, if a target is set, we check if it has can_view permission.
-        """
-        t = self.target
-        if t:
-            return t.can_view
-
-        # No target => We can see it anyway (by now)
-        # XXX TODO: Implement a better security model on Menu items?
-        return True
-        
     @property
     def label(self):
         """
@@ -167,5 +109,32 @@ class MenuItem(Twistable, _MenuItemContainer):
         return self.target.get_absolute_url()
 
     
-    
+
+class Menu(MenuItem):
+    """
+    After all, a menu is just a special kind of menu item.
+    """
+    class Admin:
+        pass
+
+    class Meta:
+        app_label = "twistranet"
+
+    def save(self, *args, **kw):
+        """
+        Re-order all items at from 10 upwards, at intervals of 10.
+        This makes it easy to insert new items in the middle of
+        existing items without having to manually shuffle
+        them all around.
+        """
+        super(Menu, self).save(*args, **kw)
+
+        current = 10
+        for item in self.children:
+            item.order = current
+            item.save()
+            current += 10
+
+
+
     

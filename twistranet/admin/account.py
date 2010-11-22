@@ -1,6 +1,6 @@
 from twistranet.models.account import Account, UserAccount, AccountLanguage
-from community import CommunityMembershipInline
-from relation import InitiatorInline, TargetInline
+# from community import CommunityMembershipInline
+# from relation import InitiatorInline, TargetInline
 from django.contrib import admin
 
 class AccountLanguageInline(admin.StackedInline):
@@ -8,7 +8,8 @@ class AccountLanguageInline(admin.StackedInline):
     extra = 1
 
 class UserAccountAdmin(admin.ModelAdmin):
-    inlines = (AccountLanguageInline, CommunityMembershipInline, InitiatorInline, TargetInline)
+    pass
+    # inlines = (AccountLanguageInline, CommunityMembershipInline, InitiatorInline, TargetInline)
 
 admin.site.register(Account)
 admin.site.register(UserAccount, UserAccountAdmin)
