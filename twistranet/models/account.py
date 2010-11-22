@@ -160,7 +160,6 @@ class Account(twistable.Twistable):
                 raise NotImplementedError("Role %s not implemented", role)
                 
             # Issue the query to find role value
-            # print "QUERY!", self, "has_role", role, "on", obj_id
             has_role = twistable.Twistable.objects.__booster__.filter(
                 Q(id = obj_id,) & flt
             ).exists()
