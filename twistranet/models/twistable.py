@@ -245,10 +245,8 @@ class TwistableManager(models.Manager):
             for f in select_field_keys:
                 select_dict[s] = select_dict[s].replace(f, select_fields[f])
         
-        # print select_dict
-        
         # Add extra role information on the returned query.
-        qs = qs.extra(select = select_dict)
+        # qs = qs.extra(select = select_dict)
         return qs
 
 
