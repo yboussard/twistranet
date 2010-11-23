@@ -5,7 +5,9 @@
     {%ifequal account.id current_account.id %}
         {% blocktrans %}My profile{% endblocktrans %}
     {%else%}
-        {% blocktrans %}{{ account.screen_name }}'s Profile{% endblocktrans %}
+        {% with account.text_headline as text_headline %}
+            {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
+        {% endwith %}
     {%endifequal%}
 {% endblock %}
 
@@ -23,7 +25,9 @@
         {%ifequal account.id logged_account.id %}
             {% blocktrans %}My profile{% endblocktrans %}
         {%else%}
-            {% blocktrans %}{{ account.screen_name }}'s Profile{% endblocktrans %}
+            {% with account.text_headline as text_headline %}
+                {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
+            {% endwith %}
         {%endifequal%}
     </h1>
     <p class="discreet">&nbsp;</p>

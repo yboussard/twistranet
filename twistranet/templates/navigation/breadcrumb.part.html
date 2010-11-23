@@ -11,7 +11,7 @@
 {% else %}
     {% if community %}
         &gt;
-        {{ community.screen_name }}
+        {{ community.text_headline }}
     {% else %}
         {% if account %}
             {%ifequal account.id logged_account.id %}
@@ -19,7 +19,9 @@
                 {% blocktrans %}My wall{% endblocktrans %}
             {%else%}
                 &gt;
-                {% blocktrans %}{{ account.screen_name }}'s Profile{% endblocktrans %}
+                {% with account.text_headline as text_headline %}
+                    {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
+                {% endwith %}
             {%endifequal%}
         {% endif %}
     {% endif %}

@@ -50,7 +50,7 @@ def community_by_id(request, community_id):
         {
             "path": request.path,
             "community": community,
-            "members": community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
+            "members": community.members[:25],        # XXX SUBOPTIMAL
             "latest_content_list": latest_list[:25],
             "community_forms": forms,            
             "is_member": community.is_member,
@@ -105,7 +105,7 @@ def edit_community(request, community_id = None):
         {
             "path": request.path,
             "community": community,
-            "members": community and community.members.get_query_set()[:25],        # XXX SUBOPTIMAL
+            "members": community and community.members[:25],        # XXX SUBOPTIMAL?
             "form": form,
             "is_member": community and community.is_member,
         },

@@ -68,7 +68,6 @@ class _AbstractContent(twistable.Twistable):
     # Our security model
     objects = ContentManager()
 
-
 class Content(_AbstractContent):
     """
     Abstract content representation class.
@@ -78,38 +77,12 @@ class Content(_AbstractContent):
     # The publisher this content is published for
     # publisher = models.ForeignKey(Account)                      # The account this content is published for.
     
-
-    # Usual metadata
-    # Text representation of this content
-    # Usually content is represented that way:
-    # (pict) HEADLINE
-    # Summary summary summary [Read more]
-    # 
-    # We store summary and headline in DB for performance and searchability reasons.
-    # Heavy @-querying will be done at save time, not at display-time.
-    # Both of them can contain links and minimal HTML formating.
-    # Never let your users edit those fields directly, as they'll be flagged as html-safe!
-    # If you want to change behaviour of those fields, override the preprocess_xxx methods.
-    html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
-    html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
-    text_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
-    text_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
-    
     # Resources associated to this content
     resources = models.ManyToManyField(Resource, blank = True, null = True)
     
     # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
     # source = "web"
     
-    # List of field name / generation method name. This is very useful when translating content.
-    # See twistrans.lib for more information
-    # XXX TODO: Document and/or rename that?
-    auto_values = (
-        ("html_headline", "preprocess_html_headline", ),
-        ("text_headline", "preprocess_text_headline", ),
-        ("html_summary", "preprocess_html_summary", ),
-        ("text_summary", "preprocess_text_summary", ),
-    )
     # This points to the original version of a translated content.
     # (Not implemented yet, but will be one day.)
     translation_of = models.ForeignKey(
@@ -140,70 +113,6 @@ class Content(_AbstractContent):
         app_label = 'twistranet'
 
     #                                                               #
-    #                       Display management                      #
-    # You can override this in your content types.                  #
-    #                                                               #
-    
-    def preprocess_html_headline(self, text = None):
-        """
-        preprocess_html_headline => unicode string.
-        
-        Used to compute the headline displayed.
-        You can have some logic to display a different headline according to the content's properties.
-        Default is to display the first characters (or so) of the title, or of raw text content if title is empty.
-        
-        You can override this in your own content types if you want.
-        """
-        if text is None:
-            text = getattr(self, "title", "")
-        if not text:
-            text = getattr(self, "text", "")
-        MAX_HEADLINE_LENGTH = 140 - 5
-        text = html.escape(text)
-        if len(text) >= MAX_HEADLINE_LENGTH:
-            text = u"%s [...]" % text[:MAX_HEADLINE_LENGTH]
-        text = utils.escape_links(text)
-        return text
-        
-    def preprocess_text_headline(self, text = None):
-        """
-        Default is just tag-stripping
-        """
-        if text is None:
-            text = self.preprocess_html_headline()
-        return html.strip_tags(text)
-        
-    def preprocess_html_summary(self, text = None):
-        """
-        Return an HTML-safe summary.
-        Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
-        """
-        if text is None:
-            text = getattr(self, "description", "")
-        if not text:
-            text = getattr(self, "text", "")
-
-        MAX_SUMMARY_LENGTH = 1024 - 10
-        text = html.escape(text)
-        if len(text) >= MAX_SUMMARY_LENGTH:
-            text = u"%s [...]" % text[:MAX_SUMMARY_LENGTH]
-        text = utils.escape_links(text)
-        if text == self.preprocess_html_headline():
-            text = ""
-
-        return text
-        
-    def preprocess_text_summary(self, text = None):
-        """
-        Default is just tag-stripping
-        """
-        if text is None:
-            text = self.preprocess_html_summary()
-        return html.strip_tags(text)        
-            
-    # DO NOT OVERRIDE ANYTHING BELOW THIS LINE!
-
-    #                                                               #
     #                   Content internal stuff                      #
     #                                                               #
 
@@ -227,13 +136,7 @@ class Content(_AbstractContent):
         if self.id:
             if not self.can_edit:
                 raise PermissionDenied("You're not allowed to edit this content.")
-                    
-        # Set headline and summary cached values
-        self.html_headline = self.preprocess_html_headline()
-        self.text_headline = self.preprocess_text_headline()
-        self.html_summary = self.preprocess_html_summary()
-        self.text_summary = self.preprocess_text_summary()
-        
+                        
         # Actually save stuff
         return super(Content, self).save(*args, **kw)
         

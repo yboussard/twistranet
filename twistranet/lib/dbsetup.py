@@ -11,7 +11,6 @@ from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
 
 from twistranet.models import *
-from twistranet.models import _permissionmapping
 from twistranet.lib import permissions
 
 import settings

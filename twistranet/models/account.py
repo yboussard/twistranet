@@ -14,12 +14,7 @@ class Account(twistable.Twistable):
     A generic account.
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
-    """
-    # XXX TODO: Definitely rename this into 'title'
-    @property
-    def screen_name(self):
-        return self.title
-                                            
+    """                                        
     # Picture management.
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
@@ -71,7 +66,7 @@ class Account(twistable.Twistable):
         if self.__class__ == Account:
             raise ValueError("You're not allowed to save an Account object. Save the derived object instead")
         
-        # Validate screen_name / slug
+        # Validate title / slug
         if not self.title:
             if not self.slug:
                 raise ValidationError("You must provide either a slug or a title for an account")
@@ -127,21 +122,38 @@ class Account(twistable.Twistable):
             flt = twistable.Twistable.objects.get_anonymous_filter(auth)
             raise NotImplementedError("todo")
             
-        # Procedural method if obj is already given.
+        # Procedural method and cache retrieving if obj is already given.
         # We use this as a shortcut to avoid issuing costly queries.
         has_role = None
         if obj is not None:
-            if role <= roles.owner:
-                if obj.owner_id == auth.id:
-                    has_role = True
-                elif obj.publisher_id == auth.id:
-                    has_role = True
-                elif obj_id == auth.id:
-                    has_role = True
+            # First we try to find the caches for exact matches.
+            # If we don't find, use procedural tests
+            if role == roles.owner:
+                role_cache = getattr(obj, '_c_owner', None)
+                if role_cache is not None:
+                    has_role = bool(role_cache)
+            elif role == roles.network:
+                role_cache = getattr(obj, '_c_network', None)
+                if role_cache is not None:
+                    has_role = bool(role_cache)
+            elif role == roles.public:
+                role_cache = getattr(obj, '_c_public', None)
+                if role_cache is not None:
+                    has_role = bool(role_cache)
+
+            # Partial procedural tests if we didn't find the role.
+            if has_role is None:
+                if role <= roles.owner:
+                    if obj.owner_id == auth.id:
+                        has_role = True
+                    elif obj.publisher_id == auth.id:
+                        has_role = True
+                    elif obj_id == auth.id:
+                        has_role = True
                     
-            if role <= roles.public:
-                if not obj.publisher_id:
-                    has_role = True
+                if not has_role and role <= roles.public:
+                    if not obj.publisher_id:
+                        has_role = True
             
         # Didn't find the role. We must issue a query.
         if has_role is None:
@@ -160,6 +172,7 @@ class Account(twistable.Twistable):
                 raise NotImplementedError("Role %s not implemented", role)
                 
             # Issue the query to find role value
+            print "has_role hits db for", self, role, obj or obj_id
             has_role = twistable.Twistable.objects.__booster__.filter(
                 Q(id = obj_id,) & flt
             ).exists()
@@ -173,26 +186,6 @@ class Account(twistable.Twistable):
     def has_permission(self, permission, obj):
         """
         Return true if authenticated user has been granted the given permission on obj.
-        XXX TODO: Heavily optimize and use caching!
-        """
-        """
-        mgr = twistable.Twistable.objects
-        auth = mgr._getAuthenticatedAccount()
-        if isinstance(auth, SystemAccount):
-            return True
-        if isinstance(auth, AnonymousAccount):
-            # XXX Can't be true, Anon. may not have owner or nwk roles!
-            raise NotImplementedError("todo")
-        return mgr.filter(
-            Q(
-                id = obj.id,
-                _permissions__name = permission,
-            ) & (
-                mgr.get_owner_filter(auth) | \
-                mgr.get_network_filter(auth) | \
-                mgr.get_public_filter(auth)
-            )
-        ).exists()
         """
         # Check roles, strongest first to optimize caching.
         p_template = obj.model_class.permission_templates.get(obj.permissions)
@@ -323,6 +316,7 @@ class SystemAccount(Account):
     System accounts can reach ALL content from ALL communities.
     """
     default_picture_resource_slug = "default_system_picture"
+    SYSTEMACCOUNT_ID = 1       # Global SystemAccount id. Should always be 1 as it's the first account created in the fixture.
     
     class Meta:
         app_label = "twistranet"

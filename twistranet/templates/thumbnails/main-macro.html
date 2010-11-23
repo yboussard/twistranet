@@ -14,11 +14,11 @@
 {# just a thumbnail with a link for account objects (useraccount, community ...) }
 {# TODO: use the thumbnail more generic macro above }
 {% macro accountthumbnail imgwidth imgheight accountobject  %}
-      <a title="{{accountobject.screen_name}}"
+      <a title="{{accountobject.text_headline}}"
          href="{% url twistranet.views.account_by_slug accountobject.slug %}"
          class="image-block image-block-{{imgwidth}}-{{imgheight}} image-block-alone">
-        <img title="{{accountobject.screen_name}}"
-             alt="{{accountobject.screen_name}}"
+        <img title="{{accountobject.text_headline}}"
+             alt="{{accountobject.text_headline}}"
              src="{% url twistranet.views.resource_by_account accountobject.id 'picture' %}" />  
       </a>
 {% endmacro %}
@@ -50,13 +50,13 @@
   <div class="thumbnail-account-part {{blocktype}}">
       <a href="{% url twistranet.views.account_by_slug accountobject.slug %}" class="image-block image-block-{{imgwidth}}-{{imgheight}}">
           <img
-              title="{{accountobject.screen_name}}"
-              alt="{{accountobject.screen_name}}"
+              title="{{accountobject.text_headline}}"
+              alt="{{accountobject.text_headline}}"
               src="{% url twistranet.views.resource_by_account accountobject.id 'picture' %}" />
       </a>
       <label class="thumbnail-account-legend">
         <a href="{% url twistranet.views.account_by_slug accountobject.slug %}">
-         {{ accountobject.screen_name }}
+         {{ accountobject.text_headline }}
         </a>
       </label>
   </div>

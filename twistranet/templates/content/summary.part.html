@@ -11,10 +11,10 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            <a class="author" href="{% url twistranet.views.account_by_id content.owner_id %}">{{ content.owner.translation.screen_name }}</a>
+            <a class="author" href="{% url twistranet.views.account_by_id content.owner_id %}">{{ content.owner.translation.text_headline }}</a>
             {% if not content.owner_id == content.publisher_id %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.screen_name }}</a>
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.text_headline }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ community.screen_name }}{% endblock %}
+{% block title %}{{ community.text_headline }}{% endblock %}
 
 {% load i18n %}
 
 {% block content %}
-    <h1>{{ community.screen_name }}</h1>
+    <h1>{{ community.text_headline }}</h1>
     <p class="discreet">&nbsp;</p>
     {% if community.can_publish %}
         {% include "community/community_forms.part.html" %}

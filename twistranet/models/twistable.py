@@ -114,16 +114,16 @@ class TwistableManager(models.Manager):
             auth = self._getAuthenticatedAccount()
         
         return Q(
-            owner = auth,
+            id = auth.id,
         ) | Q(
-            publisher__owner = auth,
+            owner = auth,
         ) | Q(
             publisher = auth,
         ) | Q(
+            publisher__owner = auth,
+        ) | Q(
             owner__targeted_network__target = auth,
             owner__is_community = True,
-        ) | Q(
-            id = auth.id,
         )
 
     def duplicate_query_set(self):
@@ -149,8 +149,12 @@ class TwistableManager(models.Manager):
                 return base_query_set.none()
     
         # System account: return all objects without asking any question.
-        if auth.model_name == "SystemAccount":
-            return base_query_set           # The base qset with no filter
+        if auth.id == account.SystemAccount.SYSTEMACCOUNT_ID:
+            return base_query_set.extra(select = {
+                "_c_owner": "1 = 1",
+                "_c_network": "1 = 1",
+                "_c_public": "1 = 1",
+            })
                         
         # Ok, so the struggle begins!
         #
@@ -179,16 +183,73 @@ class TwistableManager(models.Manager):
         #           - UserAccount: owner = AdminCommunity.
         
         # We should cache as much as we could.
-        # cache_key = "%i_%s_query_set" % (auth.id, self.model.__name__)
-        # cache_value = cache.get(cache_key)
-        # if cache_value:
-        #     return pickle.loads(cache_value)
         public_filter = self.get_public_filter(auth, )
         network_filter = self.get_network_filter(auth, )
         owner_filter = self.get_owner_filter(auth, )
-    
-        # 4 (shunted)- The 'system' role is granted to SystemAccount only. That's a huge shunt.
-        return base_query_set.filter(public_filter | network_filter | owner_filter)
+        qs = base_query_set.filter(public_filter | network_filter | owner_filter)
+
+        # We try to find the owner network table.
+        # We use the find_ordering_name() method for that. Maybe that's too deep into Django guts?
+        # XXX TODO: Cache this dict on a per-model basis?
+        flt_qs = qs.filter()        # Make a copy to avoid trashing the original query_set
+        select_field_keys = [
+            "owner__id",
+            "publisher__id",
+            "account_object__id",
+            "owner__is_community",
+            "publisher__owner__id",
+            "owner__targeted_network__target__id",
+            "account_object__targeted_network__target__id",
+            "publisher__targeted_network__target__id",
+        ]
+        select_field_keys.sort(lambda x,y: cmp(len(y), len(x)))
+        select_fields = {}
+        for fld in select_field_keys:
+            if not "__" in fld:
+                raise ValueError("Your field names must have __ in them: %s" % fld)
+            actual_field = flt_qs.query.get_compiler(using = flt_qs.db).find_ordering_name(fld, flt_qs.query.model._meta)[0]
+            # print fld, actual_field
+            select_fields[fld] = "%s.%s" % (actual_field[0], actual_field[1], )
+        
+        param_dict = {
+            "auth__id":             auth.id,
+            "network_role":         roles.network,
+        }
+        select_dict = {
+            "_c_owner": """
+                twistranet_twistable.id = %(auth__id)d
+                OR owner__id = %(auth__id)d
+                OR publisher__id = %(auth__id)d
+                OR publisher__owner__id = %(auth__id)d
+                OR (
+                    owner__targeted_network__target__id = %(auth__id)d
+                    AND owner__is_community = 1
+                )""" % param_dict,
+            #     
+            # "_c_network": """
+            #     (
+            #         twistranet_twistable._p_can_list <= %(network_role)d
+            #         AND account_object__id IS NOT NULL
+            #         AND account_object__targeted_network__target__id = %(auth__id)d
+            #     ) OR (
+            #         twistranet_twistable._p_can_list <= %(network_role)d
+            #         AND account_object__id IS NULL
+            #         AND publisher__targeted_network__target__id = %(auth__id)d
+            #     )""" % param_dict,
+        }
+        
+        # Replace select_dict values with the right field
+        for s in select_dict.keys():
+            select_dict[s] = select_dict[s].replace("\n", " ")
+            select_dict[s] = select_dict[s].replace("  ", " ")
+            for f in select_field_keys:
+                select_dict[s] = select_dict[s].replace(f, select_fields[f])
+        
+        # print select_dict
+        
+        # Add extra role information on the returned query.
+        qs = qs.extra(select = select_dict)
+        return qs
 
 
     def get_query_set(self,):
@@ -285,6 +346,30 @@ class Twistable(_AbstractTwistable):
     # Pointer to the underlying account, to allow the filter to work with all derived objects.
     account_object = models.OneToOneField("Account", db_index = True, null = True, related_name = "+")
     is_community = models.BooleanField(default = False, db_index = True, )
+    
+    # Text representation of this content
+    # Usually a twistable is represented that way:
+    # (pict) HEADLINE
+    # Summary summary summary [Read more]
+    # We store summary and headline in DB for performance and searchability reasons.
+    # Heavy @-querying will be done at save time, not at display-time.
+    # Both of them can contain links and minimal HTML formating.
+    # Never let your users edit those fields directly, as they'll be flagged as html-safe!
+    # If you want to change behaviour of those fields, override the preprocess_xxx methods.
+    html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
+    html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
+    text_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
+    text_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
+    
+    # List of field name / generation method name. This is very useful when translating content.
+    # See twistrans.lib for more information
+    # XXX TODO: Document and/or rename that?
+    auto_values = (
+        ("html_headline", "preprocess_html_headline", ),
+        ("text_headline", "preprocess_text_headline", ),
+        ("html_summary", "preprocess_html_summary", ),
+        ("text_summary", "preprocess_text_summary", ),
+    )
     
     # Basic metadata shared by all Twist objects.
     # Title is mandatory.
@@ -391,12 +476,20 @@ class Twistable(_AbstractTwistable):
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)
-        
+    
+        # Set headline and summary cached values
+        self.html_headline = self.preprocess_html_headline()
+        self.text_headline = self.preprocess_text_headline()
+        self.html_summary = self.preprocess_html_summary()
+        self.text_summary = self.preprocess_text_summary()
+    
+        # Check if we're creating or not
         if self.id:
             creation = False
         else:
             creation = True
             
+        # Self-pointer to the account object if this is an account (sorry, didn't find simpler method)
         ret = super(Twistable, self).save(*args, **kw)
         if creation and isinstance(self, account.Account):
             self.account_object = self
@@ -445,6 +538,70 @@ class Twistable(_AbstractTwistable):
             
     class Meta:
         app_label = "twistranet"
+
+
+
+    #                                                               #
+    #                       Display management                      #
+    # You can override this in your content types.                  #
+    #                                                               #
+
+    def preprocess_html_headline(self, text = None):
+        """
+        preprocess_html_headline => unicode string.
+
+        Used to compute the headline displayed.
+        You can have some logic to display a different headline according to the content's properties.
+        Default is to display the first characters (or so) of the title, or of raw text content if title is empty.
+
+        You can override this in your own content types if you want.
+        """
+        if text is None:
+            text = getattr(self, "title", "")
+        if not text:
+            text = getattr(self, "text", "")
+        MAX_HEADLINE_LENGTH = 140 - 5
+        text = html.escape(text)
+        if len(text) >= MAX_HEADLINE_LENGTH:
+            text = u"%s [...]" % text[:MAX_HEADLINE_LENGTH]
+        text = utils.escape_links(text)
+        return text
+
+    def preprocess_text_headline(self, text = None):
+        """
+        Default is just tag-stripping
+        """
+        if text is None:
+            text = self.preprocess_html_headline()
+        return html.strip_tags(text)
+
+    def preprocess_html_summary(self, text = None):
+        """
+        Return an HTML-safe summary.
+        Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
+        """
+        if text is None:
+            text = getattr(self, "description", "")
+        if not text:
+            text = getattr(self, "text", "")
+
+        MAX_SUMMARY_LENGTH = 1024 - 10
+        text = html.escape(text)
+        if len(text) >= MAX_SUMMARY_LENGTH:
+            text = u"%s [...]" % text[:MAX_SUMMARY_LENGTH]
+        text = utils.escape_links(text)
+        if text == self.preprocess_html_headline():
+            text = ""
+
+        return text
+
+    def preprocess_text_summary(self, text = None):
+        """
+        Default is just tag-stripping
+        """
+        if text is None:
+            text = self.preprocess_html_summary()
+        return html.strip_tags(text)        
 
     #                                                                   #
     #                       Security Management                         #

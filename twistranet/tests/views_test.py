@@ -63,9 +63,19 @@ class ViewsTest(TestCase):
         Print that a few times to check performance and cache options.
         """
         self.failUnless(settings.DEBUG)
-        for t in range(1):
-            # response = self.B_client.get("/")
-            # self.failUnlessEqual(response.status_code, 200)
-            response = self.admin_client.get("/")
-            self.failUnlessEqual(response.status_code, 200)
+        # response = self.B_client.get("/")
+        # self.failUnlessEqual(response.status_code, 200)
+        response = self.admin_client.get("/")
+        self.failUnlessEqual(response.status_code, 200)
+        # self.print_query_stats()
+
+    def test_01_admin_community(self,):
+        """
+        The community page
+        """
+        # response = self.admin_client.get("/account/administrators") # XXX TODO: Follow redirect
+        response = self.admin_client.get("/community/9") # XXX TODO: Follow redirect
+        self.failUnlessEqual(response.status_code, 200)
         self.print_query_stats()
+
+

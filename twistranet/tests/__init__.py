@@ -1,9 +1,9 @@
-from security import SecurityTest
-from content import ContentTest
-from wall import WallTest
-from resources import ResourcesTest
-from account_security import AccountSecurityTest
-from menu import MenuTest
+# from security import SecurityTest
+# from content import ContentTest
+# from wall import WallTest
+# from resources import ResourcesTest
+# from account_security import AccountSecurityTest
+# from menu import MenuTest
 from views_test import ViewsTest
 
 # XXX Things to test:

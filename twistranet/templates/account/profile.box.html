@@ -6,11 +6,11 @@
       {% usemacro accountthumbnail 50 50 account %}                                         
       <h2 class="box-header">
         <a href="{% url twistranet.views.account_by_slug account.slug %}">
-          {{ account.screen_name }}
+          {{ account.text_headline }}
         </a>
       </h2>
       <p class="discreet">
-        {{ account.description }}
+        {{ account.html_summary }}
       </p>
     </li>
 {% endif %}

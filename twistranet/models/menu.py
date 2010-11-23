@@ -88,7 +88,7 @@ class MenuItem(Twistable):
         if isinstance(t, Content):
             return t.text_headline
         elif isinstance(t, Account):
-            return t.screen_name
+            return t.title
                 
         # Uh oh, shouldn't reach there
         raise AssertionError("Shouldn't reach here with MenuItem %s" % self.id)
@@ -119,7 +119,7 @@ class Menu(MenuItem):
 
     class Meta:
         app_label = "twistranet"
-
+        
     def save(self, *args, **kw):
         """
         Re-order all items at from 10 upwards, at intervals of 10.

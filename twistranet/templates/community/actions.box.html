@@ -31,7 +31,7 @@
                      title="{% trans 'Join this community' %}">
                      <span>{% blocktrans %}Join this community{% endblocktrans %}</span>
                      <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
-                     <span class="confirm-message">{% blocktrans %}Would you really want to join the community '{{ community.screen_name }}' ?{% endblocktrans %}</span>
+                     <span class="confirm-message">{% blocktrans %}Would you really want to join the community '{{ community.text_headline }}' ?{% endblocktrans %}</span>
                   </a>
                 </li>
             {% endif %}
@@ -43,7 +43,7 @@
                      title="{% trans 'Leave this community' %}">
                      <span>{% blocktrans %}Leave this community{% endblocktrans %}</span>
                      <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
-                     <span class="confirm-message">{% blocktrans %}Would you really want to leave the community '{{ community.screen_name }}' ?{% endblocktrans %}</span>
+                     <span class="confirm-message">{% blocktrans %}Would you really want to leave the community '{{ community.text_headline }}' ?{% endblocktrans %}</span>
                   </a>
                 </li>
             {% endif %}

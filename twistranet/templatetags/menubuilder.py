@@ -18,7 +18,7 @@ def build_menu(parser, token):
         raise template.TemplateSyntaxError, "%r tag requires exactly one argument" % token.contents.split()[0]  
     return MenuObject(menu_name)  
    
-class MenuObject(template.Node):  
+class MenuObject(template.Node):
     def __init__(self, menu_name):  
         self.menu_name = menu_name  
    
@@ -30,7 +30,7 @@ class MenuObject(template.Node):
    
 def get_items(menu, current_path):
     menuitems = []
-    menu = Menu.objects.get(slug = menu)  
+    menu = Menu.objects.get(slug = menu)
     for i in menu.children:
         # XXX TODO: fix current position
         menuitems.append(i)

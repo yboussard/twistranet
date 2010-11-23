@@ -22,7 +22,7 @@ def edit_content(request, content_id = None, content_type = None):
     # Get basic information
     account = request.user.get_profile()
     if content_id is not None:
-        content = Content.objects.distinct().get(id = content_id)
+        content = Content.objects.get(id = content_id)
         if not content.can_view:
             raise NotImplementedError("Should implement a permission denied exception here")
         if not content.can_edit:
