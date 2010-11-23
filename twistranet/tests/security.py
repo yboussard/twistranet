@@ -39,7 +39,9 @@ class SecurityTest(TestCase):
         self.failIf(self.admin.has_role(roles.system, obj))
         self.failUnless(self.admin.has_role(roles.owner, obj))
         self.failUnless(self.admin.has_role(roles.network, obj))
-        self.failIf(self.A.has_role(roles.owner, obj))
+        __account__ = self.A
+        obj = GlobalCommunity.objects.get()
+        self.failIf(__account__.has_role(roles.owner, obj))
         
     def test_can_join(self,):
         """

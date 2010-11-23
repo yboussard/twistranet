@@ -126,23 +126,43 @@ class AccountSecurityTest(TestCase):
         As B requested access to admin, admin should be automatically given the 'network' role to B.
         """
         __account__ = self.admin
-        self.failUnless(self.admin.has_role(roles.network, self.A))
-        self.failUnless(self.admin.has_role(roles.network, self.B))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        self.failUnless(self.admin.has_role(roles.network, A))
+        self.failUnless(self.admin.has_role(roles.network, B))
         __account__ = self.A
-        self.failUnless(self.A.has_role(roles.network, self.admin))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failUnless(self.A.has_role(roles.network, admin))
         __account__ = self.B
-        self.failIf(self.B.has_role(roles.network, self.admin))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failIf(self.B.has_role(roles.network, admin))
         
         # Check objects of a different class as well
         __account__ = self.admin
-        self.failUnless(self.admin.account.has_role(roles.network, self.A))
-        self.failUnless(self.admin.has_role(roles.network, self.B.account))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failUnless(self.admin.account.has_role(roles.network, A))
+        self.failUnless(self.admin.has_role(roles.network, B.account))
         __account__ = self.A
-        self.failUnless(self.A.account.has_role(roles.network, self.admin))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failUnless(self.A.account.has_role(roles.network, admin))
         __account__ = self.A.account
-        self.failUnless(self.A.has_role(roles.network, self.admin))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failUnless(self.A.has_role(roles.network, admin))
         __account__ = self.B
-        self.failIf(self.B.has_role(roles.network, self.admin.account))
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failIf(self.B.has_role(roles.network, admin.account))
         
     def test_05_cant_view_attributes(self):
         """
@@ -171,19 +191,25 @@ class AccountSecurityTest(TestCase):
         # Must be able to write on self.
         # Friends (in the network) can also write on one's wall!
         __account__ = self.A
-        self.failUnless(self.A.can_publish)
-        self.failIf(self.B.can_publish)
-        self.failUnless(self.admin.can_publish)
+        A = UserAccount.objects.get(slug = "A")
+        B = UserAccount.objects.get(slug = "B")
+        admin = UserAccount.objects.get(slug = "admin")
+        self.failUnless(A.can_publish)
+        self.failIf(B.can_publish)
+        self.failUnless(admin.can_publish)
         
         # Try to write on a wg community
         c = Community(slug = "wkg", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_publish)
         __account__ = self.B
+        c = Community.objects.get(slug = "wkg")
         self.failIf(c.can_publish)
         __account__ = self.A
+        c = Community.objects.get(slug = "wkg")
         c.join(self.B)
         __account__ = self.B
+        c = Community.objects.get(slug = "wkg")
         self.failUnless(c.can_publish)
         
         # Try to publish on an 'ou' community as a simple member ; must be forbidden
@@ -192,10 +218,13 @@ class AccountSecurityTest(TestCase):
         c.save()
         self.failUnless(c.can_publish)
         __account__ = self.B
+        c = Community.objects.get(slug = "ou")
         self.failIf(c.can_publish)
         __account__ = self.A
+        c = Community.objects.get(slug = "ou")
         c.join(self.B)
         __account__ = self.B
+        c = Community.objects.get(slug = "ou")
         self.failIf(c.can_publish)
         
     def test_07_community_creation(self):
@@ -250,7 +279,7 @@ class AccountSecurityTest(TestCase):
         c.save()
         self.failUnlessEqual(self.A.id, c.owner.id, "A should be the community owner as it created it.")
         StatusUpdate.objects.create(slug = "c_status", text = "coucou", publisher = c).save()
-        self.failUnless(Content.objects.filter(slug = "c_status"), "I should see the status update I created on the community I own (%s)" % pprint.pformat(c._permissions.all()))
+        self.failUnless(Content.objects.filter(slug = "c_status"), "I should see the status update I created on the community I own")
         
     def test_10_slugify(self):
         """
