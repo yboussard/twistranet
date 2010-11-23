@@ -10,7 +10,7 @@ can_publish = "can_publish"
 can_join = "can_join"
 can_leave = "can_leave"
 can_create = "can_create"
-can_delete = can_edit
+can_delete = "can_delete"
 
 # Special role arrangements
 class PermissionTemplate:
@@ -52,6 +52,7 @@ content_templates = PermissionTemplate((
         can_list:           public,
         can_view:           public,
         can_edit:           owner,
+        can_delete:         owner,
     },
     {
         "id":               "network",
@@ -63,6 +64,7 @@ content_templates = PermissionTemplate((
         can_list:           network,
         can_view:           network,
         can_edit:           owner,
+        can_delete:         owner,
         "disabled_for_community":   True,
     },
     {
@@ -75,6 +77,7 @@ content_templates = PermissionTemplate((
         can_list:           network,
         can_view:           network,
         can_edit:           owner,
+        can_delete:         owner,
         "disabled_for_useraccount":  True,
     },
     {
@@ -84,9 +87,57 @@ content_templates = PermissionTemplate((
         can_list:           owner,
         can_view:           owner,
         can_edit:           owner,
+        can_delete:         owner,
     },
 ))
 
+# Ephemeral (ie. non-editable after writing) content permissions
+ephemeral_templates = PermissionTemplate((
+    {
+        "id":               "public",
+        "name":             "Public content", 
+        "description":      "Content visible to anyone who can view this page.",
+        can_list:           public,
+        can_view:           public,
+        can_edit:           system,
+        can_delete:         owner,
+    },
+    {
+        "id":               "network",
+        "name":             "Network-only content",
+        "description":      """
+                            Content visible only to my network.
+                            For community content, use 'Members-only content' instead.
+                            """,
+        can_list:           network,
+        can_view:           network,
+        can_edit:           system,
+        can_delete:         owner,
+        "disabled_for_community":   True,
+    },
+    {
+        "id":               "members",
+        "name":             "Members-only content",
+        "description":      """
+                            Content visible only to community members.
+                            For regular wall content, use 'Network-only content' instead.
+                            """,
+        can_list:           network,
+        can_view:           network,
+        can_edit:           system,
+        can_delete:         owner,
+        "disabled_for_useraccount":  True,
+    },
+    {
+        "id":               "private",
+        "name":             "Private",
+        "description":      "Content visible only for the author",
+        can_list:           owner,
+        can_view:           owner,
+        can_edit:           system,
+        can_delete:         owner,
+    },
+))
 
 # XXX TODO: Have some specific stuff for each account type. Not an easy problem to overload the choices field...
 account_templates = PermissionTemplate((

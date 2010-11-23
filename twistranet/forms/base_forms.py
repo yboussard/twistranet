@@ -50,6 +50,8 @@ class BaseRegularForm(BaseForm):
     A regular form is a form which is displayed on a full page
     """
     is_inline = False
+    allow_creation = True
+    allow_edition = True
         
     class Meta:
         fields = ('text', 'permissions', 'language', )

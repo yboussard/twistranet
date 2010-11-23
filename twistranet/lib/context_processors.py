@@ -16,7 +16,7 @@ def security_context(request):
         ret['logged_account'] = request.user.get_profile()
 
     # Content forms
-    klasses = form_registry.form_registry.getFullpageForms()
+    klasses = form_registry.form_registry.getFullpageForms(creation = True)
     if klasses:
         ret['creatable_content_types'] = klasses
     

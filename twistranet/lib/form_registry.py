@@ -1,17 +1,19 @@
 
+import pprint
+
 class FormRegistryManager:
     """
     Form registry for content types.
     This is mandatory to properly generate forms.
+    
+    XXX This model is suboptimal, we should upgrade this to a stronger and safer and faster way of working!
     """
-    # This holds a {classname: {{}}} dictionnary
     _registry_ = {}
     
     def register(self, form_class):
         """
         Register a model class into the TwistraNet application.
         Will bind the form to the model.
-        if allow_user is True, content is available for end users.
         XXX TODO: Provide a way of ordering forms?
         """
         # Prepare the form itself
@@ -21,7 +23,8 @@ class FormRegistryManager:
             'model_class': model, 
             'form_class': form_class,
             'allow_inline_creation': issubclass(form_class, BaseInlineForm),
-            'allow_fullpage_creation': issubclass(form_class, BaseRegularForm),
+            'allow_fullpage_creation': issubclass(form_class, BaseRegularForm) and form_class.allow_creation,
+            "allow_fullpage_edition": issubclass(form_class, BaseRegularForm) and form_class.allow_edition,
             'content_type': model.__name__
             }
 
@@ -38,29 +41,41 @@ class FormRegistryManager:
         registered_model.append(form)
             
             
-    def getFormEntries(self, name):
+    def getFormEntries(self, name, creation = False, edition = False):
         """
         Return the form dict used for the given model.
-        Will return the FIRST form anyway.
+        Will return a dict with "creation" and "edition" keys set.
         """
-        return self._registry_[name]
+        if not creation and not edition:
+            raise ValueError("You must specify either creation or edition")
+        if creation and edition:
+            raise ValueError("You must specify either creation or edition")
+        if creation:
+            return [ f for f in self._registry_[name] if f['allow_fullpage_creation'] ]
+        if edition:
+            return [ f for f in self._registry_[name] if f['allow_fullpage_edition'] ]
             
-    def getFullpageForms(self):
+    def getFullpageForms(self, creation = False, edition = False):
         """
         This method returns the appropriate content forms for a user (globally).
         This returns a list of Form classes
         """
+        if not creation and not edition:
+            raise ValueError("You must specify either creation or edition")
+        if creation and edition:
+            raise ValueError("You must specify either creation or edition")
+        
         from twistranet.models import Account, Community
 
         account = Account.objects._getAuthenticatedAccount()
-        ret = []
-        for m in self._registry_.values():
-            for f in m:
-                if f['allow_fullpage_creation']:
-                    ret.append(f)
-
-        # Else, no forms.
-        return tuple(ret)
+        flat_registry = []
+        for r in self._registry_.values():
+            flat_registry.extend(r)
+        if creation:
+            registry = [ f for f in flat_registry if f['allow_fullpage_creation'] ]
+        if edition:
+            registry = [ f for f in flat_registry if f['allow_fullpage_edition'] ]
+        return tuple(registry)
 
     def getInlineForms(self, publisher):
         """

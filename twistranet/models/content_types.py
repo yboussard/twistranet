@@ -12,6 +12,7 @@ class StatusUpdate(Content):
     StatusUpdate is the most simple content available (except maybe helloworld).
     It provides a good example of what you can do with a content type.
     """
+    permission_templates = permissions.ephemeral_templates
     type_detail_view = None
     text = models.TextField()       # The basic text of the status update.
 
@@ -43,7 +44,8 @@ class Notification(Content):
     on_who = models.ForeignKey(Account, related_name = "on_who", null = True)
     on_what = models.ForeignKey(Content, related_name = "on_what", null = True)
     
-    # View overriding support
+    # View / permissions overriding support
+    permission_templates = permissions.ephemeral_templates
     type_summary_view = "content/summary.notification.part.html"
     type_detail_view = None
     

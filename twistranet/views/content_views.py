@@ -27,11 +27,11 @@ def edit_content(request, content_id = None, content_type = None):
             raise NotImplementedError("Should implement a permission denied exception here")
         if not content.can_edit:
             raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
-        form_entry = form_registry.getFormEntries(content.model_name)[0]
+        form_entry = form_registry.getFormEntries(content.model_name, edition = True)[0]
     else:
         # XXX TODO: Check some kind of "can_create_content" permission?
         content = None
-        form_entry = form_registry.getFormEntries(content_type)[0]
+        form_entry = form_registry.getFormEntries(content_type, creation = True)[0]
 
     # Process form
     if request.method == 'POST': # If the form has been submitted...

@@ -13,18 +13,40 @@ class StatusUpdateForm(BaseInlineForm):
         fields = BaseInlineForm.Meta.fields
         widgets = BaseInlineForm.Meta.widgets
 
-class DocumentForm(BaseRegularForm):
+class QuickDocumentForm(BaseRegularForm):
     """
-    A full-featured document form
+    A quick-entry document form.
+    We just have a pretty "text" field, which will distribute its values amongst title, description and actual text field.
+    This is for creation only.
     """
+    allow_creation = True
+    allow_edition = False
+    
     class Meta(BaseRegularForm.Meta):
         from twistranet.models.content_types import Document
         model = Document
-        fields = ('title', 'description', ) + BaseRegularForm.Meta.fields + ('resources', )
+        fields = BaseRegularForm.Meta.fields
+        widgets = {
+            'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+            'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
+        }
+
+class DocumentForm(BaseRegularForm):
+    """
+    A full-featured document form, used for edition only
+    """
+    allow_creation = False
+    allow_edition = True
+
+    class Meta(BaseRegularForm.Meta):
+        from twistranet.models.content_types import Document
+        model = Document
+        fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
             'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
         }
 
 form_registry.register(StatusUpdateForm)
+form_registry.register(QuickDocumentForm)
 form_registry.register(DocumentForm)

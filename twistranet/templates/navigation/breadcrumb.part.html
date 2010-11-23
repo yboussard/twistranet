@@ -4,7 +4,7 @@
 {% if content %}
     &gt;
     <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">
-        {{ content.publisher }}
+        {{ content.publisher.text_headline }}
     </a>
     &gt;
     {{ content.translation.text_headline }}

@@ -38,7 +38,12 @@
                 <li class="date">{{ content.created_at|timesince }}</li>
                 {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
                 <li class="target">{{ content.permissions }}</li>
-            </ul>               
+                {%if content.can_edit %}
+                    <li class="action">
+                        <a href="{% url twistranet.views.edit_content content.id %}">EDIT</a>
+                    </li>
+                {%endif%}
+            </ul>
         </div>
         {% endwith %}
     </div>
