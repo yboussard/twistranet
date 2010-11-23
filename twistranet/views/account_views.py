@@ -51,6 +51,7 @@ def _getInlineForms(request, publisher = None):
         # Initial data processing
         initial = {
             "publisher_id": publisher.id,
+            "publisher":    publisher,
             }
         
         # Form display / validation stuff

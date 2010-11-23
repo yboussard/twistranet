@@ -63,6 +63,7 @@ content_templates = PermissionTemplate((
         can_list:           network,
         can_view:           network,
         can_edit:           owner,
+        "disabled_for_community":   True,
     },
     {
         "id":               "members",
@@ -74,6 +75,7 @@ content_templates = PermissionTemplate((
         can_list:           network,
         can_view:           network,
         can_edit:           owner,
+        "disabled_for_useraccount":  True,
     },
     {
         "id":               "private",

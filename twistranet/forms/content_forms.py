@@ -20,9 +20,9 @@ class DocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.models.content_types import Document
         model = Document
-        fields = ('title', 'summary', ) + BaseRegularForm.Meta.fields + ('resources', )
+        fields = ('title', 'description', ) + BaseRegularForm.Meta.fields + ('resources', )
         widgets = {
-            'summary':      widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+            'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
             'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
         }
 
