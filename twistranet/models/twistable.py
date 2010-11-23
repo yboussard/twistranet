@@ -15,6 +15,7 @@ from django.db import models
 from django.db.models import Q, loading
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
+from django.utils.datastructures import SortedDict
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
@@ -198,6 +199,7 @@ class TwistableManager(models.Manager):
             "account_object__id",
             "owner__is_community",
             "publisher__owner__id",
+            "publisher___p_can_view",
             "owner__targeted_network__target__id",
             "account_object__targeted_network__target__id",
             "publisher__targeted_network__target__id",
@@ -208,12 +210,12 @@ class TwistableManager(models.Manager):
             if not "__" in fld:
                 raise ValueError("Your field names must have __ in them: %s" % fld)
             actual_field = flt_qs.query.get_compiler(using = flt_qs.db).find_ordering_name(fld, flt_qs.query.model._meta)[0]
-            # print fld, actual_field
             select_fields[fld] = "%s.%s" % (actual_field[0], actual_field[1], )
         
         param_dict = {
             "auth__id":             auth.id,
             "network_role":         roles.network,
+            "public_role":          roles.public,
         }
         select_dict = {
             "_c_owner": """
@@ -225,15 +227,26 @@ class TwistableManager(models.Manager):
                     owner__targeted_network__target__id = %(auth__id)d
                     AND owner__is_community = 1
                 )""" % param_dict,
-            #     
-            # "_c_network": """
-            #     (
+
+            # "_c_network": """(
             #         twistranet_twistable._p_can_list <= %(network_role)d
             #         AND account_object__id IS NOT NULL
             #         AND account_object__targeted_network__target__id = %(auth__id)d
-            #     ) OR (
+            #     OR
             #         twistranet_twistable._p_can_list <= %(network_role)d
             #         AND account_object__id IS NULL
+            #         AND publisher__targeted_network__target__id = %(auth__id)d
+            #     )""" % param_dict,
+            #     
+            # "_c_public": """(
+            #         twistranet_twistable._p_can_list = %(public_role)d
+            #         AND publisher__id IS NULL
+            #     OR
+            #         twistranet_twistable._p_can_list = %(public_role)d
+            #         AND publisher___p_can_view = %(public_role)d
+            #     OR
+            #         twistranet_twistable._p_can_list = %(public_role)d
+            #         AND publisher___p_can_view = %(network_role)d
             #         AND publisher__targeted_network__target__id = %(auth__id)d
             #     )""" % param_dict,
         }
@@ -246,7 +259,8 @@ class TwistableManager(models.Manager):
                 select_dict[s] = select_dict[s].replace(f, select_fields[f])
         
         # Add extra role information on the returned query.
-        # qs = qs.extra(select = select_dict)
+        qs = qs.extra(select = select_dict)
+        # print qs.query.get_compiler(using = qs.db).as_sql()
         return qs
 
 
