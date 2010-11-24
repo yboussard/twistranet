@@ -1,4 +1,18 @@
 {% load i18n %}
+{% if community.managers %}
+<li id="community-managers-box" class="tn-box managers-box">
+    <h3>{% blocktrans %}Community Managers{% endblocktrans %}</h3>
+    <div class="tn-box-content">
+      <ul class="thumbnails-inner">
+        {% for account in community.managers %}
+            {% include "thumbnails/medium.html" %}
+        {% endfor %}
+      </ul>
+      <div class="clearfix"><!-- --></div>
+    </div>
+</li>
+{% endif %}
+
 <li id="community-members-box" class="tn-box members-box">
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
     <div class="tn-box-content">

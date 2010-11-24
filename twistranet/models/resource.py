@@ -5,11 +5,31 @@ from resourcemanager import ResourceManager
 from twistranet.lib import languages, permissions
 import twistable
 
+# Web-compliant image formats
+IMAGE_MIMETYPES = [
+    "image/png",
+    "image/jpeg",
+    "image/gif",
+    ]
+
+class ResourceModelManager(twistable.TwistableManager):
+    """
+    A resource-specific manager with some additional media features
+    """
+    def query_images(self,):
+        """
+        Return images MIME types
+        """
+        return self.get_query_set().filter(mimetype__in = IMAGE_MIMETYPES)
+
 class Resource(twistable.Twistable):
     """
     A resource object.
     See doc/DESIGN.txt for design considerations
     """
+    # Special manager for resources
+    objects = ResourceModelManager()
+    
     # Resource location descriptors.
     # Locator is a (possibly looong) string used by the manager to find the resource
     manager = models.ForeignKey(ResourceManager, null = True, blank = True)         # If None, then the resource is DB-only. Field name is given by the accessor attribute.

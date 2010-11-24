@@ -373,6 +373,22 @@ ul.children li {
   margin: 0 7px 7px 0 !important;
 }
 
+
+.entry-main {
+    font-size:  13px;
+}
+
+.summary-content {
+    margin:         1em 1em 1em 6em;
+    font-size:      11px;
+}
+
+.headline-content {
+    font-size:      13px;
+    font-weight:    bold;
+    margin-bottom:  0.5em;
+}
+
 /* thumbnails blocks ******************
 anywhere in the application accounts can be displayed
 with different formats :

@@ -11,26 +11,28 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            <a class="author" href="{% url twistranet.views.account_by_id content.owner_id %}">{{ content.owner.translation.text_headline }}</a>
+            <a class="author" href="{% url twistranet.views.account_by_id content.owner_id %}">{{ content.owner.translation.text_headline|safe }}</a>
             {% if not content.owner_id == content.publisher_id %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.text_headline }}</a>
+            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.text_headline|safe }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">
                 {% if content.detail_view %}
-                <a href="{% url twistranet.views.content_by_id content.id %}">
-                    {{ content.text_headline }}
-                </a>
+                    <div class="summary-content">
+                        <div class="headline-content">
+                            <a href="{% url twistranet.views.content_by_id content.id %}">
+                                {{ content.text_headline|safe }}
+                            </a>
+                        </div>
                 {% else %}
-                {{ content.html_headline|safe }}
+                    {{ content.html_headline|safe }}
                 {% endif %}
             </span>
             {% endif %}
-            {% if content.html_summary %}
-            <div class="summary-content">
-                {{ content.html_summary|safe }}
-            </div>
+            {% if content.detail_view %}
+                    {{ content.html_summary|safe }}
+                </div>
             {% endif %}
         </div>
         <div class="postmetadata">

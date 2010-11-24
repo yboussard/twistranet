@@ -4,13 +4,15 @@ from django.forms import widgets
 from django.forms import fields
 
 from twistranet.lib import permissions
+from twistranet.forms.widgets import MediaResourceWidget
 
 class CommunityForm(forms.ModelForm):
     """
-    Community edition
+    Community edition.
     """    
     error_css_class = 'error'
     required_css_class = 'required'
+    
     permissions = fields.ChoiceField(choices = permissions.community_templates.get_choices())
 
     class Meta:
@@ -20,7 +22,8 @@ class CommunityForm(forms.ModelForm):
 
         # fields = ('text', 'permissions', 'language', )
         widgets = {
-            'permissions':     widgets.Select(),
+            'permissions':      widgets.Select(),
+            "picture":          MediaResourceWidget(),
         }
 
 

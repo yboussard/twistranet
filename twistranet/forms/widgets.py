@@ -1,12 +1,61 @@
 from django import forms
 from django.db import models
-from django.forms.widgets import Select
+from django.forms.widgets import Select, Widget
 from django.forms.util import flatatt
 from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 
 __all__ = ('PermissionsWidget',)
+
+N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
+
+class MediaResourceWidget(Widget):
+    """
+    This is a powerful widget used to handle media resources.
+    One can either select one of its available resources,
+    or upload a new file on-the-fly.
+    
+    Several cases here:
+    - If there are less than, say, 25 available media resources,
+        just display them without further question.
+    - If there are more, display a bit less but provide a little
+        search form to find the other ones.
+    - In any case, display a form upload widget.
+    """
+    needs_multipart_form = True
+    
+    def render(self, name, value, attrs=None):
+        """
+        Returns this Widget rendered as HTML, as a Unicode string.
+
+        The 'value' given is not guaranteed to be valid input, so subclass
+        implementations should program defensively.
+        """
+        from twistranet.models.resource import Resource
+        images = Resource.objects.query_images()[:25]
+        if len(images) >= N_DISPLAYED_ITEMS:
+            raise NotImplementedError("Should implement image searching & so on")
+        ret = u"""
+            <div class="mediaresource-widget">
+                <div class="mediaresource-help">Select a picture:</div>
+            """
+        for image in images:
+            param_dict = {
+                "thumbnail_src": image.get_absolute_url(),
+            }
+            ret += u"""
+            <img src="%(thumbnail_src)s" width="25" height="25"
+            >
+            """ % param_dict
+        ret += u"""
+            <div class="mediaresource-help">Or upload a file:</div>
+            </div>
+            """
+        # Return the computed string
+        return mark_safe(ret)
+    
+    
 
 class PermissionsWidget(Select):
     def __init__(self, attrs=None):

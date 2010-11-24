@@ -196,6 +196,7 @@ community_templates = PermissionTemplate((
         can_view:           network,
         can_list_members:   public,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        network,
         can_join:           network,
         can_leave:          network,
@@ -212,6 +213,7 @@ community_templates = PermissionTemplate((
         can_view:           public,
         can_list_members:   public,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        owner,
         can_join:           owner,
         can_leave:          owner,
@@ -227,6 +229,7 @@ community_templates = PermissionTemplate((
         can_view:           network,
         can_list_members:   network,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        owner,
         can_join:           owner,
         can_leave:          network,
@@ -244,6 +247,7 @@ community_templates = PermissionTemplate((
         can_view:           public,
         can_list_members:   public,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        network,
         can_join:           public,
         can_leave:          network,
@@ -260,6 +264,7 @@ community_templates = PermissionTemplate((
         can_view:           public,
         can_list_members:   public,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        network,
         can_join:           owner,
         can_leave:          network,
@@ -278,6 +283,7 @@ community_templates = PermissionTemplate((
         can_view:           network,
         can_list_members:   owner,
         can_edit:           owner,
+        can_delete:         owner,
         can_publish:        owner,
         can_join:           owner,
         can_leave:          owner,
@@ -298,6 +304,7 @@ global_community_templates = PermissionTemplate((
         can_view:           network,
         can_list_members:   network,
         can_edit:           owner,
+        can_delete:         system,
         can_publish:        owner,
         can_join:           system,             # Mandatory for global community.
         can_leave:          system,             # Mandatory for global community.
@@ -313,6 +320,7 @@ global_community_templates = PermissionTemplate((
         can_view:           network,
         can_list_members:   owner,
         can_edit:           owner,
+        can_delete:         system,
         can_publish:        owner,
         can_join:           system,             # Mandatory for global community.
         can_leave:          system,             # Mandatory for global community.
@@ -332,6 +340,7 @@ global_community_templates = PermissionTemplate((
         can_view:           public,
         can_list_members:   network,
         can_edit:           owner,
+        can_delete:         system,
         can_publish:        owner,
         can_join:           system,             # Mandatory for global community.
         can_leave:          system,             # Mandatory for global community.

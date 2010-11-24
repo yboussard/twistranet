@@ -431,13 +431,15 @@ class Twistable(_AbstractTwistable):
         XXX TODO: Don't use the 'object' accessor but use a twistable_category attribute in some way
         (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
         """
-        from twistranet.models import Content, Account, Community
+        from twistranet.models import Content, Account, Community, Resource
         if isinstance(self.object, Content):
             return "/content/%i" % self.id
         elif isinstance(self.object, Community):
             return "/community/%i" % self.id
         elif isinstance(self.object, Account):
             return "/account/%i" % self.id
+        elif isinstance(self.object, Resource):
+            return "/resource/%s" % self.id
         raise NotImplementedError("Can't get absolute URL for object %s" % self)
             
     #                                                                   #
@@ -484,7 +486,10 @@ class Twistable(_AbstractTwistable):
             self.permissions = perm_template.get_default()
         tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.permissions ]
         if not tpl:
-            raise ValueError("Unable to find permission template %s in %s" % (self.permissions, self.permission_templates))
+            # Didn't find? We restore default setting. XXX Should log/alert something here!
+            tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.model_class.permission_templates.get_default() ]
+            print "Restoring default permissions. Problem here."
+            print "Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict)
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)
