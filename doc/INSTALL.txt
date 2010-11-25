@@ -4,28 +4,73 @@ Twistranet - Installation
 Requirements
 ------------
 
-  - python2.6
-  
-  - pip
+- A computer with your favorite os, example :
 
-  - an internet connection
+    - linux (debian, redhat, ubuntu, etc ...)
+
+    - windows (xp, seven, vista, 2003 server etc)
+
+    - Mac OS X ...
+
+- an internet connection
+
+- python2.6 or later (python 3 is not supported)
+
+    To install python, goto http://python.org/download/
+    choose, download, and install the last Python 2.xx for your platform.
+    Under Linux or Mac OS, Python is often pre-installed
+
+- PIP
+
+PIP is the new installer for python packages, it replaces
+setuptools with many powerful features (install, list intalled, uninstall, upgrade ...)
+
+If setuptools is installed on your system (setuptools, also called easy_install is the old python packages installer), 
+you can just enter at command prompt::
+
+    $ easy_install pip
+
+If setuptools is not here, you can install PIP from sources, 
+
+under linux ::
+
+    $ wget http://pypi.python.org/packages/source/p/pip/pip-0.8.1.tar.gz 
+    $ tar xzf pip-0.8.1.tar.gz
+
+.. note:: Under macos you can use curl -O <url> instead of wget
+
+.. note:: Under windows just download and unpack the folder 'pip-0.8.1'
+
+Open a command prompt::
+
+    $ cd pip-0.8.1
+    $ python setup.py install
+    $ cd ..
+    $ rm -Rf pip-0.8.1
+
+
+.. seealso:: More information can be found here : http://guide.python-distribute.org/installation.html
+
 
 Installation
 ------------
 
 Open a command line
-To install the last Twistranet released version
+To install the last Twistranet released version (not released at this time)
 
-  >> pip install Twistranet
+    $ pip install Twistranet
 
 Or to install the devel version from svn
 
-  >> svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
-  >> pip install ./Twistranet 
+    $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+    $ pip install ./Twistranet 
+    $ rm -Rf ./Twistranet
 
-Twistranet and all dependencies are downloaded and installed
+Twistranet and all its dependencies are downloaded and installed
 in your python path ::
 
+  - twistranet
+  
   - django
   
   - piston
@@ -36,30 +81,35 @@ in your python path ::
 Create a new Twistranet project
 -------------------------------
 
+Twistranet is based on django framework
+
 launch at command prompt 
 
-  >> twistranet_project mysite
+    $ twistranet_project mysite
 
-This will install all twistranet django stuff in 'mysite' folder.
+This will install all you need for your project in 'mysite' folder :
+
+  - your project configuration 'local_settings.py'
+  
+  - django initialization files
 
 If you need to customize css and templates
 You can initialize this work with standard Twistranet templates
-and themes in 'mysite' folder, just replace the previous command
-with
+and themes in 'mysite' folder, just change the previous command
+with::
 
-  >>  twistranet_project -t mysite
+    $ twistranet_project -t mysite
 
--t option can replaced by --copy-templates
 More options will came in future
 
 
 Initialize the project
 ----------------------
 
-Create Twistranet Database
+Create Your project Database
     
-    >> cd mysite
-    >> python manage.py syncdb
+    $ cd mysite
+    $ python manage.py syncdb
 
 Reply "no" to the question about superuser creation  
 (because the AUTH_PROFILE_MODULE has changed, it doesn't work)  
@@ -67,11 +117,11 @@ The data is stored in data/tn.db when using sqlite
 
 Bootstrap the first data
     
-    >> python manage.py twistranet_bootstrap
+    $ python manage.py twistranet_bootstrap
 
 Run the server in foreground
 
-    (twistranet) >> python manage.py runserver
+    $ python manage.py runserver
 
 
 Connect to your site
