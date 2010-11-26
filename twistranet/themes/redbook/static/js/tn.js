@@ -156,8 +156,8 @@ var twistranet = {
       })
     },
     formsautofocus: function(e) {
-     if (jQuery("form .fieldWrapperWithError input:first").focus().length) return;
-         jQuery("form.enableAutoFocus input:visible:first").focus();
+     if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
+         jQuery("form.enableAutoFocus :input:visible:first").focus();
     }  
 }
 
