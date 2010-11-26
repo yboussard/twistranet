@@ -94,6 +94,7 @@ var twistranet = {
         twistranet.showContentActions();
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
+        twistranet.formsautofocus();
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
@@ -109,7 +110,7 @@ var twistranet = {
         } );   
         /* set selected topic in menus*/    
         setSelectedTopic(jQuery('#mainmenu'));
-        /* set classes for some inline fields */
+        /* set classes for some inline fields > todo : place it in template */
         jQuery('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
           jQuery(this).parents('li').addClass('inlinefield');
         });
@@ -125,33 +126,39 @@ var twistranet = {
         });                                          
     },
     initconfirmdialogs: function(e){
-        defaultDialogMessage = jQuery('#tn-dialog-message').text();
-        jQuery("#tn-dialog").dialog({  
-          resizable: false,
-          draggable: false,
-          autoOpen: false,
-          height: 120,
-          width: 410,
-          modal: true,
-          close: function(ev, ui) { 
-            jQuery('#tn-dialog-message').text(defaultDialogMessage);
-            jQuery(this).hide(); 
-          },
-          focus: function(event, ui) { 
-            ;
-          }
-        });
-        links = 'a.confirmbefore';
-        jQuery(links).click(function(e){
-           e.preventDefault();
-           initConfirmBox(this);
-        } );
+        if (jQuery('#tn-dialog-message').length) {
+            defaultDialogMessage = jQuery('#tn-dialog-message').text();
+            jQuery("#tn-dialog").dialog({  
+              resizable: false,
+              draggable: false,
+              autoOpen: false,
+              height: 120,
+              width: 410,
+              modal: true,
+              close: function(ev, ui) { 
+                jQuery('#tn-dialog-message').text(defaultDialogMessage);
+                jQuery(this).hide(); 
+              },
+              focus: function(event, ui) { 
+                ;
+              }
+            });
+            links = 'a.confirmbefore';
+            jQuery(links).click(function(e){
+               e.preventDefault();
+               initConfirmBox(this);
+            } );       
+        }
     },
     initformserrors: function(e) {
       jQuery('.fieldWrapper .errorlist').each(function(){
           jQuery(jQuery(this).parent()).addClass('fieldWrapperWithError');
       })
-    } 
+    },
+    formsautofocus: function(e) {
+     if (jQuery("form .fieldWrapperWithError input:first").focus().length) return;
+         jQuery("form.enableAutoFocus input:visible:first").focus();
+    }  
 }
 
 jQuery(document).ready(twistranet.__init__)
