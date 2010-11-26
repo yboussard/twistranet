@@ -91,7 +91,7 @@ msgstr "Mon profil"
 #: .\twistranet\templates\account\view.html.py:8
 #: .\twistranet\templates\account\view.html.py:30
 msgid "%(account)s's Profile"
-msgstr "Mur de %(account)s"
+msgstr "Profil de %(account)s"
 
 #: .\twistranet\templates\actions\content_summary.part.html.py:7
 msgid "Delete content"
@@ -132,7 +132,7 @@ msgstr "Supprimer cette communauté"
 
 #: .\twistranet\templates\community\actions.box.html.py:18
 msgid "This action is irreversible, are you sure ?"
-msgstr "Cette action est irréversible, êtes-vous sûr ?"
+msgstr "Cette action est définitive, êtes-vous sûr ?"
 
 #: .\twistranet\templates\community\actions.box.html.py:31
 #: .\twistranet\templates\community\actions.box.html.py:32
@@ -192,7 +192,7 @@ msgstr "Aide"
 #: .\twistranet\templates\registration\login.html.py:47
 #: .\twistranet\templates\registration\login.html.py:62
 msgid "TwistraNet - The social content management system."
-msgstr "TwistraNet - Le CMS social."
+msgstr "TwistraNet - Vous allez aimer travailler."
 
 #: .\twistranet\templates\registration\login.html.py:55
 msgid "Sorry, that's not a valid username or password"
@@ -201,7 +201,7 @@ msgstr ""
 
 #: .\twistranet\templates\registration\login.html.py:70
 msgid "User name :"
-msgstr "Nom de user :"
+msgstr "Nom d'utilisateur :"
 
 #: .\twistranet\templates\registration\login.html.py:74
 msgid "Password :"
@@ -259,7 +259,7 @@ msgstr "Annuler"
 
 #: .\twistranet\themes\default\base.html.py:144
 msgid "OK"
-msgstr "OK"
+msgstr "Ok"
 
 #: .\twistranet\views\community_views.py:137
 msgid "The community %(name)s has been deleted."
