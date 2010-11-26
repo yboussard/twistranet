@@ -13,12 +13,12 @@
         <h1><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.text_headline }}</a></h1>   
         <form action="{% url twistranet.views.edit_community community.id %}"
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% else %}
         <h1>{% trans "New community" %}</h1>    
         <form action="{% url twistranet.views.create_community %}" 
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% endif %}
         <fieldset>
         {% for field in form %}

@@ -19,13 +19,13 @@
         <form enctype="multipart/form-data"
               action="{{ path }}"
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% else %}
         <h1>{%blocktrans%}New Resource{%endblocktrans%}</h1>
         <form enctype="multipart/form-data"
               action="{{ path }}"
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% endif %}
         <fieldset>
         {% for field in form %}

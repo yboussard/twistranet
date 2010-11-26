@@ -18,12 +18,12 @@
         {%endwith%}
         <form action="{% url twistranet.views.edit_content content.id %}"
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% else %}
         <h1>{%blocktrans%}New {{content_type}}{%endblocktrans%}</h1>
         <form action="{% url twistranet.views.create_content content_type %}"
               method="post"
-              class="edit-form">
+              class="edit-form enableAutoFocus">
     {% endif %}
         <fieldset>
         {% for field in form %}
