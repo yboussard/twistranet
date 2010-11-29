@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-29 16:20+0200\n"
+"POT-Creation-Date: 2010-11-29 11:49+0100\n"
 "Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
@@ -16,263 +16,339 @@ msgstr ""
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#: .\settings.py:48
-msgid "German"
-msgstr "Allemand"
-
-#: .\settings.py:49
-msgid "English"
-msgstr "Anglais"
-
-#: .\settings.py:50
-msgid "French"
-msgstr "Français"
-
-#: .\twistranet\templates\wall.html.py:4
-#: .\twistranet\templates\wall.html.py:20
+#: .\templates\wall.html.py:4 .\templates\wall.html.py:14
 msgid "Activity Feed"
 msgstr "Fil d'Activité"
 
-#: .\twistranet\templates\wall.html.py:30
-#: .\twistranet\templates\account\view.html.py:42
-#: .\twistranet\templates\community\view.html.py:19
+#: .\templates\wall.html.py:25 .\templates\account\view.html.py:43
+#: .\templates\community\view.html.py:17
 msgid "No contents are available."
 msgstr "Aucun contenu disponible."
 
-#: .\twistranet\templates\account\actions.box.html.py:6
+#: .\templates\account\actions.box.html.py:6
 msgid "Edit my profile"
 msgstr "Modifier mon profil"
 
-#: .\twistranet\templates\account\actions.box.html.py:12
+#: .\templates\account\actions.box.html.py:12
 msgid "Remove from my network"
 msgstr "Supprimer de mon réseau"
 
-#: .\twistranet\templates\account\actions.box.html.py:16
+#: .\templates\account\actions.box.html.py:16
+#: .\templates\content\actions.box.html.py:13
 msgid "Add to my network"
 msgstr "Ajouter à mon réseau"
 
-#: .\twistranet\templates\account\relations.box.html.py:4
+#: .\templates\account\relations.box.html.py:6
 msgid "My Communities"
 msgstr "Mes Communautés"
 
-#: .\twistranet\templates\account\relations.box.html.py:6
+#: .\templates\account\relations.box.html.py:8
 msgid "His/Her Communities"
 msgstr "Ses Communautés"
 
-#: .\twistranet\templates\account\relations.box.html.py:17
+#: .\templates\account\relations.box.html.py:23
 msgid "My Network"
 msgstr "Mon réseau"
 
-#: .\twistranet\templates\account\relations.box.html.py:19
+#: .\templates\account\relations.box.html.py:25
 msgid "His/Her Network"
 msgstr "Son réseau"
 
-#: .\twistranet\templates\account\relations.box.html.py:30
-msgid "You follow them"
-msgstr "Je les suis"
-
-#: .\twistranet\templates\account\relations.box.html.py:32
-msgid "He/She follows them"
-msgstr "Il/elle les suis"
-
-#: .\twistranet\templates\account\relations.box.html.py:43
-msgid "They follow you"
-msgstr "Ils me suivent"
-
-#: .\twistranet\templates\account\relations.box.html.py:45
-msgid "They follow him/her"
-msgstr "Ils le/la suivent"
-
-#: .\twistranet\templates\account\view.html.py:6
-#: .\twistranet\templates\account\view.html.py:28
+#: .\templates\account\view.html.py:6 .\templates\account\view.html.py:26
 msgid "My profile"
 msgstr "Mon profil"
 
-#: .\twistranet\templates\account\view.html.py:8
-#: .\twistranet\templates\account\view.html.py:30
-msgid "%(account)s's Profile"
+#: .\templates\account\view.html.py:9 .\templates\account\view.html.py:29
+#: .\templates\navigation\breadcrumb.part.html.py:23
+msgid "%(text_headline)s's Profile"
 msgstr "Profil de %(account)s"
 
-#: .\twistranet\templates\actions\content_summary.part.html.py:7
+#: .\templates\actions\content_summary.part.html.py:7
 msgid "Delete content"
 msgstr "Supprimer le contenu"
 
-#: .\twistranet\templates\actions\content_summary.part.html.py:8
-msgid "Delete"
-msgstr "Supprimer"
-
-#: .\twistranet\templates\actions\content_summary.part.html.py:10
+#: .\templates\actions\content_summary.part.html.py:10
 msgid "This action can't be undone, are you sure ?"
 msgstr "Cette action ne pourra pas être annulée, êtes vous sûr ?"
 
-#: .\twistranet\templates\actions\general.part.html.py:3
-#: .\twistranet\templates\community\list.html.py:4
-#: .\twistranet\templates\community\list.html.py:7
-#: .\twistranet\templates\community\list.html.py:11
-#: .\twistranet\templates\navigation\menu_items.part.html.py:3
+#: .\templates\actions\general.part.html.py:3
+#: .\templates\community\list.html.py:4 .\templates\community\list.html.py:7
+#: .\templates\community\list.html.py:11
 msgid "Communities"
 msgstr "Communautés"
 
-#: .\twistranet\templates\actions\general.part.html.py:5
+#: .\templates\actions\general.part.html.py:9
 msgid "View all communities"
 msgstr "Voir toutes les communautés"
 
-#: .\twistranet\templates\actions\general.part.html.py:6
+#: .\templates\actions\general.part.html.py:15
 msgid "Create a community"
 msgstr "Créer une communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:8
+#: .\templates\actions\general.part.html.py:23
+msgid "My files"
+msgstr "Mes fichiers"
+
+#: .\templates\actions\general.part.html.py:29
+msgid "Browse files"
+msgstr "Parcourir les fichiers"
+
+#: .\templates\actions\general.part.html.py:35
+msgid "Upload files"
+msgstr "Envoyer des fichiers"
+
+#: .\templates\community\actions.box.html.py:8
 msgid "Edit this community"
 msgstr "Modifier cette communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:15
-#: .\twistranet\templates\community\actions.box.html.py:16
+#: .\templates\community\actions.box.html.py:15
+#: .\templates\community\actions.box.html.py:16
 msgid "Delete this community"
 msgstr "Supprimer cette communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:18
+#: .\templates\community\actions.box.html.py:18
 msgid "This action is irreversible, are you sure ?"
 msgstr "Cette action est définitive, êtes-vous sûr ?"
 
-#: .\twistranet\templates\community\actions.box.html.py:31
-#: .\twistranet\templates\community\actions.box.html.py:32
+#: .\templates\community\actions.box.html.py:31
+#: .\templates\community\actions.box.html.py:32
 msgid "Join this community"
 msgstr "Rejoindre cette communauté"
 
-#: .\twistranet\templates\community\actions.box.html.py:34
-msgid "Would you really want to join the community '%(community)s' ?"
+#: .\templates\community\actions.box.html.py:34
+msgid ""
+"Would you really want to join the community '%(community.text_headline)s' ?"
 msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
 
-#: .\twistranet\templates\community\actions.box.html.py:40
+#: .\templates\community\actions.box.html.py:43
+#: .\templates\community\actions.box.html.py:44
 msgid "Leave this community"
 msgstr "Quitter cette communauté"
 
-#: .\twistranet\templates\community\community_forms.part.html.py:23
-#: .\twistranet\templates\content\content_forms.part.html.py:23
+#: .\templates\community\actions.box.html.py:46
+msgid ""
+"Would you really want to leave the community '%(community.text_headline)s' ?"
+msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
+
+#: .\templates\community\community_forms.part.html.py:23
+#: .\templates\content\content_forms.part.html.py:22
 msgid "Send message"
 msgstr "Envoyer le message"
 
-#: .\twistranet\templates\community\edit.html.py:7
-#: .\twistranet\templates\community\edit.html.py:16
+#: .\templates\community\edit.html.py:7 .\templates\community\edit.html.py:18
 msgid "New community"
 msgstr "Nouvelle communauté"
 
-#: .\twistranet\templates\community\list.html.py:7
-#: .\twistranet\templates\navigation\menu_items.part.html.py:2
-#: .\twistranet\themes\default\base.html.py:84
+#: .\templates\community\edit.html.py:32 .\templates\content\edit.html.py:37
+#: .\templates\resource\edit.html.py:39
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\templates\community\edit.html.py:33 .\templates\content\edit.html.py:38
+#: .\templates\resource\edit.html.py:40
+msgid "Undo"
+msgstr "Annuler"
+
+#: .\templates\community\list.html.py:7
+#: .\templates\navigation\breadcrumb.part.html.py:3
+#: .\themes\default\base.html.py:84
 msgid "Home"
 msgstr "Accueil"
 
-#: .\twistranet\templates\community\list.html.py:17
+#: .\templates\community\list.html.py:17
 msgid "No community available on your system."
 msgstr "Aucune communauté disponible sur votre système."
 
-#: .\twistranet\templates\community\members.box.html.py:3
+#: .\templates\community\members.box.html.py:4
+msgid "Community Managers"
+msgstr "Administrateurs de la Communauté"
+
+#: .\templates\community\members.box.html.py:17
 msgid "Members"
 msgstr "Membres"
 
-#: .\twistranet\templates\content\content_creation.box.html.py:4
+#: .\templates\content\actions.box.html.py:8
+msgid "Edit %(model_name)s"
+msgstr "Modifier %(content_type)s"
+
+#: .\templates\content\content_creation.box.html.py:4
 msgid "Create content"
 msgstr "Créer un contenu"
 
-#: .\twistranet\templates\content\edit.html.py:6
+#: .\templates\content\edit.html.py:6
+#, python-format
 msgid "Edit %(content_type)s"
 msgstr "Modifier %(content_type)s"
 
-#: .\twistranet\templates\content\edit.html.py:8
-#: .\twistranet\templates\content\edit.html.py:13
-#: .\twistranet\templates\content\edit.html.py:22
+#: .\templates\content\edit.html.py:8 .\templates\content\edit.html.py:23
+#, python-format
 msgid "New %(content_type)s"
 msgstr "Nouveau %(content_type)s"
 
-#: .\twistranet\templates\navigation\menu_items.part.html.py:12
-msgid "Help"
-msgstr "Aide"
+#: .\templates\content\edit.html.py:17
+msgid "Edit \"%(headline)s\""
+msgstr "Modifier %(content_type)s"
 
-#: .\twistranet\templates\registration\login.html.py:47
-#: .\twistranet\templates\registration\login.html.py:62
+#: .\templates\content\metadata.box.html.py:7
+msgid "Author:"
+msgstr "Auteur :"
+
+#: .\templates\content\metadata.box.html.py:13
+msgid "Published on:"
+msgstr "Publié sur :"
+
+#: .\templates\content\metadata.box.html.py:19
+msgid "Created:"
+msgstr "Créé le :"
+
+#: .\templates\content\metadata.box.html.py:23
+msgid "Permissions:"
+msgstr "Permissions :"
+
+#: .\templates\navigation\breadcrumb.part.html.py:19
+msgid "My wall"
+msgstr "Mon mur"
+
+#: .\templates\registration\login.html.py:88
 msgid "TwistraNet - The social content management system."
 msgstr "TwistraNet - Vous allez aimer travailler."
 
-#: .\twistranet\templates\registration\login.html.py:55
+#: .\templates\registration\login.html.py:94 .\themes\redbook\base.html.py:56
+msgid "You will love your work."
+msgstr "Vous allez aimer travailler."
+
+#: .\templates\registration\login.html.py:103
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
 "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
-#: .\twistranet\templates\registration\login.html.py:70
+#: .\templates\registration\login.html.py:108
+msgid "Logged out"
+msgstr "Déconnexion"
+
+#: .\templates\registration\login.html.py:109
+msgid "Thanks for spending some quality time on Twistranet."
+msgstr "Merci pour le temps passé sur Twistranet"
+
+#: .\templates\registration\login.html.py:110
+msgid "Log in again"
+msgstr "Se connecter à nouveau"
+
+#: .\templates\registration\login.html.py:118
 msgid "User name :"
 msgstr "Nom d'utilisateur :"
 
-#: .\twistranet\templates\registration\login.html.py:74
+#: .\templates\registration\login.html.py:122
 msgid "Password :"
 msgstr "Mot de passe :"
 
-#: .\twistranet\templates\registration\login.html.py:78
+#: .\templates\registration\login.html.py:126
 msgid "login"
 msgstr "Se connecter"
 
-#: .\twistranet\templates\search\search.html.py:6
+#: .\templates\resource\edit.html.py:6 .\templates\resource\edit.html.py:18
+msgid "Edit Resource"
+msgstr "Modifier la Ressource"
+
+#: .\templates\resource\edit.html.py:8 .\templates\resource\edit.html.py:24
+msgid "New Resource"
+msgstr "Nouvelle Ressource"
+
+#: .\templates\search\search.html.py:6
 msgid "Search results"
 msgstr "Résultats de recherche"
 
-#: .\twistranet\templates\search\searchfield.part.html.py:11
-#: .\twistranet\templates\search\searchfield.part.html.py:15
-#: .\twistranet\templates\search\searchfield.part.html.py:16
-msgid "Search..."
-msgstr "Rechercher..."
+#: .\templates\search\search.html.py:8
+msgid "Search"
+msgstr "Rechercher"
 
-#: .\twistranet\themes\default\base.html.py:8
+#: .\templates\search\searchfield.part.html.py:11
+#: .\templates\search\searchfield.part.html.py:15
+#: .\templates\search\searchfield.part.html.py:16
+msgid "Search..."
+msgstr "Rechercher ..."
+
+#: .\themes\default\base.html.py:8 .\themes\redbook\base.html.py:8
 msgid "TwistraNet"
 msgstr "TwistraNet"
 
-#: .\twistranet\themes\default\base.html.py:40
+#: .\themes\default\base.html.py:40 .\themes\redbook\base.html.py:37
+#, python-format
 msgid "%(user)s"
 msgstr "%(user)s"
 
-#: .\twistranet\themes\default\base.html.py:47
+#: .\themes\default\base.html.py:47 .\themes\redbook\base.html.py:44
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\twistranet\themes\default\base.html.py:50
+#: .\themes\default\base.html.py:50 .\themes\redbook\base.html.py:47
 msgid "Log in"
 msgstr "Se connecter"
 
-#: .\twistranet\themes\default\base.html.py:65
+#: .\themes\default\base.html.py:65
 msgid "The social content management system."
 msgstr "Le CMS social."
 
-#: .\twistranet\themes\default\base.html.py:132
+#: .\themes\default\base.html.py:131 .\themes\redbook\base.html.py:122
 msgid "Powered By "
 msgstr "Propulsé par "
 
-#: .\twistranet\themes\default\base.html.py:138
+#: .\themes\default\base.html.py:137 .\themes\redbook\base.html.py:128
 msgid "Confirmation Required"
 msgstr "Confirmation demandée"
 
-#: .\twistranet\themes\default\base.html.py:141
+#: .\themes\default\base.html.py:140 .\themes\redbook\base.html.py:131
 msgid "Are you sure about this?"
 msgstr "Etes vous sûr ?"
 
-#: .\twistranet\themes\default\base.html.py:143
+#: .\themes\default\base.html.py:142 .\themes\redbook\base.html.py:133
 msgid "Cancel"
 msgstr "Annuler"
 
-#: .\twistranet\themes\default\base.html.py:144
+#: .\themes\default\base.html.py:143 .\themes\redbook\base.html.py:134
 msgid "OK"
 msgstr "Ok"
 
-#: .\twistranet\views\community_views.py:137
+#: .\views\community_views.py:132
+#, python-format
 msgid "The community %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
 
-#: .\twistranet\views\community_views.py:137
-#: .\twistranet\views\content_views.py:87
+#: .\views\community_views.py:132 .\views\content_views.py:104
 msgid "name"
 msgstr "nom"
 
-#: .\twistranet\views\content_views.py:87
+#: .\views\content_views.py:104
+#, python-format
 msgid "The %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
+
+#~ msgid "German"
+#~ msgstr "Allemand"
+
+#~ msgid "English"
+#~ msgstr "Anglais"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "You follow them"
+#~ msgstr "Je les suis"
+
+#~ msgid "He/She follows them"
+#~ msgstr "Il/elle les suis"
+
+#~ msgid "They follow you"
+#~ msgstr "Ils me suivent"
+
+#~ msgid "They follow him/her"
+#~ msgstr "Ils le/la suivent"
+
+#~ msgid "Delete"
+#~ msgstr "Supprimer"
+
+#~ msgid "Help"
+#~ msgstr "Aide"
 
 #~ msgid "Wall"
 #~ msgstr "Mur"

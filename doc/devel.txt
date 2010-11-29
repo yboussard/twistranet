@@ -75,7 +75,7 @@ more information here : http://docs.djangoproject.com/en/dev/topics/i18n/localiz
 
 Compile your .po (it's a mandatory after each change)
 
-    (twistranet) $ python manage.py compilemessages
+    (twistranet) $ python ../manage.py compilemessages
 
 
 
