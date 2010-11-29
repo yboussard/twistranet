@@ -31,7 +31,7 @@ Download Twistranet from svn
     (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
     (twistranet-devel) $ cd TwistraNet
 
->> Install dependencies (django, debug_toolbar, piston, ...) <<
+>> Install dependencies (django, debug_toolbar, piston, haystack ...) <<
 
     (twistranet-devel) $ pip install -r requires.txt    
 
