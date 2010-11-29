@@ -107,7 +107,7 @@
     <div class="logout-message">
       <h2>{% blocktrans %}Logged out{% endblocktrans %}</h2>
       <p>{% blocktrans %}Thanks for spending some quality time on Twistranet.{% endblocktrans %}</p>
-      <p><a href="#" class="login-again">{% blocktrans %}Login again{% endblocktrans %}</a></p>
+      <p><a href="/login" class="login-again">{% blocktrans %}Log in again{% endblocktrans %}</a></p>
     </div>
   {% endif %}  
   <div id="container">
@@ -132,12 +132,3 @@
 
 {% endblock %}
 </body>
-{% if justloggedout %} 
-  <script type="text/javascript"charset="utf-8">
-   $('a.login-again').click(function(){
-      $('.login #container').show();
-      $('.logout-message').remove();
-      return false;
-   })
-  </script>
-{% endif %}
