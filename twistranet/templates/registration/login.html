@@ -7,80 +7,17 @@
     <script type="text/javascript" src="/js/tn.js" charset="utf-8"></script>
     <link rel="stylesheet" href="/media/css/base.css" />
     <link rel="stylesheet" href="/media/css/login.css" />
-    <link rel="stylesheet" href="/css/typography.css" type="text/css" media="screen" />
-	<style>
-		body.login {
-		    background: url("../images/body-bg.png") repeat-x scroll left top #F9F9F9;
-		}
-		#logo {
-        width: 963px;
-        margin: 0 auto;
-        color: white;
-        font-size: 14px;
-        padding: 5px 8px;
-    }
-    .logo-title {
-        font-weight: bold;
-    }
-    .logo-title,
-    .logo-slogan {
-       float: left;
-    }
-		.login #container {
-			-moz-border-radius: 10px;
-			-webkit-border-radius: 10px;
-			border-radius: 10px;
-			width: 30em;
-		}
-		input{
-			border: 1px solid #ccc;
-			padding: 3px 10px;
-			background-color: #F9FFFF;
-		}
-		input:focus {
-      border-color: #aaa;
-    }
-    input[type="submit"],
-    input[type="submit"]:focus,
-    input[type="submit"]:active {
-      cursor:pointer;
-      float: none; 
-			background-image: none;
-    }		
-		#tn-message {
-		  position: absolute;
-		  top: 60px;
-		  left: -14em;
-		  width: 27em;
-		  margin: 0 50%;
-      text-align: center;
-      padding: 5px 0.5em 0;
-      font-size: 110%;
-    }
-    .error {          
-      color: red;		  
-    }
-    
-		.logout-message {
-		  position: relative;
-		  margin-top: 40px;
-		  width: 963px;
-		  margin: 40px auto 0;
-      text-align: left;
-      font-size: 110%;
-    } 
-   
-   .login .form-row label {
-     white-space: nowrap;
-   }
+    <link rel="stylesheet" href="/css/typography.css" type="text/css" media="screen" />   
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen" />
+	  <style>
           
-  {% if justloggedout %}
-    .login #container {
-      display: none;
-    }
-  {% endif %}
+    {% if justloggedout %}
+      .login #container {
+        display: none;
+      }
+    {% endif %}
     
-	</style>
+	  </style>
   
   <title>{% block title %}{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}{% endblock %}</title>
 </head>
