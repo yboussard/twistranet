@@ -31,6 +31,7 @@ setup(name='Twistranet',
           'django', 
           'django-debug-toolbar',
           'django-piston',  
+          'django-haystack,
           # 'django-haystack', the alpha version used in twistranet is not yet released
           # -*- Extra requirements: -*-
       ],
