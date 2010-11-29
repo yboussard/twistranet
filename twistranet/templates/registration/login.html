@@ -26,18 +26,11 @@
     .logo-slogan {
        float: left;
     }
-		#container {
+		.login #container {
 			-moz-border-radius: 10px;
 			-webkit-border-radius: 10px;
 			border-radius: 10px;
-		}
-		#container #header {
-			background-color: transparent;
-			color: #BE261E;			
-		}
-		#container #header #branding h1 {
-			background-color: transparent;
-			color: #BE261E;			
+			width: 30em;
 		}
 		input{
 			border: 1px solid #ccc;
@@ -76,7 +69,11 @@
       text-align: left;
       font-size: 110%;
     } 
-       
+   
+   .login .form-row label {
+     white-space: nowrap;
+   }
+          
   {% if justloggedout %}
     .login #container {
       display: none;
