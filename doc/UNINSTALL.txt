@@ -1,0 +1,21 @@
+To remove twistranet, launch at command prompt
+
+  $ pip uninstall Twistranet
+
+Answer 'yes' at prompt  
+
+If you don't need it anymore, you can also remove all dependencies,
+(Django, django-piston, django haystack, django-debug-toolbar)
+
+  $ pip uninstall Django
+  $ pip uninstall django-piston
+  ...
+
+Note :
+=====
+
+Uninstalling Twistranet will not destroy any data, since your
+project is stored in another place.
+
+
+ 

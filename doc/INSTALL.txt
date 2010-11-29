@@ -69,13 +69,15 @@ Or to install the devel version from svn
 Twistranet and all its dependencies are downloaded and installed
 in your python path ::
 
-  - twistranet
+  - Twistranet
   
-  - django
+  - Django
   
-  - piston
+  - django-piston
   
-  - ...
+  - django-haystack
+  
+  - django-debug-toolbar
 
 
 Create a new Twistranet project
@@ -94,13 +96,16 @@ This will install all you need for your project in 'mysite' folder :
   - django initialization files
 
 If you need to customize css and templates
-You can initialize this work with standard Twistranet templates
+You can initialize the customization work by copy/paste standard Twistranet templates
 and themes in 'mysite' folder, just change the previous command
 with::
 
     $ twistranet_project -t mysite
 
-More options will came in future
+You will probably have to change some configuration in local_settings.py
+
+
+
 
 
 Initialize the project

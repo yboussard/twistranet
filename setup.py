@@ -28,7 +28,7 @@ setup(name='Twistranet',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'django', 
+          'Django', 
           'django-debug-toolbar',
           'django-piston',  
           'django-haystack',
