@@ -66,7 +66,6 @@ ul.inline-form textarea {
 	border-radius: 5px;
   width: 550px;
 	padding: 5px;
-	border-color: #ccc;
 }
 
 ul.inline-form select {
@@ -78,8 +77,8 @@ ul.inline-form select {
    or search forms */
 
 .fieldWrapper {
-  padding: 10px 0;
-  border-bottom: 1px solid #CCCCCC ;
+  padding: 10px;
+  border-bottom: 1px solid #EEEEEE ;
   clear: both;
 }
 
@@ -128,7 +127,7 @@ ul.errorlist li {
 }
 
 .form-controls {
-  padding: 15px 0 0;
+  padding: 15px 10px 0;
 }
 
 /* edit forms */
@@ -139,7 +138,7 @@ ul.errorlist li {
    -moz-box-shadow: 3px 3px 3px #CCCCCC; 
    -webkit-box-shadow: 3px 3px 3px #CCCCCC;
    box-shadow: 3px 3px 3px #CCCCCC;
-   padding: 5px 10px 10px;
+   padding: 5px 0 10px;
    width: 90%;
    margin-top: 10px;
 }

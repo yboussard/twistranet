@@ -4,10 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.contrib.auth import logout
+from django.utils.translation import ugettext as _
 
 from twistranet.models import *
 from twistranet.lib import form_registry
 from twistranet.lib.decorators import require_access
+
 
 # XXX Move this is settings
 TWISTRANET_CONTENT_PER_PAGE = 25
@@ -186,4 +189,15 @@ def home(request):
         )
     return HttpResponse(t.render(c))
 
+
+def account_logout(request):
+    t = loader.get_template('registration/login.html')
+    logout(request)
+    c = RequestContext(
+        request,
+        {
+            "justloggedout":True,
+        },
+        )
+    return HttpResponse(t.render(c))
 

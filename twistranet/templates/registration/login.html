@@ -7,10 +7,25 @@
     <script type="text/javascript" src="/js/tn.js" charset="utf-8"></script>
     <link rel="stylesheet" href="/media/css/base.css" />
     <link rel="stylesheet" href="/media/css/login.css" />
+    <link rel="stylesheet" href="/css/typography.css" type="text/css" media="screen" />
 	<style>
 		body.login {
 		    background: url("../images/body-bg.png") repeat-x scroll left top #F9F9F9;
 		}
+		#logo {
+        width: 963px;
+        margin: 0 auto;
+        color: white;
+        font-size: 14px;
+        padding: 5px 8px;
+    }
+    .logo-title {
+        font-weight: bold;
+    }
+    .logo-title,
+    .logo-slogan {
+       float: left;
+    }
 		#container {
 			-moz-border-radius: 10px;
 			-webkit-border-radius: 10px;
@@ -25,31 +40,62 @@
 			color: #BE261E;			
 		}
 		input{
-			border: 1px solid #CDD;
-			-moz-border-radius: 5px;
-			-webkit-border-radius: 5px;
-			border-radius: 5px;
+			border: 1px solid #ccc;
 			padding: 3px 10px;
 			background-color: #F9FFFF;
 		}
-    input[type="submit"] {
+		input:focus {
+      border-color: #aaa;
+    }
+    input[type="submit"],
+    input[type="submit"]:focus,
+    input[type="submit"]:active {
       cursor:pointer;
+      float: none; 
+			background-image: none;
     }		
 		#tn-message {
 		  position: absolute;
-		  top: 50px;
+		  top: 60px;
 		  left: -14em;
 		  width: 27em;
 		  margin: 0 50%;
-      color: red;		  
       text-align: center;
       padding: 5px 0.5em 0;
+      font-size: 110%;
     }
+    .error {          
+      color: red;		  
+    }
+    
+		.logout-message {
+		  position: relative;
+		  margin-top: 40px;
+		  width: 963px;
+		  margin: 40px auto 0;
+      text-align: left;
+      font-size: 110%;
+    } 
+       
+  {% if justloggedout %}
+    .login #container {
+      display: none;
+    }
+  {% endif %}
+    
 	</style>
-    <title>{% block title %}{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}{% endblock %}</title>
+  
+  <title>{% block title %}{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}{% endblock %}</title>
 </head>
 
 <body class="login">
+<div id="logo">
+    <div class="logo-title">TwistraNet.</div>
+    <div class="logo-slogan">{% blocktrans %}You will love your work.{% endblocktrans %}</div>
+</div>
+
+<div class="clear"><!-- --></div>
+
 {% block content %}
 
   {% if form.errors %}
@@ -57,14 +103,14 @@
       <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
     </div>
   {% endif %}
+  {% if justloggedout %}
+    <div class="logout-message">
+      <h2>{% blocktrans %}Logged out{% endblocktrans %}</h2>
+      <p>{% blocktrans %}Thanks for spending some quality time on Twistranet.{% endblocktrans %}</p>
+      <p><a href="#" class="login-again">{% blocktrans %}Login again{% endblocktrans %}</a></p>
+    </div>
+  {% endif %}  
   <div id="container">
-    <!-- Header -->
-	<div id="header">
-	    <div id="branding">
-	      <h1 id="site-name">{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}</h1>
-	    </div> 
-	</div>
-	<!-- END Header -->
 	<div class="colM" id="content">
 	  <form id="login-form" action="" method="post" class="enableAutoFocus">
 	      {% csrf_token %}
@@ -86,3 +132,12 @@
 
 {% endblock %}
 </body>
+{% if justloggedout %} 
+  <script type="text/javascript"charset="utf-8">
+   $('a.login-again').click(function(){
+      $('.login #container').show();
+      $('.logout-message').remove();
+      return false;
+   })
+  </script>
+{% endif %}

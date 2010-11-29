@@ -48,7 +48,7 @@ urlpatterns = patterns('',
 
     # Login / Logout / Register stuff
     (r'^login/$', login),
-    (r'^logout/$', logout),
+    (r'^logout/$',                              'twistranet.views.account_logout'),
     
     # TwistraNet's API
     (r'^api/', include('twistranet.api.urls')),

@@ -91,10 +91,16 @@ input, select, textarea, button {
   font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
   font-size: 11px;       
   color: #686868;       
-	border: 1px solid #999;
+	border: 1px solid #CCC;
 }
 
-input[type="text"] {
+input:focus, select:focus, textarea:focus, button:focus {
+  border-color: #AAA;
+}
+
+
+input[type="text"],
+input[type="password"] {
 	padding:  1px 5px;
 	background-color: white; 
 }
