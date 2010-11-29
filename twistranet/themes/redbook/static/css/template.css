@@ -96,7 +96,7 @@ body {
 			#contextbar {
 				width: 181px;
 				float: left;	
-				margin: 0 0 12px 0;
+				margin: 0 0 12px 3px;
 				word-wrap: break-word;
 			}
   		#tn-message {
@@ -110,7 +110,7 @@ body {
         padding: 5px 0.5em 0;
       }
 			#content {
-				width: 575px;
+				width: 572px;
 				float: left;
 				padding: 0 10px;
 			}
