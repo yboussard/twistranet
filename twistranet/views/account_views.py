@@ -37,6 +37,12 @@ class BaseAccountView(BaseView):
     """
     This is what is used as a base view for accounts
     """
+    context_boxes = [
+        'account/profile.box.html',
+        'account/actions.box.html',
+        'account/relations.box.html',
+    ]
+    
     def _getInlineForms(self, publisher = None):
         """
         - a forms list ; empty list if no form to display ;
@@ -125,20 +131,19 @@ class BaseAccountView(BaseView):
         
         # Generate the view itself
         auth_account = Account.objects._getAuthenticatedAccount()
-        t = loader.get_template('account/view.html')
-        c = RequestContext(
-            self.request,
+        in_my_network = auth_account.network.filter(id = account.id)
+        
+        # Return the template with its parameters
+        return self.render_template(
+            "account/view.html",
             {
                 "path": self.request.path,
                 "content_forms": forms,
                 "account": account,
                 "latest_content_list": self.get_recent_content_list(account),
-                "can_add_to_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and not current_account.network.filter(id = account.id),
-                "can_remove_from_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and bool(current_account.network.filter(id = account.id)),
-            },
-            )
-        return HttpResponse(t.render(c))
-    
+                "can_add_to_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and not in_my_network,
+                "can_remove_from_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and in_my_network,
+            })
     
 class AccountView(BaseAccountView):
     

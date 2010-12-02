@@ -51,7 +51,7 @@
                     </div>
                     {% endblock %}
                     <a class="logotext"
-                       {# href="{% url home %}"> #}
+                       href="{% url twistranet_home %}">
                         <div class="logo-title">{{ global_community.site_name }}</div>
                         <div class="logo-slogan">{{ global_community.baseline }}</div>
                     </a>
@@ -80,22 +80,19 @@
 
             <div id="wrap">                 
                 <div id="globalbar" class="sidebar">
-                    <ul class="tn-box-container">  
-                        {% block globalbar %}
-                            {% include "actions/general.part.html" %}
-                            {% include "content/content_creation.box.html" %}
-                        {% endblock %}
+                    <ul class="tn-box-container">
+                        {% for box in global_boxes %}
+                            {% include box %}
+                        {% endfor %}
                     </ul>
                 </div>
                 <div id="container">
 
                     <div id="contextbar" class="sidebar">  
                       <ul class="tn-box-container">
-                          {% block contextbar %}
-                              {% include 'account/profile.box.html' %}
-                              {% include 'account/actions.box.html' %}
-                              {% include "account/relations.box.html" %}
-                          {% endblock %}      
+                          {% for box in context_boxes %}
+                              {% include box %}
+                          {% endfor %}
                        </ul>
                     </div>
                     

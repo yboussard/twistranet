@@ -9,12 +9,11 @@ def security_context(request):
     Also get the content form available.
     And get the main_menu menu manager. (XXX TODO: Cache menu items)
     """
-    from twistranet.models import GlobalCommunity
+    from twistranet.models import GlobalCommunity, Account
     ret = dict()
 
     # The logged-in account
-    if request.user and hasattr(request.user, 'get_profile'):
-        ret['logged_account'] = request.user.get_profile()
+    ret['logged_account'] = Account.objects._getAuthenticatedAccount()
 
     # Content forms
     klasses = form_registry.form_registry.getFullpageForms(creation = True)
