@@ -35,10 +35,10 @@ class Fixture(object):
         if slug:
             obj_q = Twistable.objects.__booster__.filter(slug = slug)
             if obj_q.exists():
+                obj = obj_q.get().object
                 if not self.force_update:
                     # Object already exists and we don't want to update. Keep it that way.
-                    return
-                obj = obj_q.get().object
+                    return obj
         if not obj:
             obj = self.model()
             

@@ -33,7 +33,7 @@ class Resource(twistable.Twistable):
     # Resource location descriptors.
     # Locator is a (possibly looong) string used by the manager to find the resource
     manager = models.ForeignKey(ResourceManager, null = True, blank = True)         # If None, then the resource is DB-only. Field name is given by the accessor attribute.
-    locator = models.CharField(max_length = 1024, unique = True)
+    locator = models.CharField(max_length = 255, unique = True)
     md5 = models.CharField(max_length = 32, unique = False)
     original_filename = models.CharField(max_length = 1024, null = True)            # Original filename if given
     original_url = models.URLField(max_length = 1024, null = True)                  # Original URL if given

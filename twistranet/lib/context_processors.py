@@ -9,6 +9,7 @@ def security_context(request):
     Also get the content form available.
     And get the main_menu menu manager. (XXX TODO: Cache menu items)
     """
+    from twistranet.models import GlobalCommunity
     ret = dict()
 
     # The logged-in account
@@ -22,6 +23,7 @@ def security_context(request):
     
     # Various shortcuts
     ret['path'] = request.path
+    ret['global_community'] = GlobalCommunity.get()
     
     return ret
     

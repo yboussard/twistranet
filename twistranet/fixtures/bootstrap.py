@@ -29,6 +29,7 @@ FIXTURES = [
         Menu,
         slug = "menu_main",
         title = "Main Menu",
+        publisher = GlobalCommunity.objects.filter(),
     ),
 
     Fixture(
@@ -38,6 +39,7 @@ FIXTURES = [
         view_path = "twistranet.views.home",
         title = "Home",
         slug = "menuitem_home",
+        publisher = GlobalCommunity.objects.filter(),
     ),
 
     Fixture(
@@ -47,6 +49,7 @@ FIXTURES = [
         view_path = 'twistranet.views.communities',
         title = "Communities",
         slug = "menuitem_communities",
+        publisher = GlobalCommunity.objects.filter(),
     ),
 
     Fixture(
@@ -56,6 +59,7 @@ FIXTURES = [
         view_path = 'twistranet.views.communities',
         title = "View all communities",
         slug = "menuitem_all_communities",
+        publisher = GlobalCommunity.objects.filter(),
     ),
     
 ]

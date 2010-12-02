@@ -29,8 +29,8 @@ class WallTest(TestCase):
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         self.failUnless(s.content_ptr in Content.objects.followed.all())
-        self.failIf(s.content_ptr in self.admin.followed_content.all())
-        self.failIf(s.content_ptr in self.admin.followed_content.all())
+        # XXX TODO: Re-enable this test if we decide to have really private content
+        # self.failIf(s.content_ptr in self.admin.followed_content.all())
         
     def test_01_followed_content_availability(self):
         """

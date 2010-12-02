@@ -27,7 +27,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for account in account.network %}
+          {% for account in account.network_for_display %}
             {% include 'thumbnails/medium.html' %}
               {# {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %} #}
           {% endfor %}

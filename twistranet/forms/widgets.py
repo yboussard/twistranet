@@ -25,6 +25,12 @@ class MediaResourceWidget(Widget):
     """
     needs_multipart_form = True
     
+    class Media:
+        js = (
+            'js/tiny_mce/tiny_mce.js',
+            'js/tiny_mce/textareas.js',
+        )
+    
     def render(self, name, value, attrs=None):
         """
         Returns this Widget rendered as HTML, as a Unicode string.

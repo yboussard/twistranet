@@ -73,7 +73,7 @@ def bootstrap():
     """
     try:
         # Let's log in.
-        __account__ = SystemAccount.get()
+        __account__ = SystemAccount.objects.__booster__.get()
     except:
         # Default fixture probably not installed yet. Don't do anything yet.
         print "DatabaseError while bootstraping. Your tables are probably not created yet."

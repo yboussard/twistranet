@@ -162,15 +162,12 @@ def home(request):
     if not isinstance(account, AnonymousAccount):
         # Generate the latest content list. We first get the first X ids, then re-issue the query with a generous select_related.
         # This way, we just issue a couple of queries instead of a bunch of requests!
-        # We also do the discinct part by hand, assuming each content can be duplicated at most 10 times XXX Calculate that more precisely!
-        # This replaces the following line:
-        # latest_list = Content.objects.getActivityFeed(account).order_by("-created_at").distinct()[:TWISTRANET_CONTENT_PER_PAGE]
-
-        latest_ids = account.followed_content.values_list('id', flat = True).order_by("-created_at")[:TWISTRANET_CONTENT_PER_PAGE * 10]
+        # XXX TODO: Optimze this with a filter(id > oldest_seen_number)
+        latest_ids = Content.objects.followed.values_list('id', flat = True).order_by("-created_at")[:TWISTRANET_CONTENT_PER_PAGE]
         latest = {}
-        for i in latest_ids: latest.__setitem__(i, None)
+        for i in latest_ids:
+            latest[i] = None
         latest_list = Content.objects.filter(id__in = latest.keys()).select_related(*select_related_summary_fields).order_by("-created_at")
-        # latest_list = account.followed_content.select_related(*select_related_summary_fields)[:TWISTRANET_CONTENT_PER_PAGE * 10]
     else:
         # Just return public content
         latest_list = Content.objects.order_by("-created_at")

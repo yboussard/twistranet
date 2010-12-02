@@ -2,9 +2,9 @@ from roles import *
 
 # Basic permissions
 # TODO: List which roles are possible for each permission kind.
+can_list = "can_list"           # BASIC ACCESS PERMISSION. You won't be able to do anything if you can't list an object.
 can_view = "can_view"
 can_edit = "can_edit"           # One who can edit can also delete
-can_list = "can_list"
 can_list_members = "can_list_members"
 can_publish = "can_publish"
 can_join = "can_join"
@@ -99,7 +99,7 @@ ephemeral_templates = PermissionTemplate((
         "description":      "Content visible to anyone who can view this page.",
         can_list:           public,
         can_view:           public,
-        can_edit:           system,
+        can_edit:           owner,
         can_delete:         owner,
     },
     {
@@ -111,7 +111,7 @@ ephemeral_templates = PermissionTemplate((
                             """,
         can_list:           network,
         can_view:           network,
-        can_edit:           system,
+        can_edit:           owner,
         can_delete:         owner,
         "disabled_for_community":   True,
     },
@@ -124,7 +124,7 @@ ephemeral_templates = PermissionTemplate((
                             """,
         can_list:           network,
         can_view:           network,
-        can_edit:           system,
+        can_edit:           owner,
         can_delete:         owner,
         "disabled_for_useraccount":  True,
     },
@@ -134,7 +134,7 @@ ephemeral_templates = PermissionTemplate((
         "description":      "Content visible only for the author",
         can_list:           owner,
         can_view:           owner,
-        can_edit:           system,
+        can_edit:           owner,
         can_delete:         owner,
     },
 ))

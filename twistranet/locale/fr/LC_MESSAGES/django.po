@@ -61,7 +61,7 @@ msgstr "Mon profil"
 #: .\templates\account\view.html.py:9 .\templates\account\view.html.py:29
 #: .\templates\navigation\breadcrumb.part.html.py:23
 msgid "%(text_headline)s's Profile"
-msgstr "Profil de %(account)s"
+msgstr "Profil de %(text_headline)s"
 
 #: .\templates\actions\content_summary.part.html.py:7
 msgid "Delete content"

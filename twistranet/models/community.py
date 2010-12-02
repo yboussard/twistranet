@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -153,17 +153,24 @@ class Community(Account):
         if not account:
             account = Account.objects._getAuthenticatedAccount()
 
-        # Actually add (symetrically)
-        Network.objects.create(
-            client = account,
-            target = self,
-            is_manager = is_manager,
-        )
-        Network.objects.create(
-            client = self,
-            target = account,
-            is_manager = False,
-        )
+        # Actually add (symetrically).
+        # We ignore Integrity Errors as they are just duplicate of the same information
+        try:
+            Network.objects.create(
+                client = account,
+                target = self,
+                is_manager = is_manager,
+            )
+        except IntegrityError:
+            pass
+        try:
+            Network.objects.create(
+                client = self,
+                target = account,
+                is_manager = False,
+            )
+        except IntegrityError:
+            pass
         
         # Post join message
         notifier.joined(account, self)

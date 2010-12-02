@@ -30,19 +30,15 @@ class ContentManager(twistable.TwistableManager):
         Return the filter specifying how to follow the given account.
         If account is specified, we ensure that returned content is visible by the given account.
         """
+        auth = self._getAuthenticatedAccount()
         if account is None:
-            account = self._getAuthenticatedAccount()
+            account = auth
         
         return (Q(
             publisher__targeted_network__target__id = account.id,
         ) | Q(
             publisher__id = account.id,
-        )) & (
-            twistable.Twistable.objects.get_anonymous_filter(account) | \
-            twistable.Twistable.objects.get_public_filter(account) | \
-            twistable.Twistable.objects.get_network_filter(account) | \
-            twistable.Twistable.objects.get_owner_filter(account)
-        )
+        ))
             
     @property
     def followed(self):
@@ -74,14 +70,8 @@ class Content(_AbstractContent):
     
     If you want to create your own text-based content type, just add a text = models.TextField() line in your subclass.
     """
-    # The publisher this content is published for
-    # publisher = models.ForeignKey(Account)                      # The account this content is published for.
-    
     # Resources associated to this content
-    resources = models.ManyToManyField(Resource, blank = True, null = True)
-    
-    # XXX TODO: Implement sources (ie. the client this 'tweet' is coming from)
-    # source = "web"
+    resources = models.ManyToManyField(Resource, blank = True, null = True, db_index = True)
     
     # This points to the original version of a translated content.
     # (Not implemented yet, but will be one day.)
@@ -90,10 +80,10 @@ class Content(_AbstractContent):
         related_name = "translated_versions",
         null = True,
         blank = True,
+        db_index = True
     )
     
     # Security models available for the user
-    # XXX TODO: Use a foreign key instead with some clever checking, or, better create a new field type.
     permission_templates = permissions.content_templates
         
     # View overriding support.

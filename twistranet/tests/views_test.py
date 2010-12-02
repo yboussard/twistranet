@@ -34,6 +34,10 @@ class ViewsTest(TestCase):
         
         # Enable DB debug mode to allow queries count
         settings.DEBUG = True
+        
+        # Massive  content creation
+        # from twistranet.fixtures import heavy_load
+        
         # Start counting queries (XXX Don't know why q. count doesn't work well)
         # self.q_offset = len(connection.queries)
         # print self.q_offset
@@ -54,8 +58,8 @@ class ViewsTest(TestCase):
                     q_dict[sql] = [q['params']]
                 else:
                     q_dict[sql].append(q['params'])
-            print "Duplicate queries:"
-            pprint.pprint([ i for i in q_dict.items() if len(i[1]) > 1 ])
+            # print "Duplicate queries:"
+            # pprint.pprint([ i for i in q_dict.items() if len(i[1]) > 1 ])
 
     def test_00_loggedin_home(self):
         """
@@ -65,9 +69,10 @@ class ViewsTest(TestCase):
         self.failUnless(settings.DEBUG)
         # response = self.B_client.get("/")
         # self.failUnlessEqual(response.status_code, 200)
-        response = self.admin_client.get("/")
-        self.failUnlessEqual(response.status_code, 200)
-        # self.print_query_stats()
+        for i in range(10):
+            response = self.admin_client.get("/")
+            self.failUnlessEqual(response.status_code, 200)
+        self.print_query_stats()
 
     def test_01_admin_community(self,):
         """

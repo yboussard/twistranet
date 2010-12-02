@@ -86,13 +86,11 @@ class Account(twistable.Twistable):
     #               Rights / Security management            #
     #                                                       #
 
-    def has_role(self, role, obj = None, obj_id = None):
+    def has_role(self, role, obj = None, ):
         """
         Return if SELF account has the given role on the given object.
         XXX TODO Heavily uses caching and optimize queries
         XXX TODO Make only one query for db-dependant roles?
-        Some roles are global (authenticated, anonymous, administrator, ..), 
-        and some are dependent of the given object (community_member, ...).
         
         Warning: This method can return different results when called
         from the authenticated user or not. We should only cache calls made
@@ -106,79 +104,46 @@ class Account(twistable.Twistable):
         XXX TODO: Oh, BTW, we should check if the role actually exists!
         """
         auth = self
-        if obj is None and obj_id is None:
+        if obj is None:
             obj = self
-        if obj_id is None:
-            obj_id = obj.id
                 
-        # We've been given an id instead of an object:
-        # Then we'll issue an explicit and possibly complex query to find the role.
-        # if obj is None:
-        # Oh, BTW, start by checking anonymous shortcut
+        # System Account is allowed to do anything.
         if isinstance(auth, SystemAccount):
             return True
-        if isinstance(auth, AnonymousAccount):
-            # XXX Can't be true, Anon. may not have owner or nwk roles!
-            flt = twistable.Twistable.objects.get_anonymous_filter(auth)
-            raise NotImplementedError("todo")
+        if role == roles.system:
+            return False
+        
+        # Owner has all roles lower than owner.
+        nwk = auth.network_ids
+        if (obj.id == auth.id) or (obj.owner_id == auth.id):
+            if role <= roles.owner:
+                return True
+        elif role == roles.owner:
+            return False
             
-        # Procedural method and cache retrieving if obj is already given.
-        # We use this as a shortcut to avoid issuing costly queries.
-        has_role = None
-        if obj is not None:
-            # First we try to find the caches for exact matches.
-            # If we don't find, use procedural tests
-            if role == roles.owner:
-                role_cache = getattr(obj, '_c_owner', None)
-                if role_cache is not None:
-                    has_role = bool(role_cache)
-            elif role == roles.network:
-                role_cache = getattr(obj, '_c_network', None)
-                if role_cache is not None:
-                    has_role = bool(role_cache)
-            elif role == roles.public:
-                role_cache = getattr(obj, '_c_public', None)
-                if role_cache is not None:
-                    has_role = bool(role_cache)
+        # If we can access it, that means we have the public role.
+        # But maybe it's worth checking?
+        if role == roles.public:
+            # XXX TODO: Double check here...
+            return True
 
-            # Partial procedural tests if we didn't find the role.
-            if has_role is None:
-                if role <= roles.owner:
-                    if obj.owner_id == auth.id:
-                        has_role = True
-                    elif obj.publisher_id == auth.id:
-                        has_role = True
-                    elif obj_id == auth.id:
-                        has_role = True
-                    
-                if not has_role and role <= roles.public:
-                    if not obj.publisher_id:
-                        has_role = True
-            
-        # Didn't find the role. We must issue a query.
-        if has_role is None:
-            if role == roles.owner:
-                flt = twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.network:
-                flt = twistable.Twistable.objects.get_network_filter(auth) | \
-                    twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.public:
-                flt = twistable.Twistable.objects.get_public_filter(auth) | \
-                    twistable.Twistable.objects.get_network_filter(auth) | \
-                    twistable.Twistable.objects.get_owner_filter(auth)
-            elif role == roles.system:
-                return False        # System account must have been shunted before
-            else:
-                raise NotImplementedError("Role %s not implemented", role)
+        # If is a manager, validate all roles < mgr
+        # XXX TODO
+        if role == roles.managers:
+            raise NotImplementedError()
+        
+        # If in the object's network, validate that. Dereference only if needed.
+        if issubclass(obj.model_class, Account):
+            pub = obj.id
+        else:
+            # XXX Maybe we could avoid this unncessary query, though I doubt so
+            pub = obj.publisher_id
+        if pub in nwk:
+            if role <= roles.network:
+                return True
+        elif role == roles.network:
+            return False
                 
-            # Issue the query to find role value
-            # print "has_role hits db for", self, role, obj or obj_id
-            has_role = twistable.Twistable.objects.__booster__.filter(
-                Q(id = obj_id,) & flt
-            ).exists()
-            
-        return has_role
-
         # We shouldn't reach there
         raise RuntimeError("Unexpected role (%s) asked for object '%s' (%s)" % (role, obj and obj.__class__.__name__, obj and obj.id))
 
@@ -198,11 +163,15 @@ class Account(twistable.Twistable):
     @property
     def is_admin(self):
         """
-        Return True if current user is in the admin community or is System
+        Return True if current user is in the admin community or is System.
+        We cache this value.
         """
-        raise NotImplementedError()
-        # return self.is_administrator
-        return self.has_role(roles.administrator)
+        v = getattr(self, '_is_admin', None)
+        if v is not None:
+            return v
+        import community
+        self._is_admin = community.AdminCommunity.objects.__booster__.get().is_member
+        return self._is_admin
 
 
     #                                           #
@@ -218,6 +187,28 @@ class Account(twistable.Twistable):
             targeted_network__target__id = self.id,
             requesting_network__client__id = self.id,
         )
+        
+    @property
+    def network_ids(self,):
+        """
+        Return networks available for queries AAAND myself.
+        XXX TODO: Cache this!
+        """
+        if hasattr(self, "_c_network_ids"):
+            return self._c_network_ids
+        
+        ids = Account.objects.__booster__.filter(
+            Q(targeted_network__target__id = self.id) | Q(id = self.id)
+            ).values_list("id", flat = True)
+        self._c_network_ids = ids
+        return ids
+        
+    @property
+    def network_for_display(self,):
+        """
+        Used to display network information. Heavily cached and cleverly sorted.
+        """
+        return self.network.order_by("-id")[:25]
     
     def follow(self, account):
         """
@@ -236,6 +227,8 @@ class Account(twistable.Twistable):
             you_to_me = you_to_me.get()
             # you_to_me.approved = True
             you_to_me.save()
+            approved = True
+        elif account.id == self.id:
             approved = True
         else:
             approved = False
@@ -274,7 +267,7 @@ class Account(twistable.Twistable):
         from content import Content
         return Content.objects.filter(
             Content.objects.get_follow_filter(self),
-        )
+        ).distinct()
         
     @property
     def communities(self):
@@ -350,15 +343,18 @@ class UserAccount(Account):
         ret = super(UserAccount, self).save(*args, **kw)
 
         # Join the global community. For security reasons, it's SystemAccount who does this.
+        # Add myself to my own community as well.
         if creation:
             glob = community.GlobalCommunity.objects.get()
             __account__ = SystemAccount.objects.get()
             glob.join(self)
+            self.follow(self)
+            self.save()
             del __account__
         return ret
         
     def getDefaultOwner(self,):
-        from twistranet.models import community
+        return SystemAccount.get()
         return community.AdminCommunity.objects.get()
         
     def getDefaultPublisher(self,):
