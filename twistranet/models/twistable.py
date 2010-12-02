@@ -29,13 +29,13 @@ def get_twistable_category(object) :
     XXX TODO: Make this a method of the Twistable class
     """
     from twistranet.models import Content, Account, Community, Resource
-    if isinstance(object, Content):
+    if issubclass(object.model_class, Content):
         return 'content'
-    elif isinstance(object, Community):
+    elif issubclass(object.model_class, Community):
         return 'community'
-    elif isinstance(object, Account):
+    elif issubclass(object.model_class, Account):
         return 'account'
-    elif isinstance(object, Resource):
+    elif issubclass(object.model_class, Resource):
         return 'resource'
     raise NotImplementedError("Can't get twistable category for object %s" % object)
 
