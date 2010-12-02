@@ -5,7 +5,7 @@
         <img width="50" height="50" src="{% url twistranet.views.resource_by_account community.id 'picture' %}">  
       </a>                                         
       <h2 class="box-header">
-        <a href="{% url twistranet.views.community_by_slug community.slug %}">
+        <a href="{{community.get_absolute_url}}">
            {{ community.text_headline }}
         </a>
       </h2>
