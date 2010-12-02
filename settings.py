@@ -150,6 +150,10 @@ TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/%s/resources" % (HERE, 
 TWISTRANET_ACCOUNT_MEDIA_PATH = "%s/data/media" % (HERE, )
 TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't want sample data when bootstraping
 
+# Number of friends or communities displayed in a box
+TWISTRANET_NETWORK_IN_BOXES = 6
+TWISTRANET_FRIENDS_IN_BOXES = 9
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

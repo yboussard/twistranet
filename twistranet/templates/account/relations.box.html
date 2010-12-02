@@ -10,7 +10,7 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for community in account.communities %}
+          {% for community in account.communities_for_display %}
               {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community.translation %}
           {% endfor %}
         </li>
@@ -29,7 +29,6 @@
         <li>
           {% for account in account.network_for_display %}
             {% include 'thumbnails/medium.html' %}
-              {# {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %} #}
           {% endfor %}
         </li>
       </ul>

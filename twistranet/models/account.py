@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
+import settings
 import twistable
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, utils
@@ -208,7 +209,7 @@ class Account(twistable.Twistable):
         """
         Used to display network information. Heavily cached and cleverly sorted.
         """
-        return self.network.order_by("-id")[:25]
+        return self.network.order_by("-id")[:settings.TWISTRANET_FRIENDS_IN_BOXES]
     
     def follow(self, account):
         """
@@ -276,6 +277,13 @@ class Account(twistable.Twistable):
         """
         from community import Community
         return Community.objects.filter(targeted_network__target__id = self.id)
+
+    @property
+    def communities_for_display(self,):
+        """
+        Used to display network information. Heavily cached and cleverly sorted.
+        """
+        return self.communities.order_by("-id")[:settings.TWISTRANET_NETWORK_IN_BOXES]
 
     @property
     def managed_communities(self):

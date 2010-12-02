@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-11-29 11:49+0100\n"
-"Last-Translator: Jean-mat Grimaldi <jmgrimaldi@numericube.com>\n"
+"Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,12 +15,15 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+"PO-Revision-Date: \n"
 
-#: .\templates\wall.html.py:4 .\templates\wall.html.py:14
+#: .\templates\wall.html.py:4
+#: .\templates\wall.html.py:14
 msgid "Activity Feed"
 msgstr "Fil d'Activité"
 
-#: .\templates\wall.html.py:25 .\templates\account\view.html.py:43
+#: .\templates\wall.html.py:25
+#: .\templates\account\view.html.py:43
 #: .\templates\community\view.html.py:17
 msgid "No contents are available."
 msgstr "Aucun contenu disponible."
@@ -54,11 +57,13 @@ msgstr "Mon réseau"
 msgid "His/Her Network"
 msgstr "Son réseau"
 
-#: .\templates\account\view.html.py:6 .\templates\account\view.html.py:26
+#: .\templates\account\view.html.py:6
+#: .\templates\account\view.html.py:26
 msgid "My profile"
 msgstr "Mon profil"
 
-#: .\templates\account\view.html.py:9 .\templates\account\view.html.py:29
+#: .\templates\account\view.html.py:9
+#: .\templates\account\view.html.py:29
 #: .\templates\navigation\breadcrumb.part.html.py:23
 msgid "%(text_headline)s's Profile"
 msgstr "Profil de %(text_headline)s"
@@ -72,7 +77,8 @@ msgid "This action can't be undone, are you sure ?"
 msgstr "Cette action ne pourra pas être annulée, êtes vous sûr ?"
 
 #: .\templates\actions\general.part.html.py:3
-#: .\templates\community\list.html.py:4 .\templates\community\list.html.py:7
+#: .\templates\community\list.html.py:4
+#: .\templates\community\list.html.py:7
 #: .\templates\community\list.html.py:11
 msgid "Communities"
 msgstr "Communautés"
@@ -116,8 +122,7 @@ msgid "Join this community"
 msgstr "Rejoindre cette communauté"
 
 #: .\templates\community\actions.box.html.py:34
-msgid ""
-"Would you really want to join the community '%(community.text_headline)s' ?"
+msgid "Would you really want to join the community '%(community.text_headline)s' ?"
 msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
 
 #: .\templates\community\actions.box.html.py:43
@@ -126,8 +131,7 @@ msgid "Leave this community"
 msgstr "Quitter cette communauté"
 
 #: .\templates\community\actions.box.html.py:46
-msgid ""
-"Would you really want to leave the community '%(community.text_headline)s' ?"
+msgid "Would you really want to leave the community '%(community.text_headline)s' ?"
 msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
 
 #: .\templates\community\community_forms.part.html.py:23
@@ -135,16 +139,19 @@ msgstr "Voulez-vous vraiment rejoindre la communauté '%(community)s' ?"
 msgid "Send message"
 msgstr "Envoyer le message"
 
-#: .\templates\community\edit.html.py:7 .\templates\community\edit.html.py:18
+#: .\templates\community\edit.html.py:7
+#: .\templates\community\edit.html.py:18
 msgid "New community"
 msgstr "Nouvelle communauté"
 
-#: .\templates\community\edit.html.py:32 .\templates\content\edit.html.py:37
+#: .\templates\community\edit.html.py:32
+#: .\templates\content\edit.html.py:37
 #: .\templates\resource\edit.html.py:39
 msgid "Save"
 msgstr "Enregistrer"
 
-#: .\templates\community\edit.html.py:33 .\templates\content\edit.html.py:38
+#: .\templates\community\edit.html.py:33
+#: .\templates\content\edit.html.py:38
 #: .\templates\resource\edit.html.py:40
 msgid "Undo"
 msgstr "Annuler"
@@ -180,7 +187,8 @@ msgstr "Créer un contenu"
 msgid "Edit %(content_type)s"
 msgstr "Modifier %(content_type)s"
 
-#: .\templates\content\edit.html.py:8 .\templates\content\edit.html.py:23
+#: .\templates\content\edit.html.py:8
+#: .\templates\content\edit.html.py:23
 #, python-format
 msgid "New %(content_type)s"
 msgstr "Nouveau %(content_type)s"
@@ -210,17 +218,19 @@ msgid "My wall"
 msgstr "Mon mur"
 
 #: .\templates\registration\login.html.py:88
+#, fuzzy
 msgid "TwistraNet - The social content management system."
 msgstr "TwistraNet - Vous allez aimer travailler."
 
-#: .\templates\registration\login.html.py:94 .\themes\redbook\base.html.py:56
+#: .\templates\registration\login.html.py:94
+#: .\themes\redbook\base.html.py:56
+#, fuzzy
 msgid "You will love your work."
 msgstr "Vous allez aimer travailler."
 
 #: .\templates\registration\login.html.py:103
 msgid "Sorry, that's not a valid username or password"
-msgstr ""
-"Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
+msgstr "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
 #: .\templates\registration\login.html.py:108
 msgid "Logged out"
@@ -246,11 +256,13 @@ msgstr "Mot de passe :"
 msgid "login"
 msgstr "Se connecter"
 
-#: .\templates\resource\edit.html.py:6 .\templates\resource\edit.html.py:18
+#: .\templates\resource\edit.html.py:6
+#: .\templates\resource\edit.html.py:18
 msgid "Edit Resource"
 msgstr "Modifier la Ressource"
 
-#: .\templates\resource\edit.html.py:8 .\templates\resource\edit.html.py:24
+#: .\templates\resource\edit.html.py:8
+#: .\templates\resource\edit.html.py:24
 msgid "New Resource"
 msgstr "Nouvelle Ressource"
 
@@ -268,20 +280,24 @@ msgstr "Rechercher"
 msgid "Search..."
 msgstr "Rechercher ..."
 
-#: .\themes\default\base.html.py:8 .\themes\redbook\base.html.py:8
+#: .\themes\default\base.html.py:8
+#: .\themes\redbook\base.html.py:8
 msgid "TwistraNet"
 msgstr "TwistraNet"
 
-#: .\themes\default\base.html.py:40 .\themes\redbook\base.html.py:37
+#: .\themes\default\base.html.py:40
+#: .\themes\redbook\base.html.py:37
 #, python-format
 msgid "%(user)s"
 msgstr "%(user)s"
 
-#: .\themes\default\base.html.py:47 .\themes\redbook\base.html.py:44
+#: .\themes\default\base.html.py:47
+#: .\themes\redbook\base.html.py:44
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\themes\default\base.html.py:50 .\themes\redbook\base.html.py:47
+#: .\themes\default\base.html.py:50
+#: .\themes\redbook\base.html.py:47
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -289,23 +305,28 @@ msgstr "Se connecter"
 msgid "The social content management system."
 msgstr "Le CMS social."
 
-#: .\themes\default\base.html.py:131 .\themes\redbook\base.html.py:122
+#: .\themes\default\base.html.py:131
+#: .\themes\redbook\base.html.py:122
 msgid "Powered By "
 msgstr "Propulsé par "
 
-#: .\themes\default\base.html.py:137 .\themes\redbook\base.html.py:128
+#: .\themes\default\base.html.py:137
+#: .\themes\redbook\base.html.py:128
 msgid "Confirmation Required"
 msgstr "Confirmation demandée"
 
-#: .\themes\default\base.html.py:140 .\themes\redbook\base.html.py:131
+#: .\themes\default\base.html.py:140
+#: .\themes\redbook\base.html.py:131
 msgid "Are you sure about this?"
 msgstr "Etes vous sûr ?"
 
-#: .\themes\default\base.html.py:142 .\themes\redbook\base.html.py:133
+#: .\themes\default\base.html.py:142
+#: .\themes\redbook\base.html.py:133
 msgid "Cancel"
 msgstr "Annuler"
 
-#: .\themes\default\base.html.py:143 .\themes\redbook\base.html.py:134
+#: .\themes\default\base.html.py:143
+#: .\themes\redbook\base.html.py:134
 msgid "OK"
 msgstr "Ok"
 
@@ -314,7 +335,8 @@ msgstr "Ok"
 msgid "The community %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
 
-#: .\views\community_views.py:132 .\views\content_views.py:104
+#: .\views\community_views.py:132
+#: .\views\content_views.py:104
 msgid "name"
 msgstr "nom"
 
