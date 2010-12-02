@@ -14,11 +14,12 @@ urlpatterns = patterns('',
     (r'^$',                                     'twistranet.views.home'),
     
     # Account pages
-    (r'^account/(\d+)/$',                       'twistranet.views.account_by_id'),              # The 'profile' page
-    (r'^account/(\w+)/$',                       'twistranet.views.account_by_slug'),
+    url(r'^account/(\d+)/$', 'twistranet.views.account_by_id', name='account_by_id'),              # The 'profile' page
+    url(r'^account/(\w+)/$', 'twistranet.views.account_by_slug', name='account_by_slug'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    (r'^resource/(\d+)$',                       'twistranet.views.resource_by_id'),
+    url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_slug'),
     (r'^resource/new$',                         'twistranet.views.create_resource'),
     (r'^resource/(\w+)$',                       'twistranet.views.resource_by_alias_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_account'),    # Fetch by account pty
@@ -30,18 +31,19 @@ urlpatterns = patterns('',
     (r'^media_library/(\d+)$',                  'twistranet.views.view_media_library'),
     
     # Content links
-    (r'^content/(\d+)$',                        'twistranet.views.content_by_id'),
+    url(r'^content/(\d+)$', 'twistranet.views.content_by_id', name='content_by_id'),
+    url(r'^content/(\d+)$', 'twistranet.views.content_by_slug', name='content_by_slug'),
     (r'^content/new/(\w+)$',                    'twistranet.views.create_content'),
     (r'^content/(\d+)/edit$',                   'twistranet.views.edit_content'),
     (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
+    url(r'^community/(\d+)$', 'twistranet.views.community_by_id', name='community_by_id'),
+    url(r'^community/(\w+)$', 'twistranet.views.community_by_slug', name='community_by_slug'),
     (r'^communities/$',                         'twistranet.views.communities'),
     (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
     (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
     (r'^community/new$',                        'twistranet.views.create_community'),
-    (r'^community/(\d+)$',                      'twistranet.views.community_by_id'),
-    (r'^community/(\w+)$',                      'twistranet.views.community_by_slug'),
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),
