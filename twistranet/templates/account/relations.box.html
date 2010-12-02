@@ -1,6 +1,4 @@
 {% load i18n %}
-{% load macros %}
-{% loadmacros "thumbnails/main-macro.html" %}
 <li class="tn-box relations-box">
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
@@ -10,8 +8,8 @@
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
-          {% for community in account.communities_for_display %}
-              {% usemacro accountblock 'thumbnail-50-bottom' 50 50 community.translation %}
+          {% for account in account.communities_for_display %}
+              {% include 'account/medium.thumbnail.html' %}
           {% endfor %}
         </li>
       </ul>
@@ -28,7 +26,7 @@
       <ul class="thumbnails-inner">
         <li>
           {% for account in account.network_for_display %}
-            {% include 'thumbnails/medium.html' %}
+                {% include 'account/medium.thumbnail.html' %}
           {% endfor %}
         </li>
       </ul>

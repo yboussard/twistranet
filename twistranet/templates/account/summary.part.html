@@ -1,9 +1,7 @@
 {# Generate a summary for an 'account' object #}
 {% load i18n %}
-{% load macros %}
-{% loadmacros "thumbnails/main-macro.html" %}
 <div class="post" id="post-{{content.id}}">
-    {% usemacro accountthumbnail 50 50 account %}
+    {% include 'account/medium.thumbnail.html' %}
     <div class="entry">
         <a class="author" href="{% url twistranet.views.account_by_slug account.slug %}">{{ account.text_headline }}</a>
         <div class="summary-content">

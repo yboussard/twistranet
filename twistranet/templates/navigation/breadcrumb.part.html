@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
+{# <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a> #}
 {% if content %}
     &gt;
     <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">

@@ -1,27 +1,27 @@
 {% load i18n %}
 {% load twistranet_extras %}
-{% load macros %}
-{% loadmacros "thumbnails/main-macro.html" %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    {% usemacro accountthumbnail 50 50 content.owner %}
+    {% with content.owner as account %}
+        {% include 'account/medium.thumbnail.html' %}
+    {% endwith %}
     <div class="entry">
         {% with content.translation as content %}         
         <div class="content-actions">
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            <a class="author" href="{% url twistranet.views.account_by_id content.owner_id %}">{{ content.owner.translation.text_headline|safe }}</a>
+            <a class="author" href="{{ content.owner.absolute_url }}">{{ content.owner.translation.text_headline|safe }}</a>
             {% if not content.owner_id == content.publisher_id %}
             &raquo;
-            <a class="publisher" href="{% url twistranet.views.account_by_id content.publisher_id %}">{{ content.publisher.translation.text_headline|safe }}</a>
+            <a class="publisher" href="{{ content.publisher.absolute_url }}">{{ content.publisher.translation.text_headline|safe }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">
                 {% if content.detail_view %}
                     <div class="summary-content">
                         <div class="headline-content">
-                            <a href="{% url twistranet.views.content_by_id content.id %}">
+                            <a href="{{ content.absolute_url }}">
                                 {{ content.text_headline|safe }}
                             </a>
                         </div>

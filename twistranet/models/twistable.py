@@ -46,7 +46,7 @@ class TwistableManager(models.Manager):
     """
     # Disabled for performance reasons.
     # use_for_related_fields = True
-    
+
     def get_query_set(self):
         """
         Return a queryset of 100%-authorized objects. All (should) have the can_list perm to True.
@@ -98,6 +98,7 @@ class TwistableManager(models.Manager):
             )
         )
         return qs
+                
 
     def _getAuthenticatedAccount(self):
         """
@@ -264,8 +265,8 @@ class Twistable(_AbstractTwistable):
         (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
         """
         category = get_twistable_category(self.object)
-        viewbyslug = '%s_by_slug' %category
-        viewbyid = '%s_by_id' %category
+        viewbyslug = '%s_by_slug' % category
+        viewbyid = '%s_by_id' % category
         if hasattr(self, 'slug') :
             if self.slug :
                 return  (viewbyslug, [self.slug])

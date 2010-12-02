@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 import os.path
 import settings
+from twistranet.views import *
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -11,11 +12,11 @@ urlpatterns = patterns('',
     # XXX TODO : Move those URLs inside the TN product
 
     # The wall page for generic accounts
-    (r'^$',                                     'twistranet.views.home'),
+    url(r'^$',                 HomepageView.as_view(), name='twistranet_home'),
     
     # Account pages
-    url(r'^account/(\d+)/$', 'twistranet.views.account_by_id', name='account_by_id'),              # The 'profile' page
-    url(r'^account/(\w+)/$', 'twistranet.views.account_by_slug', name='account_by_slug'),
+    url(r'^account/(\d+)/$', AccountView.as_view(lookup = 'id'), name='account_by_id'),              # The 'profile' page
+    url(r'^account/(\w+)/$', AccountView.as_view(lookup = "slug"), name='account_by_slug'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),

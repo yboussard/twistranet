@@ -1,13 +1,13 @@
 {# Formerly: {% usemacro accountblock 'thumbnail-50-bottom' 50 50 account %} #}
 <div class="thumbnail-account-part thumbnail-50-bottom">
-    <a href="{% url twistranet.views.account_by_slug account.slug %}" class="image-block image-block-50-50">
+    <a href="{{ account.get_absolute_url }}" class="image-block image-block-50-50">
           <img
               title="{{account.text_headline}}"
               alt="{{account.text_headline}}"
               src="{% url twistranet.views.resource_by_account account.id 'picture' %}" />
       </a>
       <label class="thumbnail-account-legend">
-        <a href="{% url twistranet.views.account_by_slug account.slug %}">
+        <a href="{{ account.get_absolute_url }}">
          {{ account.text_headline }}
         </a>
       </label>
