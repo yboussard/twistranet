@@ -63,7 +63,7 @@ def community_by_slug(request, slug):
     """
     (not very very efficent)
     """
-    community = Community.objects.get(name = slug)
+    community = Community.objects.get(slug = slug)
     return community_by_id(request, community.id)
 
 @require_access

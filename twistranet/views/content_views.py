@@ -87,6 +87,14 @@ def content_by_id(request, content_id):
     return HttpResponse(t.render(c))    
 
 @require_access
+def content_by_slug(request, slug):
+    """
+    XXX TODO: Make this more efficient?
+    """
+    content = Content.objects.get(slug = slug)
+    return content_by_id(request, content.id)
+
+@require_access
 def create_content(request, content_type):
     """
     """

@@ -21,6 +21,20 @@ from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoes
 from django.utils import html, translation
 from twistranet.lib import roles, permissions, languages, utils
 
+
+def get_twistable_category(object) :
+    from twistranet.models import Content, Account, Community, Resource
+    if isinstance(object, Content):
+        return 'content'
+    elif isinstance(object, Community):
+        return 'community'
+    elif isinstance(object, Account):
+        return 'account'
+    elif isinstance(object, Resource):
+        return 'resource'
+    raise NotImplementedError("Can't get twistable category for object %s" % object)
+
+
 class TwistableManager(models.Manager):
     """
     It's the base of the security model!!
@@ -423,7 +437,9 @@ class Twistable(_AbstractTwistable):
     _p_can_join = models.IntegerField(default = 15)
     _p_can_leave = models.IntegerField(default = 15)
     _p_can_create = models.IntegerField(default = 15)
-    
+
+                
+    @models.permalink
     def get_absolute_url(self):
         """
         XXX TODO: Make this a little more MVC with @permalink decorator
@@ -431,16 +447,13 @@ class Twistable(_AbstractTwistable):
         XXX TODO: Don't use the 'object' accessor but use a twistable_category attribute in some way
         (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
         """
-        from twistranet.models import Content, Account, Community, Resource
-        if isinstance(self.object, Content):
-            return "/content/%i" % self.id
-        elif isinstance(self.object, Community):
-            return "/community/%i" % self.id
-        elif isinstance(self.object, Account):
-            return "/account/%i" % self.id
-        elif isinstance(self.object, Resource):
-            return "/resource/%s" % self.id
-        raise NotImplementedError("Can't get absolute URL for object %s" % self)
+        category = get_twistable_category(self.object)
+        viewbyslug = '%s_by_slug' %category
+        viewbyid = '%s_by_id' %category
+        if hasattr(self, 'slug') :
+            if self.slug :
+                return  (viewbyslug, [self.slug])
+        return  (viewbyid, [self.id])
             
     #                                                                   #
     #           Internal management, ensuring DB consistancy            #    
