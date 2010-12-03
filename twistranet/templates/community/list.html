@@ -1,14 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans 'Communities' %}{% endblock %}
-
-{% block breadcrumb %}
-    <a href="/">{% trans 'Home' %}</a>&nbsp;&gt;&nbsp;{% trans 'Communities' %}
-{% endblock %}
-
 {% block content %}
-    <h1>{% blocktrans %}Communities{% endblocktrans %}</h1>
     {% if communities %}
         {% for account in communities %}
             {%include "community/summary.part.html" %}      

@@ -13,10 +13,8 @@ from twistranet.lib.decorators import require_access
 from twistranet.models import *
 from base_view import BaseView
 from account_views import AccountView
+import settings
 
-# XXX Move this is settings
-TWISTRANET_COMMUNITIES_PER_PAGE = 25
-TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
 
 class CommunitiesView(BaseView):
     """
@@ -29,7 +27,7 @@ class CommunitiesView(BaseView):
     
     def __call__(self, request):
         self.request = request
-        communities = Community.objects.get_query_set()[:TWISTRANET_COMMUNITIES_PER_PAGE]
+        communities = Community.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
         return self.render_template(
             "community/list.html",
             {
@@ -85,8 +83,8 @@ class CommunityView(AccountView):
                 "content_forms": forms,
                 "community": community,
                 "n_members": community.members.count(),
-                "members": community.members_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-                "managers": community.managers_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "members": community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "managers": community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
                 "latest_content_list": self.get_recent_content_list(community),
             })
 
@@ -115,7 +113,7 @@ class CommunityEdit(CommunityView):
             {
                 "community": community,
                 "n_members": community.members.count(),
-                "members": community.members_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "members": community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
                 "form": form,
                 "is_member": community and community.is_member,
             })

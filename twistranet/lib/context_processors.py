@@ -11,6 +11,14 @@ def security_context(request):
     """
     from twistranet.models import GlobalCommunity, Account
     ret = dict()
+    
+    # Try to get the global community. If we can't, that probably means we need a login here.
+    glob = GlobalCommunity.objects.all()
+    if glob:
+        ret['global_community'] = glob[0]
+    else:
+        # XXX TODO: Issue a redirect here in some way???
+        return ret
 
     # The logged-in account
     ret['logged_account'] = Account.objects._getAuthenticatedAccount()

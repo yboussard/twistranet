@@ -2,16 +2,16 @@
 {% load i18n %}
 
 {% block content %}
-    {% if account.html_summary %}
+    {% if community.html_summary %}
         <p class="discreet">
-            {{ account.html_summary }}
+            {{ community.html_summary }}
         </p>
     {% endif %}
     {% if community.can_publish %}
         {% include "community/community_forms.part.html" %}
     {% endif %}
 
-    {% if have_few_content %}
+    {% if too_few_content %}
         {% if community.can_publish %}
             {% blocktrans %}
                 <p>
