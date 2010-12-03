@@ -43,6 +43,12 @@ class BaseAccountView(BaseView):
         'account/relations.box.html',
     ]
     
+    important_action = None
+    
+    def get_important_action(self):
+        """Propose to join"""
+        return self.important_action
+    
     def _getInlineForms(self, publisher = None):
         """
         - a forms list ; empty list if no form to display ;
@@ -97,16 +103,16 @@ class BaseAccountView(BaseView):
         # Return the forms
         return forms
 
-    def get_recent_content_list(self, account):
+    def get_recent_content_list(self, acc):
         """
         Retrieve recent content list for the given account.
         XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
         This way we can just query objects with id > last_twistable_on_home
         """
-        if account.id == Account.objects._getAuthenticatedAccount().id:
+        if acc == Account.objects._getAuthenticatedAccount():
             latest_ids = Content.objects.followed
         else:
-            latest_ids = Content.objects.getActivityFeed(account)
+            latest_ids = Content.objects.getActivityFeed(acc)
             
         latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*select_related_summary_fields).order_by("-created_at")
@@ -121,7 +127,7 @@ class BaseAccountView(BaseView):
         """
         # If we're on a community, we should redirect
         if isinstance(account, Community):
-            return HttpResponseRedirect(reverse('twistranet.views.community_by_id', args = (account.id,)))
+            return HttpResponseRedirect(account.get_absolute_url())
 
         # Generate forms and ensure proper redirection if applicable
         try:
@@ -132,6 +138,8 @@ class BaseAccountView(BaseView):
         # Generate the view itself
         auth_account = Account.objects._getAuthenticatedAccount()
         in_my_network = auth_account.network.filter(id = account.id)
+        if not in_my_network and not auth_account.is_anonymous:
+            self.important_action = ("Add to my network", "twistranet_home")
         
         # Return the template with its parameters
         return self.render_template(
@@ -146,7 +154,9 @@ class BaseAccountView(BaseView):
             })
     
 class AccountView(BaseAccountView):
-    
+    """
+    A regular account page
+    """
     @classmethod
     def as_view(cls, lookup = "id"):
         obj = cls()
@@ -163,6 +173,10 @@ class HomepageView(BaseAccountView):
     """
     Special treatment for homepage.
     """
+    def get_important_action(self):
+        """Nothing really critical in the homepage"""
+        return None
+    
     def __call__(self, request):
         self.request = request
         account = Account.objects._getAuthenticatedAccount()

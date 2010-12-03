@@ -11,114 +11,129 @@ from twistranet.forms import community_forms
 from twistranet.lib.decorators import require_access
 
 from twistranet.models import *
-import account_views
+from base_view import BaseView
+from account_views import AccountView
 
-@require_access
-def communities(request):
+# XXX Move this is settings
+TWISTRANET_COMMUNITIES_PER_PAGE = 25
+TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
+
+class CommunitiesView(BaseView):
     """
     A list of n first available (visible) communities
     """
-    communities = Community.objects.get_query_set()
-    t = loader.get_template('community/list.html')
-    c = RequestContext(
-        request,
-        {
-            "path":         request.path,
-            "communities":  communities[:25],
-        })
-    return HttpResponse(t.render(c))
-
-@require_access
-def community_by_id(request, community_id):
-    """
-    Display a pretty community page.
-    Here you can view all members and posts published on this community
-    """
-    community = Community.objects.get(id = community_id)
-    latest_list = Content.objects.filter(publisher = community).order_by("-created_at")
-
-    # Form management
-    try:
-        forms = account_views._getInlineForms(request, community)
-    except account_views.MustRedirect:
-        return HttpResponseRedirect(request.path)
-
-    # Generate template
-    t = loader.get_template('community/view.html')
-    c = RequestContext(
-        request,
-        {
-            "path": request.path,
-            "community": community,
-            "members": community.members[:25],        # XXX SUBOPTIMAL
-            "latest_content_list": latest_list[:25],
-            "community_forms": forms,            
-            "is_member": community.is_member,
-        },
-        )
-    return HttpResponse(t.render(c))
+    def get_important_action(self):
+        return None
     
-@require_access
-def community_by_slug(request, slug):
-    """
-    (not very very efficent)
-    """
-    community = Community.objects.get(slug = slug)
-    return community_by_id(request, community.id)
+    def __call__(self, request):
+        self.request = request
+        communities = Community.objects.get_query_set()[:TWISTRANET_COMMUNITIES_PER_PAGE]
+        return self.render_template(
+            "community/list.html",
+            {
+                "communities":  communities,
+            }
+        )
 
-@require_access
-def edit_community(request, community_id = None):
+class CommunityView(AccountView):
     """
-    Edit the given community
+    Individual Community View.
+    By some aspects, this is very close to the account view.
     """
-    # Get basic information
-    if community_id is not None:
-        community = Community.objects.get(id = community_id)
+    important_action = None
+    context_boxes = [
+        'community/profile.box.html',
+        'community/members.box.html',
+    ]
+    
+    def __call__(self, request, value):
+        self.request = request
+        param = { self.lookup: value }
+        community = get_object_or_404(Community, **param)
+        return self.community_view(community)
+
+    def get_important_action(self):
+        return self.important_action
+
+    def community_view(self, community, ):
+        """
+        Account (user/profile) page.
+        We just diplay posts of any given community.
+        XXX TODO:
+            - Check if community is listed and permit only if approved
+        """
+        # Generate forms and ensure proper redirection if applicable
+        try:
+            forms = self._getInlineForms(publisher = community)
+        except MustRedirect:
+            return HttpResponseRedirect(self.request.path)
+            
+        # If we can join, this is the important action
+        if community.can_join:
+            self.important_action = ("Join this community", reverse('twistranet_home'))
+
+        # Generate the view itself
+        return self.render_template(
+            "community/view.html",
+            {
+                "path": self.request.path,
+                "content_forms": forms,
+                "community": community,
+                "n_members": community.members.count(),
+                "members": community.members_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "managers": community.managers_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "latest_content_list": self.get_recent_content_list(community),
+            })
+
+
+
+class CommunityEdit(CommunityView):
+    """
+    Edit form for community. Not so far from the view itself.
+    """
+    def community_edit(self, community):
+        """
+        Edition stuff
+        """
+        # Process form
+        if request.method == 'POST': # If the form has been submitted...
+            form = community_forms.CommunityForm(request.POST, instance = community)
+            if form.is_valid(): # All validation rules pass
+                community = form.save()
+                return HttpResponseRedirect(reverse(community.get_absolute_url()))
+        else:
+            form = community_forms.CommunityForm(instance = community) # An unbound form
+
+        # Template hapiness
+        return self.render_template(
+            'community/edit.html',
+            {
+                "community": community,
+                "n_members": community.members.count(),
+                "members": community.members_for_display[:TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+                "form": form,
+                "is_member": community and community.is_member,
+            })
+        return HttpResponse(t.render(c))
+
+
+    def __call__(self, request, value):
+        self.request = request
+        param = { self.lookup: value }
+        community = get_object_or_404(Community, **param)
         if not community.can_view:
             raise NotImplementedError("Should implement a permission denied exception here")
         if not community.can_edit:
             raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
-    else:
-        # XXX TODO: Check some kind of "can_create_community" permission?
-        community = None
+        return self.community_edit(community)
 
-    # Process form
-    if request.method == 'POST': # If the form has been submitted...
-        if community:
-            form = community_forms.CommunityForm(request.POST, instance = community)
-        else:
-            form = community_forms.CommunityForm(request.POST)
-            
-        if form.is_valid(): # All validation rules pass
-            community = form.save()
-            return HttpResponseRedirect(reverse('twistranet.views.community_by_id', args = (community.id,)))
-    else:
-        if community:
-            form = community_forms.CommunityForm(instance = community) # An unbound form
-        else:
-            form = community_forms.CommunityForm()
-
-    # Template hapiness
-    t = loader.get_template('community/edit.html')
-    c = RequestContext(
-        request,
-        {
-            "path": request.path,
-            "community": community,
-            "members": community and community.members[:25],        # XXX SUBOPTIMAL?
-            "form": form,
-            "is_member": community and community.is_member,
-        },
-        )
-    return HttpResponse(t.render(c))
-
-    
-@require_access
-def create_community(request):
+class CommunityCreate(CommunityEdit):
     """
-    Simple, isn't it?
+    Community creation. Close to the edit class
     """
-    return edit_community(request, None)
+    def __call__(self, request):
+        return self.community_edit(None)
+
 
 @require_access
 def delete_community(request, community_id):

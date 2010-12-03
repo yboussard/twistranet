@@ -28,7 +28,7 @@ class Community(Account):
     
     @property
     def managers(self):
-        return self.members.filter(targeted_network__is_manager = True)
+        return self.members.filter(targeted_network__is_manager = True).distinct()
         
     @property
     def members(self):
@@ -36,6 +36,19 @@ class Community(Account):
             targeted_network__target__id = self.id,
             requesting_network__client__id = self.id,
         )
+        
+    @property
+    def members_for_display(self):
+        """
+        Same as members but we really know we're going to display related information on them.
+        XXX TODO Use related() to optimize things here
+        """
+        return self.members
+        
+    @property
+    def managers_for_display(self):
+        """Same as members_for_display but for managers"""
+        return self.managers
 
     class Meta:
         app_label = 'twistranet'

@@ -24,6 +24,14 @@ class BaseView(object):
         """
         raise NotImplementedError("You must override this method")
         
+    def get_important_action(self,):
+        """
+        Return the main action, emphased in the templates.
+        Should return (label, url) or None if no emphased action available.
+        The label will be translated in templates.
+        """
+        raise NotImplementedError
+        
     def render_template(self, template, params):
         """
         Render the given template with the specified params (dict)...
@@ -32,6 +40,9 @@ class BaseView(object):
         params['path'] = self.request.path
         params['context_boxes'] = self.context_boxes
         params['global_boxes'] = self.global_boxes
+        important_action = self.get_important_action()
+        if important_action:
+            params["important_action_label"], params["important_action_url"] = important_action
         t = get_template(template)
         c = RequestContext(self.request, params)
         return HttpResponse(t.render(c))

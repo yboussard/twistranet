@@ -4,7 +4,7 @@
     {% include 'account/medium.thumbnail.html' %}
     {% with account.translation as account %}
         <div class="entry">
-            <a class="author" href="{% url twistranet.views.account_by_slug account.slug %}">{{ account.text_headline }}</a>
+            <a class="author" href="{{ account.get_absolute_url }}">{{ account.text_headline }}</a>
             <div class="summary-content">
                 {{ account.description|safe }}
             </div>
