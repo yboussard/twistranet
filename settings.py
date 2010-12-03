@@ -18,22 +18,22 @@ ADMINS = (
 
 MANAGERS = ADMINS
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    #     'NAME': "twistranet",                      # Or path to database file if using sqlite3.
-    #     'USER': 'twistranet',                      # Not used with sqlite3.
-    #     'PASSWORD': 'twistpassword',                  # Not used with sqlite3.
-    #     'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-    #     'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': "%s/data/tn.db" % (HERE, ),                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': "twistranet",                      # Or path to database file if using sqlite3.
+        'USER': 'twistranet',                      # Not used with sqlite3.
+        'PASSWORD': 'twistpassword',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+    #     'NAME': "%s/data/tn.db" % (HERE, ),                      # Or path to database file if using sqlite3.
+    #     'USER': '',                      # Not used with sqlite3.
+    #     'PASSWORD': '',                  # Not used with sqlite3.
+    #     'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+    #     'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    # }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -153,6 +153,7 @@ TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't w
 # Number of friends or communities displayed in a box
 TWISTRANET_NETWORK_IN_BOXES = 6
 TWISTRANET_FRIENDS_IN_BOXES = 9
+TWISTRANET_CONTENT_PER_PAGE = 25
 
 INSTALLED_APPS = (
     'django.contrib.auth',
