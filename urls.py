@@ -39,12 +39,12 @@ urlpatterns = patterns('',
     (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
-    url(r'^community/(\d+)$', 'twistranet.views.community_by_id', name='community_by_id'),
-    url(r'^community/(\w+)$', 'twistranet.views.community_by_slug', name='community_by_slug'),
-    (r'^communities/$',                         'twistranet.views.communities'),
-    (r'^community/(\d+)/edit$',                 'twistranet.views.edit_community'),
-    (r'^community/(\d+)/delete$',               'twistranet.views.delete_community'),
-    (r'^community/new$',                        'twistranet.views.create_community'),
+    url(r'^community/(\d+)$', CommunityView.as_view(lookup = "id"), name='community_by_id'),
+    url(r'^community/(\w+)$', CommunityView.as_view(lookup = "slug"), name='community_by_slug'),
+    url(r'^communities/$', CommunitiesView.as_view(), name = "communities", ),
+    url(r'^community/(\d+)/edit$', CommunityEdit.as_view(lookup = "id"), name = "community_edit"),
+    url(r'^community/new$', CommunityCreate.as_view(), name = "community_create", ),
+    (r'^community/(\d+)/delete$', 'twistranet.views.delete_community'),
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),
