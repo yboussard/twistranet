@@ -1,32 +1,13 @@
 {% load i18n %}
 
-{# <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a> #}
-{% if content %}
-    &gt;
-    <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">
-        {{ content.publisher.text_headline }}
-    </a>
-    &gt;
-    {{ content.translation.text_headline }}
-{% else %}
-    {% if community %}
-        &gt;
-        {{ community.text_headline }}
-    {% else %}
-        {% if account %}
-            {%ifequal account.id logged_account.id %}
-                &gt;
-                {% blocktrans %}My wall{% endblocktrans %}
-            {%else%}
-                &gt;
-                {% with account.text_headline as text_headline %}
-                    {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
-                {% endwith %}
-            {%endifequal%}
+{% if breadcrumb %}
+
+    {% for page_title, url in breadcrumb %}
+        <a href="{{ url }}">{{ page_title }}</a>
+        {% if not forloop.last %}
+            &gt;
         {% endif %}
-    {% endif %}
+    {% endfor %}
+
 {% endif %}
-
-
-
 

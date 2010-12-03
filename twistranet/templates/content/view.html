@@ -1,7 +1,4 @@
 {% extends "base.html" %}
-
-{% block title %}{{ content.text_headline }}{% endblock %}
-
 {% load i18n %}
 
 {% block content %}
@@ -17,12 +14,3 @@
     </div>
 {% endwith %}
 {% endblock %}
-
-{% block contextbar %}
-    {% with logged_account as account %}
-        {% include 'account/profile.box.html' %}
-    {% endwith %}
-    {% include 'content/actions.box.html' %}
-    {% include 'content/metadata.box.html' %}
-{% endblock %}
-

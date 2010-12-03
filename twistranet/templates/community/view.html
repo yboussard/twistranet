@@ -1,27 +1,45 @@
 {% extends "base.html" %}
-
-{% block title %}{{ community.text_headline }}{% endblock %}
-
 {% load i18n %}
 
 {% block content %}
-    <h1>{{ community.text_headline }}</h1>
-    <p class="discreet">&nbsp;</p>
+    {% if account.html_summary %}
+        <p class="discreet">
+            {{ account.html_summary }}
+        </p>
+    {% endif %}
     {% if community.can_publish %}
         {% include "community/community_forms.part.html" %}
     {% endif %}
 
+    {% if have_few_content %}
+        {% if community.can_publish %}
+            {% blocktrans %}
+                <p>
+                    There is not much content on this community. But it's up to <strong>you</strong> to create some!
+                </p>
+                <p>
+                    Feel free to add content with the simple form on this page. For example, you can express:
+                    <ul>
+                        <li>What are you working on right now?</li>
+                        <li>What would you like to find on this community page?</li>
+                    </ul>
+                </p>
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans %}
+                <p>
+                    There is no content on this community.
+                </p>
+                <p>
+                    Maybe you'd like to contact the community managers to ask them to let you in?
+                </p>
+            {% endblocktrans %}
+        {% endif %}
+    {% endif %}
+
     {% for content in latest_content_list %}
         {%include content.object.summary_view %}
-    {% empty %}
-        <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
     {% endfor %}
+    
 
 {% endblock %}
-
-{% block contextbar %}
-        {% include 'community/profile.box.html' %}
-        {% include 'community/actions.box.html' %}
-        {% include 'community/members.box.html' %}
-{% endblock %}
-

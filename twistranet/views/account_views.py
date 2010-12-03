@@ -14,9 +14,6 @@ from django.shortcuts import get_object_or_404
 
 from base_view import BaseView
 
-# XXX Move this is settings
-TWISTRANET_CONTENT_PER_PAGE = 25
-
 # XXX For some obscure reason, I've got a dirty django error when trying to select_related content_types.
 # I have to find how and why... but perhaps subtypes are not needed in account page, thanks to the xxx_summary/xxx_headline fields?
 select_related_summary_fields = (
@@ -157,6 +154,9 @@ class AccountView(BaseAccountView):
     """
     A regular account page
     """
+    def get_title(self,):
+        return _("%s's profile" % self.account.text_headline)
+    
     @classmethod
     def as_view(cls, lookup = "id"):
         obj = cls()
@@ -166,13 +166,18 @@ class AccountView(BaseAccountView):
     def __call__(self, request, value):
         self.request = request
         param = { self.lookup: value }
-        account = get_object_or_404(Account, **param)
-        return self.account_view(account)
+        self.account = get_object_or_404(Account, **param)
+        if not self.account.get_absolute_url() == self.request.path:
+            # We're not on the actual URL for this object => we redirect to the actual absolute url
+            return HttpResponseRedirect(self.account.get_absolute_url())
+        return self.account_view(self.account)
 
 class HomepageView(BaseAccountView):
     """
     Special treatment for homepage.
     """
+    title = "Home"
+    
     def get_important_action(self):
         """Nothing really critical in the homepage"""
         return None

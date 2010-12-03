@@ -1,36 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}
-    {%ifequal account.id current_account.id %}
-        {% blocktrans %}My profile{% endblocktrans %}
-    {%else%}
-        {% with account.text_headline as text_headline %}
-            {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
-        {% endwith %}
-    {%endifequal%}
-{% endblock %}
-
-{% block contextbar %}
-    <ul>
-        {% include 'account/profile.box.html' %}
-        {% include 'account/actions.box.html' %}
-        {% include "account/relations.box.html" %}
-    </ul>
-{% endblock %}
-
-
 {% block content %}
-    <h1>
-        {%ifequal account.id logged_account.id %}
-            {% blocktrans %}My profile{% endblocktrans %}
-        {%else%}
-            {% with account.text_headline as text_headline %}
-                {% blocktrans %}{{ text_headline }}'s Profile{% endblocktrans %}
-            {% endwith %}
-        {%endifequal%}
-    </h1>
-    <p class="discreet">&nbsp;</p>
+    {% if account.html_summary %}
+        <p class="discreet">
+            {{ account.html_summary }}
+        </p>
+    {% endif %}
     {% if account.can_publish %}
         {% include "content/content_forms.part.html" %}
     {% endif %}

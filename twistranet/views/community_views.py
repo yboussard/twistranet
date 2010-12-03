@@ -22,6 +22,8 @@ class CommunitiesView(BaseView):
     """
     A list of n first available (visible) communities
     """
+    title = "Communities"
+    
     def get_important_action(self):
         return None
     
@@ -49,8 +51,11 @@ class CommunityView(AccountView):
     def __call__(self, request, value):
         self.request = request
         param = { self.lookup: value }
-        community = get_object_or_404(Community, **param)
-        return self.community_view(community)
+        self.community = get_object_or_404(Community, **param)
+        return self.community_view(self.community)
+
+    def get_title(self,):
+        return _("%s community" % self.community.text_headline)
 
     def get_important_action(self):
         return self.important_action
@@ -100,7 +105,7 @@ class CommunityEdit(CommunityView):
             form = community_forms.CommunityForm(request.POST, instance = community)
             if form.is_valid(): # All validation rules pass
                 community = form.save()
-                return HttpResponseRedirect(reverse(community.get_absolute_url()))
+                return HttpResponseRedirect(community.get_absolute_url())
         else:
             form = community_forms.CommunityForm(instance = community) # An unbound form
 
