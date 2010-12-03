@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     
     # Account pages
     url(r'^account/(\d+)/$', AccountView.as_view(lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(\w+)/$', AccountView.as_view(lookup = "slug"), name='account_by_slug'),
+    url(r'^account/(\w+)/$', AccountView.as_view(lookup = 'slug'), name='account_by_slug'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),
@@ -47,6 +47,7 @@ urlpatterns = patterns('',
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),
+    (r'^static/',                               include('twistranet.urls.static')),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),

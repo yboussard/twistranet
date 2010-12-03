@@ -11,7 +11,7 @@ from twistranet.models import *
 from twistranet.lib import form_registry
 from twistranet.lib.decorators import require_access
 from django.shortcuts import get_object_or_404
-import settings
+from twistranet import twistranet_settings
 from base_view import BaseView
 
 # XXX For some obscure reason, I've got a dirty django error when trying to select_related content_types.
@@ -111,7 +111,7 @@ class BaseAccountView(BaseView):
         else:
             latest_ids = Content.objects.getActivityFeed(acc)
             
-        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:twistranet_settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*select_related_summary_fields).order_by("-created_at")
         return latest_list
 

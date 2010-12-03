@@ -9,10 +9,10 @@
   danielfajardo - http: //wwww.danielfajardo.com
 ---------------------------------------------------------------- */
 
-include( '/js/includes/lib/scrollTo.js' );
-include( '/js/includes/lib/browserdetect.js' );
-include( '/js/includes/lib/hoverIntent.js' );
-include( '/js/includes/lib/superfish.js' );
+include( '/static/js/includes/lib/scrollTo.js' );
+include( '/static/js/includes/lib/browserdetect.js' );
+include( '/static/js/includes/lib/hoverIntent.js' );
+include( '/static/js/includes/lib/superfish.js' );
 
 jQuery(document).ready(function(){
 

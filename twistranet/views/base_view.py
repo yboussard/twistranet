@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-import settings
+from twistranet import twistranet_settings
 
 class BaseView(object):
     """
@@ -70,7 +70,7 @@ class BaseView(object):
         
         # If we have a latest_content_list parameter, we can find some incitative ways of asking ppl to add more
         if params.has_key("latest_content_list"):
-            if len(params['latest_content_list']) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
+            if len(params['latest_content_list']) < (twistranet_settings.TWISTRANET_CONTENT_PER_PAGE / 2):
                 # Just a half-page of content? Not enough!
                 # TODO : Exclude notifications from this count
                 params['too_few_content'] = True

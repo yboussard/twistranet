@@ -1,10 +1,9 @@
 import os.path            
 HERE = os.path.dirname(__file__)
 
-# local settings for devel mode
-
-DEBUG = True
-TEMPLATE_DEBUG = True
+# local settings for default installation
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 DATABASES = {
     'default': {

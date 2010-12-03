@@ -18,7 +18,8 @@ def security_context(request):
         ret['global_community'] = glob[0]
     else:
         # XXX TODO: Issue a redirect here in some way???
-        return ret
+        return {}
+        raise RuntimeError("Should issue a redirect exception here")
 
     # The logged-in account
     ret['logged_account'] = Account.objects._getAuthenticatedAccount()

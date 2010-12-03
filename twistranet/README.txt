@@ -20,4 +20,9 @@ TwistraNet is a registered trademark.
 Credits
 -------
 
+TN Icon by Nico
+
+Dev by JM Grimaldi and PJ Grizel
+
+
 Icons from: http://pixel-mixer.com/basic_set/

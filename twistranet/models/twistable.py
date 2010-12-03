@@ -264,7 +264,7 @@ class Twistable(_AbstractTwistable):
         XXX TODO: Don't use the 'object' accessor but use a twistable_category attribute in some way
         (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
         """
-        category = get_twistable_category(self.object)
+        category = get_twistable_category(self)
         viewbyslug = '%s_by_slug' % category
         viewbyid = '%s_by_id' % category
         if hasattr(self, 'slug') :
