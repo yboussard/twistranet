@@ -2,5 +2,6 @@ recursive-include haystack *
 recursive-include helloworld *
 recursive-include twistranet *
 recursive-include twistrans *
-recursive-include twistscripts *
+recursive-include twistscripts *   
+recursive-include twistconf *
 global-exclude *pyc

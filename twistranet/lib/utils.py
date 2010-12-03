@@ -64,7 +64,7 @@ def escape_links(text):
             continue
         
         # Ok, serious stuff start now!
-        replacement = '<a href="%s">%s</a>' % (reverse('twistranet.views.account_by_slug', args = (account.slug,)), account.text_headline)
+        replacement = '<a href="%s">%s</a>' % (account.get_absolute_url(), account.text_headline)
         text = "%s%s%s" % (
             text[0:match.start()],
             replacement,

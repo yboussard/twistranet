@@ -52,7 +52,7 @@ def create_project():
 
 
     # Generate a unique SECREY_KEY for the project's setttings module.
-    settings_path = os.path.join(os.getcwd(), project_name, "settings.py")
+    settings_path = os.path.join(os.getcwd(), project_name, "local_settings.py")
     with open(settings_path, "r") as f:
         data = f.read()
     with open(settings_path, "w") as f:
