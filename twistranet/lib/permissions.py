@@ -99,7 +99,7 @@ ephemeral_templates = PermissionTemplate((
         "description":      "Content visible to anyone who can view this page.",
         can_list:           public,
         can_view:           public,
-        can_edit:           owner,
+        can_edit:           system,
         can_delete:         owner,
     },
     {
@@ -111,7 +111,7 @@ ephemeral_templates = PermissionTemplate((
                             """,
         can_list:           network,
         can_view:           network,
-        can_edit:           owner,
+        can_edit:           system,
         can_delete:         owner,
         "disabled_for_community":   True,
     },
@@ -124,18 +124,9 @@ ephemeral_templates = PermissionTemplate((
                             """,
         can_list:           network,
         can_view:           network,
-        can_edit:           owner,
+        can_edit:           system,
         can_delete:         owner,
         "disabled_for_useraccount":  True,
-    },
-    {
-        "id":               "private",
-        "name":             "Private",
-        "description":      "Content visible only for the author",
-        can_list:           owner,
-        can_view:           owner,
-        can_edit:           owner,
-        can_delete:         owner,
     },
 ))
 
