@@ -43,6 +43,7 @@ class CommunityView(AccountView):
     important_action = None
     context_boxes = [
         'community/profile.box.html',
+        'community/actions.box.html',
         'community/members.box.html',
     ]
     
@@ -94,30 +95,39 @@ class CommunityEdit(CommunityView):
     """
     Edit form for community. Not so far from the view itself.
     """
+    def get_title(self,):
+        """
+        Title suitable for creation or edition
+        """
+        if self.community:
+            return _("Edit %s" % self.community.text_headline)
+        return _("Create a community")
+
     def community_edit(self, community):
         """
         Edition stuff
         """
+        self.community = community
+        
         # Process form
-        if request.method == 'POST': # If the form has been submitted...
-            form = community_forms.CommunityForm(request.POST, instance = community)
+        if self.request.method == 'POST': # If the form has been submitted...
+            form = community_forms.CommunityForm(self.request.POST, instance = community)
             if form.is_valid(): # All validation rules pass
                 community = form.save()
                 return HttpResponseRedirect(community.get_absolute_url())
         else:
             form = community_forms.CommunityForm(instance = community) # An unbound form
 
-        # Template hapiness
-        return self.render_template(
-            'community/edit.html',
-            {
+        # If the community already exists, we display its relevant information.
+        dict_ = { 'form': form }
+        if community:
+            dict_.update({
                 "community": community,
                 "n_members": community.members.count(),
                 "members": community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-                "form": form,
                 "is_member": community and community.is_member,
             })
-        return HttpResponse(t.render(c))
+        return self.render_template('community/edit.html', dict_)
 
 
     def __call__(self, request, value):
@@ -134,7 +144,11 @@ class CommunityCreate(CommunityEdit):
     """
     Community creation. Close to the edit class
     """
+    context_boxes = [
+    ]
+    
     def __call__(self, request):
+        self.request = request
         return self.community_edit(None)
 
 

@@ -1,22 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{{ community.text_headline }}{% endblock %}
-
-{% block breadcrumb %}
-    <a href="/">Home</a> > {% if community %}{{ community.text_headline }}{% else %}{% trans "New community" %}{% endif %}
-{% endblock %}
-{% load i18n %}
-
 {% block content %}
     {% if community %}
-        <h1><a href="{% url twistranet.views.community_by_id community.id %}">{{ community.text_headline }}</a></h1>   
-        <form action="{% url twistranet.views.edit_community community.id %}"
+        <form action="{{ path }}"
               method="post"
               class="edit-form enableAutoFocus">
     {% else %}
-        <h1>{% trans "New community" %}</h1>    
-        <form action="{% url twistranet.views.create_community %}" 
+        <form action="{{ path }}" 
               method="post"
               class="edit-form enableAutoFocus">
     {% endif %}
@@ -33,10 +24,5 @@
           <input type="reset" value="{% trans 'Undo' %}" />
         </div>
         </fieldset>
-    </form>
-    
+    </form>    
 {% endblock %}
-
-{% block contextbar %}
-{% endblock %}
-

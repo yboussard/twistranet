@@ -10,6 +10,10 @@ RESERVED_KEYWORDS = [
     "join",
     "create",
     "delete",
+    "twistranet",
+    "media",
+    "account",
+    "content",
 ]
 
 rsvd_kw = "$|".join(RESERVED_KEYWORDS)
