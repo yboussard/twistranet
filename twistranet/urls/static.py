@@ -3,7 +3,6 @@ Static URLs for TN
 """
 from django.conf.urls.defaults import *
 import settings
-print settings.HERE
 urlpatterns = patterns('',
     (r'^/(?P<path>.*)$', 'django.views.static.serve',
             {'document_root': "%s/twistranet/themes/%s/static" % (settings.HERE, settings.TWISTRANET_THEME_NAME)}),

@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 from twistranet import twistranet_settings as settings
 import twistable
 from resource import Resource
-from twistranet.lib import permissions, roles, languages, utils
+from twistranet.lib import permissions, roles, languages, slugify
 
 # Create your models here.
 class Account(twistable.Twistable):
@@ -73,7 +73,7 @@ class Account(twistable.Twistable):
                 raise ValidationError("You must provide either a slug or a title for an account")
             self.title = self.slug
         elif not self.slug:
-            self.slug = utils.slugify(self.title)
+            self.slug = slugify.slugify(self.title)
             
         # Set default picture if not set (and if available)
         if not self.picture_id: # and not self.object_type == 'SystemAccount':
