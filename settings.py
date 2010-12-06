@@ -3,7 +3,6 @@ import os.path
 import sys
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-
 DEBUG = False
 TEMPLATE_DEBUG = False
 
@@ -148,5 +147,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
 

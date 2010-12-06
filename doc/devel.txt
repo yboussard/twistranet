@@ -29,11 +29,10 @@ Under  windows, the command is :
 Download Twistranet from svn
 
     (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
-    (twistranet-devel) $ cd TwistraNet
 
->> Install dependencies (django, debug_toolbar, piston, haystack ...) <<
+>> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack ...)
 
-    (twistranet-devel) $ pip install -r requires.txt    
+    (twistranet-devel) $ pip install -e ./Twistranet    
 
 Create Twistranet Database
 Reply "no" to the question about superuser creation  

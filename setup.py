@@ -25,6 +25,7 @@ setup(name='Twistranet',
       url='http://numericube.com',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
+      namespace_packages=['twistranet'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
