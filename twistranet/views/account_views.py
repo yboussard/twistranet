@@ -163,7 +163,7 @@ class AccountView(BaseAccountView):
         obj.lookup = lookup
         return obj
     
-    def __call__(self, request, value):
+    def view(self, request, value):
         self.request = request
         param = { self.lookup: value }
         self.account = get_object_or_404(Account, **param)
@@ -182,7 +182,7 @@ class HomepageView(BaseAccountView):
         """Nothing really critical in the homepage"""
         return None
     
-    def __call__(self, request):
+    def view(self, request):
         self.request = request
         account = Account.objects._getAuthenticatedAccount()
         return self.account_view(account)

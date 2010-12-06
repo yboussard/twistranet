@@ -3,12 +3,20 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django.utils.http import urlquote
 from twistranet import twistranet_settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.conf import settings
+
 
 class BaseView(object):
     """
     This is used as a foundation for our classical views.
     You can define for each class which are the boxes used on it.
+    Just overload the view() method in your classes.
+    
+    Default behaviour is to block access to non-authorized ppl (ppl who can't access GlobalCommunity).
+    XXX I SHOULD OPTIMIZE THIS, BTW (avoiding an unnecessary query?)
     """
     # Overload those properties in your base classes
     context_boxes = []
@@ -22,11 +30,26 @@ class BaseView(object):
     def as_view(cls, *args, **kw):
         return cls(*args, **kw)
     
-    def __call__(self, request):
+    def view(self, request, *args, **kw):
         """
         It's up to you to override this method.
         """
         raise NotImplementedError("You must override this method")
+        
+        
+    def __call__(self, request, *args, **kw):
+        """
+        Prepare the query, check various parameters and run it.
+        """
+        # Check if we have access to TN, if not we redirect to the login page.
+        from twistranet.models import GlobalCommunity, AnonymousAccount
+        mgr = GlobalCommunity.objects
+        if not mgr.exists():
+            path = urlquote(request.get_full_path())
+            return HttpResponseRedirect('%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path, ))
+        
+        # Render the view itself
+        return self.view(request, *args, **kw)
         
     def get_important_action(self,):
         """

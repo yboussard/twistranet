@@ -25,7 +25,7 @@ class CommunitiesView(BaseView):
     def get_important_action(self):
         return None
     
-    def __call__(self, request):
+    def view(self, request):
         self.request = request
         communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
         return self.render_template(
@@ -47,7 +47,7 @@ class CommunityView(AccountView):
         'community/members.box.html',
     ]
     
-    def __call__(self, request, value):
+    def view(self, request, value):
         self.request = request
         param = { self.lookup: value }
         self.community = get_object_or_404(Community, **param)
@@ -130,7 +130,7 @@ class CommunityEdit(CommunityView):
         return self.render_template('community/edit.html', dict_)
 
 
-    def __call__(self, request, value):
+    def view(self, request, value):
         self.request = request
         param = { self.lookup: value }
         community = get_object_or_404(Community, **param)
@@ -147,7 +147,7 @@ class CommunityCreate(CommunityEdit):
     context_boxes = [
     ]
     
-    def __call__(self, request):
+    def view(self, request):
         self.request = request
         return self.community_edit(None)
 
