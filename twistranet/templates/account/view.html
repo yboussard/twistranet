@@ -7,9 +7,8 @@
             {{ account.html_summary }}
         </p>
     {% endif %}
-    {% if account.can_publish %}
-        {% include "content/content_forms.part.html" %}
-    {% endif %}
+
+    {% include "content/content_forms.part.html" %}
 
     {% if latest_content_list %}
         {% for content in latest_content_list %}

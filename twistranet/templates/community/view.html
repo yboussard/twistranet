@@ -7,9 +7,8 @@
             {{ community.html_summary }}
         </p>
     {% endif %}
-    {% if community.can_publish %}
-        {% include "community/community_forms.part.html" %}
-    {% endif %}
+
+    {% include "content/content_forms.part.html" %}
 
     {% if too_few_content %}
         {% if community.can_publish %}

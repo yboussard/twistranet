@@ -12,7 +12,7 @@ from twistranet.lib import form_registry
 from twistranet.lib.decorators import require_access
 from django.shortcuts import get_object_or_404
 from twistranet import twistranet_settings
-from base_view import BaseView
+from base_view import BaseView, MustRedirect
 
 # XXX For some obscure reason, I've got a dirty django error when trying to select_related content_types.
 # I have to find how and why... but perhaps subtypes are not needed in account page, thanks to the xxx_summary/xxx_headline fields?
@@ -22,12 +22,6 @@ select_related_summary_fields = (
     "owner",
     "publisher",
 )
-
-class MustRedirect(Exception):
-    """
-    Raise this if something must redirect to the current page
-    """
-    pass
 
 
 class BaseAccountView(BaseView):

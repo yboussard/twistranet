@@ -244,11 +244,8 @@ class AdminCommunity(Community):
     class Meta:
         app_label = 'twistranet'
         
-    @staticmethod
-    def get():
+    @classmethod
+    def get(cls):
         """Return main (and only) system account. Will raise if several are set."""
-        return self.__class__.objects.get()
-
-
-
+        return cls.objects.get()
 

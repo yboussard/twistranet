@@ -8,6 +8,12 @@ from twistranet import twistranet_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 
+class MustRedirect(Exception):
+    """
+    Raise this if something must redirect to the current page
+    """
+    pass
+
 
 class BaseView(object):
     """

@@ -11,7 +11,7 @@ from twistranet.forms import community_forms
 from twistranet.lib.decorators import require_access
 
 from twistranet.models import *
-from base_view import BaseView
+from base_view import BaseView, MustRedirect
 from account_views import AccountView
 from twistranet import twistranet_settings
 
