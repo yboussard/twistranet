@@ -155,7 +155,7 @@ class AccountView(BaseAccountView):
     A regular account page
     """
     def get_title(self,):
-        return _("%s's profile" % self.account.text_headline)
+        return _("%(name)s's profile" % {'name': self.account.text_headline} )
     
     @classmethod
     def as_view(cls, lookup = "id"):

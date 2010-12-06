@@ -54,7 +54,7 @@ class CommunityView(AccountView):
         return self.community_view(self.community)
 
     def get_title(self,):
-        return _("%s community" % self.community.text_headline)
+        return _("%(name)s community" % {'name': self.community.text_headline} )
 
     def get_important_action(self):
         return self.important_action
@@ -100,7 +100,7 @@ class CommunityEdit(CommunityView):
         Title suitable for creation or edition
         """
         if self.community:
-            return _("Edit %s" % self.community.text_headline)
+            return _("Edit %(name)s" % {'name' : self.community.text_headline })
         return _("Create a community")
 
     def community_edit(self, community):
