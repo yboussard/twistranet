@@ -54,9 +54,6 @@ urlpatterns = patterns('',
     (r'^login/$', login),
     (r'^logout/$',                              'twistranet.views.account_logout'),  
     
-    # TwistraNet's API
-    (r'^api/', include('twistranet.api.urls')),
-
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
