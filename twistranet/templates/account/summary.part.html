@@ -1,7 +1,7 @@
 {# Generate a summary for an 'account' object #}
 {% load i18n %}
 <div class="post" id="post-{{content.id}}">
-    {% include 'account/medium.thumbnail.html' %}
+    {% include 'account/medium.thumbnail.alone.html' %}
     <div class="entry">
         <a class="author" href="{{ account.get_absolute_url }}">{{ account.text_headline }}</a>
         <div class="summary-content">

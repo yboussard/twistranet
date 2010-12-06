@@ -1,7 +1,7 @@
 {% load i18n %}
 {% if account %}
     <li id="account-profile-box" class="tn-box profile-box">
-        {% include 'account/medium.thumbnail.html' %}
+        {% include 'account/medium.thumbnail.alone.html' %}
       <h2 class="box-header">
         <a href="{{account.get_absolute_url}}">
           {{ account.text_headline }}

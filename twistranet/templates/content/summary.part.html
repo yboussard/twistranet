@@ -3,7 +3,7 @@
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
     {% with content.owner as account %}
-        {% include 'account/medium.thumbnail.html' %}
+        {% include 'account/medium.thumbnail.alone.html' %}
     {% endwith %}
     <div class="entry">
         {% with content.translation as content %}         

@@ -174,6 +174,7 @@ class AccountCommunitiesView(BaseAccountView):
     """
     All communities for an account page
     """
+    
     def get_title(self,):
         return _("%(name)s's communities" % {'name': self.account.text_headline} )
 
@@ -198,6 +199,7 @@ class AccountNetworkView(BaseAccountView):
     """
     All network members for an account
     """
+
     def get_title(self,):
         return _("%(name)s's network" % {'name': self.account.text_headline} )
 

@@ -1,0 +1,7 @@
+<a title="{{account.text_headline}}"
+   href="{{ account.get_absolute_url }}"
+   class="image-block image-block-50-50 image-block-alone">
+  <img title="{{account.text_headline}}"
+       alt="{{account.text_headline}}"
+       src="{% url twistranet.views.resource_by_account account.id 'picture' %}" />  
+</a>
