@@ -152,10 +152,7 @@ class AccountView(BaseAccountView):
     A regular account page
     """
     def get_title(self,):
-        return _("%(name)s's profile" % {'name': self.account.text_headline} )
-
-    def get_important_action(self):
-        return None        
+        return _("%(name)s's profile" % {'name': self.account.text_headline} )  
     
     @classmethod
     def as_view(cls, lookup = "id"):
