@@ -11,17 +11,17 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            <a class="author" href="{{ content.owner.absolute_url }}">{{ content.owner.translation.text_headline|safe }}</a>
+            <a class="author" href="{{ content.owner.get_absolute_url }}">{{ content.owner.text_headline|safe }}</a>
             {% if not content.owner_id == content.publisher_id %}
             &raquo;
-            <a class="publisher" href="{{ content.publisher.absolute_url }}">{{ content.publisher.translation.text_headline|safe }}</a>
+            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">{{ content.publisher.text_headline|safe }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">
                 {% if content.detail_view %}
                     <div class="summary-content">
                         <div class="headline-content">
-                            <a href="{{ content.absolute_url }}">
+                            <a href="{{ content.get_absolute_url }}">
                                 {{ content.text_headline|safe }}
                             </a>
                         </div>
