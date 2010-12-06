@@ -56,7 +56,7 @@ class AccountSecurityTest(TestCase):
         __account__ = self.A
         glob = GlobalCommunity.objects.get()
         admin = Community.objects.get(slug = "administrators")
-        obj = StatusUpdate.objects.create(text = "hi, there.")
+        obj = Document.objects.create(text = "hi, there.")
         obj.save()
         self.failUnlessEqual(obj.owner.id, self.A.id, "An object must be own by its creator by default.")
         self.failUnlessEqual(obj.publisher.id, self.A.id, "An object must be published on its creator by default.")
@@ -87,7 +87,7 @@ class AccountSecurityTest(TestCase):
         self.failUnless(GlobalCommunity.objects.exists())
         self.failUnless(self.A in UserAccount.objects.all())
         self.failUnless(self.B in UserAccount.objects.all())
-        self.failUnless(self.C in UserAccount.objects.all())
+        # self.failUnless(self.C in UserAccount.objects.all())  XXX Removed now 'cause admin members can't see private accounts.
         __account__ = self.C
         self.failUnless(self.A in UserAccount.objects.all())
         self.failUnless(GlobalCommunity.objects.exists())
@@ -280,7 +280,7 @@ class AccountSecurityTest(TestCase):
         )
         c.save()
         self.failUnlessEqual(self.A.id, c.owner.id, "A should be the community owner as it created it.")
-        StatusUpdate.objects.create(slug = "c_status", text = "coucou", publisher = c).save()
+        Document.objects.create(slug = "c_status", text = "coucou", publisher = c).save()
         self.failUnless(Content.objects.filter(slug = "c_status"), "I should see the status update I created on the community I own")
         
     def test_10_slugify(self):

@@ -77,7 +77,6 @@ class TwistableManager(models.Manager):
                 return base_query_set
         except:
             print "DB error while checking AdminCommunity"
-            # raise
             return base_query_set
 
         # Regular check. Works for anonymous as well...

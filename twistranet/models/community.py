@@ -187,11 +187,7 @@ class Community(Account):
             pass
         
         # Post join message
-        # XXX TODO: Put the notifier code in a signal, not here, to avoid the Try/Except here!!!
-        try:
-            notifier.joined(account, self)
-        except NoReverseMatch:
-            pass
+        notifier.joined(account, self)
         
     def leave(self, account):
         """
