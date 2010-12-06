@@ -33,7 +33,7 @@
     {%endifequal%}        
     <div class="tn-box-content-header">
       <div class="right-inbox">
-        <a href="/network_members">
+        <a href="{% url account_network account.slug %}">
           {% blocktrans %}See all{% endblocktrans %}
         </a>
       </div>

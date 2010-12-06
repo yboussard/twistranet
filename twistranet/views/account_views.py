@@ -195,7 +195,34 @@ class AccountCommunitiesView(BaseAccountView):
             {
                 "communities":  self.account.communities,
             }
-        )        
+        )     
+
+class AccountNetworkView(BaseAccountView):
+    """
+    All network members for an account
+    """
+    def get_title(self,):
+        return _("%(name)s's network" % {'name': self.account.text_headline} )
+
+    @classmethod
+    def as_view(cls, lookup = "id"):
+        obj = cls()
+        obj.lookup = lookup
+        return obj    
+    
+    def view(self, request, value):
+        self.request = request
+        param = { self.lookup: value }
+        self.account = get_object_or_404(Account, **param)
+        return self.render_template(
+            "account/list.html",
+            {
+                "accounts":  self.account.network,
+            }
+        )     
+
+
+   
 class HomepageView(BaseAccountView):
     """
     Special treatment for homepage.
