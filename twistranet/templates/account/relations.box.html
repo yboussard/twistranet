@@ -3,9 +3,18 @@
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     {% else %}
-        <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>
-    {%endifequal%}
-    <div class="tn-box-content">
+        <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>    
+    {%endifequal%}         
+    <div class="tn-box-content-header">
+      <div class="right-inbox">
+        <a href="{% url account_communities account.slug %}">
+          {% blocktrans %}See all{% endblocktrans %}
+        </a>
+      </div>
+      <div class="left-inbox">{% blocktrans %}{{n_communities}} communities{% endblocktrans %}</div>     
+      <div class="clear"><!-- --></div>   
+    </div>
+    <div class="tn-box-content">  
       <ul class="thumbnails-inner">
         <li>
           {% for account in account.communities_for_display %}
@@ -21,7 +30,16 @@
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
-    {%endifequal%}
+    {%endifequal%}        
+    <div class="tn-box-content-header">
+      <div class="right-inbox">
+        <a href="/network_members">
+          {% blocktrans %}See all{% endblocktrans %}
+        </a>
+      </div>
+      <div class="left-inbox">{% blocktrans %}{{n_network_members}} members{% endblocktrans %}</div>     
+      <div class="clear"><!-- --></div>   
+    </div>
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>

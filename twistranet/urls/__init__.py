@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     
     # Account pages
     url(r'^account/(\d+)/$', AccountView.as_view(lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(%s)/$' % SLUG_REGEX, AccountView.as_view(lookup = 'slug'), name='account_by_slug'),
+    url(r'^account/(%s)/$' % SLUG_REGEX, AccountView.as_view(lookup = 'slug'), name='account_by_slug'), 
+    url(r'^account_communities/(%s)/$' % SLUG_REGEX, AccountCommunitiesView.as_view(lookup = 'slug'), name='account_communities'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),

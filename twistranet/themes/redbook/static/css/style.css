@@ -518,7 +518,24 @@ ul.tn-box-container ul li {
 
 .tn-box-content {
   background-color: #f9f9f9;
-  padding: 5px 10px 20px; 
+  padding: 10px 10px 15px;
+  clear: both; 
+}
+
+.tn-box-content-header {
+  background-color: white;
+  padding: 4px 5px;
+  border-bottom: 1px solid #CCC;
+  clear: both;
+  color: #333;
+}
+.right-inbox {
+  display: block;
+  float: right;
+}
+.left-inbox {
+  display: block;
+  float: left;
 }
 
 /* different kind of boxes */

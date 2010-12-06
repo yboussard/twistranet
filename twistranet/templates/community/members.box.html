@@ -15,6 +15,15 @@
 
 <li id="community-members-box" class="tn-box members-box">
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
+    <div class="tn-box-content-header">
+      <div class="right-inbox">
+        <a href="/community_members">
+          {% blocktrans %}See all{% endblocktrans %}
+        </a>
+      </div>
+      <div class="left-inbox">{% blocktrans %}{{n_members}} members{% endblocktrans %}</div>     
+      <div class="clear"><!-- --></div>   
+    </div>    
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         {% for account in members %}

@@ -141,7 +141,9 @@ class BaseAccountView(BaseView):
                 "account": account,
                 "latest_content_list": self.get_recent_content_list(account),
                 "can_add_to_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and not in_my_network,
-                "can_remove_from_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and in_my_network,
+                "can_remove_from_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and in_my_network,          
+                "n_communities": account.communities.count(),  
+                "n_network_members" : account.network.count(),
                 "is_home": isinstance(self, HomepageView),
             })
     
@@ -151,6 +153,9 @@ class AccountView(BaseAccountView):
     """
     def get_title(self,):
         return _("%(name)s's profile" % {'name': self.account.text_headline} )
+
+    def get_important_action(self):
+        return None        
     
     @classmethod
     def as_view(cls, lookup = "id"):
@@ -167,6 +172,30 @@ class AccountView(BaseAccountView):
             return HttpResponseRedirect(self.account.get_absolute_url())
         return self.account_view(self.account)
 
+
+class AccountCommunitiesView(BaseAccountView):
+    """
+    All communities for an account page
+    """
+    def get_title(self,):
+        return _("%(name)s's communities" % {'name': self.account.text_headline} )
+
+    @classmethod
+    def as_view(cls, lookup = "id"):
+        obj = cls()
+        obj.lookup = lookup
+        return obj    
+    
+    def view(self, request, value):
+        self.request = request
+        param = { self.lookup: value }
+        self.account = get_object_or_404(Account, **param)
+        return self.render_template(
+            "community/list.html",
+            {
+                "communities":  self.account.communities,
+            }
+        )        
 class HomepageView(BaseAccountView):
     """
     Special treatment for homepage.
