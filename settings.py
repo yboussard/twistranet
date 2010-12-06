@@ -2,7 +2,7 @@
 import os.path
 import sys
 
-HERE = os.path.dirname(__file__)
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = False
 TEMPLATE_DEBUG = False
@@ -111,7 +111,7 @@ TEMPLATE_DIRS = (
     "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, ),
     "%s/twistranet/templates" % (HERE, ),
 )
-TWISTRANET_DEFAULT_RESOURCES_DIR = "twistranet/%s/themes/%s/resources" % (HERE, TWISTRANET_THEME_NAME)
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/themes/%s/resources" % (HERE, TWISTRANET_THEME_NAME)
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
