@@ -64,7 +64,7 @@ ul.inline-form textarea {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px; 
 	border-radius: 5px;
-  width: 550px;
+  width: 545px;
 	padding: 5px;
 }
 
@@ -135,6 +135,9 @@ ul.errorlist li {
 .edit-form fieldset {
    border: none;
    background-color: #f7f7f7;
+   -moz-box-shadow: 3px 3px 3px #CCCCCC; 
+   -webkit-box-shadow: 3px 3px 3px #CCCCCC;
+   box-shadow: 3px 3px 3px #CCCCCC;
    padding: 5px 0 10px;
    width: 90%;
    margin-top: 10px;
