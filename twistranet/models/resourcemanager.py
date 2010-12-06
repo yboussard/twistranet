@@ -126,6 +126,10 @@ class ReadOnlyFilesystemResourceManager(_AbstractFilesystemResourceManager):
         authenticated = Resource.objects._getAuthenticatedAccount()
         if not issubclass(authenticated.model_class, account.SystemAccount):
             raise RuntimeError("Unauthorized method. Must be called from the System Account only.")
+            
+        # Check if path exists
+        if not os.path.isdir(self.path):
+            raise ValueError("Invalid path for Resource Manager: %s" % self.path)
 
         # Load each file, avoiding to replace it
         for root, dirs, files in os.walk(self.path):

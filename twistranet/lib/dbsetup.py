@@ -25,15 +25,17 @@ def repair():
     
     Will not erase data it doesn't know how to handle.
     """
-    # # Login
-    __account__ = SystemAccount.objects.get()
-
-    # Put all Django admin users inside the first admin community
-    django_admins = UserAccount.objects.filter(user__is_superuser = True)
-    admin_community = AdminCommunity.objects.get()
-    for user in django_admins:
-        if not admin_community in user.communities:
-            admin_community.join(user, is_manager = True)
+    return
+    
+    # # # Login
+    # __account__ = SystemAccount.objects.get()
+    # 
+    # # Put all Django admin users inside the first admin community
+    # django_admins = UserAccount.objects.filter(user__is_superuser = True)
+    # admin_community = AdminCommunity.objects.get()
+    # for user in django_admins:
+    #     if not admin_community in user.communities:
+    #         admin_community.join(user, is_manager = True)
 
     # # All user accounts must (explicitly) belong to the global community.
     # # XXX There should be a more efficient way to do this ;)

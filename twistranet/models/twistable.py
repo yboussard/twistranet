@@ -77,6 +77,7 @@ class TwistableManager(models.Manager):
                 return base_query_set
         except:
             print "DB error while checking AdminCommunity"
+            # raise
             return base_query_set
 
         # Regular check. Works for anonymous as well...
@@ -424,6 +425,8 @@ class Twistable(_AbstractTwistable):
         """
         if not self.app_label or not self.model_name:
             return "Unsaved %s" % self.__class__
+        if not self.id:
+            return "Unsaved %s.%s" % (self.app_label, self.model_name, )
         if self.slug:
             return "%s.%s: %s (%i)" % (self.app_label, self.model_name, self.slug, self.id)
         else:

@@ -76,8 +76,8 @@ FIXTURES = [
         StatusUpdate,
         logged_account = "admin",
         slug = "status2",
-        text = "This is a private status update",
-        permissions = "private",
+        text = "This is a network status update",
+        permissions = "network",
     ),
     
     Fixture(

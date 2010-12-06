@@ -14,6 +14,7 @@ class Command(BaseCommand):
         cmd = syncdb.Command()
         cmd.execute()
         from twistranet.lib import dbsetup
+        dbsetup.bootstrap()
         dbsetup.repair()
         print "Finished bootstraping. You can play with TwistraNet now."
 

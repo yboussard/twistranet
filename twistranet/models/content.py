@@ -95,10 +95,7 @@ class Content(_AbstractContent):
     type_detail_view = "content/view.html"
     
     is_content = True   # XXX TODO: What is this for, BTW??
-    
-    def __unicode__(self):
-        return "%s %d by %s" % (self.model_name, self.id, self.owner)
-    
+        
     class Meta:
         app_label = 'twistranet'
 

@@ -6,6 +6,5 @@ from twistranet.models import *
 
 # Do the mandatory database checkup and initial buiding
 from twistranet.lib import dbsetup
-dbsetup.bootstrap()                      # XXX: TODO: Only call it explicitly if you need to.
+# dbsetup.bootstrap()                      # XXX: TODO: Only call it explicitly if you need to.
 dbsetup.check_consistancy()
-

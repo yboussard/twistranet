@@ -2,6 +2,7 @@ from django.db import models, IntegrityError
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.urlresolvers import NoReverseMatch
 from account import Account, UserAccount, SystemAccount
 from network import Network
 from twistable import Twistable
@@ -186,7 +187,11 @@ class Community(Account):
             pass
         
         # Post join message
-        notifier.joined(account, self)
+        # XXX TODO: Put the notifier code in a signal, not here, to avoid the Try/Except here!!!
+        try:
+            notifier.joined(account, self)
+        except NoReverseMatch:
+            pass
         
     def leave(self, account):
         """
