@@ -2,10 +2,12 @@
 {% load i18n %}
 
 {% block content %}
-    {% if account.html_summary %}
-        <p class="discreet">
-            {{ account.html_summary }}
-        </p>
+    {% if not is_home %}
+        {% if account.html_summary %}
+            <p class="discreet">
+                {{ account.html_summary }}
+            </p>
+        {% endif %}
     {% endif %}
 
     {% include "content/content_forms.part.html" %}

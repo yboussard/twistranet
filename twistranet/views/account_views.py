@@ -142,6 +142,7 @@ class BaseAccountView(BaseView):
                 "latest_content_list": self.get_recent_content_list(account),
                 "can_add_to_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and not in_my_network,
                 "can_remove_from_my_network": not auth_account.is_anonymous and not auth_account.id == account.id and in_my_network,
+                "is_home": isinstance(self, HomepageView),
             })
     
 class AccountView(BaseAccountView):
