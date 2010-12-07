@@ -491,8 +491,12 @@ ul.tn-box-container ul li {
   list-style: none;   
   list-style-image: none;
   margin: 0;
-  padding: 0;  
+  padding: 0;
 }
+
+li.tn-box {
+  margin: 5px 0 0 0;
+}   
 
 .tn-box {
   clear: both;
@@ -566,10 +570,16 @@ ul.tn-box-container ul li {
   line-height: 1.2em;  
 }
 
-.profile-box p {
+.profile-box .under-name {
   margin: 3px 0 0;
   line-height: 1.2em;   
   padding-left: 57px;
+}
+
+.profile-box p {
+  margin: 3px 0 0;
+  line-height: 1.2em;   
+/*  padding-left: 57px;*/
 }
 
 .profile-box .image-block {

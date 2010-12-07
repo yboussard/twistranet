@@ -56,7 +56,7 @@ FIXTURES = [
         MenuItem,
         parent = MenuItem.objects.filter(slug = "menuitem_communities"),
         order = 0,
-        view_path = 'twistranet.views.communities',
+        view_path = 'communities',
         title = "View all communities",
         slug = "menuitem_all_communities",
         publisher = GlobalCommunity.objects.filter(),

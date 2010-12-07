@@ -187,7 +187,7 @@ class Account(twistable.Twistable):
         return UserAccount.objects.filter(
             targeted_network__target__id = self.id,
             requesting_network__client__id = self.id,
-        )
+        ).exclude(id = self.id)
         
     @property
     def network_ids(self,):

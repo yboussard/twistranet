@@ -354,17 +354,28 @@ class Twistable(_AbstractTwistable):
         if not self.id:
             raise ValueError("Can't set _access_network before saving the object.")
             
-        # Update current object
+        # Update current object. We save current access and determine the more restrictive _p_can_list access permission.
+        # Remember that a published content has its permissions determined by its publisher's can_VIEW permission!
         _current_access_network = self._access_network
         obj = self.object
-        if self._p_can_list in (roles.owner, ):
+        if issubclass(obj.model_class, account.Account):
+            _p_can_list = self._p_can_list
+        else:
+            _p_can_list = max(self._p_can_list, self.publisher and self.publisher._p_can_view or roles.public)
+        
+        # If restricted to content owner, no access network mentionned here.
+        if _p_can_list in (roles.owner, ):
             self._access_network = None
-        elif self._p_can_list == roles.network:
-            if isinstance(obj, account.Account):
+            
+        # Network role: same as current network for an account, same as publisher's network for a content
+        elif _p_can_list == roles.network:
+            if issubclass(obj.model_class, account.Account):
                 self._access_network = obj
             else:
                 self._access_network = self.publisher
-        elif self._p_can_list == roles.public:
+            
+        # Public content (or so it seems)
+        elif _p_can_list == roles.public:
             obj = obj.publisher
             while obj:
                 if obj._p_can_list == roles.public:

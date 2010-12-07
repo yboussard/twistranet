@@ -126,7 +126,6 @@ class Content(_AbstractContent):
                         
         # Actually save stuff
         return super(Content, self).save(*args, **kw)
-        
 
     def delete(self,):
         """
@@ -136,3 +135,31 @@ class Content(_AbstractContent):
             if not self.can_delete:
                 raise PermissionDenied("You're not allowed to delete this object.")
         return super(Content, self).delete()
+        
+    #                                                                   #
+    #                       Display specificities                       #
+    #                                                                   #
+    
+    def owner_for_display(self):
+        """
+        Get the owner that's going to be said the post author.
+        General case: same as self.owner, except for communities,
+        where any community member acts for its "spokeperson"
+
+        XXX TODO: Cache most of this at creation-time!
+        """
+        _c = getattr(self, '_c_owner_for_display', None)
+        if _c:
+            return _c
+        from community import Community
+        from account import SystemAccount
+        display = self.owner
+        if issubclass(self.owner.model_class, SystemAccount):
+            if self.publisher:
+                display = self.publisher
+        if issubclass(self.publisher.model_class, Community):
+            if self.publisher.community.isMember(self.owner):
+                display = self.publisher
+        setattr(self, '_c_owner_for_display', display)
+        return display
+

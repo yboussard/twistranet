@@ -23,7 +23,7 @@ class CommunityForm(forms.ModelForm):
         # fields = ('text', 'permissions', 'language', )
         widgets = {
             'permissions':      widgets.Select(),
-            "picture":          MediaResourceWidget(),
+            # "picture":          MediaResourceWidget(),
         }
 
 

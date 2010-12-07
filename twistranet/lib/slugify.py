@@ -14,6 +14,8 @@ RESERVED_KEYWORDS = [
     "media",
     "account",
     "content",
+    "add_to_network",
+    "remove_from_network",
 ]
 
 rsvd_kw = "$|".join(RESERVED_KEYWORDS)

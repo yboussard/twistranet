@@ -86,7 +86,7 @@
                 </div>
                 <div id="container">
 
-                    <div id="contextbar" class="sidebar">  
+                    <div id="contextbar" class="sidebar">
                       <ul class="tn-box-container">
                           {% for box in context_boxes %}
                               {% include box %}
@@ -103,7 +103,13 @@
                       </ul>
                     </div>
                     {% endif %}
-
+                    
+                    {% if important_action %}
+                    <div id="important-action">
+                        <a href="{{ important_action.url }}" title="{{ important_action.label }}">{{ important_action.label }}</a>
+                    </div>
+                    {% endif %}
+                    
                     <div id="content">
                         <h1>{{ title }}</h1>
                         {% block content %}

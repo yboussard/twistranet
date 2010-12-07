@@ -4,7 +4,7 @@
 {% block content %}
     {% if community.html_summary %}
         <p class="discreet">
-            {{ community.html_summary }}
+            {{ community.html_summary|safe }}
         </p>
     {% endif %}
 

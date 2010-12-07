@@ -2,7 +2,7 @@
 {% load twistranet_extras %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    {% with content.owner as account %}
+    {% with content.owner_for_display as account %}
         {% include 'account/medium.thumbnail.alone.html' %}
     {% endwith %}
     <div class="entry">
@@ -11,10 +11,9 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            <a class="author" href="{{ content.owner.get_absolute_url }}">{{ content.owner.text_headline|safe }}</a>
-            {% if not content.owner_id == content.publisher_id %}
-            &raquo;
-            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">{{ content.publisher.text_headline|safe }}</a>
+            {# <a class="author" href="{{ content.owner.get_absolute_url }}">{{ content.owner.text_headline|safe }}</a> #}
+            {% if not content.owner_for_display.id == content.publisher_id %}
+            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">&raquo; {{ content.publisher.text_headline|safe }}</a>
             {% endif %}
             {% if content.html_headline %}
             <span class="headline">
@@ -37,6 +36,9 @@
         </div>
         <div class="postmetadata">
             <ul>
+                {%if not content.owner_for_display == content.owner %}
+                    <li class="author">{{ content.owner.text_headline|safe }}</li>
+                {% endif %}
                 <li class="date">{{ content.created_at|timesince }}</li>
                 {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
                 <li class="target">{{ content.permissions }}</li>
@@ -45,6 +47,7 @@
                         <a href="{% url twistranet.views.edit_content content.id %}">EDIT</a>
                     </li>
                 {%endif%}
+                <!-- {{ content.id }} -->
             </ul>
         </div>
         {% endwith %}

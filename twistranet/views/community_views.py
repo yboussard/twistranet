@@ -21,74 +21,99 @@ class CommunitiesView(BaseView):
     A list of n first available (visible) communities
     """
     title = "Communities"
+    template = "community/list.html"
+    template_variables = BaseView.template_variables + [
+        "communities",
+    ]
     
-    def get_important_action(self):
-        return None
-    
-    def view(self, request):
-        self.request = request
-        communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
-        return self.render_template(
-            "community/list.html",
-            {
-                "communities":  communities,
-            }
-        )
+    def prepare_view(self, ):
+        super(CommunitiesView, self).prepare_view()
+        self.communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+
 
 class CommunityView(AccountView):
     """
     Individual Community View.
     By some aspects, this is very close to the account view.
     """
-    important_action = None
     context_boxes = [
         'community/profile.box.html',
-        'community/actions.box.html',
+        'actions/context.box.html',
         'community/members.box.html',
     ]
-    
-    def view(self, request, value):
-        self.request = request
-        param = { self.lookup: value }
-        self.community = get_object_or_404(Community, **param)
-        return self.community_view(self.community)
-
+    template = "community/view.html"
+    template_variables = AccountView.template_variables + [
+        "community",
+        "n_members",
+        "is_member",
+        "members",
+        "managers", 
+    ]
+        
     def get_title(self,):
         return _("%(name)s community" % {'name': self.community.text_headline} )
-
-    def get_important_action(self):
-        return self.important_action
-
-    def community_view(self, community, ):
+        
+    def get_actions(self,):
         """
-        Account (user/profile) page.
-        We just diplay posts of any given community.
-        XXX TODO:
-            - Check if community is listed and permit only if approved
+        Basic actions on communities
         """
-        # Generate forms and ensure proper redirection if applicable
-        try:
-            forms = self._getInlineForms(publisher = community)
-        except MustRedirect:
-            return HttpResponseRedirect(self.request.path)
-            
-        # If we can join, this is the important action
-        if community.can_join:
-            self.important_action = ("Join this community", reverse('twistranet_home'))
-
-        # Generate the view itself
-        return self.render_template(
-            "community/view.html",
-            {
-                "path": self.request.path,
-                "content_forms": forms,
-                "community": community,
-                "n_members": community.members.count(),
-                "members": community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-                "managers": community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-                "latest_content_list": self.get_recent_content_list(community),
+        actions = []
+        if not self.community:
+            return []
+        
+        # Contributor stuff
+        if self.community.can_edit:
+            actions.append({
+                "label": _("Edit community"),
+                "url": reverse("community_edit", args = (self.community.id, )),
             })
 
+        # Join / Invite ppl
+        if self.community.can_join:
+            if not self.is_member:
+                actions.append({
+                    "label": _("Join this community"), 
+                    "url": reverse('community_join', args = (self.community.id, )),
+                    "important": True,
+                    "confirm": _("Do you really want to join this community?"),
+                })
+            else:
+                actions.append({
+                    # If we have the "can_join" permission AND we're already a member, it means we may invite other people.
+                    "label": _("Invite people"),
+                    "url": reverse("twistranet_home"),
+                    "important": False,
+                })
+        elif not self.is_member:
+            actions.append({
+                "label": _("Join this community"), 
+                "url": reverse('community_join', args = (self.community.id, )),
+                "important": True,
+                "confirm": _("Do you really want to join this community? Your request will be send for approval to the community managers."),
+            })
+            
+        # Leave this
+        if self.community.can_leave:
+            actions.append({
+                "label": _("Leave this community"),
+                "url": reverse("community_leave", args = (self.community.id, )),
+                "confirm": _("Do you really want to leave this community?"),
+            })
+    
+        return actions
+
+    def prepare_view(self, *args, **kw):
+        """
+        Prepare community view
+        """
+        super(AccountView, self).prepare_view(*args, **kw)
+        self.community = self.account.community
+        self.n_members = self.community.members.count()
+        self.is_member = self.community.is_member
+        self.members = self.community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
+        self.managers = self.community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
+        self.n_communities = []
+        self.n_network_members = []
 
 
 class CommunityEdit(CommunityView):
@@ -118,6 +143,9 @@ class CommunityEdit(CommunityView):
         else:
             form = community_forms.CommunityForm(instance = community) # An unbound form
 
+        # Various data
+        self.is_member = self.community and self.community.is_member
+
         # If the community already exists, we display its relevant information.
         dict_ = { 'form': form }
         if community:
@@ -130,8 +158,7 @@ class CommunityEdit(CommunityView):
         return self.render_template('community/edit.html', dict_)
 
 
-    def view(self, request, value):
-        self.request = request
+    def view(self, value):
         param = { self.lookup: value }
         community = get_object_or_404(Community, **param)
         if not community.can_view:
@@ -147,12 +174,37 @@ class CommunityCreate(CommunityEdit):
     context_boxes = [
     ]
     
-    def view(self, request):
-        self.request = request
+    def view(self):
         return self.community_edit(None)
 
+def join_community(request, community_id):
+    """
+    Join the given community
+    """
+    community = Community.objects.get(id = community_id)
+    name = community.text_headline
+    if not community.can_join:
+        # XXX Should send a message to community managers for approval
+        raise NotImplementedError("We should implement approval here!")
+    community.join()
+    messages.info(request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
+    return HttpResponseRedirect(community.get_absolute_url())
 
-@require_access
+
+
+def leave_community(request, community_id):
+    """
+    Leave the given community
+    """
+    community = Community.objects.get(id = community_id)
+    name = community.text_headline
+    if not community.can_leave:
+        # XXX Should send a pretty permission denied page
+        raise NotImplementedError("You're not allowed to leave this")
+    community.leave()
+    messages.info(request, _("You've left %(name)s." % {'name': name}))
+    return HttpResponseRedirect(reverse('twistranet_home'))
+
 def delete_community(request, community_id):
     """
     Delete a community by its id.

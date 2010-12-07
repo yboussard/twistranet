@@ -29,7 +29,11 @@ class Community(Account):
     
     @property
     def managers(self):
-        return self.members.filter(targeted_network__is_manager = True).distinct()
+        return Account.objects.filter(
+            targeted_network__target__id = self.id,
+            requesting_network__client__id = self.id,
+            targeted_network__is_manager = True,
+        )
         
     @property
     def members(self):
@@ -156,6 +160,7 @@ class Community(Account):
         """
         Join the community.
         If account is None, assume it current authenticated account.
+        Won't raise if you try to join the same community again.
         """
         # Check if current account is allowed to force another account to join
         if not self.can_join:
@@ -167,24 +172,21 @@ class Community(Account):
         if not account:
             account = Account.objects._getAuthenticatedAccount()
 
+        # Ensure first that account is not already in
+        if self.isMember(account):
+            return
+
         # Actually add (symetrically).
-        # We ignore Integrity Errors as they are just duplicate of the same information
-        try:
-            Network.objects.create(
-                client = account,
-                target = self,
-                is_manager = is_manager,
-            )
-        except IntegrityError:
-            pass
-        try:
-            Network.objects.create(
-                client = self,
-                target = account,
-                is_manager = False,
-            )
-        except IntegrityError:
-            pass
+        Network.objects.create(
+            client = account,
+            target = self,
+            is_manager = is_manager,
+        )
+        Network.objects.create(
+            client = self,
+            target = account,
+            is_manager = False,
+        )
         
         # Post join message
         notifier.joined(account, self)

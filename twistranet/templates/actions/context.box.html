@@ -1,0 +1,14 @@
+{# Contextual actions. #}
+{# Could be move into the main template. One day. #}
+{% if actions %}
+    <ul class="edit-actions">
+        {% for action in actions %}
+        <li>
+            <a href="{{ action.url }}" title="{{ action.label }}" class="action">{{ action.label }}</a>
+            {% if action.confirm %}
+                <span class="confirm-message">{{ action.confirm }}</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}

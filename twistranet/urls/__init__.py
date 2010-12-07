@@ -9,16 +9,16 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # XXX TODO : Move those URLs inside the TN product
-
     # The wall page for generic accounts
-    url(r'^$',                 HomepageView.as_view(), name='twistranet_home'),
+    url(r'^$',                 AsView(HomepageView), name='twistranet_home'),
     
     # Account pages
-    url(r'^account_communities/(%s)/$' % SLUG_REGEX, AccountCommunitiesView.as_view(lookup = 'slug'), name='account_communities'), 
-    url(r'^account_network/(%s)/$' % SLUG_REGEX, AccountNetworkView.as_view(lookup = 'slug'), name='account_network'), 
-    url(r'^account/(\d+)/$', AccountView.as_view(lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(%s)/$' % SLUG_REGEX, AccountView.as_view(lookup = 'slug'), name='account_by_slug'), 
+    url(r'^account/(\d+)/communities/$', AsView(AccountCommunitiesView), name='account_communities'), 
+    url(r'^account/(\d+)/network/$', AsView(AccountNetworkView), name='account_network'), 
+    url(r'^account/(\d+)/$', AsView(AccountView, lookup = 'id'), name='account_by_id'),              # The 'profile' page
+    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(AccountView, lookup = 'slug'), name='account_by_slug'), 
+    url(r'^account/(\d+)/add_to_network/$', AsView(AccountView, lookup = 'id'), name = 'add_to_my_network'),
+    url(r'^account/(\d+)/remove_from_network/$', AsView(AccountView, lookup = 'id'), name = 'remove_from_my_network'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),
@@ -34,18 +34,20 @@ urlpatterns = patterns('',
     (r'^media_library/(\d+)$',                  'twistranet.views.view_media_library'),
     
     # Content links
-    url(r'^content/(\d+)$', 'twistranet.views.content_by_id', name='content_by_id'),
-    url(r'^content/(SLUG_REGEX)$', 'twistranet.views.content_by_slug', name='content_by_slug'),
+    url(r'^content/(\d+)/$', 'twistranet.views.content_by_id', name='content_by_id'),
+    url(r'^content/(%s)/$' % SLUG_REGEX,        'twistranet.views.content_by_slug', name='content_by_slug'),
     (r'^content/new/(\w+)$',                    'twistranet.views.create_content'),
     (r'^content/(\d+)/edit$',                   'twistranet.views.edit_content'),
     (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
-    url(r'^community/(\d+)$', CommunityView.as_view(lookup = "id"), name='community_by_id'),
-    url(r'^community/(%s)/$' % SLUG_REGEX, CommunityView.as_view(lookup = "slug"), name='community_by_slug'),
-    url(r'^communities/$', CommunitiesView.as_view(), name = "communities", ),
-    url(r'^community/(\d+)/edit$', CommunityEdit.as_view(lookup = "id"), name = "community_edit"),
-    url(r'^community/new$', CommunityCreate.as_view(), name = "community_create", ),
+    url(r'^community/(\d+)$', AsView(CommunityView, lookup = "id"), name='community_by_id'),
+    url(r'^community/(%s)/$' % SLUG_REGEX, AsView(CommunityView, lookup = "slug"), name='community_by_slug'),
+    url(r'^communities/$', AsView(CommunitiesView), name = "communities", ),
+    url(r'^community/(\d+)/edit$', AsView(CommunityView, lookup = "id"), name = "community_edit"),
+    url(r'^community/(\d+)/join$', 'twistranet.views.join_community', name = "community_join"),
+    url(r'^community/(\d+)/leave$', 'twistranet.views.leave_community', name = "community_leave"),
+    url(r'^community/new$', AsView(CommunityView), name = "community_create", ),
     (r'^community/(\d+)/delete$', 'twistranet.views.delete_community'),
 
     # Search engine (Haystack)
