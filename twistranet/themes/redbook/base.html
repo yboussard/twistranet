@@ -50,8 +50,8 @@
                     {% endblock %}
                     <a class="logotext"
                        href="{% url twistranet_home %}">
-                        <div class="logo-title">{{ global_community.site_name }}</div>
-                        <div class="logo-slogan">{{ global_community.baseline }}</div>
+                        <div class="logo-title">{{ global_community.site_name|safe }}</div>
+                        <div class="logo-slogan">{{ global_community.baseline|safe }}</div>
                     </a>
                     <div id="menubar">
                         <div id="mainmenu">
@@ -109,7 +109,7 @@
 
                         {% include "actions/main.part.html" %}
 
-                        <h1>{{ title }}</h1>
+                        <h1>{{ title|safe }}</h1>
                         {% block content %}
                         {% endblock %}
                     </div>

@@ -176,6 +176,7 @@ class BaseIndividualView(BaseView):
     """
     model_lookup = None
     is_home = False
+    is_creation_view = False        # If true, won't lookup.
 
     def __init__(self, request, lookup = "id"):
         """
@@ -196,10 +197,13 @@ class BaseIndividualView(BaseView):
         """
         # Prepare specific parameters
         self.auth = Account.objects._getAuthenticatedAccount()
-        q_param = { self.lookup: value }
-        if self.model_lookup is None:
-            raise RuntimeError("You must specify a model lookup in your subclass %s" % self.__class__.__name__)
-        obj = get_object_or_404(self.model_lookup, **q_param)
+        if not self.is_creation_view:
+            q_param = { self.lookup: value }
+            if self.model_lookup is None:
+                raise RuntimeError("You must specify a model lookup in your subclass %s" % self.__class__.__name__)
+            obj = get_object_or_404(self.model_lookup, **q_param)
+        else:
+            obj = None
         self.object = obj
         setattr(self, self.model_lookup.__name__.lower(), obj)
         super(BaseIndividualView, self).prepare_view()

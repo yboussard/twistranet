@@ -38,7 +38,7 @@ class CommunityView(UserAccountView):
     model_lookup = Community
         
     def get_title(self,):
-        return _("%(name)s community" % {'name': self.community.text_headline} )
+        return self.community.text_headline
         
     def get_actions(self,):
         """
@@ -95,10 +95,10 @@ class CommunityView(UserAccountView):
         """
         super(UserAccountView, self).prepare_view(*args, **kw)
         self.account = self.object
-        self.n_members = self.community.members.count()
-        self.is_member = self.community.is_member
-        self.members = self.community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
-        self.managers = self.community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
+        self.n_members = self.community and self.community.members.count() or 0
+        self.is_member = self.community and self.community.is_member or False
+        self.members = self.community and self.community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
+        self.managers = self.community and self.community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
         self.n_communities = []
         self.n_network_members = []
 
@@ -140,68 +140,71 @@ class AccountCommunitiesView(UserAccountView):
         super(AccountCommunitiesView, self).prepare_view(*args, **kw)
         self.communities = self.account.communities
 
-
+#                                                                           #
+#                           Edition / Action views                          #
+#                                                                           #
 
 class CommunityEdit(CommunityView):
     """
     Edit form for community. Not so far from the view itself.
     """
+    template = "community/edit.html"
+    template_variables = CommunityView.template_variables + [
+        "form",
+    ]
+    
     def get_title(self,):
         """
         Title suitable for creation or edition
         """
-        if self.community:
-            return _("Edit %(name)s" % {'name' : self.community.text_headline })
-        return _("Create a community")
+        if self.is_creation_view:
+            return _("Create a community")
+        return _("Edit %(name)s" % {'name' : self.community.text_headline })
 
-    def community_edit(self, community):
+    def prepare_view(self, value):
         """
         Edition stuff
         """
-        self.community = community
-        
-        # Process form
+        # Prepare global view stuff, load data, ...
+        super(CommunityEdit, self).prepare_view(value)
+
+        # Process forms
         if self.request.method == 'POST': # If the form has been submitted...
-            form = community_forms.CommunityForm(self.request.POST, instance = community)
+            form = community_forms.CommunityForm(self.request.POST, instance = self.community)
             if form.is_valid(): # All validation rules pass
-                community = form.save()
-                return HttpResponseRedirect(community.get_absolute_url())
+                self.community = form.save()
+                raise MustRedirect(self.community.get_absolute_url())
         else:
-            form = community_forms.CommunityForm(instance = community) # An unbound form
+            form = community_forms.CommunityForm(instance = self.community) # An unbound form
 
         # Various data
         self.is_member = self.community and self.community.is_member
+        self.form = form
 
         # If the community already exists, we display its relevant information.
-        dict_ = { 'form': form }
-        if community:
-            dict_.update({
-                "community": community,
-                "n_members": community.members.count(),
-                "members": community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-                "is_member": community and community.is_member,
-            })
-        return self.render_template('community/edit.html', dict_)
+        # dict_ = { 'form': form }
+        # if self.community:
+        #     dict_.update({
+        #         "community": self.community,
+        #         "n_members": self.community.members.count(),
+        #         "members": community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
+        #         "is_member": community and community.is_member,
+        #     })
+        # return self.render_template('community/edit.html', dict_)
 
-
-    def view(self, value):
-        param = { self.lookup: value }
-        community = get_object_or_404(Community, **param)
-        if not community.can_view:
-            raise NotImplementedError("Should implement a permission denied exception here")
-        if not community.can_edit:
-            raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
-        return self.community_edit(community)
 
 class CommunityCreate(CommunityEdit):
     """
     Community creation. Close to the edit class
     """
+    is_creation_view = True
+    
     context_boxes = [
     ]
     
-    def view(self):
-        return self.community_edit(None)
+    def prepare_view(self,):
+        super(CommunityCreate, self).prepare_view(None)
+    
 
 def join_community(request, community_id):
     """

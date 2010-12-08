@@ -3,7 +3,7 @@
 {% if breadcrumb %}
 
     {% for page_title, url in breadcrumb %}
-        <a href="{{ url }}">{{ page_title }}</a>
+        <a href="{{ url }}">{{ page_title|safe }}</a>
         {% if not forloop.last %}
             &gt;
         {% endif %}
