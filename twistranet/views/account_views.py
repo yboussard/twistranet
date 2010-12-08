@@ -107,7 +107,7 @@ class HomepageView(UserAccountView):
 #                               LISTING VIEWS                                   #
 #                                                                               #
 
-class AccountsView(BaseView):
+class AccountListingView(BaseView):
     """
     Todo: account listing page
     """
@@ -118,7 +118,7 @@ class AccountsView(BaseView):
     ]
 
     def prepare_view(self, ):
-        super(AccountsView, self).prepare_view()
+        super(AccountListingView, self).prepare_view()
         self.accounts = Account.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
         
         
@@ -126,8 +126,8 @@ class AccountNetworkView(UserAccountView):
     """
     All communities for an account page
     """
-    template = AccountsView.template
-    template_variables = UserAccountView.template_variables + AccountsView.template_variables
+    template = AccountListingView.template
+    template_variables = UserAccountView.template_variables + AccountListingView.template_variables
 
     def get_title(self,):
         if self.account.id == Account.objects._getAuthenticatedAccount().id:

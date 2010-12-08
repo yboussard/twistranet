@@ -109,7 +109,7 @@ class CommunityView(UserAccountView):
 #                               LISTING VIEWS                                   #
 #                                                                               #
 
-class CommunitiesView(BaseView):
+class CommunityListingView(BaseView):
     """
     A list of n first available (visible) communities
     """
@@ -120,7 +120,7 @@ class CommunitiesView(BaseView):
     ]
 
     def prepare_view(self, ):
-        super(CommunitiesView, self).prepare_view()
+        super(CommunityListingView, self).prepare_view()
         self.communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
 
@@ -128,8 +128,8 @@ class AccountCommunitiesView(UserAccountView):
     """
     All network members for an account.
     """
-    template = CommunitiesView.template
-    template_variables = UserAccountView.template_variables + CommunitiesView.template_variables
+    template = CommunityListingView.template
+    template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
 
     def get_title(self,):
         if self.account.id == Account.objects._getAuthenticatedAccount().id:
