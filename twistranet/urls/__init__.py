@@ -15,10 +15,10 @@ urlpatterns = patterns('',
     # Account pages
     url(r'^account/(\d+)/communities/$', AsView(AccountCommunitiesView), name='account_communities'), 
     url(r'^account/(\d+)/network/$', AsView(AccountNetworkView), name='account_network'), 
-    url(r'^account/(\d+)/$', AsView(AccountView, lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(AccountView, lookup = 'slug'), name='account_by_slug'), 
-    url(r'^account/(\d+)/add_to_network/$', AsView(AccountView, lookup = 'id'), name = 'add_to_my_network'),
-    url(r'^account/(\d+)/remove_from_network/$', AsView(AccountView, lookup = 'id'), name = 'remove_from_my_network'),
+    url(r'^account/(\d+)/$', AsView(UserAccountView, lookup = 'id'), name='account_by_id'),              # The 'profile' page
+    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(UserAccountView, lookup = 'slug'), name='account_by_slug'), 
+    url(r'^account/(\d+)/add_to_network/$', AsView(UserAccountView, lookup = 'id'), name = 'add_to_my_network'),
+    url(r'^account/(\d+)/remove_from_network/$', AsView(UserAccountView, lookup = 'id'), name = 'remove_from_my_network'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),

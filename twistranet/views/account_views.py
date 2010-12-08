@@ -11,7 +11,10 @@ from twistranet.models import *
 from twistranet import twistranet_settings
 from base_view import BaseView, BaseIndividualView, BaseWallView, MustRedirect
 
-class AccountView(BaseWallView):
+
+
+
+class UserAccountView(BaseWallView):
     """
     This is what is used as a base view for accounts
     """
@@ -29,7 +32,7 @@ class AccountView(BaseWallView):
     ]
     
     is_home = False
-    model_lookup = Account
+    model_lookup = UserAccount
     template = "account/view.html"
     
     def get_actions(self,):
@@ -58,7 +61,8 @@ class AccountView(BaseWallView):
         """
         Add a few parameters for the view
         """
-        super(AccountView, self).prepare_view(*args, **kw)
+        super(UserAccountView, self).prepare_view(*args, **kw)
+        self.account = self.useraccount
         self.n_communities = self.account.communities.count()
         self.n_network_members = self.account.network.count()
 
@@ -66,7 +70,7 @@ class AccountView(BaseWallView):
         return _("%(name)s's profile" % {'name': self.account.text_headline} )  
 
 
-class HomepageView(AccountView):
+class HomepageView(UserAccountView):
     """
     Special treatment for homepage.
     """
@@ -98,44 +102,42 @@ class HomepageView(AccountView):
         else:
             raise NotImplementedError("XXX TODO: Handle anonymous access here.")
 
-class AccountNetworkView(BaseIndividualView):
+
+#                                                                               #
+#                               LISTING VIEWS                                   #
+#                                                                               #
+
+class AccountsView(BaseView):
+    """
+    Todo: account listing page
+    """
+    title = "Accounts"
+    template = "account/list.html"
+    template_variables = BaseView.template_variables + [
+        "accounts",
+    ]
+
+    def prepare_view(self, ):
+        super(AccountsView, self).prepare_view()
+        self.accounts = Account.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+        
+        
+class AccountNetworkView(UserAccountView):
     """
     All communities for an account page
     """
-    model_lookup = Account
-    template = "account/list.html"
-    template_variables = BaseIndividualView.template_variables + [
-        "accounts",
-    ]
-    
+    template = AccountsView.template
+    template_variables = UserAccountView.template_variables + AccountsView.template_variables
+
     def get_title(self,):
         if self.account.id == Account.objects._getAuthenticatedAccount().id:
             return _("My network")
         return _("%(name)s's network" % {'name': self.account.text_headline} )
-    
+
     def prepare_view(self, *args, **kw):
         super(AccountNetworkView, self).prepare_view(*args, **kw)
         self.accounts = self.account.network
 
-class AccountCommunitiesView(BaseIndividualView):
-    """
-    All network members for an account.
-    XXX Move this in community_views
-    """
-    model_lookup = Account
-    template = "community/list.html"
-    template_variables = BaseIndividualView.template_variables + [
-        "communities",
-    ]
-    
-    def get_title(self,):
-        if self.account.id == Account.objects._getAuthenticatedAccount().id:
-            return _("My communities")
-        return _("%(name)s's communities" % {'name': self.account.text_headline} )
-    
-    def prepare_view(self, *args, **kw):
-        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
-        self.communities = self.account.communities
 
 
 def account_logout(request):

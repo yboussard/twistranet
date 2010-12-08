@@ -1,4 +1,5 @@
 {% load i18n %}
+{% if account.communities_for_display %}
 <li class="tn-box relations-box">
     {% ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
@@ -25,6 +26,9 @@
       <div class="clearfix"><!-- --></div>
     </div>
 </li>
+{% endif %}
+
+{% if account.network_for_display %}
 <li class="tn-box relations-box">
     {%ifequal account.id logged_account.id %}
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
@@ -51,3 +55,4 @@
       <div class="clearfix"><!-- --></div>
     </div>
 </li>
+{% endif %}

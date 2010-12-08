@@ -9,9 +9,14 @@
                 {{ account.description|safe }}
             </div>
             <div class="postmetadata">
-                {{ account.permissions }} |
-                {# XXX TODO: Fix members count in search results #}
-                {{ account.members.count }} members
+                <ul>
+                    <li class="target">
+                        {{ account.permissions }}
+                    </li>
+                    <li class="members">
+                        {{ account.members.count }} members
+                    </li>
+                </ul>
             </div>
         </div>
     {% endwith %}

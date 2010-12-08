@@ -12,26 +12,12 @@ from twistranet.lib.decorators import require_access
 
 from twistranet.models import *
 from base_view import BaseView, MustRedirect
-from account_views import AccountView
+from account_views import UserAccountView
 from twistranet import twistranet_settings
 
 
-class CommunitiesView(BaseView):
-    """
-    A list of n first available (visible) communities
-    """
-    title = "Communities"
-    template = "community/list.html"
-    template_variables = BaseView.template_variables + [
-        "communities",
-    ]
-    
-    def prepare_view(self, ):
-        super(CommunitiesView, self).prepare_view()
-        self.communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
-
-class CommunityView(AccountView):
+class CommunityView(UserAccountView):
     """
     Individual Community View.
     By some aspects, this is very close to the account view.
@@ -42,13 +28,14 @@ class CommunityView(AccountView):
         'community/members.box.html',
     ]
     template = "community/view.html"
-    template_variables = AccountView.template_variables + [
+    template_variables = UserAccountView.template_variables + [
         "community",
         "n_members",
         "is_member",
         "members",
         "managers", 
     ]
+    model_lookup = Community
         
     def get_title(self,):
         return _("%(name)s community" % {'name': self.community.text_headline} )
@@ -106,14 +93,53 @@ class CommunityView(AccountView):
         """
         Prepare community view
         """
-        super(AccountView, self).prepare_view(*args, **kw)
-        self.community = self.account.community
+        super(UserAccountView, self).prepare_view(*args, **kw)
+        self.account = self.object
         self.n_members = self.community.members.count()
         self.is_member = self.community.is_member
         self.members = self.community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
         self.managers = self.community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS]
         self.n_communities = []
         self.n_network_members = []
+
+
+
+
+#                                                                               #
+#                               LISTING VIEWS                                   #
+#                                                                               #
+
+class CommunitiesView(BaseView):
+    """
+    A list of n first available (visible) communities
+    """
+    title = "Communities"
+    template = "community/list.html"
+    template_variables = BaseView.template_variables + [
+        "communities",
+    ]
+
+    def prepare_view(self, ):
+        super(CommunitiesView, self).prepare_view()
+        self.communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+
+
+class AccountCommunitiesView(UserAccountView):
+    """
+    All network members for an account.
+    """
+    template = CommunitiesView.template
+    template_variables = UserAccountView.template_variables + CommunitiesView.template_variables
+
+    def get_title(self,):
+        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+            return _("My communities")
+        return _("%(name)s's communities" % {'name': self.account.text_headline} )
+
+    def prepare_view(self, *args, **kw):
+        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        self.communities = self.account.communities
+
 
 
 class CommunityEdit(CommunityView):
