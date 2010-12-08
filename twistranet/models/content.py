@@ -107,7 +107,11 @@ class Content(_AbstractContent):
         """
         Populate special content information before saving it.
         See Content class documentation for more information on that.
-        """        
+        """
+        # Don't allow direct Content object saving
+        if self.__class__ == Content:
+            raise RuntimeError("You're not allowed to directly save a Content object. Use your actual content type instead.")
+        
         # Confirm publishing rights
         authenticated = Content.objects._getAuthenticatedAccount()
         if not authenticated:

@@ -1,29 +1,26 @@
 {% load i18n %}
 <li id="content-metadata-box" class="tn-box metadata-box">
     <div class="tn-box-content">
-      <ul class="global-actions">   
-      {% if content.can_view %}
-          <li>
-              {% blocktrans %}Author:{% endblocktrans %}
-              <a href="{% url twistranet.views.account_by_slug content.author.slug %}">
-                  {{ content.author }}
-              </a>
-          </li>
-          <li>
-              {% blocktrans %}Published on:{% endblocktrans %}
-              <a href="{% url twistranet.views.account_by_slug content.publisher.slug %}">
-                  {{ content.publisher }}
-              </a>
-          </li>
-          <li>
-              {% blocktrans %}Created:{% endblocktrans %}
-                  {{ content.created_at }}
-          </li>
-          <li>
-              {% blocktrans %}Permissions:{% endblocktrans %}
-                  {{ content.permissions }}
-          </li>
-      {% endif %}
-      </ul>         
+        {% if content.can_view %}
+            {% with content.publisher as account %}
+                {% include 'account/summary.part.html' %}
+            {% endwith %}
+            <ul class="global-actions">   
+                <li>
+                    {% blocktrans %}Author:{% endblocktrans %}
+                    <a href="{{ content.owner.get_absolute_url }}">
+                        {{ content.owner.text_headline|safe }}
+                    </a>
+                </li>
+                <li>
+                    {% blocktrans %}Created:{% endblocktrans %}
+                    {{ content.created_at }}
+                </li>
+                <li>
+                    {% blocktrans %}Permissions:{% endblocktrans %}
+                    {{ content.permissions }}
+                </li>
+            </ul>         
+        {% endif %}
     </div>
 </li>

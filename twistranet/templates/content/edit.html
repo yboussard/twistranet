@@ -13,15 +13,11 @@
 
 {% block content %}
     {% if content %}
-        {%with content.text_headline as headline%}
-            <h1><a href="{% url twistranet.views.content_by_id content.id %}">{%blocktrans%}Edit "{{ headline }}"{%endblocktrans%}</a></h1>   
-        {%endwith%}
-        <form action="{% url twistranet.views.edit_content content.id %}"
+        <form action="{{ path }}"
               method="post"
               class="edit-form enableAutoFocus">
     {% else %}
-        <h1>{%blocktrans%}New {{content_type}}{%endblocktrans%}</h1>
-        <form action="{% url twistranet.views.create_content content_type %}"
+        <form action="{{ path }}"
               method="post"
               class="edit-form enableAutoFocus">
     {% endif %}

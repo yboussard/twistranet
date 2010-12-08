@@ -2,7 +2,6 @@
 {% load i18n %}
 
 {% block content %}
-{% with content.translation as content %}
     <div class="content-summary">
         {{ content.html_summary|safe }}
     </div>
@@ -10,5 +9,4 @@
     <div class="content-text">
         {{ content.text|safe }}
     </div>
-{% endwith %}
 {% endblock %}

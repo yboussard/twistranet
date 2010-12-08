@@ -44,7 +44,7 @@
                 <li class="target">{{ content.permissions }}</li>
                 {%if content.can_edit %}
                     <li class="action">
-                        <a href="{% url twistranet.views.edit_content content.id %}">Edit</a>
+                        <a href="{% url edit_content content.id %}">Edit</a>
                     </li>
                 {%endif%}
                 <!-- {{ content.id }} -->

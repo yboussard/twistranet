@@ -6,7 +6,7 @@
       <ul>
         {% for ctype in creatable_content_types %}
             <li>
-                <a href="{% url twistranet.views.create_content ctype.content_type %}"
+                <a href="{% url create_content ctype.content_type %}"
                    class="action">
                     {{ ctype.content_type }}
                 </a>

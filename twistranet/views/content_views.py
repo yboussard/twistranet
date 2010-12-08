@@ -13,8 +13,91 @@ from twistranet.lib.decorators import require_access
 
 from twistranet.models import Content, Account
 from twistranet.lib import form_registry
+from base_view import *
 
-@require_access
+
+
+
+class ContentView(BaseIndividualView):
+    """
+    Individual Content View.
+    """
+    context_boxes = [
+        'content/metadata.box.html',
+        'actions/context.box.html',
+    ]
+    template = "content/view.html"
+    template_variables = BaseIndividualView.template_variables + [
+        "content",
+    ]
+    model_lookup = Content
+        
+    def get_title(self,):
+        return self.content.text_headline
+        
+    def get_actions(self,):
+        """
+        Basic actions on communities
+        """
+        actions = []
+        if not self.content:
+            return []
+        
+        # Contributor stuff
+        if self.content.can_edit:
+            actions.append({
+                "label": _("Edit content"),
+                "url": reverse("edit_content", args = (self.content.id, )),
+            })
+    
+        return actions
+
+    def prepare_view(self, *args, **kw):
+        """
+        Prepare community view.
+        Special funny thing here: we replace content by its actual underlying object.
+        This is so because of the proheminence of the 'content.text' property we won't be able to fetch otherwise.
+        """
+        super(ContentView, self).prepare_view(*args, **kw)
+        self.content = self.content and self.content.object
+
+
+class ContentEdit(ContentView):
+    """
+    Generic edit form for content.
+    """
+    template = "content/edit.html"
+
+    def get_form_class(self,):
+        if self.object:
+            return form_registry.getFormEntries(self.object.model_name, edition = True)[0]['form_class']
+        else:
+            return form_registry.getFormEntries(self.content_type, creation = True)[0]['form_class']
+            
+
+    def get_title(self,):
+        """
+        Title suitable for creation or edition
+        """
+        if not self.object:
+            return _("New content")
+        return _("Edit %(name)s" % {'name' : self.object.text_headline })
+
+
+class ContentCreate(ContentEdit):
+    """
+    Community creation. Close to the edit class
+    """
+    context_boxes = []
+
+    def prepare_view(self, content_type):
+        """
+        We pass the content_type instead of the value
+        """
+        self.content_type = content_type
+        super(ContentCreate, self).prepare_view(None)
+
+
 def edit_content(request, content_id = None, content_type = None):
     """
     Edit the given content or create a new one if necessary
@@ -62,37 +145,6 @@ def edit_content(request, content_id = None, content_type = None):
         )
     return HttpResponse(t.render(c))
 
-@require_access
-def content_by_id(request, content_id):
-    """
-    Display a content
-    """
-    # Basic data
-    account = request.user.get_profile()
-    content = Content.objects.distinct().get(id = content_id)
-    if not content.can_view:
-        raise NotImplementedError("Should raise permission denied here.")
-
-    # Dereference the actual underlying content object
-    content = content.object
-    
-    # Display the view template (given by the detail_view pty of the content)
-    t = loader.get_template(content.detail_view)
-    c = RequestContext(
-        request,
-        {
-            "content": content,
-        },
-        )
-    return HttpResponse(t.render(c))    
-
-@require_access
-def content_by_slug(request, slug):
-    """
-    XXX TODO: Make this more efficient?
-    """
-    content = Content.objects.get(slug = slug)
-    return content_by_id(request, content.id)
 
 @require_access
 def create_content(request, content_type):

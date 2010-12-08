@@ -35,10 +35,10 @@ urlpatterns = patterns('',
     (r'^media_library/(\d+)$',                  'twistranet.views.view_media_library'),
     
     # Content links
-    url(r'^content/(\d+)/$', 'twistranet.views.content_by_id', name='content_by_id'),
-    url(r'^content/(%s)/$' % SLUG_REGEX,        'twistranet.views.content_by_slug', name='content_by_slug'),
-    (r'^content/new/(\w+)$',                    'twistranet.views.create_content'),
-    (r'^content/(\d+)/edit$',                   'twistranet.views.edit_content'),
+    url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name='content_by_id'),
+    url(r'^content/(%s)/$' % SLUG_REGEX,        AsView(ContentView, lookup = 'slug'), name='content_by_slug'),
+    url(r'^content/new/(\w+)$',                 AsView(ContentCreate), name = "create_content", ),
+    url(r'^content/(\d+)/edit$',                AsView(ContentEdit), name = "edit_content", ),
     (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em

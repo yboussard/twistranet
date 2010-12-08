@@ -1,4 +1,3 @@
-import copy
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
@@ -168,15 +167,16 @@ class BaseView(object):
 
 class BaseIndividualView(BaseView):
     """
-    A view for an individual object. Lookup is performed on the object,
-    so that the view is called with its object already set.
+    A view for an individual object.
+    Edition works too!
+    Lookup is performed on the object, so that the view is called with its object already set.
     We only use a 'lookup' parameter which is used to set the lookup attribute.
     Just define a model_lookup parameter below. The variable holding the object
     will be model_lookup.__name__.lower().
     """
     model_lookup = None
     is_home = False
-    is_creation_view = False        # If true, won't lookup.
+    form_class = None               # If set, will be used to generate a form for the view
 
     def __init__(self, request, lookup = "id"):
         """
@@ -191,21 +191,44 @@ class BaseIndividualView(BaseView):
             raise RuntimeError("You must define a model_lookup attribute in your view class specifying the model you want to read the object from")
         self.lookup = lookup
         
-    def prepare_view(self, value, ):
+    def get_form_class(self,):
+        """
+        You can use self.request and self.object to find your form here
+        if you need to determinate it with an acute precision.
+        """
+        return self.form_class
+        
+    def prepare_view(self, value = None, ):
         """
         Fetch the individual object.
         """
         # Prepare specific parameters
         self.auth = Account.objects._getAuthenticatedAccount()
-        if not self.is_creation_view:
+        if value:
             q_param = { self.lookup: value }
             if self.model_lookup is None:
                 raise RuntimeError("You must specify a model lookup in your subclass %s" % self.__class__.__name__)
             obj = get_object_or_404(self.model_lookup, **q_param)
         else:
             obj = None
-        self.object = obj
-        setattr(self, self.model_lookup.__name__.lower(), obj)
+        self.object = obj and obj.object
+        model_name = self.model_lookup.__name__.lower()
+        
+        # If we have a form (ie. self.form_class or self.get_form_class available), process form
+        form_class = self.get_form_class()
+        if form_class:
+            setattr(self, model_name, self.object)
+            self.template_variables = self.template_variables + ["form", ]
+            if self.request.method == 'POST': # If the form has been submitted...
+                self.form = form_class(self.request.POST, instance = self.object)
+                if self.form.is_valid(): # All validation rules pass
+                    self.object = self.form.save()
+                    raise MustRedirect(self.object.get_absolute_url())
+            else:
+                self.form = form_class(instance = self.object) # An unbound form
+
+        # Various data. Call parent LAST.
+        setattr(self, model_name, self.object)
         super(BaseIndividualView, self).prepare_view()
 
 
@@ -311,13 +334,14 @@ class BaseWallView(BaseIndividualView):
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
 
-    def prepare_view(self, value):
+    def prepare_view(self, value = None):
         """
-        Fetch the individual object, plus its latest content
+        Fetch the individual object, plus its latest content.
         """
         super(BaseWallView, self).prepare_view(value)
-        self.latest_content_list = self.get_recent_content_list()
-        if len(self.latest_content_list) < (twistranet_settings.TWISTRANET_CONTENT_PER_PAGE / 2):
-            self.too_few_content = True
-        self.content_forms = self.get_inline_forms(self.object)
+        if self.object:
+            self.latest_content_list = self.get_recent_content_list()
+            if len(self.latest_content_list) < (twistranet_settings.TWISTRANET_CONTENT_PER_PAGE / 2):
+                self.too_few_content = True
+            self.content_forms = self.get_inline_forms(self.object)
         

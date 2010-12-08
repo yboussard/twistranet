@@ -16,7 +16,6 @@ from account_views import UserAccountView
 from twistranet import twistranet_settings
 
 
-
 class CommunityView(UserAccountView):
     """
     Individual Community View.
@@ -36,9 +35,6 @@ class CommunityView(UserAccountView):
         "managers", 
     ]
     model_lookup = Community
-        
-    def get_title(self,):
-        return self.community.text_headline
         
     def get_actions(self,):
         """
@@ -140,6 +136,9 @@ class AccountCommunitiesView(UserAccountView):
         super(AccountCommunitiesView, self).prepare_view(*args, **kw)
         self.communities = self.account.communities
 
+
+    
+
 #                                                                           #
 #                           Edition / Action views                          #
 #                                                                           #
@@ -149,61 +148,24 @@ class CommunityEdit(CommunityView):
     Edit form for community. Not so far from the view itself.
     """
     template = "community/edit.html"
-    template_variables = CommunityView.template_variables + [
-        "form",
-    ]
+    form_class = community_forms.CommunityForm
+    content_forms = []
+    latest_content_list = []
     
     def get_title(self,):
         """
         Title suitable for creation or edition
         """
-        if self.is_creation_view:
+        if not self.object:
             return _("Create a community")
-        return _("Edit %(name)s" % {'name' : self.community.text_headline })
-
-    def prepare_view(self, value):
-        """
-        Edition stuff
-        """
-        # Prepare global view stuff, load data, ...
-        super(CommunityEdit, self).prepare_view(value)
-
-        # Process forms
-        if self.request.method == 'POST': # If the form has been submitted...
-            form = community_forms.CommunityForm(self.request.POST, instance = self.community)
-            if form.is_valid(): # All validation rules pass
-                self.community = form.save()
-                raise MustRedirect(self.community.get_absolute_url())
-        else:
-            form = community_forms.CommunityForm(instance = self.community) # An unbound form
-
-        # Various data
-        self.is_member = self.community and self.community.is_member
-        self.form = form
-
-        # If the community already exists, we display its relevant information.
-        # dict_ = { 'form': form }
-        # if self.community:
-        #     dict_.update({
-        #         "community": self.community,
-        #         "n_members": self.community.members.count(),
-        #         "members": community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS],
-        #         "is_member": community and community.is_member,
-        #     })
-        # return self.render_template('community/edit.html', dict_)
+        return _("Edit %(name)s" % {'name' : self.object.text_headline })
 
 
 class CommunityCreate(CommunityEdit):
     """
     Community creation. Close to the edit class
     """
-    is_creation_view = True
-    
-    context_boxes = [
-    ]
-    
-    def prepare_view(self,):
-        super(CommunityCreate, self).prepare_view(None)
+    context_boxes = []
     
 
 def join_community(request, community_id):
