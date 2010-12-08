@@ -1,7 +1,7 @@
 /* Content-related stuff, including small content views */
 
 .post {
-	margin-top: 1.5em;
+	margin-top: 0.5em;
 	padding: 5px;
 	background-color: none;
 	clear: both;
@@ -21,7 +21,6 @@
 }
 
 .entry .postmetadata {
-  margin-top: 1em;
   color: #999;
   text-align: left;
 	line-height: auto;

@@ -93,7 +93,7 @@ class BaseView(object):
         Should return a list of dicts with the following keys :
         - label (TRANSLATED)
         - URL
-        - important as a boolean (assumed as False if absent). Only 1 important action is possible.
+        - main as a boolean (assumed as False if absent). Only 1 main action is possible.
         
         Default is to return the self.actions object attribute.
         The get_actions method is called in the last process before rendering, so your intermediate
@@ -153,12 +153,12 @@ class BaseView(object):
             
         # Generate actions
         actions = self.get_actions()
-        important = [ a for a in actions if a.get('important', False) ]
-        if len(important) > 1:
-            raise ValueError("Several important actions for %s: %s" % (self, important, ))
-        if important:
-            params["important_action"] = important[0]
-        params["actions"] = [ a for a in actions if not a.get('important', False) ]
+        main = [ a for a in actions if a.get('main', False) ]
+        if len(main) > 1:
+            raise ValueError("Several main actions for %s: %s" % (self, main, ))
+        if main:
+            params["main_action"] = main[0]
+        params["actions"] = [ a for a in actions if not a.get('main', False) ]
         
         # Render template
         t = get_template(self.template)

@@ -1,0 +1,9 @@
+{% if main_action %}
+<div id="main-action">
+    <a class="main-action {% if main_action.confirm %}confirmbefore{% endif %}" href="{{ main_action.url }}" title="{{ main_action.label }}">{{ main_action.label }}
+        {% if main_action.confirm %}
+            <span class="confirm-message">{{ main_action.confirm }}</span>
+        {% endif %}
+    </a>
+</div>
+{% endif %}

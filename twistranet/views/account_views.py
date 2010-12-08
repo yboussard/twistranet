@@ -43,12 +43,14 @@ class AccountView(BaseWallView):
             actions.append({
                 "label": _("Add to my network"),
                 "url": reverse('add_to_my_network', args = (self.account.id, ), ),
-                "important": True,
+                "confirm": _("Would you like to add %(name)s to your network? He will have to agree to your request." % {'name': self.account.text_summary}),
+                "main": True,
             })
         if in_my_network and not auth_account.is_anonymous and not self.account.id == auth_account.id:
             actions.append({
                 "label": _("Remove from my network"),
                 "url": reverse('remove_from_my_network', args = (self.account.id, ), ),
+                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': self.account.text_summary}),
             })
         return actions
         

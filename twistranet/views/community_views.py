@@ -74,7 +74,7 @@ class CommunityView(AccountView):
                 actions.append({
                     "label": _("Join this community"), 
                     "url": reverse('community_join', args = (self.community.id, )),
-                    "important": True,
+                    "main": True,
                     "confirm": _("Do you really want to join this community?"),
                 })
             else:
@@ -82,13 +82,13 @@ class CommunityView(AccountView):
                     # If we have the "can_join" permission AND we're already a member, it means we may invite other people.
                     "label": _("Invite people"),
                     "url": reverse("twistranet_home"),
-                    "important": False,
+                    "main": False,
                 })
         elif not self.is_member:
             actions.append({
                 "label": _("Join this community"), 
                 "url": reverse('community_join', args = (self.community.id, )),
-                "important": True,
+                "main": True,
                 "confirm": _("Do you really want to join this community? Your request will be send for approval to the community managers."),
             })
             

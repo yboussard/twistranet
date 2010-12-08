@@ -104,11 +104,7 @@
                     </div>
                     {% endif %}
                     
-                    {% if important_action %}
-                    <div id="important-action">
-                        <a href="{{ important_action.url }}" title="{{ important_action.label }}">{{ important_action.label }}</a>
-                    </div>
-                    {% endif %}
+                    {% include "actions/main.part.html" %}
                     
                     <div id="content">
                         <h1>{{ title }}</h1>
