@@ -219,6 +219,7 @@ class AccountSecurityTest(TestCase):
         c = Community(slug = "ou", permissions = "ou")
         c.save()
         self.failUnless(c.can_publish)
+        self.B = UserAccount.objects.get(slug = "B")
         __account__ = self.B
         c = Community.objects.get(slug = "ou")
         self.failIf(c.can_publish)

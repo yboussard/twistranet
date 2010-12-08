@@ -4,10 +4,11 @@
     <ul class="edit-actions">
         {% for action in actions %}
         <li>
-            <a href="{{ action.url }}" title="{{ action.label }}" class="action {% if important_action.confirm %}confirmbefore{% endif %}">{{ action.label }}</a>
-            {% if action.confirm %}
-                <span class="confirm-message">{{ action.confirm }}</span>
-            {% endif %}
+            <a href="{{ action.url }}" title="{{ action.label }}" class="action {% if action.confirm %}confirmbefore{% endif %}">{{ action.label }}
+                {% if action.confirm %}
+                    <span class="confirm-message">{{ action.confirm }}</span>
+                {% endif %}
+            </a>
         </li>
         {% endfor %}
     </ul>

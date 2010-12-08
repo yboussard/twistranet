@@ -1,14 +1,28 @@
 {% load i18n %}
 <li class="tn-box global-box general-box">
-    <h3>{% trans "Communities" %}</h3>
+    <h3>{% trans "Users and Communities" %}</h3>
     <div class="tn-box-content">
       <ul>
-        <li>
-          <a class="action"
-             href="{% url communities %}">
-           {% blocktrans %}View all communities{% endblocktrans %}
-          </a>
-        </li>
+          {# <li> #}
+          {#   <a class="action" #}
+          {#      href="{% url account_network logged_account.id %}"> #}
+          {#    {% blocktrans %}My network{% endblocktrans %} #}
+          {#   </a> #}
+          {# </li> #}
+          {% if logged_account.get_pending_network_requests %}
+              <li>
+                <a class="action"
+                   href="{% url account_pending_network %}">
+                 {% blocktrans %}Pending network requests{% endblocktrans %}
+                </a>
+              </li>
+          {% endif %}
+          {# <li> #}
+          {#   <a class="action" #}
+          {#      href="{% url communities %}"> #}
+          {#    {% blocktrans %}View all communities{% endblocktrans %} #}
+          {#   </a> #}
+          {# </li> #}
         <li>
           <a class="action"
              href="{% url community_create %}">

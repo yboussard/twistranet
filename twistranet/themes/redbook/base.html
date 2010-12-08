@@ -94,19 +94,21 @@
                        </ul>
                     </div>
                     
-                    {% if messages %}
-                    <div id="tn-message">
-                      <ul class="messages">
-                          {% for message in messages %}
-                          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                          {% endfor %}
-                      </ul>
-                    </div>
-                    {% endif %}
-                    
-                    {% include "actions/main.part.html" %}
-                    
+                
                     <div id="content">
+
+                        {% if messages %}
+                        <div id="tn-message">
+                          <ul class="messages">
+                              {% for message in messages %}
+                              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                              {% endfor %}
+                          </ul>
+                        </div>
+                        {% endif %}
+
+                        {% include "actions/main.part.html" %}
+
                         <h1>{{ title }}</h1>
                         {% block content %}
                         {% endblock %}

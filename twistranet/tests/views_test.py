@@ -49,7 +49,7 @@ class ViewsTest(TestCase):
         for conn in connections.all():
             # pprint.pprint(conn.queries)
             q_dict = {}
-            print "%d queries performed in the last renderd page in %fms" % (len(conn.queries), sum([ q.get("duration", 0) for q in conn.queries ]))
+            # print "%d queries performed in the last renderd page in %fms" % (len(conn.queries), sum([ q.get("duration", 0) for q in conn.queries ]))
             for q in conn.queries:
                 sql = q.get('raw_sql', None)
                 if not sql:
@@ -72,7 +72,7 @@ class ViewsTest(TestCase):
         for i in range(10):
             response = self.admin_client.get("/")
             self.failUnlessEqual(response.status_code, 200)
-        self.print_query_stats()
+        # self.print_query_stats()
 
     def test_01_admin_community(self,):
         """
@@ -81,6 +81,6 @@ class ViewsTest(TestCase):
         # response = self.admin_client.get("/account/administrators") # XXX TODO: Follow redirect
         response = self.admin_client.get("/community/9") # XXX TODO: Follow redirect
         self.failUnlessEqual(response.status_code, 200)
-        self.print_query_stats()
+        # self.print_query_stats()
 
 

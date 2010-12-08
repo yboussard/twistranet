@@ -25,7 +25,7 @@ def repair():
     
     Will not erase data it doesn't know how to handle.
     """
-    # # Login
+    # Login
     __account__ = SystemAccount.objects.get()
     
     # Put all Django admin users inside the first admin community

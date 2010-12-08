@@ -8,9 +8,19 @@
             {{ account.description|safe }}
         </div>
         <div class="postmetadata">
-            {# {{ content.date|timesince }} | #}
-            {# {{ content.language }} | #}
-            {# {{ content.permissions }} #}
+            <ul>
+                {% if account.has_pending_network_request %}
+                    <li class="action">
+                        <a href="{% url add_to_my_network account.id %}">{% blocktrans %}Accept network request{% endblocktrans %}</a>
+                    </li>
+                {% else %}
+                    {% if account.can_add_to_my_network %}
+                        <li class="action">
+                            <a href="{% url add_to_my_network account.id %}">{% blocktrans %}Add to my network{% endblocktrans %}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
         </div>
     </div>
 </div>

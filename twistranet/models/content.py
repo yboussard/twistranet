@@ -35,7 +35,7 @@ class ContentManager(twistable.TwistableManager):
             account = auth
         
         return (Q(
-            publisher__targeted_network__target__id = account.id,
+            publisher__requesting_network__client__id = account.id,
         ) | Q(
             publisher__id = account.id,
         ))

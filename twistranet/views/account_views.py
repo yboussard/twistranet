@@ -5,14 +5,12 @@ from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
+from django.contrib import messages
 from django.utils.translation import ugettext as _
 
 from twistranet.models import *
 from twistranet import twistranet_settings
-from base_view import BaseView, BaseIndividualView, BaseWallView, MustRedirect
-
-
-
+from base_view import *
 
 class UserAccountView(BaseWallView):
     """
@@ -41,20 +39,36 @@ class UserAccountView(BaseWallView):
         """
         actions = []
         auth_account = Account.objects._getAuthenticatedAccount()
+        
+        # Networking actions
         in_my_network = auth_account.network.filter(id = self.account.id)
-        if not in_my_network and not auth_account.is_anonymous and not self.account.id == auth_account.id:
+        if self.useraccount.has_pending_network_request:
             actions.append({
-                "label": _("Add to my network"),
-                "url": reverse('add_to_my_network', args = (self.account.id, ), ),
-                "confirm": _("Would you like to add %(name)s to your network? He will have to agree to your request." % {'name': self.account.text_summary}),
+                "label": _("Accept in my network"),
+                "url": reverse('add_to_my_network', args = (self.useraccount.id, ), ),
+                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': self.account.text_headline}),
                 "main": True,
             })
-        if in_my_network and not auth_account.is_anonymous and not self.account.id == auth_account.id:
+        elif self.useraccount.can_add_to_my_network:
+            actions.append({
+                "label": _("Add to my network"),
+                "url": reverse('add_to_my_network', args = (self.useraccount.id, ), ),
+                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': self.account.text_headline}),
+                "main": True,
+            })
+        elif self.useraccount.has_received_network_request:
+            actions.append({
+                "label": _("Cancel my network request"),
+                "url": reverse('remove_from_my_network', args = (self.useraccount.id, ), ),
+                "confirm": _("Would you like to cancel your network request?"),
+            })
+        elif not auth_account.is_anonymous and not self.account.id == auth_account.id:
             actions.append({
                 "label": _("Remove from my network"),
                 "url": reverse('remove_from_my_network', args = (self.account.id, ), ),
-                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': self.account.text_summary}),
+                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': self.account.text_headline}),
             })
+        
         return actions
         
     def prepare_view(self, *args, **kw):
@@ -124,7 +138,7 @@ class AccountListingView(BaseView):
         
 class AccountNetworkView(UserAccountView):
     """
-    All communities for an account page
+    All networked accounts for an account page
     """
     template = AccountListingView.template
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
@@ -138,6 +152,73 @@ class AccountNetworkView(UserAccountView):
         super(AccountNetworkView, self).prepare_view(*args, **kw)
         self.accounts = self.account.network
 
+
+class PendingNetworkView(UserAccountView):
+    """
+    All pending network relations for an account
+    """
+    template = AccountListingView.template
+    template_variables = UserAccountView.template_variables + AccountListingView.template_variables
+    title = "Pending network requests"
+    
+    def get_title(self,):
+        return _(self.title)
+
+    def prepare_view(self):
+        auth = Account.objects._getAuthenticatedAccount()
+        super(PendingNetworkView, self).prepare_view(auth.id)
+        self.accounts = self.account.get_pending_network_requests()
+
+
+#                                                                               #
+#                                   ACTION VIEWS                                #
+#                                                                               #
+
+class AddToNetworkView(BaseObjectActionView):
+    """
+    Add sbdy to my network, with or without authorization
+    """
+    model_lookup = UserAccount
+    
+    def prepare_view(self, *args, **kw):
+        super(AddToNetworkView, self).prepare_view(*args, **kw)
+        self.redirect = self.useraccount.get_absolute_url()
+        self.useraccount.add_to_my_network()
+        name = self.useraccount.text_headline
+        if self.useraccount in self.auth.network:
+            messages.info(
+                self.request, 
+                _("You're now connected with %(name)s." % {'name': name})
+            )
+        else:
+            messages.info(
+                self.request, 
+                _("A network request has been sent to %(name)s for approval." % {'name': name})
+            )
+        
+
+class RemoveFromNetworkView(BaseObjectActionView):
+    """
+    Add sbdy to my network, with or without authorization
+    """
+    model_lookup = UserAccount
+
+    def prepare_view(self, *args, **kw):
+        super(RemoveFromNetworkView, self).prepare_view(*args, **kw)
+        self.redirect = self.useraccount.get_absolute_url()
+        was_in_my_network = self.useraccount in self.auth.network
+        self.useraccount.remove_from_my_network()
+        name = self.useraccount.text_headline
+        if was_in_my_network:
+            messages.info(
+                self.request, 
+                _("You're not connected with %(name)s anymore." % {'name': name})
+            )
+        else:
+            messages.info(
+                self.request, 
+                _("Your network request to %(name)s has been canceled." % {'name': name})
+            )
 
 
 def account_logout(request):

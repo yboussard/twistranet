@@ -17,7 +17,7 @@ class Network(models.Model):
     Kind of relations :
     - Follow (asymetrical relation w/o approval)
     - Network (symetrical relation w/ approval implied)
-    The initiator is always ok for accepting the target (of course).
+    The initiator (client) is always ok for accepting the target (of course).
     
     To find the accounts a user has been authorized to access, do:
     - in a query:
@@ -72,4 +72,6 @@ class Network(models.Model):
     class Meta:
         app_label = 'twistranet'
         unique_together = ("client", "target", )
-        
+
+
+

@@ -253,7 +253,7 @@ class SecurityTest(TestCase):
         Check if a notification for B is seen only by those who can see B
         """
         __account__ = self.C
-        hello = StatusUpdate(text = "Hello there", permissions = "private")
+        hello = Document(text = "Hello there", permissions = "private")
         hello.save()
         n = notifier.likes(self.C, hello)
         nid = n.id

@@ -25,7 +25,7 @@ class WallTest(TestCase):
         If A creates a private, it must not be visible in admin's wall (even with A account)
         """
         __account__ = self.A
-        s = StatusUpdate(text = "Private", permissions = "private")
+        s = Document(text = "Private", permissions = "private")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         self.failUnless(s.content_ptr in Content.objects.followed.all())
@@ -86,7 +86,7 @@ class WallTest(TestCase):
         
         # Test content creation
         __account__ = self.A
-        s = StatusUpdate.objects.create()
+        s = Document.objects.create()
         s.text = "Hello, this is A speaking"
         s.permissions = "private"
         s.save()
@@ -116,7 +116,7 @@ class WallTest(TestCase):
         """
         from twistranet.models import StatusUpdate
         __account__ = self.A
-        s = StatusUpdate.objects.create()
+        s = Document.objects.create()
         s.text = "Hello, this is A speaking"
         s.permissions = "private"
         s.save()

@@ -203,55 +203,7 @@ class Account(twistable.Twistable):
             ).values_list("id", flat = True)
         self._c_network_ids = ids
         return ids
-        
-    @property
-    def network_for_display(self,):
-        """
-        Used to display network information. Heavily cached and cleverly sorted.
-        """
-        return self.network.order_by("-id")[:settings.TWISTRANET_FRIENDS_IN_BOXES]
-    
-    def follow(self, account):
-        """
-        Ask this account to follow another one.
-        """
-        # XXX TODO: CHECK SECURITY HERE!
-        from twistranet.models.network import Network
-        me_to_you = Network.objects.filter(client = self, target = account)
-        if me_to_you.exists():
-            # Already exists
-            return
-        
-        # If the given account already follows me, then we consider the relation as approved
-        you_to_me = Network.objects.filter(client = account, target = self)
-        if you_to_me.exists():
-            you_to_me = you_to_me.get()
-            # you_to_me.approved = True
-            you_to_me.save()
-            approved = True
-        elif account.id == self.id:
-            approved = True
-        else:
-            approved = False
-        me_to_you = Network(client = self, target = account, )#approved = approved)
-        me_to_you.save()
-    
-    @property
-    def followers(self,):
-        """
-        Return people following me
-        XXX TODO: Cache this
-        """
-        return UserAccount.objects.filter(targeted_network__target__id = self.id)
-        
-    @property
-    def following(self,):
-        """
-        Return ppl I follow
-        XXX TODO: Cache this
-        """
-        return UserAccount.objects.filter(requesting_network__client__id = self.id)
-        
+
     @property
     def content(self):
         """
@@ -338,6 +290,9 @@ class UserAccount(Account):
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
     is_anonymous = False
 
+    class Meta:
+        app_label = 'twistranet'
+
     def save(self, *args, **kw):
         """
         Set the 'name' attibute from User Source.
@@ -369,8 +324,152 @@ class UserAccount(Account):
         from twistranet.models import community
         return community.GlobalCommunity.objects.get()
 
-    class Meta:
-        app_label = 'twistranet'
+    #                                                                                       #
+    #                                   Network management                                  #
+    #                                                                                       #
+
+    @property
+    def network_for_display(self,):
+        """
+        Used to display network information. Heavily cached and cleverly sorted.
+        """
+        return self.network.order_by("-id")[:settings.TWISTRANET_FRIENDS_IN_BOXES]
+
+    def add_to_my_network(self):
+        """
+        Ask currently auth account to follow this one.
+        """
+        from twistranet.models.network import Network
+
+        # If relation already exists, we silently pass
+        auth = Account.objects._getAuthenticatedAccount()
+        if self.id == auth.id:
+            return
+        you_to_me = Network.objects.filter(client = auth, target = self)
+        if you_to_me.exists():
+            return
+        
+        # Add the relation itself
+        Network.objects.create(client = auth, target = self, is_manager = False)
+        
+    def remove_from_my_network(self):
+        """
+        Ask the currently auth account to unfollow this one.
+        Silently pass is the relation didn't exist.
+        Note that removing from the network breaks the TWO symetrical relations!
+        """
+        from twistranet.models.network import Network
+
+        # If relation already exists, we silently pass
+        auth = Account.objects._getAuthenticatedAccount()
+        if self.id == auth.id:
+            return
+        Network.objects.filter(client = auth, target = self).delete()        
+        Network.objects.filter(client = self, target = auth).delete()        
+
+    @property
+    def can_add_to_my_network(self,):
+        """
+        True if currently auth user can add the given one to its network.
+        False if already in my network ;)
+        """
+        from twistranet.models.network import Network
+        if not self.can_list:
+            return False
+        auth = Account.objects._getAuthenticatedAccount()
+        if auth.is_anonymous:
+            return False
+        if self.id == auth.id:
+            return False
+        return not Network.objects.filter(client = auth, target = self).exists()        
+        
+    @property
+    def has_pending_network_request(self):
+        """
+        True if currently auth user has a request incoming for this very user
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        if self.id == auth.id:
+            return False
+        if self.id in auth.network_ids:
+            if auth.id in self.network_ids:
+                return False        # Already approved
+            return True             # Yet to be approved
+        return False                # No request pending
+        
+    @property
+    def has_received_network_request(self):
+        """
+        True if currently auth user has sent a request to this user
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        if self.id == auth.id:
+            return False
+        if auth.id in self.network_ids:
+            if self.id in auth.network_ids:
+                return False        # Already approved
+            return True             # Yet to be approved
+        return False                # No request pending
+        
+        
+    def get_pending_network_requests(self):
+        """
+        List pending nwk user requests, ie. requests I yet have to approve.
+        XXX MORE THAN SUBOPTIMAL !!!
+        """
+        from twistranet.models.network import Network
+        requested_ids = Network.objects.filter(target = self).values_list("client__id", flat = True)
+        accepted_ids = Network.objects.filter(client = self).values_list("target__id", flat = True)
+        
+        unvalidated_ids = []
+        for i in requested_ids:
+            if i in accepted_ids:
+                continue
+            unvalidated_ids.append(i)
+            
+        return UserAccount.objects.filter(id__in = unvalidated_ids)
+        
+
+    # Follow / Unfollow support
+    # Can be used in API but not in the web interface.
+
+    def follow(self, account):
+        """
+        Ask current user to follow the other one
+        """
+        # XXX TODO: Check security
+        from twistranet.models.network import Network
+        me_to_you = Network.objects.filter(client = self, target = account)
+        if me_to_you.exists():
+            return
+        
+        # Add the relation itself
+        Network.objects.create(client = self, target = account)
+        
+    def unfollow(self, account):
+        """
+        XXX TODO: Check security
+        """
+        from twistranet.models.network import Network
+        Network.objects.filter(client = self, target = account).delete()        
+        
+    @property
+    def followers(self,):
+        """
+        Return people following me
+        XXX TODO: Cache this
+        """
+        return UserAccount.objects.filter(targeted_network__target__id = self.id)
+
+    @property
+    def following(self,):
+        """
+        Return ppl I follow
+        XXX TODO: Cache this
+        """
+        return UserAccount.objects.filter(requesting_network__client__id = self.id)
+
+    
         
 
 class AccountLanguage(models.Model):

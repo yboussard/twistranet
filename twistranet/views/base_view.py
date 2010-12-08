@@ -166,21 +166,6 @@ class BaseView(object):
         return HttpResponse(t.render(c))
         
 
-class BaseRedirectView(BaseView):
-    """
-    A view that does something and then redirects to somewhere else.
-    Just overload the prepare_view method and raise a MustRedirect exception when you're done.
-    """
-    default_redirect = "twistranet_home"
-    
-    def prepare_view(self, *args, **kw):
-        raise NotImplementedError("You must implement this.")
-        
-    def render_view(self,):
-        # If we ever reach there, we return to default_redirect
-        raise MustRedirect(reverse(self.default_redirect))
-
-
 class BaseIndividualView(BaseView):
     """
     A view for an individual object. Lookup is performed on the object,
@@ -210,6 +195,7 @@ class BaseIndividualView(BaseView):
         Fetch the individual object.
         """
         # Prepare specific parameters
+        self.auth = Account.objects._getAuthenticatedAccount()
         q_param = { self.lookup: value }
         if self.model_lookup is None:
             raise RuntimeError("You must specify a model lookup in your subclass %s" % self.__class__.__name__)
@@ -217,10 +203,24 @@ class BaseIndividualView(BaseView):
         self.object = obj
         setattr(self, self.model_lookup.__name__.lower(), obj)
         super(BaseIndividualView, self).prepare_view()
-        
-        # Check if URL is ok; If not, redirect to the absolute_url view
-        # if not self.is_home and not self.request.path.startswith(obj.get_absolute_url()):
-        #     raise MustRedirect(obj.get_absolute_url())
+
+
+
+class BaseObjectActionView(BaseIndividualView):
+    """
+    A view that does something and then redirects to somewhere else.
+    Just overload the prepare_view method with what you have to do.
+    
+    If you set the redirect attribute, it will redirect there.
+    """
+    redirect = None
+
+    def render_view(self,):
+        # If we ever reach there, we return to redirect attribute.
+        if self.redirect is None:
+            raise NotImplementedError("Should implement a default redirecting scheme")
+        raise MustRedirect(self.redirect)
+
         
 class BaseWallView(BaseIndividualView):
     """
@@ -252,11 +252,10 @@ class BaseWallView(BaseIndividualView):
         'publisher' is the account we're going to publish on. If none, assume it's the current user.
         """
         # Account information used to build the wall view
-        account = Account.objects._getAuthenticatedAccount()
-        if not account or account.is_anonymous:
+        if not self.auth or self.auth.is_anonymous:
             return []       # Anonymous can't do that much things...
         if not publisher:
-            publisher = account
+            publisher = self.auth
 
         # Wall edition forms if user has the right to write on it
         # This return a list of forms as each content type can define its own tab+form
