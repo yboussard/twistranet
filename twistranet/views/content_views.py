@@ -15,9 +15,6 @@ from twistranet.models import Content, Account
 from twistranet.lib import form_registry
 from base_view import *
 
-
-
-
 class ContentView(BaseIndividualView):
     """
     Individual Content View.
@@ -96,71 +93,21 @@ class ContentCreate(ContentEdit):
         self.content_type = content_type
         super(ContentCreate, self).prepare_view(None)
 
-
-def edit_content(request, content_id = None, content_type = None):
+class ContentDelete(BaseObjectActionView):
     """
-    Edit the given content or create a new one if necessary
+    Remove a content from the base
     """
-    # Get basic information
-    account = request.user.get_profile()
-    if content_id is not None:
-        content = Content.objects.get(id = content_id)
-        if not content.can_view:
-            raise NotImplementedError("Should implement a permission denied exception here")
-        if not content.can_edit:
-            raise NotImplementedError("Should redirect to the regular view? or raise a permission denied exception here.")
-        form_entry = form_registry.getFormEntries(content.model_name, edition = True)[0]
-    else:
-        # XXX TODO: Check some kind of "can_create_content" permission?
-        content = None
-        form_entry = form_registry.getFormEntries(content_type, creation = True)[0]
+    model_lookup = Content
 
-    # Process form
-    if request.method == 'POST': # If the form has been submitted...
-        if content:
-            form = form_entry['form_class'](request.POST, instance = content.object)
-        else:
-            form = form_entry['form_class'](request.POST)
-        
-        if form.is_valid(): # All validation rules pass
-            content = form.save()
-            return HttpResponseRedirect(reverse('twistranet.views.content_by_id', args = (content.id,)))
-    else:
-        if content:
-            form = form_entry['form_class'](instance = content.object)
-        else:
-            form = form_entry['form_class']()
-
-    # Template hapiness
-    t = loader.get_template('content/edit.html')
-    c = RequestContext(
-        request,
-        {
-            "account": account,
-            "content": content,
-            "content_type": form_entry['content_type'],
-            "form": form,
-        },
+    def prepare_view(self, *args, **kw):
+        super(ContentDelete, self).prepare_view(*args, **kw)
+        self.redirect = self.content.publisher.get_absolute_url()
+        name = self.content.text_headline
+        self.content.delete()
+        messages.info(
+            self.request, 
+            _("'%(name)s' has been deleted." % {'name': name})
         )
-    return HttpResponse(t.render(c))
 
-
-@require_access
-def create_content(request, content_type):
-    """
-    """
-    return edit_content(request, content_type = content_type)
-
-@require_access
-def delete_content(request, content_id):
-    """
-    Explicit
-    """
-    account = request.user.get_profile()
-    content = Content.objects.distinct().get(id = content_id)
-    name = content.model_name
-    content.delete()
-    messages.info(request, _('The %(name)s has been deleted.' % {'name': name}))
-    return HttpResponseRedirect(reverse('twistranet.views.home', ))
 
 

@@ -2,13 +2,16 @@
 <ul>
     {% if content.can_delete %}
         <li>
-            <a href="{% url twistranet.views.delete_content content.id %}" 
+            <a href="{% url delete_content content.id %}" 
                class="icon-delete confirmbefore"
                title="{% trans 'Delete content' %}">
               <span>&nbsp;</span>
               <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
-              <span class="confirm-message">{% blocktrans %}This action can't be undone, are you sure ?{% endblocktrans %}</span>
+              {% with content.text_summary as text_summary %}
+                <span class="confirm-message">{% blocktrans %}Do you really want to delete '{{ text_summary }}'?{% endblocktrans %}</span>
+              {% endwith %}
             </a>
         </li>
     {% endif %}
 </ul>
+

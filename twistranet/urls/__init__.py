@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     url(r'^content/(%s)/$' % SLUG_REGEX,        AsView(ContentView, lookup = 'slug'), name='content_by_slug'),
     url(r'^content/new/(\w+)$',                 AsView(ContentCreate), name = "create_content", ),
     url(r'^content/(\d+)/edit$',                AsView(ContentEdit), name = "edit_content", ),
-    (r'^content/(\d+)/delete$',                 'twistranet.views.delete_content'),
+    url(r'^content/(\d+)/delete$',              AsView(ContentDelete), name = "delete_content", ),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     url(r'^community/(\d+)$', AsView(CommunityView, lookup = "id"), name='community_by_id'),
