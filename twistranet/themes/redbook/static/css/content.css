@@ -25,6 +25,9 @@
   text-align: left;
 	line-height: auto;
 }
+  .entry div.postmetadata {
+    margin-top: 7px;
+  }
   .entry .postmetadata ul {
     margin: 0;
     padding: 0;

@@ -9,6 +9,10 @@ fieldset {
 	border-radius: 5px;
 }
 
+fieldset#form-StatusUpdate {
+  margin-top: 10px;
+}
+
 fieldset legend {
 	text-transform: capitalize;
 	margin: -3px 0 -3px -1px;
