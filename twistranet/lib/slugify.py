@@ -19,7 +19,7 @@ RESERVED_KEYWORDS = [
 ]
 
 rsvd_kw = "$|".join(RESERVED_KEYWORDS)
-SLUG_REGEX = r"(?!%s$)[a-zA-Z_][a-zA-Z0-9_\-\.]*" % rsvd_kw
+SLUG_REGEX = r"(?!%s$)[a-zA-Z_][a-zA-Z0-9_\-\.]*" % rsvd_kw         # XXX TODO: The . must not be last character in the slug
 
 def slugify(value):
     """

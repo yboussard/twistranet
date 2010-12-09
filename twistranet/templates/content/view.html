@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load wiki %}
 
 {% block content %}
     <div class="content-summary">
@@ -7,6 +8,6 @@
     </div>
     
     <div class="content-text">
-        {{ content.text|safe }}
+        {{ content.text|safe|fullwiki }}
     </div>
 {% endblock %}
