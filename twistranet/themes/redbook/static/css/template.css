@@ -99,6 +99,9 @@ body {
 				margin: 0 0 12px 4px;
 				word-wrap: break-word;
 			}
+			.noleftcol #contextbar {
+        display: none;
+      } 
   		#tn-message {
         color: white;
         font-weight: bold;
@@ -121,6 +124,10 @@ body {
 				float: left;
 				padding: 5px 10px;
 			}
+			.noleftcol #content {
+        float: none;
+        width: 756px;
+      } 
 	#bottom {
 		clear: both !important;
 	}

@@ -95,6 +95,7 @@ var twistranet = {
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
         twistranet.formsautofocus();
+        twistranet.setEmptyCols();
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
@@ -114,7 +115,9 @@ var twistranet = {
         jQuery('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
           jQuery(this).parents('li').addClass('inlinefield');
         });
-        
+    },
+    setEmptyCols : function(e) {
+        if (! $('#contextbar .tn-box-container:first').children().size() ) $('body').addClass('noleftcol');
     },
     showContentActions: function(e){
         /* show content actions on post mouseover */
