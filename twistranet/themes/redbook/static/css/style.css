@@ -608,9 +608,23 @@ a.action {
 a.action:hover {
   text-decoration: underline;
 } 
-a.main-action {
-  font-weight: bolder;
-} 
+
+/* content main-action */ 
+
+#content a.main-action {  
+  float: right;
+  display: block;
+  padding: 5px 10px;
+  color: white !important;
+  background-color: #a9cc23 !important;
+  border: 1px solid #999; 
+  text-decoration: none !important;
+  cursor: pointer;
+  margin: 0 0 5px 10px;
+  border-radius: 5px;               
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
 
 /* particular text classes */
 
