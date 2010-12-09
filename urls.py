@@ -7,5 +7,6 @@ from twistranet.views import *
 urlpatterns = patterns('',
     # Dynamic twistranet urls
     ("^", include("twistranet.urls")),
+    (r'^tinymce/', include('tinymce.urls')),
 )
 

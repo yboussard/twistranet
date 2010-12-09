@@ -2,6 +2,7 @@ from base_forms import BaseInlineForm, BaseRegularForm
 from django.db import models
 from django.forms import widgets
 from twistranet.lib import form_registry
+from tinymce.widgets import TinyMCE
 
 class StatusUpdateForm(BaseInlineForm):
     """
@@ -27,8 +28,7 @@ class QuickDocumentForm(BaseRegularForm):
         model = Document
         fields = BaseRegularForm.Meta.fields
         widgets = {
-            'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
-            'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
+            'text':         TinyMCE(attrs = {'rows': 20, 'cols': 100}),
         }
 
 class DocumentForm(BaseRegularForm):
@@ -44,7 +44,7 @@ class DocumentForm(BaseRegularForm):
         fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
-            'text':         widgets.Textarea(attrs = {'rows': 10, 'cols': 60}),
+            'text':         TinyMCE(attrs = {'rows': 30, 'cols': 120}),
         }
 
 form_registry.register(StatusUpdateForm)

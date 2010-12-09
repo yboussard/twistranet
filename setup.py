@@ -33,6 +33,7 @@ setup(name='Twistranet',
           'django-debug-toolbar',
           'django-piston',  
           'django-haystack',
+          'django-tinymce',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
