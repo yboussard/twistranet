@@ -22,6 +22,7 @@ from django.utils import html, translation
 from twistranet.lib import roles, permissions, languages, utils
 
 MAX_HEADLINE_LENGTH = 140
+MAX_SUMMARY_LENGTH = 1024
 
 def get_twistable_category(object) :
     """
@@ -207,17 +208,17 @@ class Twistable(_AbstractTwistable):
     # List of field name / generation method name. This is very useful when translating content.
     # See twistrans.lib for more information
     # XXX TODO: Document and/or rename that?
-    auto_values = (
-        ("html_headline", "preprocess_html_headline", ),
-        ("text_headline", "preprocess_text_headline", ),
-        ("html_summary", "preprocess_html_summary", ),
-        ("text_summary", "preprocess_text_summary", ),
-    )
+    # auto_values = (
+    #     ("html_headline", "preprocess_html_headline", ),
+    #     ("text_headline", "preprocess_text_headline", ),
+    #     ("html_summary", "preprocess_html_summary", ),
+    #     ("text_summary", "preprocess_text_summary", ),
+    # )
     
     # Basic metadata shared by all Twist objects.
-    # Title is mandatory.
-    title = models.CharField(max_length = 255)
-    description = models.TextField()
+    # Title is mandatory but kept blank to allow special treatments.
+    title = models.CharField(max_length = 255, blank = True)
+    description = models.TextField(blank = True)
     created_at = models.DateTimeField(auto_now = True, db_index = True)
     language = models.CharField(
         max_length = 10,
@@ -462,16 +463,28 @@ class Twistable(_AbstractTwistable):
 
         You can override this in your own content types if you want.
         """
+        # Fetch title or text
+        safe = False
         if text is None:
             text = getattr(self, "title", "")
         if not text:
             text = getattr(self, "text", "")
-        original_text = text
+            safe = True
         headline_length = MAX_HEADLINE_LENGTH
+
+        # # Strip HTML tags and only keep the first line as the title.
+        # lines = [ l.strip() for l in html.strip_tags(text).split("\n") if l.strip() ]
+        # if not lines:
+        #     return ""       # No title? Return an empty string.
+        # original_text = lines[0]
+        original_text = text
 
         # Ensure headline will never exceed MAX_HEADLINE_LENGTH characters
         while True:
-            text = html.escape(original_text)
+            if not safe:
+                text = html.escape(original_text)
+            else:
+                text = original_text
             if len(text) >= headline_length:
                 text = u"%s [...]" % text[:headline_length]
             text = utils.escape_links(text)
@@ -494,16 +507,35 @@ class Twistable(_AbstractTwistable):
         Return an HTML-safe summary.
         Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
         """
+        # Fetch title or text
+        safe = False
         if text is None:
             text = getattr(self, "description", "")
         if not text:
             text = getattr(self, "text", "")
+            safe = True
+        summary_length = MAX_SUMMARY_LENGTH
 
-        MAX_SUMMARY_LENGTH = 1024 - 10
-        text = html.escape(text)
-        if len(text) >= MAX_SUMMARY_LENGTH:
-            text = u"%s [...]" % text[:MAX_SUMMARY_LENGTH]
-        text = utils.escape_links(text)
+        # # Strip HTML tags and only keep the first line as the title.
+        # lines = [ l.strip() for l in html.strip_tags(text).split("\n") if l.strip() ]
+        # if len(lines) < 2:
+        #     return ""       # Nothing? Return an empty string.
+        # original_text = lines[1]
+        original_text = text
+
+        # Ensure headline will never exceed MAX_HEADLINE_LENGTH characters
+        while True:
+            if not safe:
+                text = html.escape(original_text)
+            else:
+                text = original_text
+            if len(text) >= summary_length:
+                text = u"%s [...]" % text[:summary_length]
+            text = utils.escape_links(text)
+            if len(text) <= MAX_SUMMARY_LENGTH:
+                break
+            summary_length = summary_length - 5
+
         if text == self.preprocess_html_headline():
             text = ""
 

@@ -82,15 +82,36 @@ class Document(Content):
 
     # def preprocess_html_headline(self,):
     #     """
-    #     Default is just tag-stripping without any HTML formating
+    #     We overload this to store stripped text version in the text attribute.
+    #     We do this only if title is not defined at save-time.
     #     """
-    #     return html.escape(self.title)
+    #     headline = super(Document, self).preprocess_html_headline()
+    #     
+    #     # If title was deduced by the text, then 'consume' the first line / paragraph of the text
+    #     if not self.title.strip():
+    #         lines = [ l.strip() for l in self.text.split("\n") if l.strip() ]
+    #         print lines
+    #         if len(lines) >= 1:
+    #             self.title = self.preprocess_text_headline(headline)
+    #     
+    #     return headline
+    #     
     # 
     # def preprocess_html_summary(self,):
     #     """
     #     Same as regular summary but with our new field
     #     """
-    #     return html.escape(self.description)
+    #     summary = super(Document, self).preprocess_html_summary()
+    #     
+    #     # If title was deduced by the text, then 'consume' the first line / paragraph of the text
+    #     if not self.description.strip():
+    #         lines = [ l.strip() for l in self.text.split("\n") if l.strip() ]
+    #         if len(lines) >= 1:
+    #             self.text = "\n".join(lines[2:])
+    #             self.description = self.preprocess_text_summary(summary)
+    #     
+    #     return summary
+    #     
 
 
 # class Link(Content):

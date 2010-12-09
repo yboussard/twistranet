@@ -73,7 +73,6 @@ class ContentEdit(ContentView):
             return form_registry.getFormEntries(self.object.model_name, edition = True)[0]['form_class']
         else:
             return form_registry.getFormEntries(self.content_type, creation = True)[0]['form_class']
-            
 
     def get_title(self,):
         """
