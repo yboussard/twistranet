@@ -139,7 +139,7 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "simple"
+HAYSTACK_SEARCH_ENGINE = "twistranet.lib.haystack_simplehack"
 
 
 INSTALLED_APPS = (

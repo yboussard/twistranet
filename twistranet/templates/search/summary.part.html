@@ -1,17 +1,17 @@
 {# Display search result summary according to content type #}
-{% if result.object.object.can_list %}
-    {% if result.object.is_content %}
-        {% with result.object.object as content %}
-            {%include content.summary_view %}
+{% with result.object as object %}
+    {% if object.is_community %}
+        {% with object as community %}
+            {% include object.summary_view %}
         {% endwith %}
-    {% else %}{% if result.object.is_account %}
-        {% with result.object.object as account %}
-            {%include account.summary_view %}
+    {% else %}{% if object.is_account %}
+        {% with object as account %}
+            {% include object.summary_view %}
         {% endwith %}
-    {% else %}
+    {% else %}{% if object.is_content %}
+        {% with object as content %}
+            {% include object.summary_view %}
+        {% endwith %}
+    {% endif %}{% endif %}{% endif %}
+{% endwith %}
 
-        {# Don't know how to display that! #}
-        ??{{ result.object }}
-
-    {% endif %}{% endif %}
-{% endif %}

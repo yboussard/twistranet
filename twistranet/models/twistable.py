@@ -420,6 +420,8 @@ class Twistable(_AbstractTwistable):
         This is quite complex actually: since we want like to minimize database overhead,
         we can't allow a "Model.objects.get(id = x)" call.
         So, instead, we walk through object inheritance to fetch the right attributes.
+        
+        XXX TODO: This is where I can implement the can_view or can_list filter. See search results to understand why.
         """
         if self.id is None:
             raise RuntimeError("You can't get subclass until your object is saved in database.")
