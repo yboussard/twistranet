@@ -47,6 +47,14 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 ***************************************************************************** */
 
 #breadcrumb {
+}  
+
+
+/* content styles
+***************************************************************************** */
+
+#content {
+  line-height: 1.5em;
 }
 
 
@@ -698,6 +706,7 @@ a.main-action {
 #tn-dialog-blockmessage {
   margin: 0;
   padding: 0;
+  line-height: 1.3em;
 }
 
 #tn-dialog-blockmessage .ui-icon {
