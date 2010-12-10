@@ -596,11 +596,7 @@ li.tn-box {
 
 .actions-box,
 .metadata-box {
-  padding: 5px 0 5px 10px !important;
-}
-
-.actions-box {
-  font-weight: bold;
+  padding: 5px 0 !important;
 }
 
 /* particular links */  
@@ -608,10 +604,11 @@ li.tn-box {
 a.action {
   color: #686868;
   display: block;
-  padding: 3px 0;
+  padding: 3px 5px;
 }
 a.action:hover {
-  text-decoration: underline;
+  background-color: #686868;
+  color: white;
 } 
 
 /* content main-action */ 
