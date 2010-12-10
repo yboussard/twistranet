@@ -1,6 +1,7 @@
 {# Contextual actions. #}
 {# Could be move into the main template. One day. #}
 {% if actions %}
+<li id="actions-box" class="tn-box actions-box">
     <ul class="edit-actions">
         {% for action in actions %}
         <li>
@@ -12,4 +13,5 @@
         </li>
         {% endfor %}
     </ul>
+</li>
 {% endif %}

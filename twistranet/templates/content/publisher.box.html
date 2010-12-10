@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if account %}
+{% with content.publisher as account %}
     <li id="account-profile-box" class="tn-box profile-box">
         {% include 'account/medium.thumbnail.alone.html' %}
       <h2 class="box-header">
@@ -7,9 +7,8 @@
           {{ account.text_headline|safe }}
         </a>
       </h2>
-      <div class="discreet">
+      <p class="discreet">
         {{ account.html_summary|safe }}
-      </div>
-      <div class="clear"><!-- --></div>
+      </p>
     </li>
-{% endif %}
+{% endwith %}

@@ -22,7 +22,8 @@ class CommunityView(UserAccountView):
     By some aspects, this is very close to the account view.
     """
     context_boxes = [
-        'community/profile.box.html',
+        'community/profile.box.html', 
+        'community/metadata.box.html',
         'actions/context.box.html',
         'community/members.box.html',
     ]

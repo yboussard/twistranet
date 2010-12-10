@@ -20,8 +20,9 @@ class ContentView(BaseIndividualView):
     Individual Content View.
     """
     context_boxes = [
-        'content/metadata.box.html',
-        'actions/context.box.html',
+        'content/publisher.box.html',    
+        'actions/context.box.html', 
+        'content/metadata.box.html', 
     ]
     template = "content/view.html"
     template_variables = BaseIndividualView.template_variables + [

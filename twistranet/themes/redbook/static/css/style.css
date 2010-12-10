@@ -594,8 +594,13 @@ li.tn-box {
   margin-bottom: 0 !important;
 }
 
+.actions-box,
+.metadata-box {
+  padding: 5px 0 5px 10px !important;
+}
+
 .actions-box {
-  padding: 5px 10px 20px !important;
+  font-weight: bold;
 }
 
 /* particular links */  
