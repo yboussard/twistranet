@@ -100,6 +100,12 @@ class BaseView(object):
         """
         return getattr(self, "actions", [])
         
+    def get_action_from_view(self, view_class):
+        """
+        Instanciate the view_class correctly and return the action
+        """
+        return view_class(self.request).as_action(self)
+        
     def get_title(self, ):
         if self.title is None:
             raise NotImplementedError("You must override the title property in your derived view. Don't forget to _() your title!")
@@ -123,7 +129,7 @@ class BaseView(object):
         
     def __init__(self, request):
         self.request = request
-        self.path = request.path
+        self.path = request and request.path
         
     def prepare_view(self):
         """
@@ -152,12 +158,12 @@ class BaseView(object):
             
         # Generate actions
         actions = self.get_actions()
-        main = [ a for a in actions if a.get('main', False) ]
+        main = [ a for a in actions if a and a.get('main', False) ]
         if len(main) > 1:
             raise ValueError("Several main actions for %s: %s" % (self, main, ))
         if main:
             params["main_action"] = main[0]
-        params["actions"] = [ a for a in actions if not a.get('main', False) ]
+        params["actions"] = [ a for a in actions if a and not a.get('main', False) ]
         
         # Render template
         t = get_template(self.template)
@@ -177,6 +183,12 @@ class BaseIndividualView(BaseView):
     model_lookup = None
     is_home = False
     form_class = None               # If set, will be used to generate a form for the view
+
+    redirect = None
+    action_label = ""       # XXX TODO: give the ability to pass %(title)s
+    action_confirm = ""
+    action_reverse_url = '' # XXX TODO: deduce this from urls.py... not very clean that way.
+    action_main = False
 
     def __init__(self, request, lookup = "id"):
         """
@@ -231,6 +243,22 @@ class BaseIndividualView(BaseView):
         setattr(self, model_name, self.object)
         super(BaseIndividualView, self).prepare_view()
 
+    def as_action(self, view_instance):
+        """
+        Return this view as a dict action for another view.
+        This is useful to rapidly include actions.
+        You can check view execution conditons here.
+
+        Default is to pass the view_instance id to reverse_url URL.
+        """
+        if not self.action_label or not self.action_reverse_url:
+            raise ValueError("You must specify action_label and action_reverse_url in %s" % self.__name__)
+        return {
+            "label": _(self.action_label),
+            "url": reverse(self.action_reverse_url, args = (view_instance.object.id, )),
+            "confirm": self.action_confirm and _(self.action_confirm),
+            "main": self.action_main
+        }
 
 
 class BaseObjectActionView(BaseIndividualView):
@@ -240,8 +268,6 @@ class BaseObjectActionView(BaseIndividualView):
     
     If you set the redirect attribute, it will redirect there.
     """
-    redirect = None
-
     def render_view(self,):
         # If we ever reach there, we return to redirect attribute.
         if self.redirect is None:

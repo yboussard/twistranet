@@ -38,38 +38,9 @@ class UserAccountView(BaseWallView):
         Actions available on account (or home) pages
         """
         actions = []
-        auth_account = Account.objects._getAuthenticatedAccount()
-        
-        # Networking actions
-        in_my_network = auth_account.network.filter(id = self.account.id)
-        if self.useraccount.has_pending_network_request:
-            actions.append({
-                "label": _("Accept in my network"),
-                "url": reverse('add_to_my_network', args = (self.useraccount.id, ), ),
-                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': self.account.text_headline}),
-                "main": True,
-            })
-        elif self.useraccount.can_add_to_my_network:
-            actions.append({
-                "label": _("Add to my network"),
-                "url": reverse('add_to_my_network', args = (self.useraccount.id, ), ),
-                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': self.account.text_headline}),
-                "main": True,
-            })
-        elif self.useraccount.has_received_network_request:
-            actions.append({
-                "label": _("Cancel my network request"),
-                "url": reverse('remove_from_my_network', args = (self.useraccount.id, ), ),
-                "confirm": _("Would you like to cancel your network request?"),
-            })
-        elif not auth_account.is_anonymous and not self.account.id == auth_account.id:
-            actions.append({
-                "label": _("Remove from my network"),
-                "url": reverse('remove_from_my_network', args = (self.account.id, ), ),
-                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': self.account.text_headline}),
-            })
-        
-        return actions
+        self.auth_account = Account.objects._getAuthenticatedAccount()
+        self.in_my_network = self.auth_account.network.filter(id = self.account.id)
+        return [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, ) ]
         
     def prepare_view(self, *args, **kw):
         """
@@ -180,6 +151,26 @@ class AddToNetworkView(BaseObjectActionView):
     """
     model_lookup = UserAccount
     
+    def as_action(self, request_view):
+        """
+        as_action(self, request_view) => generate the proper action
+        """
+        # Networking actions
+        if request_view.useraccount.has_pending_network_request:
+            return {
+                "label": _("Accept in my network"),
+                "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
+                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': request_view.useraccount.text_headline}),
+                "main": True,
+            }
+        if request_view.useraccount.can_add_to_my_network:
+            return {
+                "label": _("Add to my network"),
+                "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
+                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': request_view.useraccount.text_headline}),
+                "main": True,
+            }
+    
     def prepare_view(self, *args, **kw):
         super(AddToNetworkView, self).prepare_view(*args, **kw)
         self.redirect = self.useraccount.get_absolute_url()
@@ -202,6 +193,21 @@ class RemoveFromNetworkView(BaseObjectActionView):
     Add sbdy to my network, with or without authorization
     """
     model_lookup = UserAccount
+
+    def as_action(self, request_view):
+        if request_view.useraccount.has_received_network_request:
+            return {
+                "label": _("Cancel my network request"),
+                "url": reverse('remove_from_my_network', args = (request_view.useraccount.id, ), ),
+                "confirm": _("Would you like to cancel your network request?"),
+            }
+        if not request_view.auth_account.is_anonymous and not request_view.useraccount.id == request_view.auth_account.id:
+            return {
+                "label": _("Remove from my network"),
+                "url": reverse('remove_from_my_network', args = (request_view.account.id, ), ),
+                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': request_view.account.text_headline}),
+            }        
+        
 
     def prepare_view(self, *args, **kw):
         super(RemoveFromNetworkView, self).prepare_view(*args, **kw)

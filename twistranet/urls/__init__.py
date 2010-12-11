@@ -46,10 +46,10 @@ urlpatterns = patterns('',
     url(r'^community/(%s)/$' % SLUG_REGEX, AsView(CommunityView, lookup = "slug"), name='community_by_slug'),
     url(r'^communities/$', AsView(CommunityListingView), name = "communities", ),
     url(r'^community/(\d+)/edit$', AsView(CommunityEdit), name = "community_edit"),
-    url(r'^community/(\d+)/join$', 'twistranet.views.join_community', name = "community_join"),
-    url(r'^community/(\d+)/leave$', 'twistranet.views.leave_community', name = "community_leave"),
+    url(r'^community/(\d+)/join$', AsView(CommunityJoin), name = "community_join"),
+    url(r'^community/(\d+)/leave$', AsView(CommunityLeave), name = "community_leave"),
     url(r'^community/new$', AsView(CommunityCreate), name = "community_create", ),
-    (r'^community/(\d+)/delete$', 'twistranet.views.delete_community'),
+    url(r'^community/(\d+)/delete$', AsView(CommunityDelete), name = "community_delete", ),
 
     # Search engine (Haystack)
     (r'^search/',                               include('twistranet.urls.search')),

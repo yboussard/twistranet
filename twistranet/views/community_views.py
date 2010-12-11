@@ -11,7 +11,7 @@ from twistranet.forms import community_forms
 from twistranet.lib.decorators import require_access
 
 from twistranet.models import *
-from base_view import BaseView, MustRedirect
+from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView
 from twistranet import twistranet_settings
 
@@ -37,6 +37,9 @@ class CommunityView(UserAccountView):
     ]
     model_lookup = Community
         
+    def get_title(self,):
+        return self.community.text_headline
+        
     def get_actions(self,):
         """
         Basic actions on communities
@@ -45,44 +48,11 @@ class CommunityView(UserAccountView):
         if not self.community:
             return []
         
-        # Contributor stuff
-        if self.community.can_edit:
-            actions.append({
-                "label": _("Edit community"),
-                "url": reverse("community_edit", args = (self.community.id, )),
-            })
-
-        # Join / Invite ppl
-        if self.community.can_join:
-            if not self.is_member:
-                actions.append({
-                    "label": _("Join this community"), 
-                    "url": reverse('community_join', args = (self.community.id, )),
-                    "main": True,
-                    "confirm": _("Do you really want to join this community?"),
-                })
-            else:
-                actions.append({
-                    # If we have the "can_join" permission AND we're already a member, it means we may invite other people.
-                    "label": _("Invite people"),
-                    "url": reverse("twistranet_home"),
-                    "main": False,
-                })
-        elif not self.is_member:
-            actions.append({
-                "label": _("Join this community"), 
-                "url": reverse('community_join', args = (self.community.id, )),
-                "main": True,
-                "confirm": _("Do you really want to join this community? Your request will be send for approval to the community managers."),
-            })
-            
-        # Leave this
-        if self.community.can_leave:
-            actions.append({
-                "label": _("Leave this community"),
-                "url": reverse("community_leave", args = (self.community.id, )),
-                "confirm": _("Do you really want to leave this community?"),
-            })
+        # Generate actions
+        for act_view in (CommunityEdit, CommunityJoin, CommunityLeave, CommunityDelete, ):
+            a = act_view(self.request).as_action(self)
+            if a:
+                actions.append(a)
     
         return actions
 
@@ -153,6 +123,14 @@ class CommunityEdit(CommunityView):
     content_forms = []
     latest_content_list = []
     
+    action_label = "Edit"
+    action_reverse_url = "community_edit"
+    
+    def as_action(self, request_view):
+        if not request_view.object.can_edit:
+            return
+        return super(CommunityView, self).as_action(request_view)
+    
     def get_title(self,):
         """
         Title suitable for creation or edition
@@ -168,45 +146,83 @@ class CommunityCreate(CommunityEdit):
     """
     context_boxes = []
     
+    
+class CommunityJoin(BaseObjectActionView):
+    model_lookup = Community
+    action_label = "Join"
+    action_confirm = "Do you want to join this community?"
+    action_reverse_url = "community_join"
+    action_main = True
 
-def join_community(request, community_id):
-    """
-    Join the given community
-    """
-    community = Community.objects.get(id = community_id)
-    name = community.text_headline
-    if not community.can_join:
-        # XXX Should send a message to community managers for approval
-        raise NotImplementedError("We should implement approval here!")
-    community.join()
-    messages.info(request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
-    return HttpResponseRedirect(community.get_absolute_url())
+    def as_action(self, request_view):
+        if not request_view.object.can_join:
+            return None
+        ret = super(CommunityJoin, self).as_action(request_view)
+    
+        # If we're talking about community member, then the action must reflect that
+        if request_view.community.is_member:
+            ret["label"] = _("Invite people")
+            ret["url"] = reverse("twistranet_home")     # XXX TODO
+            ret["main"] = False
+
+        return ret
+    
+    def prepare_view(self, value):
+        super(CommunityJoin, self).prepare_view(value)
+        name = self.community.text_headline
+        if not self.community.can_join:
+            # XXX Should send a message to community managers for approval
+            raise NotImplementedError("We should implement approval here!")
+        self.community.join()
+        messages.info(request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
+        self.redirect = self.community.get_absolute_url()
+
+class CommunityLeave(BaseObjectActionView):
+    model_lookup = Community
+    action_label = "Leave"
+    action_confirm = "Do you really want to leave this community?"
+    action_reverse_url = "community_leave"
+
+    @classmethod
+    def as_action(self, request_view):
+        if not request_view.object.can_leave:
+            return None
+        return super(CommunityLeave, self).as_action(request_view)
+
+    def prepare_view(self, value):
+        super(CommunityLeave, self).prepare_view(value)
+        name = self.community.text_headline
+        if not self.community.can_leave:
+            raise NotImplementedError("Should return permission denied!")
+        self.community.leave()
+        messages.info(request, _("You've left %(name)s." % {'name': name}))
+        self.redirect = self.community.get_absolute_url()
 
 
+class CommunityDelete(BaseObjectActionView):
+    """
+    Delete a community from the base
+    """
+    model_lookup = Community
+    action_label = "Delete community"
+    action_confirm = "Do you really want to delete this community?"
+    action_reverse_url = "community_delete"
+ 
+    def as_action(self, request_view):
+        if not request_view.object.can_delete:
+            return None
+        return super(CommunityDelete, self).as_action(request_view)
 
-def leave_community(request, community_id):
-    """
-    Leave the given community
-    """
-    community = Community.objects.get(id = community_id)
-    name = community.text_headline
-    if not community.can_leave:
-        # XXX Should send a pretty permission denied page
-        raise NotImplementedError("You're not allowed to leave this")
-    community.leave()
-    messages.info(request, _("You've left %(name)s." % {'name': name}))
-    return HttpResponseRedirect(reverse('twistranet_home'))
-
-def delete_community(request, community_id):
-    """
-    Delete a community by its id.
-    The model checks the can_delete permission (of course).
-    """
-    community = Community.objects.get(id = community_id)
-    name = community.name
-    community.delete()
-    messages.info(request, _('The community %(name)s has been deleted.' % {'name': name}))
-    return HttpResponseRedirect(reverse('twistranet.views.home', ))
+    def prepare_view(self, *args, **kw):
+        super(CommunityDelete, self).prepare_view(*args, **kw)
+        self.redirect = reverse("twistranet_home")
+        name = self.community.text_headline
+        self.community.delete()
+        messages.info(
+            self.request, 
+            _("'%(name)s' community has been deleted." % {'name': name})
+        )
+        self.redirect = reverse("twistranet_home")
 
 
 
