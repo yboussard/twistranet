@@ -24,22 +24,6 @@ from twistranet.lib import roles, permissions, languages, utils
 MAX_HEADLINE_LENGTH = 140
 MAX_SUMMARY_LENGTH = 1024
 
-def get_twistable_category(object) :
-    """
-    Return the twistable category according to the kind of object it is.
-    XXX TODO: Make this a method of the Twistable class
-    """
-    from twistranet.models import Content, Account, Community, Resource
-    if issubclass(object.model_class, Content):
-        return 'content'
-    elif issubclass(object.model_class, Community):
-        return 'community'
-    elif issubclass(object.model_class, Account):
-        return 'account'
-    elif issubclass(object.model_class, Resource):
-        return 'resource'
-    raise NotImplementedError("Can't get twistable category for object %s" % object)
-
 
 class TwistableManager(models.Manager):
     """
@@ -257,6 +241,23 @@ class Twistable(_AbstractTwistable):
     _p_can_leave = models.IntegerField(default = 16, db_index = True)
     _p_can_create = models.IntegerField(default = 16, db_index = True)
 
+
+    def get_twistable_category(self) :
+        """
+        Return the twistable category according to the kind of object it is.
+        XXX TODO: Make this a method of the Twistable class
+        """
+        from twistranet.models import Content, Account, Community, Resource
+        if issubclass(self.model_class, Content):
+            return 'content'
+        elif issubclass(self.model_class, Community):
+            return 'community'
+        elif issubclass(self.model_class, Account):
+            return 'account'
+        elif issubclass(self.model_class, Resource):
+            return 'resource'
+        raise NotImplementedError("Can't get twistable category for object %s" % self)
+
     @models.permalink
     def get_absolute_url(self):
         """
@@ -265,7 +266,7 @@ class Twistable(_AbstractTwistable):
         XXX TODO: Don't use the 'object' accessor but use a twistable_category attribute in some way
         (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
         """
-        category = get_twistable_category(self)
+        category = self.get_twistable_category()
         viewbyslug = '%s_by_slug' % category
         viewbyid = '%s_by_id' % category
         if hasattr(self, 'slug') :
