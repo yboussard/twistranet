@@ -245,7 +245,6 @@ class Twistable(_AbstractTwistable):
     def get_twistable_category(self) :
         """
         Return the twistable category according to the kind of object it is.
-        XXX TODO: Make this a method of the Twistable class
         """
         from twistranet.models import Content, Account, Community, Resource
         if issubclass(self.model_class, Content):
@@ -261,10 +260,7 @@ class Twistable(_AbstractTwistable):
     @models.permalink
     def get_absolute_url(self):
         """
-        XXX TODO: Make this a little more MVC with @permalink decorator
-        See http://docs.djangoproject.com/en/dev/ref/models/instances/#get-absolute-url
-        XXX TODO: Don't use the 'object' accessor but use a twistable_category attribute in some way
-        (eg. twistable_category is one of 'Account', 'Content', 'Menu' or 'Resource')
+        return object absolute_url
         """
         category = self.get_twistable_category()
         viewbyslug = '%s_by_slug' % category

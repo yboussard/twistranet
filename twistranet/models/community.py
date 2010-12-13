@@ -191,7 +191,7 @@ class Community(Account):
         # Post join message
         notifier.joined(account, self)
         
-    def leave(self, account):
+    def leave(self, account=None):
         """
         Leave the community.
         Fails silently is account is not a member of the community.
