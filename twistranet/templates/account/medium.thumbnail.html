@@ -1,9 +1,12 @@
+{% load thumbnail %}
 <div class="thumbnail-account-part thumbnail-50-bottom">
-    <a href="{{ account.get_absolute_url }}" class="image-block image-block-50-50">
+      <a href="{{ account.get_absolute_url }}" class="image-block image-block-50-50">
+      {% thumbnail  account.get_picture "50x50" as thumb %}
           <img
               title="{{ account.text_headline|safe }}"
               alt="{{ account.text_headline|safe }}"
-              src="{% url twistranet.views.resource_by_account account.id 'picture' %}" />
+              src="{{ thumb.url }}" />
+      {% endthumbnail %}
       </a>
       <label class="thumbnail-account-legend">
         <a href="{{ account.get_absolute_url }}">

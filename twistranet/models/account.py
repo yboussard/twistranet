@@ -246,7 +246,13 @@ class Account(twistable.Twistable):
     @property
     def managed_communities(self):
         """The communities I'm a manager of"""
-        return self.communities.filter(targeted_network__is_manager = True)
+        return self.communities.filter(targeted_network__is_manager = True)   
+
+    @property
+    def get_picture(self):
+        """Return the picture file"""
+        if self.picture :
+            return self.picture.resource_file
 
 
 class AnonymousAccount(Account):
