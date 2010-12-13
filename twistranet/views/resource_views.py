@@ -31,7 +31,7 @@ def resource_by_slug(request, slug):
     XXX TODO: Make this more efficient?
     """
     resource = Resource.objects.get(slug = slug)
-    return resource_by_id(request, resource.id)
+    return _getResourceResponse(request, resource)
 
 @require_access
 def resource_by_alias_or_id(request, alias_or_id):

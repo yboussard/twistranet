@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX, 'twistranet.views.resource_by_id', name='resource_by_slug'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX, 'twistranet.views.resource_by_slug', name='resource_by_slug'),
     (r'^resource/new$',                         'twistranet.views.create_resource'),
     (r'^resource/(\w+)$',                       'twistranet.views.resource_by_alias_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_account'),    # Fetch by account pty
