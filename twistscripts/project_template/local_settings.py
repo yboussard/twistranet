@@ -20,5 +20,24 @@ DATABASES = {
 TWISTRANET_ACCOUNT_MEDIA_PATH = "%s/data/media" % (HERE, )
 TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't want sample data when bootstraping
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '*pzu469z6h)3mpkff#x&cdcj)6*918f6nfp7f@x2@049p2ydhz'
+SECRET_KEY = '%(SECRET_KEY)s'
+
+
+
+""" ### START -t OPTION
+
+THEME_NAME = "redbook"
+
+URL_BASE_PATH = HERE   
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    "%s/themes/%s" % (HERE, THEME_NAME, ),
+    "%s/templates" % (HERE, ),
+)
+
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/themes/%s/resources" % (HERE, THEME_NAME)
+
+ ### END -t OPTION """

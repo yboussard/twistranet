@@ -57,7 +57,11 @@ def create_project():
         data = f.read()
     with open(settings_path, "w") as f:
         secret_key = "%s%s%s" % (uuid4(), uuid4(), uuid4())
-        f.write(data.replace("%(SECRET_KEY)s", secret_key))
+        data = data.replace("%(SECRET_KEY)s", secret_key)
+        if options.copy_templates:
+            data = data.replace('""" ### START -t OPTION','')
+            data = data.replace(' ### END -t OPTION """', '') 
+        f.write(data)
 
     # Clean up pyc files.
     for (root, dirs, files) in os.walk(project_path, False):
