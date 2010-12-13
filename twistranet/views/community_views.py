@@ -183,7 +183,6 @@ class CommunityLeave(BaseObjectActionView):
     action_confirm = "Do you really want to leave this community?"
     action_reverse_url = "community_leave"
 
-    @classmethod
     def as_action(self, request_view):
         if not request_view.object.can_leave:
             return None
