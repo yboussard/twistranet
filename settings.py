@@ -157,6 +157,7 @@ INSTALLED_APPS = (
     'haystack',
     'piston',
     'tinymce',
+    'sorl.thumbnail',
     
     # TwistraNet core stuff
     'twistranet',
