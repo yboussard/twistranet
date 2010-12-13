@@ -2,12 +2,10 @@
 {% load i18n %}
 
 {% block content %}
-    {% if accounts %}
-        {% for account in accounts %}
-            {%  include "account/summary.part.html" %}      
-        {%  endfor %}
-    {% else %}
+    {% for account in accounts %}
+        {%  include "account/summary.part.html" %}      
+    {% empty %}
         <p>{% blocktrans %}No member in your network.{% endblocktrans %}</p>
-    {% endif %}
+    {%  endfor %}
 {% endblock %}
 
