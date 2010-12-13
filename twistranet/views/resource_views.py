@@ -4,18 +4,35 @@ from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.views.static import serve
+from django.http import Http404
+
 from twistranet.models import *
 from twistranet.forms.resource_forms import ResourceForm
 from twistranet.lib.decorators import require_access
+
+from twistorage.storage import Twistorage
 
 def _getResourceResponse(request, resource):
     """
     Return the proper HTTP stream for a resource object
     """
-    return HttpResponse(
-        resource.get(),
-        content_type = resource.mimetype,
-        )
+    # Determinate the appropriate rendering scheme: file or URL
+    if resource.resource_url:
+        raise NotImplementedError("We yet have to implement resource URLs")
+    
+    # Resource file: get storage and check if path exists
+    elif resource.resource_file:
+        path = resource.resource_file.name      # XXX TODO: Handle subdirectories somehow here
+        storage = Twistorage()
+        if not storage.exists(path):
+            raise Http404
+    
+        # Return the underlying file
+        return serve(request, path, document_root = storage.location, show_indexes = False)
+        
+    else:
+        raise ValueError("Invalid resource: %s" % resource)
 
 @require_access
 def resource_by_id(request, resource_id):

@@ -5,7 +5,6 @@ from twistable import Twistable
 from account import Account, AnonymousAccount
 from content import Content
 from community import Community
-from resourcemanager import ResourceManager, ReadOnlyFilesystemResourceManager
 from resource import Resource
 
 # Higher level stuff

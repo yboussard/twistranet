@@ -40,6 +40,6 @@ class ResourcesTest(TestCase):
         """
         # Get the first public resource
         r = Resource.objects.all()[0]
-        self.failUnless(r.get())
+        self.failUnless(r.resource_file)
 
 

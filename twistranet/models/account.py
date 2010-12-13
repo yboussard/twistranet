@@ -154,7 +154,13 @@ class Account(twistable.Twistable):
         Return true if authenticated user has been granted the given permission on obj.
         """
         # Check roles, strongest first to optimize caching.
-        p_template = obj.model_class.permission_templates.get(obj.permissions)
+        try:
+            p_template = obj.model_class.permission_templates.get(obj.permissions)
+        except KeyError:
+            # XXX Perm template is invalid or incomplete... Should do something here...
+            # But if we're on the system account, let's pass
+            if issubclass(self.model_class, SystemAccount):
+                return True
         if self.has_role(p_template[permission], obj):
             return True
         

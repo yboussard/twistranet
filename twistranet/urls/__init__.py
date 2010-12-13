@@ -51,9 +51,10 @@ urlpatterns = patterns('',
     url(r'^community/new$', AsView(CommunityCreate), name = "community_create", ),
     url(r'^community/(\d+)/delete$', AsView(CommunityDelete), name = "community_delete", ),
 
-    # Search engine (Haystack)
+    # Additional inclusions for extensions, etc
     (r'^search/',                               include('twistranet.urls.search')),
     (r'^static/',                               include('twistranet.urls.static')),
+    (r'^download/',                             include('twistorage.urls')),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),

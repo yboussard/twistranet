@@ -5,13 +5,18 @@ plus some tools to check and repair your DB.
 See doc/DESIGN.txt for caveats about database
 """
 import traceback
+import os
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
+from django.core.files import File
+from django.core.files.base import ContentFile
 
 from twistranet.models import *
 from twistranet.lib import permissions
+
+from twistorage.storage import Twistorage
 
 import settings
 
@@ -35,34 +40,6 @@ def repair():
         if not admin_community in user.communities:
             admin_community.join(user, is_manager = True)
 
-    # # All user accounts must (explicitly) belong to the global community.
-    # # XXX There should be a more efficient way to do this ;)
-    # global_ = Community.objects.global_
-    # if UserAccount.objects.count() <> global_.members.count():
-    #     # print "All accounts are not in the global comm. We manually add them"
-    #     for account in UserAccount.objects.get_query_set():
-    #         if global_ not in account.communities:
-    #             # print "Force user %s to join global" % account
-    #             global_.join(account)
-    #             
-    # # XXX ULTRA ULTRA UGLY AND TEMPORARY: Enforce security and cache
-    # for content in Content.objects.get_query_set():
-    #     content.object.save()
-    #     # try:
-    #     #     _permissionmapping._ContentPermissionMapping.objects._applyPermissionsTemplate(content.object)
-    #     # except ValidationError:
-    #     #     print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-    #     #     traceback.print_exc()
-    # for account in Account.objects.get_query_set():
-    #     try:
-    #         _permissionmapping._AccountPermissionMapping.objects._applyPermissionsTemplate(account.object)
-    #     except ValidationError:
-    #         print "UNABLE TO SET SECURITY ON AN OBJECT. YOU MAY HAVE TO DELETE IT FROM THE SYSTEM ACCOUNT!"
-    #         traceback.print_exc()
-    #             
-    # # XXX TODO: Check if approved relations are symetrical
-
-
 
 def bootstrap():
     """
@@ -77,18 +54,38 @@ def bootstrap():
     except:
         # Default fixture probably not installed yet. Don't do anything yet.
         print "DatabaseError while bootstraping. Your tables are probably not created yet."
-        # traceback.print_exc()
+        traceback.print_exc()
         return
     
-    # Create Legacy Resource Manager if doesn't exist.
-    # If one exists it must be attach to no community.
-    # We save back the __account__ system object to ensure proper resource loading
-    try:
-        legacy_rm = ReadOnlyFilesystemResourceManager.objects.get()
-    except ObjectDoesNotExist:
-        legacy_rm = ReadOnlyFilesystemResourceManager(name = "Default TwistraNet resources")
-        legacy_rm.save()
-    legacy_rm.loadAll(with_slug = True)
+    # Create default resources by associating them to the SystemAccount.
+    # XXX TODO: Make this work with subdirs
+    for root, dirs, files in os.walk(settings.TWISTRANET_DEFAULT_RESOURCES_DIR):
+        for fname in files:
+            slug = os.path.splitext(os.path.split(fname)[1])[0]
+            objects = Resource.objects.filter(slug = slug)
+            if objects:
+                if len(objects) > 1:
+                    raise IntegrityError("More than one resource with '%s' slug" % slug)
+                r = objects[0]
+            else:
+                r = Resource()
+
+            # Copy file to its actual location with the storage API
+            storage = Twistorage()
+            source_fn = os.path.join(root, fname)
+            target_fn = os.path.join(__account__.slug, fname)
+            # f = File(open(source_fn, "rb"))
+            # storage.save(target_fn, f)
+            # f.close()
+
+            # Set pties and save
+            # target_fn = os.path.join(storage.location, target_fn)
+            r.resource_file = File(open(source_fn, "rb"), fname)
+            r.slug = slug
+            r.save()
+        break   # XXX We don't handle subdirs yet.
+
+    # Set SystemAccount picture (which is a way to check if things are working properly).
     __account__.picture = Resource.objects.get(slug = "default_tn_picture")
     __account__.save()
         
@@ -144,6 +141,7 @@ def bootstrap():
     # Repair permissions
     repair()
     
+
 def check_consistancy():
     """
     Check DB consistancy.
