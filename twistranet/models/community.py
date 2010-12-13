@@ -201,6 +201,8 @@ class Community(Account):
                 raise PermissionDenied("You're not allowed to exclude somebody from this community.")
             else:
                 raise PermissionDenied("You're not allowed to leave this community")
+        if not account:
+            account = Account.objects._getAuthenticatedAccount()               
         
         Network.objects.__booster__.filter(client__id = self.id, target__id = account.id).delete()
         Network.objects.__booster__.filter(target__id = self.id, client__id = account.id).delete()
