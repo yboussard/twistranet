@@ -511,7 +511,6 @@ li.tn-box {
 }
 
 .tn-box h2,
-.tn-box h3,
 .tn-box h4 {
   margin: 0;
 }
@@ -526,11 +525,12 @@ li.tn-box {
   color:white;
   padding:2px 5px;
   font-size: 11px;
+  margin-top: 10px;
 }
 
 .tn-box-content {
   background-color: #f9f9f9;
-  padding: 10px 10px 15px;
+  padding: 10px 10px 5px;
   clear: both; 
 }
 
