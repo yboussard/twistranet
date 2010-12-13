@@ -34,6 +34,7 @@ setup(name='Twistranet',
           'django-piston',  
           'django-haystack',
           'django-tinymce',
+          'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
