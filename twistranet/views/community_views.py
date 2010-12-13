@@ -174,7 +174,7 @@ class CommunityJoin(BaseObjectActionView):
             # XXX Should send a message to community managers for approval
             raise NotImplementedError("We should implement approval here!")
         self.community.join()
-        messages.info(request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
+        messages.info(self.request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
         self.redirect = self.community.get_absolute_url()
 
 class CommunityLeave(BaseObjectActionView):
@@ -195,7 +195,7 @@ class CommunityLeave(BaseObjectActionView):
         if not self.community.can_leave:
             raise NotImplementedError("Should return permission denied!")
         self.community.leave()
-        messages.info(request, _("You've left %(name)s." % {'name': name}))
+        messages.info(self.request, _("You've left %(name)s." % {'name': name}))
         self.redirect = self.community.get_absolute_url()
 
 
