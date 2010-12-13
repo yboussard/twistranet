@@ -2,12 +2,10 @@
 {% load i18n %}
 
 {% block content %}
-    {% if communities %}
-        {% for account in communities %}
-            {%include "community/summary.part.html" %}      
-        {% endfor %}
-    {% else %}
-        <p>{% blocktrans %}No community available on your system.{% endblocktrans %}</p>
-    {% endif %}
+    {% for account in communities %}
+        {%include "community/summary.part.html" %}   
+    {% empty %}
+        <p>{% blocktrans %}No community available on your system.{% endblocktrans %}</p>     
+    {% endfor %}
 {% endblock %}
 
