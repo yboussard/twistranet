@@ -232,7 +232,7 @@ class BaseIndividualView(BaseView):
             setattr(self, model_name, self.object)
             self.template_variables = self.template_variables + ["form", ]
             if self.request.method == 'POST': # If the form has been submitted...
-                self.form = form_class(self.request.POST, instance = self.object)
+                self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
                 if self.form.is_valid(): # All validation rules pass
                     self.object = self.form.save()
                     raise MustRedirect(self.object.get_absolute_url())

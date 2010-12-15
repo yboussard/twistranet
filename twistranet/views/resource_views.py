@@ -1,3 +1,11 @@
+import time
+import mimetypes
+import os
+import posixpath
+import re
+import stat
+import urllib
+
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
@@ -6,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.views.static import serve
 from django.http import Http404
+from django.utils.http import http_date
 
 from twistranet.models import *
 from twistranet.forms.resource_forms import ResourceForm
@@ -13,9 +22,68 @@ from twistranet.lib.decorators import require_access
 
 from twistorage.storage import Twistorage
 
-def _getResourceResponse(request, resource):
+
+def serve(request, path, document_root=None, show_indexes=False):
+    """
+    Adapted from django.views.static to handle the creation/modification date of the resource's publisher
+    instead of only the file's value.
+    
+    Serve static files below a given point in the directory structure.
+
+    To use, put a URL pattern such as::
+
+        (r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root' : '/path/to/my/files/'})
+
+    in your URLconf. You must provide the ``document_root`` param. You may
+    also set ``show_indexes`` to ``True`` if you'd like to serve a basic index
+    of the directory.  This index view will use the template hardcoded below,
+    but if you'd like to override it, you can create a template called
+    ``static/directory_index.html``.
+    """
+
+    # Clean up given path to only allow serving files below document_root.
+    path = posixpath.normpath(urllib.unquote(path))
+    path = path.lstrip('/')
+    newpath = ''
+    for part in path.split('/'):
+        if not part:
+            # Strip empty path components.
+            continue
+        drive, part = os.path.splitdrive(part)
+        head, part = os.path.split(part)
+        if part in (os.curdir, os.pardir):
+            # Strip '.' and '..' in path.
+            continue
+        newpath = os.path.join(newpath, part).replace('\\', '/')
+    if newpath and path != newpath:
+        return HttpResponseRedirect(newpath)
+    fullpath = os.path.join(document_root, newpath)
+    if os.path.isdir(fullpath):
+        # if show_indexes:
+        #     return directory_index(newpath, fullpath)
+        raise Http404("Directory indexes are not allowed here.")
+    if not os.path.exists(fullpath):
+        raise Http404('"%s" does not exist' % fullpath)
+    
+    # Respect the If-Modified-Since header.
+    statobj = os.stat(fullpath)
+    mimetype = mimetypes.guess_type(fullpath)[0] or 'application/octet-stream'
+    # XXX TODO: Handle this correctly!!! Disabled to avoid using file mod. time instead of obj mod. time
+    # if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
+    #                           statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
+    #     return HttpResponseNotModified(mimetype=mimetype)
+    contents = open(fullpath, 'rb').read()
+    response = HttpResponse(contents, mimetype=mimetype)
+    response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
+    response["Content-Length"] = len(contents)
+    return response
+
+
+
+def _getResourceResponse(request, resource, last_modified = None):
     """
     Return the proper HTTP stream for a resource object
+    XXX TODO: Handle the last_modified parameter
     """
     # Determinate the appropriate rendering scheme: file or URL
     if resource.resource_url:
@@ -27,12 +95,16 @@ def _getResourceResponse(request, resource):
         storage = Twistorage()
         if not storage.exists(path):
             raise Http404
-    
-        # Return the underlying file
-        return serve(request, path, document_root = storage.location, show_indexes = False)
-        
+
+    # Neither a file nor a URL? Then it's probably invalid.
+    # Maybe we should implement an "alias" type of resource?
     else:
         raise ValueError("Invalid resource: %s" % resource)
+
+    # Return the underlying file, adapt the Last-Modified header as necessary
+    return serve(request, path, document_root = storage.location, show_indexes = False)
+    
+
 
 @require_access
 def resource_by_id(request, resource_id):

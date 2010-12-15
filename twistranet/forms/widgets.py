@@ -1,71 +1,112 @@
+import os
+
 from django import forms
 from django.db import models
-from django.forms.widgets import Select, Widget
 from django.forms.util import flatatt
 from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
-
-__all__ = ('PermissionsWidget',)
+from django.utils.translation import ugettext as _
 
 N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
 
-class MediaResourceWidget(Widget):
-    """
-    This is a powerful widget used to handle media resources.
-    One can either select one of its available resources,
-    or upload a new file on-the-fly.
+
+class ResourceWidget(forms.MultiWidget):
+    query_set = None
     
-    Several cases here:
-    - If there are less than, say, 25 available media resources,
-        just display them without further question.
-    - If there are more, display a bit less but provide a little
-        search form to find the other ones.
-    - In any case, display a form upload widget.
-    """
-    needs_multipart_form = True
-    
-    class Media:
-        js = (
-            'js/tiny_mce/tiny_mce.js',
-            'js/tiny_mce/textareas.js',
-        )
-    
+    def __init__(self, initial = None, **kwargs):
+        widgets = (forms.HiddenInput(), forms.FileInput())
+        super(ResourceWidget, self).__init__(widgets)
+
+    def decompress(self, value):
+        """
+        Handle choices generation for the reference widget.
+        """
+        return [value, None]
+
     def render(self, name, value, attrs=None):
         """
         Returns this Widget rendered as HTML, as a Unicode string.
-
-        The 'value' given is not guaranteed to be valid input, so subclass
-        implementations should program defensively.
+    
+        The 'value' given is just the resource number or None if not given.
+        
+        Basically, this widget has 3 zones:
+        
+        - The current resource, if there is already one.
+        - The file upload field
+        - The resource browser.
         """
         from twistranet.models.resource import Resource
-        images = Resource.objects.query_images()[:25]
+        
+        # Beginning of the super-render() code
+        if self.is_localized:
+            for widget in self.widgets:
+                widget.is_localized = self.is_localized
+        # value is a list of values, each corresponding to a widget
+        # in self.widgets.
+        if not isinstance(value, list):
+            value = self.decompress(value)
+        output = []
+        final_attrs = self.build_attrs(attrs)
+        id_ = final_attrs.get('id', None)
+        output.append(u"""<div class="resource-widget">""")
+        
+        # Render the current resource widget
+        if value[0]:
+            try:
+                image = Resource.objects.get(id = value[0])
+            except Resource.DoesNotExist:
+                raise       # XXX TODO: Handle the case of a deleted resource
+            output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
+            param_dict = {
+                "thumbnail_src":    image.get_absolute_url(),
+                "value":            image.id,
+            }
+            output.append(u"""<img src="%(thumbnail_src)s" class="resource-image" width="60" height="60"
+                >
+                """ % param_dict)
+            
+        # Render the File widget and the hidden resource ForeignKey
+        output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
+        for i, widget in enumerate(self.widgets):
+            try:
+                widget_value = value[i]
+            except IndexError:
+                widget_value = None
+            if id_:
+                final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
+            output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
+            
+        # By now we just display resources from our own account.
+        # Tomorrow, we should display some kind of album browser.
+        output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+        images = self.query_set.all()[:25]
         if len(images) >= N_DISPLAYED_ITEMS:
             raise NotImplementedError("Should implement image searching & so on")
-        ret = u"""
-            <div class="mediaresource-widget">
-                <div class="mediaresource-help">Select a picture:</div>
-            """
         for image in images:
             param_dict = {
-                "thumbnail_src": image.get_absolute_url(),
+                "thumbnail_src":    image.get_absolute_url(),
+                "hidden_id":        'id_%s_0' % name,
+                "value":            image.id,
+                "selected":         (image.id == int(value[0])) and "resource-selected" or "",
             }
-            ret += u"""
-            <img src="%(thumbnail_src)s" width="25" height="25"
+            output.append(u"""
+            <img src="%(thumbnail_src)s" class="resource-image %(selected)s" width="60" height="60"
+            onclick="javascript:document.getElementById('%(hidden_id)s').value = '%(value)s'"
             >
-            """ % param_dict
-        ret += u"""
-            <div class="mediaresource-help">Or upload a file:</div>
-            </div>
-            """
-        # Return the computed string
-        return mark_safe(ret)
+            """ % param_dict)
     
+        # Return the computed string
+        output.append("""</div>""") # (close the resource-widget div)
+
+
+        return mark_safe(self.format_output(output))
+
     
 
-class PermissionsWidget(Select):
+class PermissionsWidget(forms.Select):
     def __init__(self, attrs=None):
-        super(Select, self).__init__(attrs)
+        super(PermissionsWidget, self).__init__(attrs)
         self.choices = ()
 
     def render(self, name, value, attrs=None, ):

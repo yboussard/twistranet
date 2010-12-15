@@ -26,7 +26,7 @@ class QuickDocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.models.content_types import Document
         model = Document
-        fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
+        fields = ('title', 'description', 'resources', ) + BaseRegularForm.Meta.fields
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
             'text':         TinyMCE(attrs = {'rows': 20, 'cols': 100}),

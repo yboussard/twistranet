@@ -4,7 +4,7 @@ from django.forms import widgets
 from django.forms import fields
 
 from twistranet.lib import permissions
-from twistranet.forms.widgets import MediaResourceWidget
+from twistranet.forms.widgets import ResourceWidget
 
 class CommunityForm(forms.ModelForm):
     """
@@ -23,7 +23,7 @@ class CommunityForm(forms.ModelForm):
         # fields = ('text', 'permissions', 'language', )
         widgets = {
             'permissions':      widgets.Select(),
-            # "picture":          MediaResourceWidget(),
+            "picture":          ResourceWidget(),
         }
 
 

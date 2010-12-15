@@ -9,6 +9,8 @@ import twistable
 from resource import Resource
 from twistranet.lib import permissions, roles, languages, slugify
 
+from twistranet.forms import ResourceField
+
 # Create your models here.
 class Account(twistable.Twistable):
     """
@@ -20,7 +22,7 @@ class Account(twistable.Twistable):
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = "default_profile_picture"
-    picture = models.ForeignKey("Resource")        # Ok, this is odd but it's because of the bootstrap.
+    picture = ResourceField("Resource")        # Ok, this is odd but it's because of the bootstrap.
                                                     # XXX We should avoid the 'null' attribute someday. Not easy 'cause of the SystemAccount bootstraping...
 
     # Security models available for the user

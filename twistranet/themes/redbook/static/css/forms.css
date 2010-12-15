@@ -142,3 +142,21 @@ ul.errorlist li {
    padding: 5px 0 10px;
    margin: 10px 0 0 0;
 }
+
+
+/* Our great resource widget */
+
+.resource-widget {
+    margin-left: 150px;
+}
+
+.resource-image {
+    padding: 2px;
+}
+
+.resource-selected {
+    background: blue;
+}
+
+
+

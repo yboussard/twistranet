@@ -5,7 +5,9 @@
     {% if community %}
         <form action="{{ path }}"
               method="post"
-              class="edit-form enableAutoFocus">
+              class="edit-form enableAutoFocus"
+              enctype="multipart/form-data"
+              >
     {% else %}
         <form action="{{ path }}" 
               method="post"
