@@ -44,7 +44,7 @@ def edit_media(request, resource_id = None):
         if form.is_valid(): # All validation rules pass
             print "validation rules applied"
             media = account.media_resource_manager.uploadResource(request.FILES['file'])
-            return HttpResponseRedirect(reverse(' twistranet.twistranet.views.view_media_library', args = (account.id,)))
+            return HttpResponseRedirect(reverse('twistranet.twistranet.views.view_media_library', args = (account.id,)))
     else:
         if media:
             raise NotImplementedError

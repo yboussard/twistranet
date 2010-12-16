@@ -192,7 +192,7 @@ def edit_resource(request, resource_id = None):
             form = ResourceForm(request.POST, request.FILES)
 
         if form.is_valid():
-            return HttpResponseRedirect(reverse(' twistranet.twistranet.views.resource_by_id', args = (resource.id,)))
+            return HttpResponseRedirect(reverse('twistranet.twistranet.views.resource_by_id', args = (resource.id,)))
     else:
         if resource:
             form = ResourceForm(instance = resource.object)

@@ -22,21 +22,21 @@ urlpatterns = patterns('',
     url(r'^pending_network/$', AsView(PendingNetworkView), name = 'account_pending_network'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    url(r'^resource/(\d+)$', ' twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX, ' twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
-    (r'^resource/new$',                         ' twistranet.twistranet.views.create_resource'),
-    (r'^resource/(\w+)$',                       ' twistranet.twistranet.views.resource_by_alias_or_id'),
-    (r'^account/(\d+)/resource/(\w+)$',         ' twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
-    (r'^content/(\d+)/resource/(\w+)$',         ' twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty
+    url(r'^resource/(\d+)$', 'twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX, 'twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
+    (r'^resource/new$',                         'twistranet.twistranet.views.create_resource'),
+    (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_alias_or_id'),
+    (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
+    (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty
     
     # Thumbnail cache links
-    url(r'\Wcache/([\w\./]+)$',                ' twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
-    url(r'^cache/([\w\./]+)$',                ' twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'\Wcache/([\w\./]+)$',                'twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'^cache/([\w\./]+)$',                'twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
     
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
-    (r'^media_resource/new$',                   ' twistranet.twistranet.views.create_media'),
-    (r'^media_resource/(\d+)/edit$',            ' twistranet.twistranet.views.edit_media'),
-    (r'^media_library/(\d+)$',                  ' twistranet.twistranet.views.view_media_library'),
+    (r'^media_resource/new$',                   'twistranet.twistranet.views.create_media'),
+    (r'^media_resource/(\d+)/edit$',            'twistranet.twistranet.views.edit_media'),
+    (r'^media_library/(\d+)$',                  'twistranet.twistranet.views.view_media_library'),
     
     # Content links
     url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name='content_by_id'),
@@ -62,7 +62,7 @@ urlpatterns = patterns('',
 
     # Login / Logout / Register stuff
     (r'^login/$', login),
-    (r'^logout/$',                              ' twistranet.twistranet.views.account_logout'),  
+    (r'^logout/$',                              'twistranet.twistranet.views.account_logout'),  
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
