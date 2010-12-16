@@ -1,4 +1,7 @@
 # Django settings for TwistraNet project.
+import os.path
+import sys
+import logging
 
 # Twistranet default settings.
 # The following section is the most likely to be changed.
@@ -14,10 +17,9 @@ TWISTRANET_CONTENT_PER_PAGE = 25
 TWISTRANET_COMMUNITIES_PER_PAGE = 25
 TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
 
+TWISTRANET_LOG_LEVEL = logging.WARNING
 
 # End of the conveniently-changeable section.
-import os.path
-import sys
 
 TWISTRANET_PACKAGE = __import__('twistranet')
 HERE = os.path.dirname(os.path.abspath(TWISTRANET_PACKAGE.__file__))

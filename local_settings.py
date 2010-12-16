@@ -1,4 +1,5 @@
-import os.path            
+import os.path
+import logging
 HERE = os.path.dirname(__file__)
 
 # local settings
@@ -6,6 +7,7 @@ HERE = os.path.dirname(__file__)
 DEBUG = True
 TEMPLATE_DEBUG = True
 TEMPLATE_STRING_IF_INVALID = "BOUH"
+TWISTRANET_LOG_LEVEL = logging.DEBUG
 
 DATABASES = {
     'default': {
