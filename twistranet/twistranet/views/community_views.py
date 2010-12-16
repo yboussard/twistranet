@@ -38,7 +38,7 @@ class CommunityView(UserAccountView):
     model_lookup = Community
         
     def get_title(self,):
-        return self.community.text_headline
+        return self.community.title
         
     def get_actions(self,):
         """
@@ -101,7 +101,7 @@ class AccountCommunitiesView(UserAccountView):
     def get_title(self,):
         if self.account.id == Account.objects._getAuthenticatedAccount().id:
             return _("My communities")
-        return _("%(name)s's communities" % {'name': self.account.text_headline} )
+        return _("%(name)s's communities" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
         super(AccountCommunitiesView, self).prepare_view(*args, **kw)
@@ -137,7 +137,7 @@ class CommunityEdit(CommunityView):
         """
         if not self.object:
             return _("Create a community")
-        return _("Edit %(name)s" % {'name' : self.object.text_headline })
+        return _("Edit %(name)s" % {'name' : self.object.title })
 
 
 class CommunityCreate(CommunityEdit):
@@ -169,7 +169,7 @@ class CommunityJoin(BaseObjectActionView):
     
     def prepare_view(self, value):
         super(CommunityJoin, self).prepare_view(value)
-        name = self.community.text_headline
+        name = self.community.title
         if not self.community.can_join:
             # XXX Should send a message to community managers for approval
             raise NotImplementedError("We should implement approval here!")
@@ -190,7 +190,7 @@ class CommunityLeave(BaseObjectActionView):
 
     def prepare_view(self, value):
         super(CommunityLeave, self).prepare_view(value)
-        name = self.community.text_headline
+        name = self.community.title
         if not self.community.can_leave:
             raise NotImplementedError("Should return permission denied!")
         self.community.leave()
@@ -215,7 +215,7 @@ class CommunityDelete(BaseObjectActionView):
     def prepare_view(self, *args, **kw):
         super(CommunityDelete, self).prepare_view(*args, **kw)
         self.redirect = reverse("twistranet_home")
-        name = self.community.text_headline
+        name = self.community.title
         self.community.delete()
         messages.info(
             self.request, 

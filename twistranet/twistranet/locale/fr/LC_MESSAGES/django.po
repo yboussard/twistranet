@@ -105,8 +105,8 @@ msgid "Join this community"
 msgstr "Rejoindre cette communauté"
 
 #: .\templates\community\actions.box.html.py:35
-msgid "Would you really want to join the community '%(text_headline)s' ?"
-msgstr "Voulez-vous vraiment rejoindre la communauté '%(text_headline)s' ?"
+msgid "Would you really want to join the community '%(title)s' ?"
+msgstr "Voulez-vous vraiment rejoindre la communauté '%(title)s' ?"
 
 #: .\templates\community\actions.box.html.py:45
 #: .\templates\community\actions.box.html.py:46
@@ -114,8 +114,8 @@ msgid "Leave this community"
 msgstr "Quitter cette communauté"
 
 #: .\templates\community\actions.box.html.py:49
-msgid "Would you really want to leave the community '%(text_headline)s' ?"
-msgstr "Voulez-vous vraiment quitter la communauté '%(text_headline)s' ?"
+msgid "Would you really want to leave the community '%(title)s' ?"
+msgstr "Voulez-vous vraiment quitter la communauté '%(title)s' ?"
 
 #: .\templates\community\community_forms.part.html.py:23
 #: .\templates\content\content_forms.part.html.py:22
@@ -220,8 +220,8 @@ msgid "New %(content_type)s"
 msgstr "Nouveau %(content_type)s"
 
 #: .\templates\content\edit.html.py:17
-msgid "Edit \"%(headline)s\""
-msgstr "Modifier %(headline)s"
+msgid "Edit \"%(title)s\""
+msgstr "Modifier %(title)s"
 
 #: .\templates\content\metadata.box.html.py:7
 msgid "Author:"
@@ -369,8 +369,8 @@ msgstr "La communauté %(name)s a été supprimée"
 msgid "The %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
 
-#~ msgid "%(text_headline)s's Profile"
-#~ msgstr "Profil de %(text_headline)s"
+#~ msgid "%(title)s's Profile"
+#~ msgstr "Profil de %(title)s"
 
 #~ msgid "My files"
 #~ msgstr "Mes fichiers"

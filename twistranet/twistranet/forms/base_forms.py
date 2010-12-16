@@ -40,9 +40,9 @@ class BaseInlineForm(BaseForm):
         return self.Meta.model.__name__
 
     class Meta:
-        fields = ('text', 'permissions', 'language', )
+        fields = ('description', 'permissions', )
         widgets = {
-            'text':             widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+            'description':             widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }
         
 class BaseRegularForm(BaseForm):
@@ -54,7 +54,7 @@ class BaseRegularForm(BaseForm):
     allow_edition = True
         
     class Meta:
-        fields = ('text', 'permissions', 'language', )
+        fields = ('text', 'permissions', )
         widgets = {
             'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }

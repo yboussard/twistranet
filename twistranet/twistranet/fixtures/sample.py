@@ -53,7 +53,7 @@ FIXTURES = [
         StatusUpdate,
         logged_account = "admin",
         slug = "status1",
-        text = "This is a public status update",
+        description = "This is a public status update",
         permissions = "public",
     ),
     
@@ -61,7 +61,7 @@ FIXTURES = [
         StatusUpdate,
         logged_account = "admin",
         slug = "status2",
-        text = "This is a network status update",
+        description = "This is a network status update",
         permissions = "network",
     ),
     
@@ -69,7 +69,7 @@ FIXTURES = [
         StatusUpdate,
         logged_account = "B",
         slug = "status3",
-        text = "This is a network-only status update from B",
+        description = "This is a network-only status update from B",
         permissions = "network",
     ),
     
@@ -77,7 +77,7 @@ FIXTURES = [
         StatusUpdate,
         logged_account = "B",
         slug = "status4",
-        text = "This is a public status update from B",
+        description = "This is a public status update from B",
         permissions = "public",
     ),
     

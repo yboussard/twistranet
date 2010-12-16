@@ -325,11 +325,10 @@ class UserAccount(Account):
         
     def getDefaultOwner(self,):
         return SystemAccount.get()
-        return community.AdminCommunity.objects.get()
         
     def getDefaultPublisher(self,):
-        from twistranet.twistranet.models import community
-        return community.GlobalCommunity.objects.get()
+        from twistranet.twistranet.models import GlobalCommunity
+        return GlobalCommunity.objects.get()
 
     #                                                                                       #
     #                                   Network management                                  #

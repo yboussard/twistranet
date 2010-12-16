@@ -4,9 +4,9 @@
     {% include 'account/medium.thumbnail.alone.html' %}
     {% with account.translation as account %}
         <div class="entry">
-            <a class="author" href="{{ account.get_absolute_url }}">{{ account.text_headline }}</a>
+            <a class="author" href="{{ account.get_absolute_url }}">{{ account.title }}</a>
             <div class="summary-content">
-                {{ account.description|safe }}
+                {{ account.description|wiki }}
             </div>
             <div class="postmetadata">
                 <ul>

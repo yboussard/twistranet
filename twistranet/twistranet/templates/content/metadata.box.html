@@ -4,12 +4,16 @@
         <li>
             {% blocktrans %}Author:{% endblocktrans %}
             <a href="{{ content.owner.get_absolute_url }}">
-                {{ content.owner.text_headline|safe }}
+                {{ content.owner.title }}
             </a>
         </li>
         <li>
             {% blocktrans %}Created:{% endblocktrans %}
             {{ content.created_at }}
+        </li>
+        <li>
+            {% blocktrans %}Last updated:{% endblocktrans %}
+            {{ content.modified_at }}
         </li>
         <li>
             {% blocktrans %}Permissions:{% endblocktrans %}

@@ -2,14 +2,14 @@
 {# Generate a summary for 'notification' object #}
 <div class="post" id="post-{{content.id}}">
     <div class="entry notification">
-        {% if content.html_headline %}
+        {% if content.title %}
             <span class="headline">
-                {{ content.html_headline|safe }}
+                {{ content.title }}
             </span>
         {% endif %}
-        {% if content.html_summary %}
+        {% if content.description %}
             <div class="summary-content">
-                {{ content.html_summary|safe }}
+                {{ content.description }}
             </div>
         {% endif %}
         <span class="postmetadata">

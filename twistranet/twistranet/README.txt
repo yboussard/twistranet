@@ -14,7 +14,7 @@ Licence and copyright
 ---------------------
 
 TwistraNet is licenced under the GPL licence.
-(c)2010 NumeriCube
+(c)2010-2011 NumeriCube
 TwistraNet is a registered trademark.
 
 Credits

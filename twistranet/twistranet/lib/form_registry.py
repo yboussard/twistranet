@@ -1,5 +1,5 @@
-
 import pprint
+from twistranet.log import *
 
 class FormRegistryManager:
     """
@@ -88,10 +88,13 @@ class FormRegistryManager:
         account = Account.objects._getAuthenticatedAccount()
         ret = []
         if publisher.can_publish:
+            log.debug("can publish")
+            log.debug("registry: %s" % self._registry_)
             for m in self._registry_.values():
                 for f in m:
                     if f['allow_inline_creation']:
                         ret.append(f)
+                    log.debug(f)
                 
         # Else, no forms.
         return tuple(ret)

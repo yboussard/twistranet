@@ -31,7 +31,7 @@ class ContentView(BaseIndividualView):
     model_lookup = Content
         
     def get_title(self,):
-        return self.content.text_headline
+        return self.content.title
         
     def get_actions(self,):
         """
@@ -78,7 +78,7 @@ class ContentEdit(ContentView):
         """
         if not self.object:
             return _("New content")
-        return _("Edit %(name)s" % {'name' : self.object.text_headline })
+        return _("Edit %(name)s" % {'name' : self.object.title })
 
 
 class ContentCreate(ContentEdit):
@@ -103,7 +103,7 @@ class ContentDelete(BaseObjectActionView):
     def prepare_view(self, *args, **kw):
         super(ContentDelete, self).prepare_view(*args, **kw)
         self.redirect = self.content.publisher.get_absolute_url()
-        name = self.content.text_headline
+        name = self.content.title
         self.content.delete()
         messages.info(
             self.request, 

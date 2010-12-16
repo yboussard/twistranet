@@ -1,14 +1,15 @@
 {% load i18n %}
+{% load wiki %}
 {% if account %}
     <li id="account-profile-box" class="tn-box profile-box">
         {% include 'account/medium.thumbnail.alone.html' %}
       <h2 class="box-header">
         <a href="{{account.get_absolute_url}}">
-          {{ account.text_headline|safe }}
+          {{ account.title }}
         </a>
       </h2>
       <div class="discreet">
-        {{ account.html_summary|safe }}
+        {{ account.description|wiki }}
       </div>
       <div class="clear"><!-- --></div>
     </li>

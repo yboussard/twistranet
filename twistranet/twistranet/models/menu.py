@@ -81,14 +81,11 @@ class MenuItem(Twistable):
         Use this in your templates instead of title as some pre-processing occurs.
         """
         if self.title:
-            return self.translation.title
+            return self.title
         
         # We've got a target, return its title
         t = self.target.object
-        if isinstance(t, Content):
-            return t.text_headline
-        elif isinstance(t, Account):
-            return t.title
+        return t.title
                 
         # Uh oh, shouldn't reach there
         raise AssertionError("Shouldn't reach here with MenuItem %s" % self.id)

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html
 from account import Account
 from content import Content
-from twistranet.twistranet.lib import roles, permissions, languages
+from twistranet.twistranet.lib import roles, permissions
 
 class StatusUpdate(Content):
     """
@@ -14,7 +14,7 @@ class StatusUpdate(Content):
     """
     permission_templates = permissions.ephemeral_templates
     type_detail_view = None
-    text = models.TextField()       # The basic text of the status update.
+    # text = models.TextField()       # The basic text of the status update.
 
     class Meta:
         app_label = 'twistranet'
@@ -51,20 +51,20 @@ class Notification(Content):
     
     def __unicode__(self,):
         return u"Notification %d: %s" % (self.id, self.did_what)
-    
-    def preprocess_html_headline(self, text = None):
-        """
-        XXX TODO: Translate the sentence using gettext!
-        """
-        from django.core.urlresolvers import reverse
-        if self.on_who:
-            text = "@%s %s @%s" % (self.who.slug, self.did_what, self.on_who.slug)
-        elif self.on_what:
-            text = "@%s %s %s" % (self.who.slug, self.did_what, self.on_what.id)
-        else:
-            text = "@%s" % (self.who, )
-        return super(Notification, self).preprocess_html_headline(text)
-    
+    # 
+    # def preprocess_html_headline(self, text = None):
+    #     """
+    #     XXX TODO: Translate the sentence using gettext!
+    #     """
+    #     from django.core.urlresolvers import reverse
+    #     if self.on_who:
+    #         text = "@%s %s @%s" % (self.who.slug, self.did_what, self.on_who.slug)
+    #     elif self.on_what:
+    #         text = "@%s %s %s" % (self.who.slug, self.did_what, self.on_what.id)
+    #     else:
+    #         text = "@%s" % (self.who, )
+    #     return super(Notification, self).preprocess_html_headline(text)
+    # 
     class Meta:
         app_label = "twistranet"
         
@@ -79,39 +79,6 @@ class Document(Content):
         app_label = 'twistranet'
 
     text = models.TextField()
-
-    # def preprocess_html_headline(self,):
-    #     """
-    #     We overload this to store stripped text version in the text attribute.
-    #     We do this only if title is not defined at save-time.
-    #     """
-    #     headline = super(Document, self).preprocess_html_headline()
-    #     
-    #     # If title was deduced by the text, then 'consume' the first line / paragraph of the text
-    #     if not self.title.strip():
-    #         lines = [ l.strip() for l in self.text.split("\n") if l.strip() ]
-    #         print lines
-    #         if len(lines) >= 1:
-    #             self.title = self.preprocess_text_headline(headline)
-    #     
-    #     return headline
-    #     
-    # 
-    # def preprocess_html_summary(self,):
-    #     """
-    #     Same as regular summary but with our new field
-    #     """
-    #     summary = super(Document, self).preprocess_html_summary()
-    #     
-    #     # If title was deduced by the text, then 'consume' the first line / paragraph of the text
-    #     if not self.description.strip():
-    #         lines = [ l.strip() for l in self.text.split("\n") if l.strip() ]
-    #         if len(lines) >= 1:
-    #             self.text = "\n".join(lines[2:])
-    #             self.description = self.preprocess_text_summary(summary)
-    #     
-    #     return summary
-    #     
 
 
 # class Link(Content):

@@ -52,7 +52,7 @@ class UserAccountView(BaseWallView):
         self.n_network_members = self.account.network.count()
 
     def get_title(self,):
-        return _("%(name)s's profile" % {'name': self.account.text_headline} )  
+        return _("%(name)s's profile" % {'name': self.account.title} )  
 
 
 class HomepageView(UserAccountView):
@@ -117,7 +117,7 @@ class AccountNetworkView(UserAccountView):
     def get_title(self,):
         if self.account.id == Account.objects._getAuthenticatedAccount().id:
             return _("My network")
-        return _("%(name)s's network" % {'name': self.account.text_headline} )
+        return _("%(name)s's network" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
         super(AccountNetworkView, self).prepare_view(*args, **kw)
@@ -160,14 +160,14 @@ class AddToNetworkView(BaseObjectActionView):
             return {
                 "label": _("Accept in my network"),
                 "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
-                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': request_view.useraccount.text_headline}),
+                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': request_view.useraccount.title}),
                 "main": True,
             }
         if request_view.useraccount.can_add_to_my_network:
             return {
                 "label": _("Add to my network"),
                 "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
-                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': request_view.useraccount.text_headline}),
+                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': request_view.useraccount.title}),
                 "main": True,
             }
     
@@ -175,7 +175,7 @@ class AddToNetworkView(BaseObjectActionView):
         super(AddToNetworkView, self).prepare_view(*args, **kw)
         self.redirect = self.useraccount.get_absolute_url()
         self.useraccount.add_to_my_network()
-        name = self.useraccount.text_headline
+        name = self.useraccount.title
         if self.useraccount in self.auth.network:
             messages.info(
                 self.request, 
@@ -205,7 +205,7 @@ class RemoveFromNetworkView(BaseObjectActionView):
             return {
                 "label": _("Remove from my network"),
                 "url": reverse('remove_from_my_network', args = (request_view.account.id, ), ),
-                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': request_view.account.text_headline}),
+                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': request_view.account.title}),
             }        
         
 
@@ -214,7 +214,7 @@ class RemoveFromNetworkView(BaseObjectActionView):
         self.redirect = self.useraccount.get_absolute_url()
         was_in_my_network = self.useraccount in self.auth.network
         self.useraccount.remove_from_my_network()
-        name = self.useraccount.text_headline
+        name = self.useraccount.title
         if was_in_my_network:
             messages.info(
                 self.request, 

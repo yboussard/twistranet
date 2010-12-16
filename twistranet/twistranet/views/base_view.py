@@ -9,7 +9,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from twistranet.twistranet.lib import form_registry
-
+from twistranet.log import *
 
 class MustRedirect(Exception):
     """
@@ -286,11 +286,7 @@ class BaseWallView(BaseIndividualView):
 
     too_few_content = False
 
-    # XXX For some obscure reason, I've got a dirty django error when trying to select_related content_types.
-    # I have to find how and why... but perhaps subtypes are not needed in account page, thanks to the xxx_summary/xxx_headline fields?
     select_related_summary_fields = (
-        # "notification",
-        # "statusupdate",
         "owner",
         "publisher",
     )
@@ -312,6 +308,7 @@ class BaseWallView(BaseIndividualView):
         # Wall edition forms if user has the right to write on it
         # This return a list of forms as each content type can define its own tab+form
         form_classes = form_registry.getInlineForms(publisher)
+        log.debug(form_classes)
         forms = []
         for form_class in [ k['form_class'] for k in form_classes ]:
             # Initial data processing
@@ -346,6 +343,7 @@ class BaseWallView(BaseIndividualView):
                     forms.append(form)
 
         # Return the forms
+        log.debug(forms)
         return forms
     
     def get_recent_content_list(self):

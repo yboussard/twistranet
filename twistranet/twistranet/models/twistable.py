@@ -10,7 +10,7 @@ This abstract class provides a lot of little tricks to handle view/model articul
 such as the slug management, prepares translation management and so on.
 """
 
-import inspect, pprint, pickle
+import inspect, logging, traceback
 from django.db import models
 from django.db.models import Q, loading
 from django.contrib.auth.models import User
@@ -19,11 +19,8 @@ from django.utils.datastructures import SortedDict
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
-from twistranet.twistranet.lib import roles, permissions, languages, utils
-
-MAX_HEADLINE_LENGTH = 140
-MAX_SUMMARY_LENGTH = 1024
-
+from twistranet.twistranet.lib import roles, permissions
+from twistranet.log import *
 
 class TwistableManager(models.Manager):
     """
@@ -61,7 +58,9 @@ class TwistableManager(models.Manager):
             if auth.is_admin:
                 return base_query_set
         except:
-            print "DB error while checking AdminCommunity"
+            log.debug("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap!")
+            if log.level < logging.INFO:
+                traceback.print_exc()
             return base_query_set
 
         # Regular check. Works for anonymous as well...
@@ -177,42 +176,16 @@ class Twistable(_AbstractTwistable):
     
     # Text representation of this content
     # Usually a twistable is represented that way:
-    # (pict) HEADLINE
-    # Summary summary summary [Read more]
-    # We store summary and headline in DB for performance and searchability reasons.
-    # Heavy @-querying will be done at save time, not at display-time.
-    # Both of them can contain links and minimal HTML formating.
-    # Never let your users edit those fields directly, as they'll be flagged as html-safe!
-    # If you want to change behaviour of those fields, override the preprocess_xxx methods.
-    html_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
-    html_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
-    text_headline = models.CharField(max_length = 140)          # The computed headline (a-little-bit-more-than-a-title) for this content.
-    text_summary = models.CharField(max_length = 1024)          # The computed summary for this content.
-    
-    # List of field name / generation method name. This is very useful when translating content.
-    # See twistrans.lib for more information
-    # XXX TODO: Document and/or rename that?
-    # auto_values = (
-    #     ("html_headline", "preprocess_html_headline", ),
-    #     ("text_headline", "preprocess_text_headline", ),
-    #     ("html_summary", "preprocess_html_summary", ),
-    #     ("text_summary", "preprocess_text_summary", ),
-    # )
-    
-    # Basic metadata shared by all Twist objects.
-    # Title is mandatory but kept blank to allow special treatments.
-    title = models.CharField(max_length = 255, blank = True)
-    description = models.TextField(blank = True)
-    created_at = models.DateTimeField(auto_now = True, db_index = True)
-    language = models.CharField(
-        max_length = 10,
-        blank = True,
-        choices = languages.available_languages,
-        default = languages.available_languages[0][0],
-        db_index = True,
-        )
+    # (pict) TITLE
+    # Description [Read more]
         
-    # Performance optimizer : we store the publisher here so that we can de-reference it without getting the content object.
+    # Basic metadata shared by all Twist objects.
+    # Title is mandatory!
+    title = models.CharField(max_length = 255, blank = False)
+    description = models.TextField(max_length = 1024, blank = True)
+    created_at = models.DateTimeField(auto_now_add = True, null = True, db_index = False)
+    modified_at = models.DateTimeField(auto_now = True, null = True, db_index = True)
+        
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
     publisher = models.ForeignKey("Account", null = True, related_name = "published_twistables", db_index = True, ) 
@@ -222,8 +195,6 @@ class Twistable(_AbstractTwistable):
     owner = models.ForeignKey("Account", related_name = "by", db_index = True, )                               
     
     # Our security model.
-    # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
-    # XXX because there's a problem here as choices cannot be re-defined for subclasses.
     permission_templates = ()       # Define this in your subclasses
     permissions = models.CharField(
         max_length = 32,
@@ -241,10 +212,10 @@ class Twistable(_AbstractTwistable):
     _p_can_leave = models.IntegerField(default = 16, db_index = True)
     _p_can_create = models.IntegerField(default = 16, db_index = True)
 
-
-    def get_twistable_category(self) :
+    @property
+    def kind(self) :
         """
-        Return the twistable category according to the kind of object it is.
+        Return the kind of object it is (as a lower-cased string).
         """
         from twistranet.twistranet.models import Content, Account, Community, Resource
         if issubclass(self.model_class, Content):
@@ -262,7 +233,7 @@ class Twistable(_AbstractTwistable):
         """
         return object absolute_url
         """
-        category = self.get_twistable_category()
+        category = self.kind
         viewbyslug = '%s_by_slug' % category
         viewbyid = '%s_by_id' % category
         if hasattr(self, 'slug') :
@@ -282,14 +253,12 @@ class Twistable(_AbstractTwistable):
         
         # Check if we're saving a real object and not a generic Content one (which is prohibited).
         # This must be a programming error, then.
-        # XXX TODO: Check that type doesn't change. Also check that if id is None, type is None as well.
         if self.__class__.__name__ == Twistable.__name__:
             raise ValidationError("You cannot save a raw content object. Use a derived class instead.")
             
         # Set information used to retreive the actual subobject
         self.model_name = self._meta.object_name
         self.app_label = self._meta.app_label
-        # self.is_community = isinstance(self, community.Community)
 
         # Set owner, publisher upon object creation. Publisher is NEVER set as None by default.
         if self.id is None:
@@ -325,12 +294,6 @@ class Twistable(_AbstractTwistable):
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)
                 
-        # Set headline and summary cached values
-        self.html_headline = self.preprocess_html_headline()
-        self.text_headline = self.preprocess_text_headline()
-        self.html_summary = self.preprocess_html_summary()
-        self.text_summary = self.preprocess_text_summary()
-    
         # Check if we're creating or not
         if self.id:
             creation = False
@@ -440,113 +403,20 @@ class Twistable(_AbstractTwistable):
         if self.slug:
             return "%s.%s: %s (%i)" % (self.app_label, self.model_name, self.slug, self.id)
         else:
-            return "%s.%s: %i" % (self.app_label, self.model_name, self.id)            
+            return "%s.%s: %i" % (self.app_label, self.model_name, self.id)
+        
+    @property    
+    def title_or_description(self):
+        """Return either title or description (or slug) but avoid the empty string at all means.
+        """
+        for attr in ('title', 'description', 'slug', 'id'):
+            v = getattr(self, attr, None)
+            if v:
+                return v
             
     class Meta:
         app_label = "twistranet"
 
-
-
-    #                                                               #
-    #                       Display management                      #
-    # You can override this in your content types.                  #
-    #                                                               #
-
-    def preprocess_html_headline(self, text = None):
-        """
-        preprocess_html_headline => unicode string.
-
-        Used to compute the headline displayed.
-        You can have some logic to display a different headline according to the content's properties.
-        Default is to display the first characters (or so) of the title, or of raw text content if title is empty.
-
-        You can override this in your own content types if you want.
-        """
-        # Fetch title or text
-        safe = False
-        if text is None:
-            text = getattr(self, "title", "")
-        if not text:
-            text = getattr(self, "text", "")
-            safe = True
-        headline_length = MAX_HEADLINE_LENGTH
-
-        # # Strip HTML tags and only keep the first line as the title.
-        # lines = [ l.strip() for l in html.strip_tags(text).split("\n") if l.strip() ]
-        # if not lines:
-        #     return ""       # No title? Return an empty string.
-        # original_text = lines[0]
-        original_text = text
-
-        # Ensure headline will never exceed MAX_HEADLINE_LENGTH characters
-        while True:
-            if not safe:
-                text = html.escape(original_text)
-            else:
-                text = original_text
-            if len(text) >= headline_length:
-                text = u"%s [...]" % text[:headline_length]
-            text = utils.escape_links(text)
-            if len(text) <= MAX_HEADLINE_LENGTH:
-                break
-            headline_length = headline_length - 5
-
-        return text
-
-    def preprocess_text_headline(self, text = None):
-        """
-        Default is just tag-stripping
-        """
-        if text is None:
-            text = self.preprocess_html_headline()
-        return html.strip_tags(text)
-
-    def preprocess_html_summary(self, text = None):
-        """
-        Return an HTML-safe summary.
-        Default is to keep the 1024-or-so first characters and to keep basic HTML formating.
-        """
-        # Fetch title or text
-        safe = False
-        if text is None:
-            text = getattr(self, "description", "")
-        if not text:
-            text = getattr(self, "text", "")
-            safe = True
-        summary_length = MAX_SUMMARY_LENGTH
-
-        # # Strip HTML tags and only keep the first line as the title.
-        # lines = [ l.strip() for l in html.strip_tags(text).split("\n") if l.strip() ]
-        # if len(lines) < 2:
-        #     return ""       # Nothing? Return an empty string.
-        # original_text = lines[1]
-        original_text = text
-
-        # Ensure headline will never exceed MAX_HEADLINE_LENGTH characters
-        while True:
-            if not safe:
-                text = html.escape(original_text)
-            else:
-                text = original_text
-            if len(text) >= summary_length:
-                text = u"%s [...]" % text[:summary_length]
-            text = utils.escape_links(text)
-            if len(text) <= MAX_SUMMARY_LENGTH:
-                break
-            summary_length = summary_length - 5
-
-        if text == self.preprocess_html_headline():
-            text = ""
-
-        return text
-
-    def preprocess_text_summary(self, text = None):
-        """
-        Default is just tag-stripping
-        """
-        if text is None:
-            text = self.preprocess_html_summary()
-        return html.strip_tags(text)        
 
     #                                                                   #
     #                       Security Management                         #
@@ -615,49 +485,4 @@ class Twistable(_AbstractTwistable):
     def detail_view(self):
         return self.model_class.type_detail_view
 
-
-    #                                                                   #
-    #                       Translation management                      #
-    #                                                                   #
-    
-    @property
-    def translation(self,):
-        """
-        Return the translated version of the content.
-        Example: doc.translated.title => Return the translated version of the title.
-        Use this in your templates. Use the _translated() method below in your python code or your tests.
-        Please note that this doesnt de-reference your original object: you still have to de-reference it with content.object
-        to get it. But you'll have access to translated fields anyway with the parent Content object.
-        
-        The translation object is always read-only!
-        
-        XXX TODO: Keep this in cache to avoid overhead
-        """
-        return self._translation(None)
-    
-    def _translation(self, language = None):
-        """
-        Return the translated version of your content.
-        Example: doc.translated('fr').title => Return the translated version of the title.
-        """
-        return self
-        
-        # No translation available? Return the identity object.
-        try:
-            from twistranet.twistrans.lib import _TranslationWrapper
-        except ImportError:
-            return self
-
-        # If language is None, guess it
-        if language is None:
-            language = translation.get_language()
-        
-        # If language is the same as the content, return the content itself
-        if language == self.language:
-            return self
-        
-        # Return the wrapper around translated resources.
-        if not hasattr(self, '_translation_cache'):
-            self._translation_cache = _TranslationWrapper(self, language)
-        return self._translation_cache
     

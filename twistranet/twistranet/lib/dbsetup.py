@@ -15,8 +15,8 @@ from django.core.files.base import ContentFile
 
 from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions
-
 from twistranet.twistorage.storage import Twistorage
+from twistranet.log import *
 
 import settings
 
@@ -53,7 +53,7 @@ def bootstrap():
         __account__ = SystemAccount.objects.__booster__.get()
     except:
         # Default fixture probably not installed yet. Don't do anything yet.
-        print "DatabaseError while bootstraping. Your tables are probably not created yet."
+        log.info("DatabaseError while bootstraping. Your tables are probably not created yet.")
         traceback.print_exc()
         return
     
@@ -100,7 +100,7 @@ def bootstrap():
     except ImportError:
         HELP_FR_FIXTURES = []
         BOOTSTRAP_FR_FIXTURES = []
-        print "twistrans not installed"
+        log.info("twistrans not installed, translations are not installed.")
         
     # Check if default profile pictures are correctly imported
     profile_picture = Resource.objects.get(slug = "default_profile_picture")
