@@ -6,7 +6,7 @@ from django.core.urlresolvers import NoReverseMatch
 from account import Account, UserAccount, SystemAccount
 from network import Network
 from twistable import Twistable
-from twistranet.core.lib import permissions, roles, notifier
+from twistranet.twistranet.lib import permissions, roles, notifier
 
 class Community(Account):
     """

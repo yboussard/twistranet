@@ -9,8 +9,8 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core import urlresolvers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
-from twistranet.core.models import Twistable, Content, Account
-from twistranet.core.lib import permissions
+from twistranet.twistranet.models import Twistable, Content, Account
+from twistranet.twistranet.lib import permissions
 
  
 class MenuItem(Twistable):

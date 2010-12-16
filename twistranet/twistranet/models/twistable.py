@@ -19,7 +19,7 @@ from django.utils.datastructures import SortedDict
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils import html, translation
-from twistranet.core.lib import roles, permissions, languages, utils
+from twistranet.twistranet.lib import roles, permissions, languages, utils
 
 MAX_HEADLINE_LENGTH = 140
 MAX_SUMMARY_LENGTH = 1024
@@ -246,7 +246,7 @@ class Twistable(_AbstractTwistable):
         """
         Return the twistable category according to the kind of object it is.
         """
-        from twistranet.core.models import Content, Account, Community, Resource
+        from twistranet.twistranet.models import Content, Account, Community, Resource
         if issubclass(self.model_class, Content):
             return 'content'
         elif issubclass(self.model_class, Community):

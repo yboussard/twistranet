@@ -17,6 +17,6 @@ from network import Network
 from menu import Menu, MenuItem
 
 # import permission_set
-from twistranet.core.lib import permissions, roles
+from twistranet.twistranet.lib import permissions, roles
 
 

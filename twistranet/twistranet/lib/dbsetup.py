@@ -13,8 +13,8 @@ from django.db.utils import DatabaseError
 from django.core.files import File
 from django.core.files.base import ContentFile
 
-from twistranet.core.models import *
-from twistranet.core.lib import permissions
+from twistranet.twistranet.models import *
+from twistranet.twistranet.lib import permissions
 
 from twistranet.twistorage.storage import Twistorage
 
@@ -91,8 +91,8 @@ def bootstrap():
         
     # Now create the bootstrap / default / help fixture objects.
     # Import your fixture there, if you don't do so they may not be importable.
-    from twistranet.core.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
-    from twistranet.core.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
+    from twistranet.twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
+    from twistranet.twistranet.fixtures.help_en import FIXTURES as HELP_EN_FIXTURES
     # XXX TODO: Make a fixture registry? Or fix fixture import someway?
     try:
         from twistrans.fixtures.help_fr import FIXTURES as HELP_FR_FIXTURES
@@ -124,7 +124,7 @@ def bootstrap():
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
-        from twistranet.core.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
+        from twistranet.twistranet.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
         for obj in SAMPLE_DATA_FIXTURES:
             obj.apply()
         

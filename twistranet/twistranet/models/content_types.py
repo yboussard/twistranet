@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import html
 from account import Account
 from content import Content
-from twistranet.core.lib import roles, permissions, languages
+from twistranet.twistranet.lib import roles, permissions, languages
 
 class StatusUpdate(Content):
     """

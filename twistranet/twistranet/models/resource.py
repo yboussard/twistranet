@@ -5,7 +5,7 @@ from django.db.models import Q, FileField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
 from twistranet.twistorage.storage import Twistorage
-from twistranet.core.lib import languages, permissions
+from twistranet.twistranet.lib import languages, permissions
 import twistable
 
 
