@@ -28,16 +28,15 @@ SECRET_KEY = '%(SECRET_KEY)s'
 
 THEME_NAME = "redbook"
 
-URL_BASE_PATH = HERE   
+THEME_DIR =  "%s/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    "%s/themes/%s" % (HERE, THEME_NAME, ),
+    THEME_DIR,
     "%s/templates" % (HERE, ),
 )
 
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/themes/%s/resources" % (HERE, THEME_NAME)
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
+
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 
  ### END -t OPTION """

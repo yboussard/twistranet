@@ -112,11 +112,14 @@ ROOT_URLCONF = 'urls'
 #   XXX     TWISTRANET-SPECIFIC CONFIGURATION       XXX #
 #                                                       #
 TWISTRANET_THEME_NAME = "redbook"
+
+THEME_DIR =  "%s/core/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
+
 TEMPLATE_DIRS = (
-    "%s/core/themes/%s" % (HERE, TWISTRANET_THEME_NAME, ),
+    THEME_DIR,
     "%s/core/templates" % (HERE, ),
 )
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/core/themes/%s/resources" % (HERE, TWISTRANET_THEME_NAME)
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
 
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
@@ -124,7 +127,7 @@ LOGIN_REDIRECT_URL = '/'
 
 # TinyMCE configuration
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = "%s/core/themes/%s/static/tiny_mce" % (HERE, TWISTRANET_THEME_NAME)
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,emotions,paste,searchreplace",
     'theme': "advanced",
