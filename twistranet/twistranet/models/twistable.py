@@ -185,6 +185,8 @@ class Twistable(_AbstractTwistable):
     description = models.TextField(max_length = 1024, blank = True)
     created_at = models.DateTimeField(auto_now_add = True, null = True, db_index = False)
     modified_at = models.DateTimeField(auto_now = True, null = True, db_index = True)
+    created_by = models.ForeignKey("Account", related_name = "created_twistables", db_index = True, ) 
+    modified_by = models.ForeignKey("Account", null = True, related_name = "modified_twistables", db_index = True, ) 
         
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
@@ -272,6 +274,13 @@ class Twistable(_AbstractTwistable):
             # XXX TODO: Check that nobody sets /unsets the owner or the publisher of an object
             # raise PermissionDenied("You're not allowed to set the content owner by yourself.")
             pass
+            
+        # Set created_by and modified_by fields
+        auth = Twistable.objects._getAuthenticatedAccount()
+        if self.id is None:
+            self.created_by = auth
+        else:
+            self.modified_by = auth
             
         # Check if publisher is set. Only GlobalCommunity may have its publisher to None to make a site visible on the internet.
         if not self.publisher_id:

@@ -50,7 +50,8 @@
             "description":  "TwistraNet system account",
             "_p_can_list":  1,
             "_p_can_view":  1,
-            "owner":        1
+            "owner":        1,
+            "created_by":   1
         }
     },
     
