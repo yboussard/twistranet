@@ -22,9 +22,8 @@ class Account(twistable.Twistable):
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = "default_profile_picture"
-    picture = ResourceField("Resource")        # Ok, this is odd but it's because of the bootstrap.
-                                                    # XXX We should avoid the 'null' attribute someday. Not easy 'cause of the SystemAccount bootstraping...
-
+    picture = ResourceField("Resource")
+    
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
     # XXX because there's a problem here as choices cannot be re-defined for subclasses.
@@ -249,12 +248,6 @@ class Account(twistable.Twistable):
     def managed_communities(self):
         """The communities I'm a manager of"""
         return self.communities.filter(targeted_network__is_manager = True)   
-
-    @property
-    def get_picture(self):
-        """Return the picture file"""
-        if self.picture :
-            return self.picture.resource_file
 
 
 class AnonymousAccount(Account):

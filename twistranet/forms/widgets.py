@@ -88,7 +88,7 @@ class ResourceWidget(forms.MultiWidget):
                 "thumbnail_src":    image.get_absolute_url(),
                 "hidden_id":        'id_%s_0' % name,
                 "value":            image.id,
-                "selected":         (image.id == int(value[0])) and "resource-selected" or "",
+                "selected":         (image.id == int(value[0] or 0)) and "resource-selected" or "",
             }
             output.append(u"""
             <img src="%(thumbnail_src)s" class="resource-image %(selected)s" width="60" height="60"
@@ -98,7 +98,6 @@ class ResourceWidget(forms.MultiWidget):
     
         # Return the computed string
         output.append("""</div>""") # (close the resource-widget div)
-
 
         return mark_safe(self.format_output(output))
 

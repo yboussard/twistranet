@@ -7,23 +7,22 @@ import stat
 import urllib
 
 from django.template import Context, RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseNotModified
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-
-from django.views.static import serve
-from django.http import Http404
 from django.utils.http import http_date
 
 from twistranet.models import *
 from twistranet.forms.resource_forms import ResourceForm
 from twistranet.lib.decorators import require_access
 
+from django.conf import settings
+from django.views.static import was_modified_since
 from twistorage.storage import Twistorage
 
 
-def serve(request, path, document_root=None, show_indexes=False):
+def serve(request, path, document_root = None, show_indexes = False, nocache = False):
     """
     Adapted from django.views.static to handle the creation/modification date of the resource's publisher
     instead of only the file's value.
@@ -69,9 +68,10 @@ def serve(request, path, document_root=None, show_indexes=False):
     statobj = os.stat(fullpath)
     mimetype = mimetypes.guess_type(fullpath)[0] or 'application/octet-stream'
     # XXX TODO: Handle this correctly!!! Disabled to avoid using file mod. time instead of obj mod. time
-    # if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
-    #                           statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
-    #     return HttpResponseNotModified(mimetype=mimetype)
+    if not nocache:
+        if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
+                                  statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
+            return HttpResponseNotModified(mimetype=mimetype)
     contents = open(fullpath, 'rb').read()
     response = HttpResponse(contents, mimetype=mimetype)
     response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
@@ -102,9 +102,14 @@ def _getResourceResponse(request, resource, last_modified = None):
         raise ValueError("Invalid resource: %s" % resource)
 
     # Return the underlying file, adapt the Last-Modified header as necessary
-    return serve(request, path, document_root = storage.location, show_indexes = False)
+    return serve(request, path, document_root = storage.location, show_indexes = False, nocache = True)
     
-
+@require_access
+def resource_cache(request, cache_path):
+    """
+    Return a resource by its cache path
+    """
+    return serve(request, cache_path, os.path.join(settings.MEDIA_ROOT, "cache"))
 
 @require_access
 def resource_by_id(request, resource_id):

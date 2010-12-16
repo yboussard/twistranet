@@ -29,6 +29,10 @@ urlpatterns = patterns('',
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_account'),    # Fetch by account pty
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.views.resource_by_content'),    # Fetch by content pty
     
+    # Thumbnail cache links
+    url(r'\Wcache/([\w\./]+)$',                'twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'^cache/([\w\./]+)$',                'twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
     (r'^media_resource/new$',                   'twistranet.views.create_media'),
     (r'^media_resource/(\d+)/edit$',            'twistranet.views.edit_media'),

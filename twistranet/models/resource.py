@@ -24,7 +24,7 @@ def twistorage_upload_to(instance, filename):
 class Resource(twistable.Twistable):
     """
     A resource object.
-    See doc/DESIGN.txt for design considerations
+    See doc/DESIGN.txt for design considerations.
     
     XXX TODO: Implement URL resources.
     """
@@ -32,8 +32,8 @@ class Resource(twistable.Twistable):
     # objects = ResourceModelManager()
     
     # Resource actual information.
-    resource_file = FileField(upload_to = twistorage_upload_to, storage = Twistorage())
-    resource_url = models.URLField(max_length = 1024, null = True)                  # Original URL if given
+    resource_file = FileField(upload_to = twistorage_upload_to, storage = Twistorage(), null = True)
+    resource_url = models.URLField(max_length = 1024, null = True, blank = True)                  # Original URL if given
     
     # Title / Description are optional resource description information.
     # May be given by the manager, BUT will be stored in TN.
@@ -45,5 +45,16 @@ class Resource(twistable.Twistable):
 
     class Meta:
         app_label = 'twistranet'
+        
+    @property
+    def image(self,):
+        """
+        Return the attribute suitable for sorl-thumbnail.
+        """
+        if self.resource_file:
+            return self.resource_file
+        if self.resource_url:
+            return self.resource_url
+    
     
     

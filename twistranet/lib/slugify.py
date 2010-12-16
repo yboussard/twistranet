@@ -5,17 +5,19 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # List of words you're not allowed to use as a slug
 RESERVED_KEYWORDS = [
-    "new",
-    "id",
-    "join",
+    "account",
+    "add_to_network",
+    "cache",
+    "content",
     "create",
     "delete",
-    "twistranet",
+    "id",
+    "join",
     "media",
-    "account",
-    "content",
-    "add_to_network",
+    "new",
     "remove_from_network",
+    "twistranet",
+    "twistable",
 ]
 
 rsvd_kw = "$|".join(RESERVED_KEYWORDS)

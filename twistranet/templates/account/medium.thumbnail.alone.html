@@ -1,5 +1,5 @@
 {% load thumbnail %}
-{% thumbnail  account.get_picture "50x50" as thumb %}
+{% thumbnail  account.picture.image "50x50" as thumb %}
   <a title="{{account.text_headline|safe}}"
      href="{{ account.get_absolute_url }}"
      class="image-block image-block-50-50 image-block-alone">
