@@ -7,7 +7,7 @@ from twistranet.core.lib import permissions, roles
 from twistranet.twistrans.models import *
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from twistranet.lib import dbsetup, notifier
+from twistranet.core.lib import dbsetup, notifier
 
 class TwistransTest(TestCase):
     """
