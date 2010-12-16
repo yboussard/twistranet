@@ -1,10 +1,10 @@
 from __future__ import with_statement
 import os
 from optparse import OptionParser
-from distutils.dir_util import copy_tree
-from shutil import move
+import shutil
 from uuid import uuid4
 
+IGNORE_PATTERNS = ('.pyc','.git','.svn')
 
 def create_project():
     """
@@ -38,17 +38,17 @@ def create_project():
     # Build the project up copying over the twistranet project_template 
     twist_package = __import__('twistranet')
     twist_package_path = os.path.dirname(os.path.abspath(twist_package.__file__))
-    copy_tree(os.path.join(twist_package_path, "twistscripts", "project_template"), project_path)
+    shutil.copytree(os.path.join(twist_package_path, "twistscripts", "project_template"), project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
     
     # When copy_templates == True, the templates and themes dirs are copied for 
     # a possible customization
     if options.copy_templates:
         template_source_path = os.path.join(twist_package_path, "twistranet",  "templates")
         template_path = os.path.join(project_path, "templates")
-        copy_tree(template_source_path, template_path)
+        shutil.copytree(template_source_path, template_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
         themes_source_path = os.path.join(twist_package_path, "themes")
         themes_path = os.path.join(project_path, "themes")
-        copy_tree(themes_source_path, themes_path)
+        shutil.copytree(themes_source_path, themes_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
 
 
     # Generate a unique SECREY_KEY for the project's setttings module.
@@ -63,11 +63,6 @@ def create_project():
             data = data.replace(' ### END -t OPTION """', '') 
         f.write(data)
 
-    # Clean up pyc files.
-    for (root, dirs, files) in os.walk(project_path, False):
-        for f in files:
-            if f.endswith(".pyc"):
-                os.remove(os.path.join(root, f))
 
 if __name__ == "__main__":
     create_project()
