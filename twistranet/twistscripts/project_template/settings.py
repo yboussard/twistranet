@@ -2,7 +2,8 @@
 import os.path
 import sys
 
-from twistranet.twistconf.defaults  import *
+HERE = os.path.abspath(os.path.dirname(__file__))
+
 
 # Local settings.
 try:

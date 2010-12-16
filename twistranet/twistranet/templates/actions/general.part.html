@@ -39,13 +39,13 @@
       <ul>
         <li>
           <a class="action"
-             href="{% url twistranet.twistranet.views.view_media_library logged_account.id %}">
+             href="{% url media_library_view logged_account.id %}">
              {% blocktrans %}Browse files{% endblocktrans %}
           </a>
         </li>
         <li>
           <a class="action"
-             href="{% url twistranet.twistranet.views.create_media %}">
+             href="{% url media_create %}">
             {% blocktrans %}Upload files{% endblocktrans %}
           </a>
         </li>

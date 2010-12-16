@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
-
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms.resource_forms import MediaForm
 from twistranet.twistranet.lib.decorators import require_access

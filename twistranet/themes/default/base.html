@@ -60,7 +60,7 @@
                     </div>
                     {% endblock %}
                     <a class="logotext"
-                       href="{% url twistranet.twistranet.views.home %}">
+                       href="{% url twistranet.views.home %}">
                         <span>TwistraNet</span><br />
                         <span class="description">{% blocktrans %}The social content management system.{% endblocktrans %}</span>
                     </a>
@@ -81,7 +81,7 @@
 
                 <div id="breadcrumb">
                     {% block breadcrumb %}
-                        <a href="{% url twistranet.twistranet.views.home %}">{% trans 'Home' %}</a>
+                        <a href="{% url twistranet.views.home %}">{% trans 'Home' %}</a>
                     {% endblock %}
                 </div>
             
