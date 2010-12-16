@@ -85,7 +85,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    "twistranet.lib.context_processors.security_context",
+    "twistranet.core.lib.context_processors.security_context",
     )
 
 
