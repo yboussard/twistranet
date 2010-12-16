@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from twistranet.twistranet.forms import community_forms
 from twistranet.twistranet.lib.decorators import require_access
@@ -13,7 +14,6 @@ from twistranet.twistranet.lib.decorators import require_access
 from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView
-from twistranet.twistranet import twistranet_settings
 
 
 class CommunityView(UserAccountView):
@@ -64,8 +64,8 @@ class CommunityView(UserAccountView):
         self.account = self.object
         self.n_members = self.community and self.community.members.count() or 0
         self.is_member = self.community and self.community.is_member or False
-        self.members = self.community and self.community.members_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
-        self.managers = self.community and self.community.managers_for_display[:twistranet_settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
+        self.members = self.community and self.community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
+        self.managers = self.community and self.community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
         self.n_communities = []
         self.n_network_members = []
 
@@ -88,7 +88,7 @@ class CommunityListingView(BaseView):
 
     def prepare_view(self, ):
         super(CommunityListingView, self).prepare_view()
-        self.communities = Community.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+        self.communities = Community.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
 
 class AccountCommunitiesView(UserAccountView):

@@ -11,7 +11,7 @@ from haystack.forms import ModelSearchForm
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
 
-RESULTS_PER_PAGE = getattr(settings, 'HAYSTACK_SEARCH_RESULTS_PER_PAGE', 20)
+RESULTS_PER_PAGE = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
 
 class TwistraNetSearchView(BaseView):
     """

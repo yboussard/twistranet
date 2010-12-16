@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from twistranet.twistranet.models import *
-from twistranet.twistranet import twistranet_settings
 from base_view import *
 
 class UserAccountView(BaseWallView):
@@ -72,7 +72,7 @@ class HomepageView(UserAccountView):
         XXX TODO: Handle the anonymous users case!
         """
         latest_ids = Content.objects.followed
-        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:twistranet_settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
     
@@ -104,7 +104,7 @@ class AccountListingView(BaseView):
 
     def prepare_view(self, ):
         super(AccountListingView, self).prepare_view()
-        self.accounts = Account.objects.get_query_set()[:twistranet_settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+        self.accounts = Account.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
         
         
 class AccountNetworkView(UserAccountView):

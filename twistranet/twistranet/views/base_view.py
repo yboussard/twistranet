@@ -4,7 +4,6 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
-from twistranet.twistranet import twistranet_settings
 from twistranet.twistranet.models import *
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
@@ -356,7 +355,7 @@ class BaseWallView(BaseIndividualView):
         This way we can just query objects with id > last_twistable_on_home
         """
         latest_ids = Content.objects.getActivityFeed(self.object)    
-        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:twistranet_settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
 
@@ -367,7 +366,7 @@ class BaseWallView(BaseIndividualView):
         super(BaseWallView, self).prepare_view(value)
         if self.object:
             self.latest_content_list = self.get_recent_content_list()
-            if len(self.latest_content_list) < (twistranet_settings.TWISTRANET_CONTENT_PER_PAGE / 2):
+            if len(self.latest_content_list) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
                 self.too_few_content = True
             self.content_forms = self.get_inline_forms(self.object)
         

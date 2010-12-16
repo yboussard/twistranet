@@ -1,12 +1,26 @@
 # Django settings for TwistraNet project.
+
+# Twistranet default settings.
+# The following section is the most likely to be changed.
+
+# Twistranet Theme.
+TWISTRANET_THEME_NAME = "redbook"
+
+
+# Number of friends or communities displayed in a box
+TWISTRANET_NETWORK_IN_BOXES = 6
+TWISTRANET_FRIENDS_IN_BOXES = 9
+TWISTRANET_CONTENT_PER_PAGE = 25
+TWISTRANET_COMMUNITIES_PER_PAGE = 25
+TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
+
+
+# End of the conveniently-changeable section.
 import os.path
 import sys
 
 TWISTRANET_PACKAGE = __import__('twistranet')
 HERE = os.path.dirname(os.path.abspath(TWISTRANET_PACKAGE.__file__))
-
-TWISTRANET_THEME_NAME = "redbook"
-
 THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 
 TEMPLATE_DIRS = (
@@ -44,4 +58,4 @@ THUMBNAIL_FORMAT = "PNG"
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
 HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
-
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
