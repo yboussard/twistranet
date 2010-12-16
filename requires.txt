@@ -1,0 +1,6 @@
+Django
+django-debug-toolbar
+django-piston
+django-haystack
+django-tinymce
+sorl-thumbnail
