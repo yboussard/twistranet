@@ -26,7 +26,7 @@ SECRET_KEY = '%(SECRET_KEY)s'
 
 """ ### START -t OPTION
 
-THEME_NAME = "redbook"
+TWISTRANET_THEME_NAME = "redbook"
 
 THEME_DIR =  "%s/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 
