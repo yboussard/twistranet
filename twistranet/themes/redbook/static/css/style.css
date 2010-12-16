@@ -503,7 +503,7 @@ ul.tn-box-container ul li {
 }
 
 li.tn-box {
-  margin: 5px 0 0 0;
+  margin: 0;
 }   
 
 .tn-box {
@@ -521,23 +521,26 @@ li.tn-box {
 }
 
 .tn-box h3 {
-  background-color:#df2429;
-  color:white;
+  font-weight: bold;
+  background-color:#f9f9f9;
+  color: #686868;
+  border-top: 1px solid #CCC;
   padding:2px 5px;
   font-size: 11px;
   margin-top: 10px;
+  margin-bottom: 0px;
 }
 
 .tn-box-content {
-  background-color: #f9f9f9;
+  background-color: transparent;
   padding: 10px 10px 5px;
   clear: both; 
+  margin-bottom: 10px;
 }
 
 .tn-box-content-header {
-  background-color: white;
+  background-color: #f9f9f9;
   padding: 4px 5px;
-  border-bottom: 1px solid #CCC;
   clear: both;
   color: #333;
 }
@@ -561,7 +564,14 @@ li.tn-box {
 }
 
 .global-box h3 {
-  background-color:#278fb8;
+    font-weight: bold;
+    background-color:#f9f9f9;
+    color: #686868;
+    border-top: 1px solid #CCC;
+    padding:2px 5px;
+    font-size: 11px;
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 
 .current-selected-box {
