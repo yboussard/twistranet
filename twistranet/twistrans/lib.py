@@ -23,7 +23,7 @@ class TranslationFixture(Fixture):
         original_field = "title",
         translated_text = "Accueil",
         """
-        from twistranet.models import Twistable
+        from twistranet.core.models import Twistable
         super(TranslationFixture, self).__init__(
             TranslationResource,
             force_update = force_update,
