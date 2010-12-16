@@ -36,17 +36,17 @@ def create_project():
             "Please try another name." % project_name)
 
     # Build the project up copying over the twistranet project_template 
-    scripts_package = __import__('twistranet.twistscripts')
+    scripts_package = __import__('twistranet')
     scripts_package_path = os.path.dirname(os.path.abspath(scripts_package.__file__))
-    copy_tree(os.path.join(scripts_package_path, "project_template"), project_path)
+    copy_tree(os.path.join(scripts_package_path, "twistscripts", "project_template"), project_path)
     
     # When copy_templates == True, the templates and themes dirs are copied for 
     # a possible customization
     if options.copy_templates:
-        template_source_path = os.path.join(scripts_package_path,"..","core" ,"templates")
+        template_source_path = os.path.join(scripts_package_path,"twistranet" ,"templates")
         template_path = os.path.join(project_path, "templates")
         copy_tree(template_source_path, template_path)
-        themes_source_path = os.path.join(scripts_package_path,"..","core" ,"themes")
+        themes_source_path = os.path.join(scripts_package_path,"twistranet" ,"themes")
         themes_path = os.path.join(project_path, "themes")
         copy_tree(themes_source_path, themes_path)
 
