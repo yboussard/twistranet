@@ -66,6 +66,8 @@ Or to install the devel version from svn
     $ pip install ./Twistranet 
     $ rm -Rf ./Twistranet
 
+.. behind an http proxy you need to add an option to pip, exemple:: pip --proxy proxy-server:proxy-port install ./Twistranet 
+
 Twistranet and all its dependencies are downloaded and installed
 in your python path ::
 
