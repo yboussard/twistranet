@@ -1,6 +1,3 @@
-recursive-include helloworld *
 recursive-include twistranet *
-recursive-include twistrans *
-recursive-include twistscripts *   
-recursive-include twistapi *
-global-exclude *pyc             
+recursive-include doc *
+global-exclude *pyc

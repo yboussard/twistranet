@@ -1,10 +1,7 @@
-# Import models first
-from twistranet.models import *
-
-# List of registered content and account types for this application
-# from twistranet.forms.content_forms import StatusUpdateForm, DocumentForm
-
-# Do the mandatory database checkup and initial buiding
-from twistranet.lib import dbsetup
-# dbsetup.bootstrap()                      # XXX: TODO: Only call it explicitly if you need to.
-dbsetup.check_consistancy()
+# top twistranet namespace / anything else inside 
+# See http://peak.telecommunity.com/DevCenter/setuptools#namespace-packages
+try:
+    __import__('pkg_resources').declare_namespace(__name__)
+except ImportError:
+    from pkgutil import extend_path
+    __path__ = extend_path(__path__, __name__)   
