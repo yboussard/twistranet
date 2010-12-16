@@ -40,6 +40,6 @@ setup(name='Twistranet',
       entry_points="""
       # -*- Entry points: -*-
       [console_scripts]
-      twistranet_project=twistranet.scripts.twistranet_project:create_project
+      twistranet_project=twistranet.twistscripts.twistranet_project:create_project
       """,
       )
