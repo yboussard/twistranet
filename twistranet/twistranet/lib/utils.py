@@ -36,7 +36,7 @@ def escape_links(text):
     Use this to record the summary and/or headline of your content types.
     """
     # Security context
-    from twistranet.core.models import Account
+    from twistranet.twistranet.models import Account
     auth = Account.objects._getAuthenticatedAccount()
     
     # Replace xxx:// strings by <a href> tags

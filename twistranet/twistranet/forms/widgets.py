@@ -36,7 +36,7 @@ class ResourceWidget(forms.MultiWidget):
         - The file upload field
         - The resource browser.
         """
-        from twistranet.core.models.resource import Resource
+        from twistranet.twistranet.models.resource import Resource
         
         # Beginning of the super-render() code
         if self.is_localized:

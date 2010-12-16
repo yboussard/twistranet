@@ -116,7 +116,7 @@ class Twistorage(FileSystemStorage):
         Try to read name from the repository.
         Mode is 'w' if write access is required, 'r' if only read access is necessary
         """
-        from twistranet.core.models import Account
+        from twistranet.twistranet.models import Account
         
         try:
             # Fetch account id, join with self.location.

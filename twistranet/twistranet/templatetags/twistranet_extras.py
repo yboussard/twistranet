@@ -34,7 +34,7 @@ def escape_status(text, autoescape=None):
     # for match in user_regex.finditer(text):
     #     s = "%s%s%s" % (
     #         s[0:match.start()],
-    #         '<a href="%s">%s</a>' % (reverse('twistranet.core.views.account_by_slug', args = (match.groupdict()['Alias'],)), match.group(0)),
+    #         '<a href="%s">%s</a>' % (reverse('twistranet.twistranet.views.account_by_slug', args = (match.groupdict()['Alias'],)), match.group(0)),
     #         s[match.end():],
     #         )
     # text = s

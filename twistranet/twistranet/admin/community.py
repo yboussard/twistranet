@@ -1,4 +1,4 @@
-from twistranet.core.models.community import Community   #, CommunityMembership
+from twistranet.twistranet.models.community import Community   #, CommunityMembership
 from django.contrib import admin
 
 # class CommunityMembershipInline(admin.TabularInline):

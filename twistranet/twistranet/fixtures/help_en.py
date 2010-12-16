@@ -1,5 +1,5 @@
-from twistranet.core.models import *
-from twistranet.core.lib.python_fixture import Fixture
+from twistranet.twistranet.models import *
+from twistranet.twistranet.lib.python_fixture import Fixture
 __account__ = SystemAccount.get()
 
 FIXTURES = [

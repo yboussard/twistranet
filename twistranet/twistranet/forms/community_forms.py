@@ -3,8 +3,8 @@ from django.db import models
 from django.forms import widgets
 from django.forms import fields
 
-from twistranet.core.lib import permissions
-from twistranet.core.forms.widgets import ResourceWidget
+from twistranet.twistranet.lib import permissions
+from twistranet.twistranet.forms.widgets import ResourceWidget
 
 class CommunityForm(forms.ModelForm):
     """
@@ -16,7 +16,7 @@ class CommunityForm(forms.ModelForm):
     permissions = fields.ChoiceField(choices = permissions.community_templates.get_choices())
 
     class Meta:
-        from twistranet.core.models import Community
+        from twistranet.twistranet.models import Community
         model = Community
         fields = ('title', 'description', 'picture', 'permissions', )
 

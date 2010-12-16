@@ -3,7 +3,7 @@ Content translation helper.
 This is a wrapper around a real content object which provides some helpful methods.
 """
 from twistranet.twistrans.models import TranslationResource
-from twistranet.core.lib.python_fixture import Fixture
+from twistranet.twistranet.lib.python_fixture import Fixture
 
 class TranslationFixture(Fixture):
     """
@@ -23,7 +23,7 @@ class TranslationFixture(Fixture):
         original_field = "title",
         translated_text = "Accueil",
         """
-        from twistranet.core.models import Twistable
+        from twistranet.twistranet.models import Twistable
         super(TranslationFixture, self).__init__(
             TranslationResource,
             force_update = force_update,

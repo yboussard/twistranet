@@ -7,13 +7,13 @@ from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from twistranet.core.forms import community_forms
-from twistranet.core.lib.decorators import require_access
+from twistranet.twistranet.forms import community_forms
+from twistranet.twistranet.lib.decorators import require_access
 
-from twistranet.core.models import *
+from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView
-from twistranet.core import twistranet_settings
+from twistranet.twistranet import twistranet_settings
 
 
 class CommunityView(UserAccountView):

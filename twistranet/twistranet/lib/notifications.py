@@ -14,8 +14,8 @@ class Notifier(object):
         """
         Send the notification
         """
-        from twistranet.core.models import Notification
-        from twistranet.core.models.account import SystemAccount
+        from twistranet.twistranet.models import Notification
+        from twistranet.twistranet.models.account import SystemAccount
         __account__ = SystemAccount.objects.get()
         l = Notification(
             publisher = publisher,

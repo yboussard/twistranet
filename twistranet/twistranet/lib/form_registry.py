@@ -17,7 +17,7 @@ class FormRegistryManager:
         XXX TODO: Provide a way of ordering forms?
         """
         # Prepare the form itself
-        from twistranet.core.forms.content_forms import BaseInlineForm, BaseRegularForm
+        from twistranet.twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
         model = form_class.Meta.model
         form = {
             'model_class': model, 
@@ -65,7 +65,7 @@ class FormRegistryManager:
         if creation and edition:
             raise ValueError("You must specify either creation or edition")
         
-        from twistranet.core.models import Account, Community
+        from twistranet.twistranet.models import Account, Community
 
         account = Account.objects._getAuthenticatedAccount()
         flat_registry = []
@@ -82,7 +82,7 @@ class FormRegistryManager:
         This method returns the appropriate content forms for a user seeing an account page.
         This returns a list of Form classes
         """
-        from twistranet.core.models import Account, Community
+        from twistranet.twistranet.models import Account, Community
         
         # Only return forms for publisher accounts I'm authorized to write on
         account = Account.objects._getAuthenticatedAccount()

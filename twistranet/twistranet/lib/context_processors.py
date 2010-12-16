@@ -9,7 +9,7 @@ def security_context(request):
     Also get the content form available.
     And get the main_menu menu manager. (XXX TODO: Cache menu items)
     """
-    from twistranet.core.models import GlobalCommunity, Account
+    from twistranet.twistranet.models import GlobalCommunity, Account
     ret = dict()
     
     # Try to get the global community. If we can't, that probably means we need a login here.

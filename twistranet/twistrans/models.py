@@ -3,7 +3,7 @@ The model for Twistrans.
 
 Basically, we extend the ResourceManager and Resource functionnalities to handle field translations as resource objects.
 """
-from twistranet.core.models import Resource, Content
+from twistranet.twistranet.models import Resource, Content
 from django.db import models
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 

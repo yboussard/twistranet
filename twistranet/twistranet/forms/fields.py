@@ -69,7 +69,7 @@ class ResourceFormField(forms.MultiValueField):
 
     def __init__(self, *args, **kwargs):
         # Initial values
-        from twistranet.core.models import Resource
+        from twistranet.twistranet.models import Resource
         self.model = kwargs.pop("model", Resource)
         self.filter = kwargs.pop("filter", None)
         self.widget = kwargs.pop("widget", self.widget(model = self.model, filter = self.filter))
@@ -128,7 +128,7 @@ class ResourceField(models.ForeignKey):
         Return the newly created resource object.
         """
         # Determine the new resource's publisher according to its type
-        from twistranet.core.models import Account, Resource
+        from twistranet.twistranet.models import Account, Resource
         if isinstance(instance, Account):
             publisher = instance
         else:
@@ -151,7 +151,7 @@ class ResourceField(models.ForeignKey):
         If we're given a file, we upload it and set data accordingly.
         If we're given both, we suppose the file must be uploaded.
         """
-        from twistranet.core.models import Resource
+        from twistranet.twistranet.models import Resource
         resource = None
         
         # Process either upload file or resource id

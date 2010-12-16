@@ -8,8 +8,8 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from twistranet.core.models import *
-from twistranet.core import twistranet_settings
+from twistranet.twistranet.models import *
+from twistranet.twistranet import twistranet_settings
 from base_view import *
 
 class UserAccountView(BaseWallView):

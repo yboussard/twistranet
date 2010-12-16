@@ -85,7 +85,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    "twistranet.core.lib.context_processors.security_context",
+    "twistranet.twistranet.lib.context_processors.security_context",
     )
 
 
@@ -113,11 +113,11 @@ ROOT_URLCONF = 'urls'
 #                                                       #
 TWISTRANET_THEME_NAME = "redbook"
 
-THEME_DIR =  "%s/core/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
+THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 
 TEMPLATE_DIRS = (
     THEME_DIR,
-    "%s/core/templates" % (HERE, ),
+    "%s/twistranet/templates" % (HERE, ),
 )
 TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
 
@@ -148,8 +148,8 @@ THUMBNAIL_PREFIX = "cache/"
 THUMBNAIL_FORMAT = "PNG"
 
 # Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'twistranet.core.search_sites'
-HAYSTACK_SEARCH_ENGINE = "twistranet.core.lib.haystack_simplehack"
+HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
+HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
 
 
 INSTALLED_APPS = (
@@ -170,7 +170,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     
     # TwistraNet core stuff
-    'twistranet.core',
+    'twistranet.twistranet',
     
     # TwistraNet extensions
     'twistranet.twistrans',

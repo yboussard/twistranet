@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
 from django.forms import widgets
-from twistranet.core.forms.widgets import PermissionsWidget
+from twistranet.twistranet.forms.widgets import PermissionsWidget
 
 
 class BaseForm(forms.ModelForm):
@@ -10,8 +10,8 @@ class BaseForm(forms.ModelForm):
         Overload widget rendering: we have to provide the model so that the PermissionsWidget
         will find which permissions to display.
         """
-        from twistranet.core.models.community import Community
-        from twistranet.core.models.account import UserAccount
+        from twistranet.twistranet.models.community import Community
+        from twistranet.twistranet.models.account import UserAccount
         super(BaseForm, self).__init__(*args, **kw)
         publisher = self.initial.get("publisher", None)
         permissions = self.Meta.model.permission_templates.permissions()

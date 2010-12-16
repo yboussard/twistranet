@@ -2,11 +2,11 @@
 from django.conf.urls.defaults import *
 
 import settings
-from twistranet.core.views import *
+from twistranet.twistranet.views import *
 
 urlpatterns = patterns('',
     # Dynamic twistranet urls
-    ("^", include("twistranet.core.urls")),
+    ("^", include("twistranet.twistranet.urls")),
     (r'^tinymce/', include('tinymce.urls')),
 )
 

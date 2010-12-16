@@ -1,7 +1,7 @@
 from base_forms import BaseInlineForm, BaseRegularForm
 from django.db import models
 from django.forms import widgets
-from twistranet.core.lib import form_registry
+from twistranet.twistranet.lib import form_registry
 from tinymce.widgets import TinyMCE
 
 class StatusUpdateForm(BaseInlineForm):
@@ -9,7 +9,7 @@ class StatusUpdateForm(BaseInlineForm):
     The famous status update.
     """
     class Meta(BaseInlineForm.Meta):
-        from twistranet.core.models.content_types import StatusUpdate
+        from twistranet.twistranet.models.content_types import StatusUpdate
         model = StatusUpdate
         fields = BaseInlineForm.Meta.fields
         widgets = BaseInlineForm.Meta.widgets
@@ -24,7 +24,7 @@ class QuickDocumentForm(BaseRegularForm):
     allow_edition = False
     
     class Meta(BaseRegularForm.Meta):
-        from twistranet.core.models.content_types import Document
+        from twistranet.twistranet.models.content_types import Document
         model = Document
         fields = ('title', 'description', 'resources', ) + BaseRegularForm.Meta.fields
         widgets = {
@@ -40,7 +40,7 @@ class DocumentForm(BaseRegularForm):
     allow_edition = True
 
     class Meta(BaseRegularForm.Meta):
-        from twistranet.core.models.content_types import Document
+        from twistranet.twistranet.models.content_types import Document
         model = Document
         fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
         widgets = {

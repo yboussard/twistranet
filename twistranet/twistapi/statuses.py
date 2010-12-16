@@ -8,7 +8,7 @@ statuses/retweets/:id
 """
 from piston.handler import BaseHandler
 from piston.authentication import OAuthAuthentication, HttpBasicAuthentication
-from twistranet.core.models import StatusUpdate
+from twistranet.twistranet.models import StatusUpdate
 from piston import resource
 
 auth = HttpBasicAuthentication(realm = "TwistraNet API")

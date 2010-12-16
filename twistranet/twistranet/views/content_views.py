@@ -9,10 +9,10 @@ from django.db.models import Q
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from twistranet.core.lib.decorators import require_access
+from twistranet.twistranet.lib.decorators import require_access
 
-from twistranet.core.models import Content, Account
-from twistranet.core.lib import form_registry
+from twistranet.twistranet.models import Content, Account
+from twistranet.twistranet.lib import form_registry
 from base_view import *
 
 class ContentView(BaseIndividualView):

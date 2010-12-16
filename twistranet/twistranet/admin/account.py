@@ -1,4 +1,4 @@
-from twistranet.core.models.account import Account, UserAccount, AccountLanguage
+from twistranet.twistranet.models.account import Account, UserAccount, AccountLanguage
 # from community import CommunityMembershipInline
 # from relation import InitiatorInline, TargetInline
 from django.contrib import admin

@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 import os.path
-from twistranet.core.views import *
-from twistranet.core.lib.slugify import SLUG_REGEX
+from twistranet.twistranet.views import *
+from twistranet.twistranet.lib.slugify import SLUG_REGEX
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -22,21 +22,21 @@ urlpatterns = patterns('',
     url(r'^pending_network/$', AsView(PendingNetworkView), name = 'account_pending_network'),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    url(r'^resource/(\d+)$', ' twistranet.core.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX, ' twistranet.core.views.resource_by_slug', name='resource_by_slug'),
-    (r'^resource/new$',                         ' twistranet.core.views.create_resource'),
-    (r'^resource/(\w+)$',                       ' twistranet.core.views.resource_by_alias_or_id'),
-    (r'^account/(\d+)/resource/(\w+)$',         ' twistranet.core.views.resource_by_account'),    # Fetch by account pty
-    (r'^content/(\d+)/resource/(\w+)$',         ' twistranet.core.views.resource_by_content'),    # Fetch by content pty
+    url(r'^resource/(\d+)$', ' twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX, ' twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
+    (r'^resource/new$',                         ' twistranet.twistranet.views.create_resource'),
+    (r'^resource/(\w+)$',                       ' twistranet.twistranet.views.resource_by_alias_or_id'),
+    (r'^account/(\d+)/resource/(\w+)$',         ' twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
+    (r'^content/(\d+)/resource/(\w+)$',         ' twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty
     
     # Thumbnail cache links
-    url(r'\Wcache/([\w\./]+)$',                ' twistranet.core.views.resource_cache'),         # Fetch a thumb cache by its key
-    url(r'^cache/([\w\./]+)$',                ' twistranet.core.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'\Wcache/([\w\./]+)$',                ' twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'^cache/([\w\./]+)$',                ' twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
     
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
-    (r'^media_resource/new$',                   ' twistranet.core.views.create_media'),
-    (r'^media_resource/(\d+)/edit$',            ' twistranet.core.views.edit_media'),
-    (r'^media_library/(\d+)$',                  ' twistranet.core.views.view_media_library'),
+    (r'^media_resource/new$',                   ' twistranet.twistranet.views.create_media'),
+    (r'^media_resource/(\d+)/edit$',            ' twistranet.twistranet.views.edit_media'),
+    (r'^media_library/(\d+)$',                  ' twistranet.twistranet.views.view_media_library'),
     
     # Content links
     url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name='content_by_id'),
@@ -56,13 +56,13 @@ urlpatterns = patterns('',
     url(r'^community/(\d+)/delete$', AsView(CommunityDelete), name = "community_delete", ),
 
     # Additional inclusions for extensions, etc
-    (r'^search/',                               include('twistranet.core.urls.search')),
-    (r'^static/',                               include('twistranet.core.urls.static')),
+    (r'^search/',                               include('twistranet.twistranet.urls.search')),
+    (r'^static/',                               include('twistranet.twistranet.urls.static')),
     (r'^download/',                             include('twistranet.twistorage.urls')),
 
     # Login / Logout / Register stuff
     (r'^login/$', login),
-    (r'^logout/$',                              ' twistranet.core.views.account_logout'),  
+    (r'^logout/$',                              ' twistranet.twistranet.views.account_logout'),  
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

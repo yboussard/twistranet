@@ -13,8 +13,8 @@ from django.template.defaultfilters import stringfilter
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
-from twistranet.core.lib import slugify
-from twistranet.core.models import Account, Content
+from twistranet.twistranet.lib import slugify
+from twistranet.twistranet.models import Account, Content
 
 register = template.Library()
 

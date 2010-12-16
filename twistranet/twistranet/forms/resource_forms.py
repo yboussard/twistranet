@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
-from twistranet.core.models import Resource
+from twistranet.twistranet.models import Resource
 
 class ResourceForm(forms.ModelForm):
     """

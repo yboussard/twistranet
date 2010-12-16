@@ -2,8 +2,8 @@
 This is a basic wall test.
 """
 from django.test import TestCase
-from twistranet.core.models import *
-from twistranet.core.lib import dbsetup
+from twistranet.twistranet.models import *
+from twistranet.twistranet.lib import dbsetup
 
 class WallTest(TestCase):
     
@@ -79,7 +79,7 @@ class WallTest(TestCase):
         Ensure that two users cannot see each other's 
         """
         # A creates a private content. B shouldn't see it.
-        from twistranet.core.models import StatusUpdate
+        from twistranet.twistranet.models import StatusUpdate
         __account__ = self.B
         b_initial_list = self.B.content.all()
         b_initial_followed = self.B.followed_content.all()
@@ -114,7 +114,7 @@ class WallTest(TestCase):
         """
         Check if content I write is displayed
         """
-        from twistranet.core.models import StatusUpdate
+        from twistranet.twistranet.models import StatusUpdate
         __account__ = self.A
         s = Document.objects.create()
         s.text = "Hello, this is A speaking"

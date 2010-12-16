@@ -3,7 +3,7 @@ This is from http://code.google.com/p/django-menu/
 
 """
 
-from twistranet.core.models import Menu, MenuItem  
+from twistranet.twistranet.models import Menu, MenuItem  
 from django import template  
 
 register = template.Library()  

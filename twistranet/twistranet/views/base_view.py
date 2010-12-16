@@ -4,12 +4,12 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
-from twistranet.core import twistranet_settings
-from twistranet.core.models import *
+from twistranet.twistranet import twistranet_settings
+from twistranet.twistranet.models import *
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from twistranet.core.lib import form_registry
+from twistranet.twistranet.lib import form_registry
 
 
 class MustRedirect(Exception):
@@ -40,7 +40,7 @@ class AsView(object):
         """
         try:
             # Check if we have access to TN, if not we redirect to the login page.
-            from twistranet.core.models import GlobalCommunity, AnonymousAccount
+            from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
             mgr = GlobalCommunity.objects
             if not mgr.exists():
                 path = urlquote(request.get_full_path())
