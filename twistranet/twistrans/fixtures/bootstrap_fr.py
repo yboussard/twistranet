@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from twistrans.lib import TranslationFixture
+from twistranet.twistrans.lib import TranslationFixture
 
 FIXTURES = [
     TranslationFixture(

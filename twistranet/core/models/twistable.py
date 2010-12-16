@@ -644,7 +644,7 @@ class Twistable(_AbstractTwistable):
         
         # No translation available? Return the identity object.
         try:
-            from twistrans.lib import _TranslationWrapper
+            from twistranet.twistrans.lib import _TranslationWrapper
         except ImportError:
             return self
 

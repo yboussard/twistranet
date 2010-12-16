@@ -2,7 +2,7 @@
 """
 This is used to translate the EN version into FR
 """
-from twistrans.lib import TranslationFixture
+from twistranet.twistrans.lib import TranslationFixture
 
 FIXTURES = [
     TranslationFixture(
