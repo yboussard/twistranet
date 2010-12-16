@@ -4,7 +4,6 @@ Some sample data in there.
 XXX TODO: Disable sample data uploading in the settings.py file?
 """
 from twistranet.twistranet.models import *
-from twistranet.helloworld.models import HelloWorld
 from twistranet.twistranet.lib.python_fixture import Fixture
 from django.contrib.auth.models import User
 
@@ -48,20 +47,6 @@ FIXTURES = [
         permissions = "private",
         user = User.objects.get(id = 4),
         picture = Resource.objects.filter(slug = "default_b_picture"),
-    ),
-
-    Fixture(
-        HelloWorld,
-        logged_account = "admin",
-        slug = "hello1",
-        permissions = "public",
-    ),
-    
-    Fixture(
-        HelloWorld,
-        logged_account = "A",
-        slug = "hello2",
-        permissions = "public",
     ),
     
     Fixture(

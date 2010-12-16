@@ -175,7 +175,6 @@ INSTALLED_APPS = (
     # TwistraNet extensions
     'twistranet.twistrans',
     'twistranet.twistorage',
-    #'twistranet.helloworld',
 )
 
 # Local settings.

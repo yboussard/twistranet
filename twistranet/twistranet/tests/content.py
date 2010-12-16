@@ -6,7 +6,6 @@ from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
-from helloworld.models import HelloWorld
 
 from twistranet.twistranet.lib import dbsetup
 
@@ -43,15 +42,7 @@ class ContentTest(TestCase):
         self.failUnlessEqual(n.html_headline, """<a href="/account/A/">Albert Durand</a> joined <a href="/account/B/">Bernard Dubois De La Fontaine</a>""", )
         self.failUnlessEqual(n.html_summary, "", )
         
-    def test_helloworld_headline(self,):
-        """
-        Check our example product's headline.
-        """
-        __account__ = self.admin
-        h = HelloWorld()
-        h.save()
-        c = Content.objects.get(id = h.id)
-        self.failUnlessEqual(c.text_headline, "Hello, World!")
+
         
         
         
