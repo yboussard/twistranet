@@ -5,6 +5,7 @@ HERE = os.path.dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = True
+TEMPLATE_STRING_IF_INVALID = "BOUH"
 
 DATABASES = {
     'default': {

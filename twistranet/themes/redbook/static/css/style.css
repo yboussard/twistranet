@@ -561,7 +561,14 @@ ul.tn-box-container ul li {
 }
 
 .global-box h3 {
-  background-color:#278fb8;
+  font-weight: bold;
+  background-color:#f9f9f9;
+  color: #686868;
+  border-top: 1px solid #CCC;
+  padding:2px 5px;
+  font-size: 11px;
+  margin-top: 10px;
+  margin-bottom: 0px;
 }
 
 .current-selected-box {
