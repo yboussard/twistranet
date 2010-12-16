@@ -1,0 +1,141 @@
+/* Template. Main areas
+***************************************************************************** */
+
+body {
+	margin: 0;
+	background: #f9f9f9 url(../images/body-bg.png) top left repeat-x;
+}
+#page {
+}
+#wrapper {
+	width: 963px; /*107em*/
+	margin: 0 auto;
+	padding: 0;
+	}
+	#header {   
+		  position: relative;
+		  height: 75px;
+	  }
+		#head {
+		  }
+  		#usermenu {
+  		}
+  		#menubar {
+  			width: 776px;
+  			height: 27px;      
+  			position: absolute;
+  			top: 27px;
+  			left: 0;
+  			margin: 0;
+  			padding: 0;
+  			clear: both;
+  			background: transparent url(../images/menu-bar-bg.png) top left repeat-x;
+  			border-color: #d0b6b7;
+  			border-width: 1px 1px 0 1px;
+  			border-style: solid solid none solid;
+  			}
+  			#mainmenu {
+  			}
+		#searchform {
+			position: absolute;
+			top: 30px; 
+			right: -2px;
+			width: 182px;
+			height: 22px;
+			background: transparent url(../images/search-bg.png) top left no-repeat;
+			}
+			#search-box {
+				width: 182px;
+				height: 22px;
+			}
+			
+			#search-text {
+				background: transparent none no-repeat 0 0;
+				border: none;
+				margin: 2px 0 0;
+				color: #777;
+				width: 130px;
+			}
+
+	#wrap {
+		height: 100%; /* Fix IE7 */
+		}
+		#breadcrumb {
+      position: absolute;
+			width: 756px;
+			text-align: right;
+			top: 55px;
+		  border-color: #d0b6b7;
+			border-width: 0 1px;
+			border-style: none solid;
+			padding: 6px 10px;
+			height: 12px;
+			background-color: white;
+		  }
+		  #breadcrumb a {
+        color: #686868;
+        }
+		#globalbar {
+			width: 181px;
+			float: right;	
+			clear: right;
+			margin: 0;
+			word-wrap: break-word;
+		}
+		#container {
+			margin: 0;
+			padding: 0 0 10px;
+			clear: left;
+			float: left;
+		  border-color: #d0b6b7;  
+			background-color: white;
+			border-width: 0 1px 1px;
+			border-style: none solid solid;	
+      width: 776px;		
+			}
+			#contextbar {
+				width: 181px;
+				float: left;	
+				margin: 0 0 12px 4px;
+				word-wrap: break-word;
+			}
+			.noleftcol #contextbar {
+        display: none;
+      } 
+  		#tn-message {
+        color: white;
+        font-weight: bold;
+        border: solid 1px #d0b6b7;
+        background: #278FB8;
+        text-align: center;
+        padding: 0em;
+        margin: 10px;
+      }
+      #tn-message ul {
+          display: block;
+          margin: 5px;
+          padding: 5px;
+      }
+      #tn-message ul li {
+          display: block;
+      }
+			#content {
+				width: 571px;
+				float: left;
+				padding: 0 10px;
+			}
+			.noleftcol #content {
+        float: none;
+        width: 756px;
+      } 
+	#bottom {
+		clear: both !important;
+	}
+		#footer { 
+			margin: 0;
+			padding: 15px 0;
+		}
+#tn-dialog-button-cancel,
+#tn-dialog-button-ok {
+  display: none;
+}

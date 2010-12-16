@@ -1,0 +1,78 @@
+
+
+Security / User Management
+==========================
+- HTTPS natif
+- Multiple source d'utilisateurs, chaque source peut être "collée" à une communauté
+- Interface LDAP native (multiple)
+- Relations symétriques et asymétriques :
+    Un utilisateur peut "suivre" un autre ou demander à l'ajouter à son réseau
+- Utilisateur peut être "listé" (cherchable) ou pas
+- User peut appartenir à n communautés
+
+
+Tout ce qui possède un wall est un Account : User, Community, App, ...
+
+
+Contenu
+=========
+TdC de base :
+- Émetteur (Wall : un C est publié sur 1 wall)
+- Texte
+- Date/Auteur
+- Niveau sécu : Public / Restreint au wall
+- Langue (ou neutre)
+
+
+StatusUpdate
+
+
+WallToWall
+- TargetWall
+
+
+Communautés
+=============
+Communauté = groupes d'utilisateurs avec des propriétés communes :
+  - Créée par un admin
+  - Gérée par des community managers (CM)
+  - Followed par défaut (ou forcés)
+  - Le mur de la communauté est tjs suivi par ses membres
+
+
+Usage :
+  - Groupes de W
+  - Communautés de clients
+  - Entité / Service / Division
+  - Communauté d'intérêt / club / groupement
+
+
+Types :
+  - Ouverte (adhésion libre), Fermée (sur invitation d'un CM), Restreinte (adhésion avec approbation) ;
+  - Publique (consultable sauf contenus restreints, membres listés), privée (seules les propriétés de la C sont visibles, mbres pas listés) ;
+  - Modérée : un CM doit approuver les contenus ; (v2 ?)
+  - Dark Room : Communauté dont les membres ne sont pas listés ni cherchables entre eux, utile par ex pour la communauté "clients" ;
+  - Sous-ensemble : une communauté peut-être un ss-ensemble d'une (seule) autre. Dans ce cas tout membre de la ss-c est obligatoirement membre de la c : si U adhère à ss-C, il est automatiquement ajouté à C ;
+  - Main Community : tout utilisateur y est automatiquement relié ; pratique pour alertes graves
+
+
+- Recherche (full-texte)
+
+
+Relations
+=========
+- 2 types de contacts :
+  - Follow (passif)
+  - My Network (symétrique)
+- Publication :
+  - Soit publique
+  - Soit restreinte au network
+
+
+- Interface mobile (web) native ?
+
+
+- Évents (v2)
+- Groupes (v2)
+- Apps ? (v2)
+- Interface ReST (v2)

@@ -1,0 +1,83 @@
+TWISTRANET : NOTES FOR DEVELOPPERS
+==================================
+
+Devel platform installation
+----------------------------
+
+Prerequis:: 
+
+subversion, wget, python2.6-dev, gettext, virtualenv
+
+.. note:: Under Linux all these packages can be installed using the system packages manager
+
+.. note:: virtualenv also installs PIP
+
+Create a virtual env for the application
+
+    $ virtualenv twistranet-devel
+    $ cd twistranet-devel
+
+Always use the python binaries from this new virtualenv
+(Each time you will want to work with your app you will need this command line)
+
+    $ source bin/activate  
+
+Under  windows, the command is :
+
+    $ Scripts\activate.bat
+
+Download Twistranet from svn
+
+    (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+
+>> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnails, tinymce ...)
+
+    (twistranet-devel) $ pip install -e ./Twistranet    
+
+Create Twistranet Database
+Reply "no" to the question about superuser creation  
+(since the AUTH_PROFILE_MODULE has changed, it doesn't work)  
+By default (using sqlite), the data is stored in tn.db
+    
+    (twistranet) $ python manage.py syncdb
+
+Bootstrap the first data
+The structure by default is set in twistranet/fixtures/initial_data.json
+You can define in this file a new superuser (by default admin/azerty1234)
+    
+    (twistranet) $ python manage.py twistranet_bootstrap
+
+Run the server in foreground
+
+    (twistranet) $ python manage.py runserver
+
+
+Admininistration
+----------------
+
+You can set your initial data using the classic django admin interface.
+Use the superuser login defined in initial_data.json
+
+   * http://localhost:8000/admin
+
+
+
+Internationalisation
+--------------------
+
+Find new internationalized strings in your code
+and update your .po files
+more information here : http://docs.djangoproject.com/en/dev/topics/i18n/localization/
+At Twistranet product root
+
+    (twistranet) $ cd twistranet/core
+    (twistranet) $ python ../../manage.py makemessages -a
+
+Compile your .po (it's a mandatory after each change)
+
+    (twistranet) $ python ../../manage.py compilemessages
+
+
+
+
+

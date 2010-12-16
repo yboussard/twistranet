@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {% if community.html_summary %}
+        <p class="discreet">
+            {{ community.html_summary|safe }}
+        </p>
+    {% endif %}
+
+    {% include "content/content_forms.part.html" %}
+
+    {% if too_few_content %}
+        {% if community.can_publish %}
+            {% blocktrans %}
+                <p>
+                    There is not much content on this community. But it's up to <strong>you</strong> to create some!
+                </p>
+                <p>
+                    Feel free to add content with the simple form on this page. For example, you can express:
+                    <ul>
+                        <li>What are you working on right now?</li>
+                        <li>What would you like to find on this community page?</li>
+                    </ul>
+                </p>
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans %}
+                <p>
+                    There is no content on this community.
+                </p>
+                <p>
+                    Maybe you'd like to contact the community managers to ask them to let you in?
+                </p>
+            {% endblocktrans %}
+        {% endif %}
+    {% endif %}
+
+    {% for content in latest_content_list %}
+        {%include content.object.summary_view %}
+    {% endfor %}
+    
+
+{% endblock %}

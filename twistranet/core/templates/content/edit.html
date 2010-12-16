@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% if content %}
+        {%blocktrans%}Edit {{content_type}}{%endblocktrans%}
+    {% else %}
+        {%blocktrans%}New {{content_type}}{%endblocktrans%}
+    {% endif %}
+{% endblock %}
+
+{% load i18n %}
+
+{% block content %}
+    {% if content %}
+        <form action="{{ path }}"
+              method="post"
+              class="edit-form enableAutoFocus">
+    {% else %}
+        <form action="{{ path }}"
+              method="post"
+              class="edit-form enableAutoFocus">
+    {% endif %}
+        <fieldset>
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+        {% csrf_token %}
+        <div class="form-controls">
+          <input type="submit" value="{% trans 'Save' %}" /> 
+          <input type="reset" value="{% trans 'Undo' %}" />
+        </div>
+        </fieldset>
+    </form>
+    
+{% endblock %}
+
+{% block contextbar %}
+   {% include 'account/profile.box.html' %}
+{% endblock %}
+

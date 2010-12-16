@@ -1,0 +1,25 @@
+{% load i18n %}
+{# Generate a summary for 'notification' object #}
+<div class="post" id="post-{{content.id}}">
+    <div class="entry notification">
+        {% if content.html_headline %}
+            <span class="headline">
+                {{ content.html_headline|safe }}
+            </span>
+        {% endif %}
+        {% if content.html_summary %}
+            <div class="summary-content">
+                {{ content.html_summary|safe }}
+            </div>
+        {% endif %}
+        <span class="postmetadata">
+          <ul>
+            <li class="date">
+              {{ content.created_at|timesince }}
+            </li>
+            {#     {{ content.language }} | #}
+            {#     {{ content.permissions }} #}
+          </ul>
+        </span>
+    </div>
+</div>

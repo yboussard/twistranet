@@ -1,0 +1,19 @@
+{% load i18n %}
+<li id="content-metadata-box" class="tn-box metadata-box">
+    <ul class="global-metadata">   
+        <li>
+            {% blocktrans %}Author:{% endblocktrans %}
+            <a href="{{ content.owner.get_absolute_url }}">
+                {{ content.owner.text_headline|safe }}
+            </a>
+        </li>
+        <li>
+            {% blocktrans %}Created:{% endblocktrans %}
+            {{ content.created_at }}
+        </li>
+        <li>
+            {% blocktrans %}Permissions:{% endblocktrans %}
+            {{ content.permissions }}
+        </li>
+    </ul>         
+</li>

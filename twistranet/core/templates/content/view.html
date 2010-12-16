@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load wiki %}
+
+{% block content %}
+    <div class="content-summary">
+        {{ content.html_summary|safe }}
+    </div>
+    
+    <div class="content-text">
+        {{ content.text|safe|fullwiki }}
+    </div>
+{% endblock %}

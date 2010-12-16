@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans %}Activity Feed{% endblocktrans %}{% endblock %}
+
+{% block contextbar %}
+    {% include 'account/profile.box.html' %}
+    {% include 'account/actions.box.html' %}
+    {% include "account/relations.box.html" %}
+{% endblock %}
+
+
+{% block content %}
+    <h1>{% blocktrans %}Activity Feed{% endblocktrans %}</h1>
+    <p class="discreet">&nbsp;</p>
+    {% if account.can_publish %}
+        {% include "content/content_forms.part.html" %}
+    {% endif %}
+
+    {% if latest_content_list %}
+        {% for content in latest_content_list %}
+            {%include content.summary_view %}
+        {% endfor %}
+    {% else %}
+        <p>{% blocktrans %}No contents are available.{% endblocktrans %}</p>
+    {% endif %}
+{% endblock %}
+

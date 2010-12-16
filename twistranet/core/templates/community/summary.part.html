@@ -1,0 +1,24 @@
+{# Generate a summary for a 'community' object #}
+{% load i18n %}
+<div class="post" id="post-{{community.id}}">
+    {% include 'account/medium.thumbnail.alone.html' %}
+    {% with account.translation as account %}
+        <div class="entry">
+            <a class="author" href="{{ account.get_absolute_url }}">{{ account.text_headline }}</a>
+            <div class="summary-content">
+                {{ account.description|safe }}
+            </div>
+            <div class="postmetadata">
+                <ul>
+                    <li class="target">
+                        {{ account.permissions }}
+                    </li>
+                    <li class="members">
+                        {{ account.members.count }} members
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endwith %}
+</div>
+

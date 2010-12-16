@@ -1,0 +1,17 @@
+{# Display search result summary according to content type #}
+{% with result.object as object %}
+    {% if object.is_community %}
+        {% with object as community %}
+            {% include object.summary_view %}
+        {% endwith %}
+    {% else %}{% if object.is_account %}
+        {% with object as account %}
+            {% include object.summary_view %}
+        {% endwith %}
+    {% else %}{% if object.is_content %}
+        {% with object as content %}
+            {% include object.summary_view %}
+        {% endwith %}
+    {% endif %}{% endif %}{% endif %}
+{% endwith %}
+

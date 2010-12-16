@@ -1,0 +1,71 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com",
+            "is_superuser": "True",
+            "is_staff": "True"
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 2,
+        "fields": {
+            "username": "A",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com"
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 3,
+        "fields": {
+            "username": "B",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com"
+        }
+    },    
+    
+    {
+        "model": "auth.User",
+        "pk": 4,
+        "fields": {
+            "username": "C",
+            "password": "sha1$a4458$2230996fd1b28fb450751e69e852af1b54f8009e",
+            "email": "test@test.com"
+        }
+    },    
+
+    {
+        "model":    "twistranet.Twistable",
+        "pk":       1,
+        "fields":   {
+            "app_label":    "twistranet",
+            "model_name":   "SystemAccount",
+            "title":        "System Account",
+            "slug":         "system",
+            "description":  "TwistraNet system account",
+            "_p_can_list":  1,
+            "_p_can_view":  1,
+            "owner":        1
+        }
+    },
+    
+    {
+        "model":    "twistranet.Account",
+        "pk":       1,
+        "fields":   {
+            "picture":      -1,
+            "permissions":  "public"
+        }
+    },
+    {
+        "model":    "twistranet.SystemAccount",
+        "pk":       1,
+        "fields":   {
+        }
+    }
+]

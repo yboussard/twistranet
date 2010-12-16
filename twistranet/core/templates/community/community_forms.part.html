@@ -1,0 +1,29 @@
+{% load i18n %}
+{% for form in community_forms %}
+<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
+    <legend>
+        {% for formhandle in community_forms %}
+            {% if formhandle.getName == form.getName %}
+                <span>{{formhandle.getName}}</span>
+            {% else %}
+                <a href="form-{{formhandle.getName}}">{{formhandle.getName}}</a>
+            {% endif %}
+        {% endfor %}
+    </legend>
+    
+<form action="{{ path }}" method="post" class="enableAutoFocus">
+    <ul class="inline-form">
+        {{ form.as_ul }}
+    <div style="display: none;">
+        <input type="hidden" name="validated_form" value="{{form.getName}}" />
+    </div>
+    {% csrf_token %}
+    <li>
+        <label>&nbsp;</label>
+        <input type="submit" value="{% trans 'Send message' %}" />
+    </li>
+</ul>
+
+</form>
+</fieldset>
+{% endfor %}

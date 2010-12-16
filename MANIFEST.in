@@ -1,0 +1,3 @@
+recursive-include twistranet *
+recursive-include doc *
+global-exclude *pyc

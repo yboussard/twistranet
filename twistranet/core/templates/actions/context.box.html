@@ -1,0 +1,17 @@
+{# Contextual actions. #}
+{# Could be move into the main template. One day. #}
+{% if actions %}
+<li id="actions-box" class="tn-box actions-box">
+    <ul class="edit-actions">
+        {% for action in actions %}
+        <li>
+            <a href="{{ action.url }}" title="{{ action.label }}" class="action {% if action.confirm %}confirmbefore{% endif %}">{{ action.label }}
+                {% if action.confirm %}
+                    <span class="confirm-message">{{ action.confirm }}</span>
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</li>
+{% endif %}

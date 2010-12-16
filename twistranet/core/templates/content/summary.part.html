@@ -1,0 +1,56 @@
+{% load i18n %}
+{% load twistranet_extras %}
+{# Generate a summary for 'content' object #}
+<div class="post" id="post-{{content.id}}">
+    {% with content.owner_for_display as account %}
+        {% include 'account/medium.thumbnail.alone.html' %}
+    {% endwith %}
+    <div class="entry">
+        {% with content.translation as content %}         
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
+        </div>
+        <div class="entry-main">
+            {# <a class="author" href="{{ content.owner.get_absolute_url }}">{{ content.owner.text_headline|safe }}</a> #}
+            {% if not content.owner_for_display.id == content.publisher_id %}
+            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">&raquo; {{ content.publisher.text_headline|safe }}</a>
+            {% endif %}
+            {% if content.html_headline %}
+            <span class="headline">
+                {% if content.detail_view %}
+                    <div class="summary-content">
+                        <div class="headline-content">
+                            <a href="{{ content.get_absolute_url }}">
+                                {{ content.text_headline|safe }}
+                            </a>
+                        </div>
+                {% else %}
+                    {{ content.html_headline|safe }}
+                {% endif %}
+            </span>
+            {% endif %}
+            {% if content.detail_view %}
+                    {{ content.html_summary|safe }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="postmetadata">
+            <ul>
+                {%if not content.owner_for_display == content.owner %}
+                    <li class="author">{{ content.owner.text_headline|safe }}</li>
+                {% endif %}
+                <li class="date">{{ content.created_at|timesince }}</li>
+                {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
+                <li class="target">{{ content.permissions }}</li>
+                {%if content.can_edit %}
+                    <li class="action">
+                        <a href="{% url edit_content content.id %}">Edit</a>
+                    </li>
+                {%endif%}
+                <!-- {{ content.id }} -->
+            </ul>
+        </div>
+        {% endwith %}
+    </div>
+    <div class="clearfix"><!-- --></div>
+</div>

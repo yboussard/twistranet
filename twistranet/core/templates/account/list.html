@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {% for account in accounts %}
+        {%  include "account/summary.part.html" %}      
+    {% empty %}
+        <p>{% blocktrans %}No member in your network.{% endblocktrans %}</p>
+    {%  endfor %}
+{% endblock %}
+

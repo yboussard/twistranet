@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {% for account in communities %}
+        {%include "community/summary.part.html" %}   
+    {% empty %}
+        <p>{% blocktrans %}No community available on your system.{% endblocktrans %}</p>     
+    {% endfor %}
+{% endblock %}
+
