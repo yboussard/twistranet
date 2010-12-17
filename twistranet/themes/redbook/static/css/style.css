@@ -534,6 +534,10 @@ ul.tn-box-container ul li {
   margin-bottom: 10px;
 }
 
+#globalbar .tn-box-content {
+  padding: 5px 0;
+}
+
 .tn-box-content-header {
   background-color: #f9f9f9;
   padding: 4px 5px;
@@ -565,7 +569,7 @@ ul.tn-box-container ul li {
   background-color:#f9f9f9;
   color: #686868;
   border-top: 1px solid #CCC;
-  padding:2px 5px;
+  padding: 5px 8px 3px;
   font-size: 11px;
   margin-top: 10px;
   margin-bottom: 0px;
@@ -621,7 +625,7 @@ ul.tn-box-container ul li {
 a.action {
   color: #686868;
   display: block;
-  padding: 3px 5px;
+  padding: 3px 10px;
 }
 a.action:hover {
   background-color: #686868;
