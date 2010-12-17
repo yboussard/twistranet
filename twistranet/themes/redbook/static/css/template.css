@@ -66,11 +66,14 @@ body {
       }
       #search-live-results {
         position: absolute;
-        top: 50px;
+        top: 27px;
         right: 0;
         background-color: white;
-        width: 200px;
+        width: 288px;
         display: none;
+        padding: 10px;
+        border: 1px solid #DF2429;
+        z-index: 100;
       }
 	#wrap {
 		height: 100%; /* Fix IE7 */
