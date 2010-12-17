@@ -89,8 +89,42 @@ setSelectedTopic = function(menu) {
 // Live search ajax
 liveSearch = function(searchTerm) {
     var liveResults = jQuery('#search-live-results');
-    liveResults.append("<br/>" + (searchTerm == "" ? "(empty)" : searchTerm));
-    liveResults.show();
+    livesearchurl = '/static/js/livesearch-test.txt' ;
+    if (searchTerm) {
+      jQuery.get(livesearchurl+'?q='+searchTerm, 
+          function(data) {
+              results = eval(data);
+              liveResults.hide();
+              liveResults.html('');
+              jQuery(results).each(function(){
+                  liveResults.append('<p><a href="'+this.link+'">'+this.title+'</a></p>');
+              }); 
+                  liveResults.show();
+          } );      
+/*  for better control ...
+        jQuery.ajax({
+           type: "GET",
+           url: livesearchurl,
+           data: 'q='+searchTerm,
+           dataType: "json",
+           success: function(msg){
+             liveResults.hide();
+             liveResults.html('');
+             jQuery(msg).each(function(){
+                liveResults.append('<p>'+jQuery(this).title+'</p>');
+             }); 
+             liveResults.show();
+           },
+           error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(textStatus);
+           }
+        });          
+*/
+    }  
+    else {
+        liveResults.hide();
+        liveResults.html('');
+    } 
 }
 
 // main class
