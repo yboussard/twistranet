@@ -1,23 +1,22 @@
 {% load i18n %}
 <li id="content-metadata-box" class="tn-box metadata-box">
-    <ul class="global-metadata">   
-        <li>
-            {% blocktrans %}Author:{% endblocktrans %}
+    {% with content.title as title %}
+        <h3>{% blocktrans %}About '{{ title }}'{% endblocktrans %}</h3>
+    {% endwith %}
+    <div class="tn-box-content">
+        <p>
+            <strong>{% blocktrans %}Created by:{% endblocktrans %}</strong>
             <a href="{{ content.owner.get_absolute_url }}">
-                {{ content.owner.title }}
-            </a>
-        </li>
-        <li>
-            {% blocktrans %}Created:{% endblocktrans %}
-            {{ content.created_at }}
-        </li>
-        <li>
-            {% blocktrans %}Last updated:{% endblocktrans %}
-            {{ content.modified_at }}
-        </li>
-        <li>
-            {% blocktrans %}Permissions:{% endblocktrans %}
-            {{ content.permissions }}
-        </li>
-    </ul>         
+                {{ content.created_by.title }}
+            </a><br />
+            <strong>On:</strong>{{ content.created_at }}
+        </p>
+        <p>
+            <strong>{% blocktrans %}Last updated:{% endblocktrans %}</strong>
+            {{ content.modified_at|timesince }} ago.
+        </p>
+        <p>
+            <strong>{% trans 'Scope' %}:</strong> {{ content.permissions }}
+        </p>
+    </div>
 </li>
