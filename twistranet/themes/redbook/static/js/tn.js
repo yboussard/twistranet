@@ -86,6 +86,13 @@ setSelectedTopic = function(menu) {
     if (!selected) jQuery('>ul>li:first', menu).addClass('selected'); 
 }
 
+// Live search ajax
+liveSearch = function(searchTerm) {
+    var liveResults = jQuery('#search-live-results');
+    liveResults.append("<br/>" + (searchTerm == "" ? "(empty)" : searchTerm));
+    liveResults.show();
+}
+
 // main class
 var twistranet = {
     __init__: function(e) {
@@ -95,7 +102,17 @@ var twistranet = {
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
         twistranet.formsautofocus();
-        twistranet.setEmptyCols();
+        twistranet.setEmptyCols(); 
+        twistranet.enableLiveSearch();
+    },
+    enableLiveSearch: function(e) {
+        var defaultSearchText = jQuery("#default-search-text").val();
+        jQuery("#search-text").livesearch({
+    				searchCallback: liveSearch,
+    				innerText: defaultSearchText,
+    				queryDelay: 250,
+    				minimumSearchLength: 1
+    			});
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */

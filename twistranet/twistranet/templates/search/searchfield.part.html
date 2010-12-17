@@ -2,20 +2,21 @@
 
 {# The (inline) search field #}
 
-{% block searchform %}
+{% block searchform %}   
+		<input type="hidden"
+           id="default-search-text"
+           value="{% if query %}{{ query }}{% else %}{% trans 'Search...' %}{% endif %}" />
     <form action="{% url haystack_search %}" method="get" id="search-box">
         {% csrf_token %}
     	<div class="search-wrapper">
-    		<input 
+        <input 
     		    type="text" 
-    		    value="{% if query %}{{ query }}{% else %}{% trans 'Search...' %}{% endif %}"
     		    class="textfield" 
+    		    value=""
     		    name="q" 
-    		    id="search-text" 
-    		    onblur="if(this.value=='') this.value='{% trans 'Search...' %}';" 
-    		    onfocus="if(this.value=='{% trans 'Search...' %}') this.value='';" 
-    		/>
+    		    id="search-text" />
     		<input type="submit" value=" " id="search-button" />
     	</div>
+    	<div id="search-live-results"></div>
     </form>
 {% endblock %}

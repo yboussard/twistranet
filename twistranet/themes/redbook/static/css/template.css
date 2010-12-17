@@ -53,15 +53,25 @@ body {
 				background: transparent none no-repeat 0 0;
 				border: none;
 				margin: 2px 0 0;
-				color: #777;
+				color: black;
 				width: 130px;
 			}
+			.inactive_search {
+        color: #999 !important;
+      }
 			#search-button,
       #search-button:active {
         border: none;
         background: transparent !important;
       }
-
+      #search-live-results {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: white;
+        width: 200px;
+        display: none;
+      }
 	#wrap {
 		height: 100%; /* Fix IE7 */
 		}
