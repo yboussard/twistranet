@@ -1,4 +1,3 @@
-import pprint
 from twistranet.log import *
 
 class FormRegistryManager:
@@ -17,7 +16,7 @@ class FormRegistryManager:
         XXX TODO: Provide a way of ordering forms?
         """
         # Prepare the form itself
-        from twistranet.twistranet.forms.content_forms import BaseInlineForm, BaseRegularForm
+        from base_forms import BaseInlineForm, BaseRegularForm
         model = form_class.Meta.model
         form = {
             'model_class': model, 

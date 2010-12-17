@@ -1,9 +1,8 @@
 """
 Some sample data in there.
-
-XXX TODO: Disable sample data uploading in the settings.py file?
 """
 from twistranet.twistranet.models import *
+from twistranet.content_types.models import *
 from twistranet.twistranet.lib.python_fixture import Fixture
 from django.contrib.auth.models import User
 

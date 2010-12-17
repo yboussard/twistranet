@@ -2,6 +2,7 @@ import datetime
 from haystack.indexes import *
 from haystack import site
 from twistranet.twistranet.models import *
+from twistranet.content_types.models import *
 
 
 class StatusUpdateIndex(SearchIndex):

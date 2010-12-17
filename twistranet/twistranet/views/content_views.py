@@ -1,18 +1,18 @@
 # Create your views here.
-from django.template import Context, RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template.loader import get_template
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
+#from django.template import Context, RequestContext, loader
+#from django.http import HttpResponse, HttpResponseRedirect
+#from django.template.loader import get_template
+#from django.contrib.auth.decorators import login_required
+#from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+#from django.db.models import Q
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from twistranet.twistranet.lib.decorators import require_access
+#from twistranet.twistranet.lib.decorators import require_access
 
 from twistranet.twistranet.models import Content, Account
-from twistranet.twistranet.lib import form_registry
+from twistranet.twistranet.forms import form_registry
 from base_view import *
 
 class ContentView(BaseIndividualView):

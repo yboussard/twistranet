@@ -57,9 +57,7 @@ class TwistableManager(models.Manager):
             if auth.is_admin:
                 return base_query_set
         except:
-            log.debug("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap!")
-            if log.level < logging.INFO:
-                traceback.print_exc()
+            log.warning("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap.")
             return base_query_set
 
         # Regular check. Works for anonymous as well...

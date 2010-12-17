@@ -8,7 +8,6 @@ from community import Community
 from resource import Resource
 
 # Higher level stuff
-from content_types import StatusUpdate, Document
 from account import UserAccount, SystemAccount
 from community import GlobalCommunity, AdminCommunity
 from network import Network

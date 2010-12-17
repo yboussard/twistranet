@@ -8,7 +8,7 @@ from twistranet.twistranet.models import *
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from twistranet.twistranet.lib import form_registry
+from twistranet.twistranet.forms import form_registry
 from twistranet.log import *
 
 class MustRedirect(Exception):
@@ -82,9 +82,15 @@ class BaseView(object):
         "context_boxes",
         "global_boxes",
         "breadcrumb",
+        "creatable_content_types",
         ("actions", "get_actions", )
     ]    
     
+    @property
+    def creatable_content_types(self,):
+        klasses = form_registry.getFullpageForms(creation = True)
+        return klasses
+            
     def get_actions(self,):
         """
         Return the main action, emphased in the templates.

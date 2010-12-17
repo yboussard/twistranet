@@ -156,7 +156,7 @@ INSTALLED_APPS = (
     
     # 3rd party modules
     'debug_toolbar',
-    # 'haystack',
+    'haystack',
     'piston',
     'tinymce',
     'sorl.thumbnail',
@@ -165,6 +165,7 @@ INSTALLED_APPS = (
     'twistranet.twistranet',
     
     # TwistraNet extensions
+    'twistranet.content_types',
     'twistranet.notifier',
     'twistranet.twistrans',
     'twistranet.twistorage',
