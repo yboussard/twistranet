@@ -2,9 +2,9 @@
 {% load i18n %}
 
 {% block content %}
-    {% if community.html_summary %}
+    {% if community.description %}
         <p class="discreet">
-            {{ community.html_summary|safe }}
+            {{ community.description|safe }}
         </p>
     {% endif %}
 
