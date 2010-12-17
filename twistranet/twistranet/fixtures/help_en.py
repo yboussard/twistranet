@@ -19,12 +19,35 @@ If you can read that document, that probably means you're already connected to T
 
 Once you're logged in, you can already work with TwistraNet.
 
-<ul>
-<li>Start by saying what you're working on with the little status update form below.</li>
-<li>You can also publish "rich" documents with images, links and files. Use the "Create document" link on the right bar.</li>
-<li>Search already contributed content and co-workers with the integrated search engine.</li>
-<li>Connect with people by adding them to your network.</li>
-</ul>
+<table width="100%">
+    <tr>
+        <th width="33%">
+        </th>
+        <th width="33%">
+        </th>
+        <th width="33%">
+        </th>
+   </tr>
+    <tr>
+        <td>
+            Who are you working the most with?<br />
+            Find your co-workers and add them to your network. It's the easiest
+            way to stay in touch with what they're doing.
+        </td>
+        <td>
+            What are you working on? Do you need some help?<br />
+            Do you have an advice or a quick information to give to your co-workers?<br />
+            You're only two clicks away from doing it right now!
+        </td>
+        <td>
+            Have some content to publish? A report, a memo, something back in the 2000s
+            you'd write an email and CCing your whole office?<br />
+            Don't spam your co-workers, use a <b>Document</b>. Your network will know you've
+            got something to say, and your other co-workers will be able to find it
+            easily.
+        </td>
+    </tr>
+</table>
 
 Working with TwistraNet is as easy as that!
 

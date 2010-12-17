@@ -18,7 +18,7 @@ from twistranet.twistranet.lib import permissions
 from twistranet.twistorage.storage import Twistorage
 from twistranet.log import *
 
-import settings
+from django.conf import settings
 
 def repair():
     """
@@ -59,6 +59,7 @@ def bootstrap():
     
     # Create default resources by associating them to the SystemAccount.
     # XXX TODO: Make this work with subdirs
+    log.debug("Default res. dir: %s" % settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
     for root, dirs, files in os.walk(settings.TWISTRANET_DEFAULT_RESOURCES_DIR):
         for fname in files:
             slug = os.path.splitext(os.path.split(fname)[1])[0]

@@ -21,15 +21,17 @@ TWISTRANET_LOG_LEVEL = logging.WARNING
 
 # End of the conveniently-changeable section.
 
-TWISTRANET_PACKAGE = __import__('twistranet')
-HERE = os.path.dirname(os.path.abspath(TWISTRANET_PACKAGE.__file__))
-THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
+TN_ROOT = os.path.abspath(os.path.join(
+    os.path.dirname(__file__),
+    "../..",
+))
+THEME_DIR =  "%s/themes/%s" % (TN_ROOT , TWISTRANET_THEME_NAME, )
 
 TEMPLATE_DIRS = (
     THEME_DIR,
-    "%s/twistranet/templates" % (HERE, ),
+    "%s/templates" % (TN_ROOT , ),
 )
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
+TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/twistranet/fixtures/resources" % (TN_ROOT , )
 
 # Contrib.auth module settings
 LOGIN_URL = '/login/'

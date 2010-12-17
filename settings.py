@@ -111,7 +111,6 @@ TEMPLATE_DIRS = (
     THEME_DIR,
     "%s/twistranet/twistranet/templates" % (HERE, ),
 )
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
 
 # Contrib.auth module settings
 LOGIN_URL = '/login/'

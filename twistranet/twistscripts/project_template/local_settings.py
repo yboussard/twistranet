@@ -35,8 +35,6 @@ TEMPLATE_DIRS = (
     "%s/templates" % (HERE, ),
 )
 
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/resources" % THEME_DIR
-
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 
  ### END -t OPTION """
