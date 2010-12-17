@@ -4,7 +4,9 @@
     <legend>
         {% for formhandle in content_forms %}
             {% if formhandle.getName == form.getName %}
-                <span>{{formhandle.getName}}</span>
+                <span id="formhandle-{{ formhandle.getName }}">
+                    {{ formhandle.getName }}
+                </span>
             {% else %}
                 <a href="form-{{formhandle.getName}}">{{formhandle.getName}}</a>
             {% endif %}

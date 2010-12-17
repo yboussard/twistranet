@@ -10,6 +10,8 @@ class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
+    icon = "statusupdate.png"
+    
     class Meta(BaseInlineForm.Meta):
         from twistranet.content_types.models import StatusUpdate
         model = StatusUpdate
@@ -24,6 +26,7 @@ class QuickDocumentForm(BaseRegularForm):
     """
     allow_creation = True
     allow_edition = False
+    icon = "document.png"
     
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document
@@ -40,6 +43,7 @@ class DocumentForm(BaseRegularForm):
     """
     allow_creation = False
     allow_edition = True
+    icon = "document.png"
 
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document

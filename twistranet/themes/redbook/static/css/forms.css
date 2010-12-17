@@ -144,6 +144,21 @@ ul.errorlist li {
    margin: 10px 0 0 0;
 }
 
+/* Form handles for inline content */
+
+#formhandle-StatusUpdate  { 
+    background: url(../images/icons/statusupdate.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 18px;
+}
+
+#formhandle-Document  { 
+    background: url(../images/icons/document.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 18px;
+}
+
+
 
 /* Our great resource widget */
 
