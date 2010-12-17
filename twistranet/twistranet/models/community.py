@@ -3,10 +3,13 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import NoReverseMatch
-from account import Account, UserAccount, SystemAccount
-from network import Network
+
+from twistranet.twistranet.lib import permissions
+from twistranet.twistranet.signals import join_community
+
+from account import Account, SystemAccount
 from twistable import Twistable
-from twistranet.twistranet.lib import permissions, roles, notifier
+from network import Network
 
 class Community(Account):
     """
@@ -188,8 +191,13 @@ class Community(Account):
             is_manager = False,
         )
         
-        # Post join message
-        notifier.joined(account, self)
+        # Send the join signal
+        join_community.send(
+            sender = self.__class__,
+            client = account,
+            community = self,
+            accepted = True,
+            )
         
     def leave(self, account=None):
         """

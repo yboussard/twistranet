@@ -14,13 +14,12 @@ import inspect, logging, traceback
 from django.db import models
 from django.db.models import Q, loading
 from django.contrib.auth.models import User
-from django.db.utils import DatabaseError
-from django.utils.datastructures import SortedDict
-from django.core.cache import cache
-from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
-from django.utils import html, translation
+from django.core.exceptions import ValidationError, PermissionDenied
+from django.utils.safestring import mark_safe
+
+from twistranet.log import log
 from twistranet.twistranet.lib import roles, permissions
-from twistranet.log import *
+from twistranet.twistranet.signals import twistable_post_save
 
 class TwistableManager(models.Manager):
     """
@@ -242,6 +241,17 @@ class Twistable(_AbstractTwistable):
             if self.slug :
                 return  (viewbyslug, [self.slug])
         return (viewbyid, [self.id])
+
+    @property
+    def html_link(self,):
+        """
+        Return a pretty HTML anchor tag
+        """
+        d = {
+            'label': self.title_or_description,
+            'url': self.get_absolute_url(),
+        }
+        return """<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
             
     #                                                                   #
     #           Internal management, ensuring DB consistancy            #    
@@ -251,8 +261,11 @@ class Twistable(_AbstractTwistable):
         """
         Set various object attributes
         """
-        import account, community
+        import account
+        import community
         
+        auth = Twistable.objects._getAuthenticatedAccount()
+
         # Check if we're saving a real object and not a generic Content one (which is prohibited).
         # This must be a programming error, then.
         if self.__class__.__name__ == Twistable.__name__:
@@ -264,7 +277,12 @@ class Twistable(_AbstractTwistable):
 
         # Set owner, publisher upon object creation. Publisher is NEVER set as None by default.
         if self.id is None:
-            self.owner = self.getDefaultOwner()
+            # If self.owner is already set, ensure it's done by SystemAccount
+            if self.owner_id:
+                if not isinstance(auth, account.SystemAccount):
+                    raise PermissionDenied("You're not allowed to set the content owner by yourself.")
+            else:
+                self.owner = self.getDefaultOwner()
             if not self.publisher_id:
                 self.publisher = self.getDefaultPublisher()
             else:
@@ -276,7 +294,6 @@ class Twistable(_AbstractTwistable):
             pass
             
         # Set created_by and modified_by fields
-        auth = Twistable.objects._getAuthenticatedAccount()
         if self.id is None:
             self.created_by = auth
         else:
@@ -297,21 +314,25 @@ class Twistable(_AbstractTwistable):
         if not tpl:
             # Didn't find? We restore default setting. XXX Should log/alert something here!
             tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.model_class.permission_templates.get_default() ]
-            print "Restoring default permissions. Problem here."
-            print "Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict)
+            log.notice("Restoring default permissions. Problem here.")
+            log.notice("Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict))
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)
                 
         # Check if we're creating or not
         if self.id:
-            creation = False
+            created = False
         else:
-            creation = True
+            created= True
             
         # Save and update access network information
         ret = super(Twistable, self).save(*args, **kw)
         self._update_access_network()
+
+        # Send TN's post-save signal
+        twistable_post_save.send(sender = self.__class__, instance = self, created = created)
+        # XXX TODO: Check responses against exceptions
         return ret
 
     def _update_access_network(self, ):
@@ -416,12 +437,14 @@ class Twistable(_AbstractTwistable):
         
     @property    
     def title_or_description(self):
-        """Return either title or description (or slug) but avoid the empty string at all means.
+        """
+        Return either title or description (or slug) but avoid the empty string at all means.
+        The return value is considered HTML-safe.
         """
         for attr in ('title', 'description', 'slug', 'id'):
             v = getattr(self, attr, None)
             if v:
-                return v
+                return mark_safe(v)
             
     class Meta:
         app_label = "twistranet"

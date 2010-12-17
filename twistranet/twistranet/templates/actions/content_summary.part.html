@@ -7,8 +7,8 @@
                title="{% trans 'Delete content' %}">
               <span>&nbsp;</span>
               <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
-              {% with content.text_summary as text_summary %}
-                <span class="confirm-message">{% blocktrans %}Do you really want to delete '{{ text_summary }}'?{% endblocktrans %}</span>
+              {% with content.title as title%}
+                <span class="confirm-message">{% blocktrans %}Do you really want to delete '{{ title }}'?{% endblocktrans %}</span>
               {% endwith %}
             </a>
         </li>

@@ -1,11 +1,6 @@
 from django.db import models
-from django.db.models import Q
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils import html
-from account import Account
+from twistranet.twistranet.lib import permissions
 from content import Content
-from twistranet.twistranet.lib import roles, permissions
 
 class StatusUpdate(Content):
     """
@@ -19,55 +14,6 @@ class StatusUpdate(Content):
     class Meta:
         app_label = 'twistranet'
 
-class Notification(Content):
-    """
-    ACCOUNT did WHAT [on ACCOUNT/CONTENT].
-    This is an internal system message, available to people following either the first or second mentionned account.
-    It's meant to be posted by SystemAccount only.
-    
-    Author is usually SystemAccount.
-    Publisher is usually the community (or account) this content belongs to.
-    """
-    # Defined fields on the notification
-    who = models.ForeignKey(Account, related_name = "who")
-    did_what = models.CharField(
-        max_length = 32, 
-        choices = (
-            ("joined", "joined", ),
-            ("left", "left", ),
-            ("picture", "changed his/her profile picture", ),
-            ("network", "is connected to", ),
-            ("follows", "follows", ),
-            ("likes", "likes", ),
-            ),
-        )
-    on_who = models.ForeignKey(Account, related_name = "on_who", null = True)
-    on_what = models.ForeignKey(Content, related_name = "on_what", null = True)
-    
-    # View / permissions overriding support
-    permission_templates = permissions.ephemeral_templates
-    type_summary_view = "content/summary.notification.part.html"
-    type_detail_view = None
-    
-    def __unicode__(self,):
-        return u"Notification %d: %s" % (self.id, self.did_what)
-    # 
-    # def preprocess_html_headline(self, text = None):
-    #     """
-    #     XXX TODO: Translate the sentence using gettext!
-    #     """
-    #     from django.core.urlresolvers import reverse
-    #     if self.on_who:
-    #         text = "@%s %s @%s" % (self.who.slug, self.did_what, self.on_who.slug)
-    #     elif self.on_what:
-    #         text = "@%s %s %s" % (self.who.slug, self.did_what, self.on_what.id)
-    #     else:
-    #         text = "@%s" % (self.who, )
-    #     return super(Notification, self).preprocess_html_headline(text)
-    # 
-    class Meta:
-        app_label = "twistranet"
-        
         
 class Document(Content):
     """

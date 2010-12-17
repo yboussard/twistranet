@@ -1,6 +1,5 @@
 # Django settings for TwistraNet project.
 import os.path
-import sys
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -157,7 +156,7 @@ INSTALLED_APPS = (
     
     # 3rd party modules
     'debug_toolbar',
-    'haystack',
+    # 'haystack',
     'piston',
     'tinymce',
     'sorl.thumbnail',
@@ -166,6 +165,7 @@ INSTALLED_APPS = (
     'twistranet.twistranet',
     
     # TwistraNet extensions
+    'twistranet.notifier',
     'twistranet.twistrans',
     'twistranet.twistorage',
 )
@@ -174,4 +174,5 @@ INSTALLED_APPS = (
 try:
     from local_settings import *
 except ImportError:
-    pass  
+    pass
+

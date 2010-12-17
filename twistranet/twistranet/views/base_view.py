@@ -308,7 +308,6 @@ class BaseWallView(BaseIndividualView):
         # Wall edition forms if user has the right to write on it
         # This return a list of forms as each content type can define its own tab+form
         form_classes = form_registry.getInlineForms(publisher)
-        log.debug(form_classes)
         forms = []
         for form_class in [ k['form_class'] for k in form_classes ]:
             # Initial data processing
@@ -343,7 +342,6 @@ class BaseWallView(BaseIndividualView):
                     forms.append(form)
 
         # Return the forms
-        log.debug(forms)
         return forms
     
     def get_recent_content_list(self):
