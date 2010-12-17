@@ -556,6 +556,10 @@ ul.tn-box-container ul li {
 
 /* different kind of boxes */
 
+li.actions-box {
+  margin-top: 5px;
+}
+
 .context-box h3 {
   background-color:#df2429;
 }
