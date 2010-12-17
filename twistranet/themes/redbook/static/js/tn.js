@@ -88,8 +88,8 @@ setSelectedTopic = function(menu) {
 
 // Live search ajax
 liveSearch = function(searchTerm) {
-    var liveResults = jQuery('#search-live-results');
     livesearchurl = '/static/js/livesearch-test.txt' ;
+    var liveResults = jQuery('#search-live-results');
     if (searchTerm) {
       jQuery.get(livesearchurl+'?q='+searchTerm, 
           function(data) {
@@ -99,7 +99,7 @@ liveSearch = function(searchTerm) {
               jQuery(results).each(function(){
                   liveResults.append('<p><a href="'+this.link+'">'+this.title+'</a></p>');
               }); 
-                  liveResults.show();
+              liveResults.show();
           } );      
 /*  for better control ...
         jQuery.ajax({
@@ -141,7 +141,22 @@ var twistranet = {
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jQuery("#default-search-text").val();
-        jQuery("#search-text").livesearch({
+        searchGadget = jQuery("#search-text");
+        var liveResults = jQuery('#search-live-results');
+        liveResults.bind('mouseenter', function(){
+            jQuery(this).show();
+        });
+        liveResults.bind('mouseleave', function(){
+            jQuery(this).hide('slow');
+        });        
+        searchGadget.bind('blur', function(){
+            liveResults.trigger('mouseleave');
+        });
+        /* could also be nice on mouseenter, but perhaps too much */
+        searchGadget.bind('focus',function(){
+            if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
+        });
+        searchGadget.livesearch({
     				searchCallback: liveSearch,
     				innerText: defaultSearchText,
     				queryDelay: 250,
