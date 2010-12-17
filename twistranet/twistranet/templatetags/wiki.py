@@ -14,7 +14,9 @@ from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from twistranet.twistranet.lib import slugify
-from twistranet.twistranet.models import Account, Content
+from twistranet.twistranet.models import Account, Content, Resource
+
+from twistranet.log import log
 
 register = template.Library()
 
@@ -25,13 +27,63 @@ account_id_regex = re.compile(r"@(?P<Alias>\d+)")
 content_slug_regex = re.compile(r"\[\s*(?P<Alias>%s)\s*\]" % slugify.SLUG_REGEX)
 content_id_regex = re.compile(r"\[\s*(?P<Alias>\d+)\s*\]")
 
+def resource_image(resource):
+    """
+    Render a resource image as an HTML tag
+    """
+    d = {
+        'url':  resource.get_absolute_url(),
+        'title': resource.title or "",
+    }
+    return """<img src="%(url)s" alt="%(title)s" />""" % d
+
+
 matches = (
-    # regex,                fast_reverse,               model,          lookup field
-    (account_id_regex,      'account_by_id',            Account,        "id",               ),
-    (account_slug_regex,    'account_by_slug',          Account,        "slug",             ),
-    (content_id_regex,      'content_by_id',            Content,        "id",               ),
-    (content_slug_regex,    'content_by_slug',          Content,        "slug",             ),
+    # regex,                fast_reverse,         func,       model,          lookup field
+    (account_id_regex,      'account_by_id',      None,       Account,        "id",               ),
+    (account_slug_regex,    'account_by_slug',    None,       Account,        "slug",             ),
+    (content_id_regex,      'content_by_id',      None,       Content,        "id",               ),
+    (content_slug_regex,    'content_by_slug',    None,       Content,        "slug",             ),
+    (content_id_regex,      'resource_by_id',     resource_image,             Resource,       "id",               ),
+    (content_slug_regex,    'resource_by_slug',   resource_image,             Resource,       "slug",             ),
 )
+
+
+class Subf(object):
+    def __init__(self, lookup, fast_reverse, func, model, lookup_field, ):
+        self.lookup = lookup
+        self.fast_reverse = fast_reverse
+        self.func = func
+        self.model = model
+        self.lookup_field = lookup_field
+
+
+    def __call__(self, match):
+        """
+        Function passed to re.sub()
+        """
+        label = match.group(0)
+        title = None
+        if self.lookup:
+            try:
+                kw = {self.lookup_field: match.groupdict()['Alias']}
+                obj = self.model.objects.get(**kw)
+                url = obj.get_absolute_url()
+                if self.lookup_field != "slug" and obj.slug:
+                    label = match.group(0).replace(match.groupdict()['Alias'], obj.slug)
+                title = obj.title
+            except self.model.DoesNotExist:
+                log.debug("Doesn't exist: %s->%s" % (self.lookup_field, match.groupdict()['Alias']))
+                return match.group(0)
+        else:
+            url = reverse(self.fast_reverse, args = (match.groupdict()['Alias'],))
+
+        if self.func and obj:
+            subst = self.func(obj)
+        else:
+            subst = '<a href="%s" title="%s">%s</a>' % (url, title or label, label)
+
+        return subst
 
 
 def escape_wiki(text, lookup = False, autoescape=None):
@@ -51,29 +103,9 @@ def escape_wiki(text, lookup = False, autoescape=None):
     text = url_regex.sub('<a target="_blank" href="\g<0>">\g<Subdomains></a>', text)
     
     # Replace the global matches
-    for regex, fast_reverse, model_class, lookup_field in matches:
-        s = text
-        for match in regex.finditer(text):
-            label = match.group(0)
-            title = None
-            if lookup:
-                try:
-                    kw = {lookup_field: match.groupdict()['Alias']}
-                    obj = model_class.objects.get(**kw)
-                    url = obj.get_absolute_url()
-                    if lookup_field != "slug" and obj.slug:
-                        label = match.group(0).replace(match.groupdict()['Alias'], obj.slug)
-                    title = obj.title
-                except model_class.DoesNotExist:
-                    continue    # Ignore unexistant or not-available links
-            else:
-                url = reverse(fast_reverse, args = (match.groupdict()['Alias'],))
-            s = "%s%s%s" % (
-                s[0:match.start()],
-                '<a href="%s" title="%s">%s</a>' % (url, title or label, label),
-                s[match.end():],
-                )
-        text = s
+    for regex, fast_reverse, func, model_class, lookup_field in matches:
+        subf = Subf(lookup, fast_reverse, func, model_class, lookup_field )
+        text = regex.sub(subf, text)
     
     # Return text
     return mark_safe(text)

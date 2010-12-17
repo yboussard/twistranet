@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from twistranet.twistranet.signals import *
 import handlers
 
-twistable_post_save.connect(handlers.LogHandler(), weak = False)
+#twistable_post_save.connect(handlers.LogHandler(), weak = False)
 
 join_community.connect(
     handlers.NotificationHandler(

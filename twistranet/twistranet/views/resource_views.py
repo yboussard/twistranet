@@ -128,14 +128,14 @@ def resource_by_slug(request, slug):
     return _getResourceResponse(request, resource)
 
 @require_access
-def resource_by_alias_or_id(request, alias_or_id):
+def resource_by_slug_or_id(request, slug_or_id):
     """
     Return a resource by its alias or by its id if not found
     """
     try:
-        resource = Resource.objects.get(alias = alias_or_id)
+        resource = Resource.objects.get(slug = slug_or_id)
     except ObjectDoesNotExist:
-        resource = by_id(request, alias_or_id)
+        resource = Resource.objects.get(id = slug_or_id)
     return _getResourceResponse(request, resource)
     
 @require_access

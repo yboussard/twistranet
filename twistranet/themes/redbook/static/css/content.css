@@ -56,6 +56,22 @@
     margin: 1em 0 1em 0;
 }
 
+.content-text table {
+    margin: 8px 0 8px 0;
+}
+
+.content-text table tr th {
+    background-color: #F6F6F6;
+    padding: 10px;
+}
+
+.content-text table tbody tr td {
+    vertical-align: top;
+    padding: 5px;
+    background-color: #F9F9F9;
+}
+
+
 .content-actions {
   float: right;
   margin: 0 0 0 0.5em;

@@ -1,5 +1,6 @@
 from django.db.models.query import QuerySet
 from twistranet.twistranet.models import Twistable
+from twistranet.log import log
 
 class Fixture(object):
     """
@@ -22,6 +23,7 @@ class Fixture(object):
         from twistranet.twistranet.models import Account
         slug = self.dict.get('slug', None)
         obj = None
+        log.debug("Trying to import %s" % slug)
         
         # Check if slug is given. Mandatory.
         if not self.dict.has_key('slug'):

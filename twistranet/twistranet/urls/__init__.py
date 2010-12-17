@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^resource/(\d+)$', 'twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
     url(r'^resource/(%s)/$' % SLUG_REGEX, 'twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
     (r'^resource/new$',                         'twistranet.twistranet.views.create_resource'),
-    (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_alias_or_id'),
+    (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_slug_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty
     
