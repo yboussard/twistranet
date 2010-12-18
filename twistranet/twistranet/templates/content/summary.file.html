@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load wiki %}
+{# Generate a summary for 'content' object #}
+<div class="post" id="post-{{content.id}}">
+    {% with content.owner_for_display as account %}
+        {% include 'account/medium.thumbnail.alone.html' %}
+    {% endwith %}
+    <div class="entry">
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
+        </div>
+        <div class="entry-main">
+            {% if not content.owner_for_display.id == content.publisher_id %}
+            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">&raquo; {{ content.publisher.title }}</a>
+            {% endif %}
+            <span class="headline">
+                {% if content.detail_view %}
+                    <div class="summary-content">
+                        <div class="headline-content">
+                            <a href="{{ content.get_absolute_url }}">
+                                {{ content.title_or_description }}
+                            </a>
+                        </div>
+                {% else %}
+                    {{ content.title_or_description }}
+                {% endif %}
+            </span>
+            {% if content.detail_view %}
+                    {{ content.description|wiki }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="postmetadata">
+            <ul>
+                {%if not content.owner_for_display == content.owner %}
+                    <li class="author">{{ content.owner.title }}</li>
+                {% endif %}
+                <li class="date">{{ content.created_at|timesince }}</li>
+                {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
+                <li class="target">{{ content.permissions }}</li>
+                {%if content.can_edit %}
+                    <li class="action">
+                        <a href="{% url edit_content content.id %}">Edit</a>
+                    </li>
+                {%endif%}
+                <!-- {{ content.id }} -->
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"><!-- --></div>
+</div>
