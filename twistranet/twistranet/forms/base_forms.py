@@ -40,10 +40,7 @@ class BaseInlineForm(BaseForm):
         return self.Meta.model.__name__
 
     class Meta:
-        fields = ('description', 'permissions', )
-        widgets = {
-            'description':             widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
-        }
+        fields = ('permissions', )
         
 class BaseRegularForm(BaseForm):
     """

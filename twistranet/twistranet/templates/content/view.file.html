@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load wiki %}
+
+{% block content %}
+    <div class="content-summary">
+        {{ content.description|fullwiki }}
+    </div>
+    <div class="content-file">
+        <a href="{{content.file.get_absolute_url}}">
+            Download {{ content.file.title }}
+        </a>
+    </div>
+{% endblock %}

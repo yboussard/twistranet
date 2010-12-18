@@ -45,6 +45,16 @@ class Resource(twistable.Twistable):
 
     class Meta:
         app_label = 'twistranet'
+
+    def save(self, *args, **kw):
+        """
+        Properly set title if not set.
+        """
+        if not self.title:
+            if self.resource_file:
+                self.title = self.resource_file.name
+
+        return super(Resource, self).save(*args, **kw)
         
     @property
     def image(self,):

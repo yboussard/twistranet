@@ -10,13 +10,23 @@ class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
-    icon = "statusupdate.png"
-    
     class Meta(BaseInlineForm.Meta):
         from twistranet.content_types.models import StatusUpdate
         model = StatusUpdate
-        fields = BaseInlineForm.Meta.fields
-        widgets = BaseInlineForm.Meta.widgets
+        fields = ('description', ) + BaseInlineForm.Meta.fields
+        widgets = {
+            'description':             widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+        }
+
+class InlineFileForm(BaseInlineForm):
+    """
+    Quick file upload form
+    """
+    class Meta(BaseInlineForm.Meta):
+        from twistranet.content_types.models import File
+        model = File
+        fields = ('file', ) + BaseInlineForm.Meta.fields
+#        widgets = 
 
 class QuickDocumentForm(BaseRegularForm):
     """
@@ -26,7 +36,6 @@ class QuickDocumentForm(BaseRegularForm):
     """
     allow_creation = True
     allow_edition = False
-    icon = "document.png"
     
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document
@@ -37,13 +46,13 @@ class QuickDocumentForm(BaseRegularForm):
             'text':         TinyMCE(attrs = {'rows': 20, 'cols': 100}),
         }
 
+
 class DocumentForm(BaseRegularForm):
     """
     A full-featured document form, used for edition only
     """
     allow_creation = False
     allow_edition = True
-    icon = "document.png"
 
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document
@@ -54,10 +63,26 @@ class DocumentForm(BaseRegularForm):
             'text':         TinyMCE(attrs = {'rows': 30, 'cols': 120}),
         }
 
+class FileForm(BaseRegularForm):
+    """
+    A file edition form. Doesn't allow creation now but may in the future.
+    """
+    allow_creation = False
+    allow_edition = True
+
+    class Meta(BaseRegularForm.Meta):
+        from twistranet.content_types.models import File
+        model = File
+        fields = ('title', 'description', 'file', )
+        widgets = {
+            'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+        }
+
 form_registry.register(StatusUpdateForm)
 form_registry.register(QuickDocumentForm)
 form_registry.register(DocumentForm)
-
+form_registry.register(InlineFileForm)
+form_registry.register(FileForm)
 
 
 

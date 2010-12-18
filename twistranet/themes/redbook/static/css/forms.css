@@ -158,6 +158,11 @@ ul.errorlist li {
     padding-left: 18px;
 }
 
+#formhandle-File  {
+    background: url(../images/icons/upload.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 18px;
+}
 
 
 /* Our great resource widget */

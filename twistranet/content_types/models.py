@@ -5,6 +5,7 @@ Default content types for twistranet
 from django.db import models
 from twistranet.twistranet.lib import permissions
 from twistranet.twistranet.models.content import Content
+from twistranet.twistranet.forms import fields
 
 
 class StatusUpdate(Content):
@@ -36,14 +37,29 @@ class Document(Content):
 #     class Meta:
 #         app_label = 'twistranet'
 #
-# class File(Content):
-#     """
-#     Abstract class which represents a File in database.
-#     We just add filename information plus several methods to display it.
-#     """
-#     class Meta:
-#         app_label = 'twistranet'
-#
+
+class File(Content):
+    """
+    Abstract class which represents a File (as a Resource) in database.
+    We just add filename information plus several methods to display it.
+    """
+    class Meta:
+        app_label = 'twistranet'
+
+    file = fields.ResourceField()
+
+    type_detail_view = "content/view.file.html"
+
+    def save(self, *args, **kw):
+        """
+        Before saving, we use filename as this content title
+        if title is empty.
+        """
+        if not self.title:
+            self.title = self.file.title
+
+        return super(File, self).save(*args, **kw)
+
 # class Image(File):
 #     """
 #     Image file

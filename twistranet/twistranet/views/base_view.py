@@ -4,10 +4,11 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
-from twistranet.twistranet.models import *
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+
+from twistranet.twistranet.models import *
 from twistranet.twistranet.forms import form_registry
 from twistranet.log import *
 
@@ -327,7 +328,7 @@ class BaseWallView(BaseIndividualView):
                 form = form_class(initial = initial)
                 forms.append(form)
             else:                                               # Ok, we submited
-                form = form_class(self.request.POST, initial = initial)
+                form = form_class(self.request.POST, self.request.FILES, initial = initial)
                 content_type = form.getName()
 
                 # We skip validation for forms of other content types.

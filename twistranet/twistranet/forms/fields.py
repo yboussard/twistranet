@@ -9,6 +9,8 @@ from django.db import models
 from django.core.validators import EMPTY_VALUES
 from django.utils.translation import ugettext as _
 
+from twistranet.log import log
+
 import widgets
 
 class ModelInputField(forms.Field):
@@ -111,6 +113,11 @@ class ResourceField(models.ForeignKey):
     - the resource id we're going to use (easy)
     - the File we're going to upload as a resource (more complicated)
     """
+    def __init__(self, model = "Resource", *args, **kw):
+        """
+        Default model is Resource
+        """
+        super(ResourceField, self).__init__(model, *args, **kw)
     
     def delete_file(self, instance, *args, **kwargs):
         if getattr(instance, self.attname):
@@ -128,9 +135,11 @@ class ResourceField(models.ForeignKey):
         Return the newly created resource object.
         """
         # Determine the new resource's publisher according to its type
-        from twistranet.twistranet.models import Account, Resource
+        from twistranet.twistranet.models import Account, Resource, Content
         if isinstance(instance, Account):
             publisher = instance
+        elif isinstance(instance, Content):
+            publisher = instance.publisher
         else:
             raise NotImplementedError("Have to find who is the publisher for a new resource for %s" % (instance, ))
             
@@ -155,6 +164,7 @@ class ResourceField(models.ForeignKey):
         resource = None
         
         # Process either upload file or resource id
+        log.debug("We have data: %s" % data)
         if data:
             if data[1]:         # We have a file, it takes precedence.
                 resource = self.upload_resource(instance, data[1])
@@ -171,9 +181,4 @@ class ResourceField(models.ForeignKey):
         defaults = {'form_class': ResourceFormField}
         defaults.update(kwargs)
         return super(ResourceField, self).formfield(**defaults)
-
-
-
-
-
 

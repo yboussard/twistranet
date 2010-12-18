@@ -24,7 +24,7 @@ class ContentView(BaseIndividualView):
         'actions/context.box.html', 
         'content/metadata.box.html', 
     ]
-    template = "content/view.html"
+    template = None  # Will be overridden later
     template_variables = BaseIndividualView.template_variables + [
         "content",
     ]
@@ -58,6 +58,8 @@ class ContentView(BaseIndividualView):
         """
         super(ContentView, self).prepare_view(*args, **kw)
         self.content = self.content and self.content.object
+        if not self.template:
+            self.template = self.content.detail_view
 
 
 class ContentEdit(ContentView):
@@ -68,9 +70,13 @@ class ContentEdit(ContentView):
 
     def get_form_class(self,):
         if self.object:
-            return form_registry.getFormEntries(self.object.model_name, edition = True)[0]['form_class']
+            ctype = self.object.model_name
         else:
-            return form_registry.getFormEntries(self.content_type, creation = True)[0]['form_class']
+            ctype = self.content_type
+        try:
+            return form_registry.getFormEntries(ctype, edition = True)[0]['form_class']
+        except IndexError:
+            raise ValueError("No Form registered for this content type: '%s'" % ctype)
 
     def get_title(self,):
         """
