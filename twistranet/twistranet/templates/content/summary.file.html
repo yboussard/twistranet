@@ -10,9 +10,14 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <div class="entry-main">
-            {% if not content.owner_for_display.id == content.publisher_id %}
-            <a class="publisher" href="{{ content.publisher.get_absolute_url }}">&raquo; {{ content.publisher.title }}</a>
-            {% endif %}
+            <div class="publisher">
+                <a href="{{ content.owner_for_display.get_absolute_url }}">
+                    {{ content.owner_for_display.title }}
+                </a>
+                {% if not content.owner_for_display.id == content.publisher_id %}
+                <a class="publisher" href="{{ content.publisher.get_absolute_url }}">&raquo; {{ content.publisher.title }}</a>
+                {% endif %}
+            </div>
             <span class="headline">
                 {% if content.detail_view %}
                     <div class="summary-content">

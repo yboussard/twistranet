@@ -383,7 +383,11 @@ ul.children li {
 
 
 .entry-main {
-    font-size:  13px;
+    font-size:  11px;
+}
+
+.publisher {
+    padding-bottom: 3px;
 }
 
 .summary-content {

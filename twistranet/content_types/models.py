@@ -49,6 +49,7 @@ class File(Content):
     file = fields.ResourceField()
 
     type_detail_view = "content/view.file.html"
+    type_summary_view = "content/summary.file.html"
 
     def save(self, *args, **kw):
         """
