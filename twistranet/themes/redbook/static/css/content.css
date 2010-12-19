@@ -1,11 +1,12 @@
 /* Content-related stuff, including small content views */
 
 .post {
-	margin-top: 0.5em;
-	padding: 5px;
-	background-color: none;
-	clear: both;
-	cursor: pointer;
+    margin-top: 0.5em;
+    padding: 5px 5px 5px 5px;
+    background-color: none;
+    clear: both;
+    border-bottom: 1px solid #f7f7f7;
+    /*cursor: pointer;*/
 }
 
 .activepost {
@@ -20,10 +21,24 @@
     font-weight: bold;
 }
 
+
+.post .summary-thumbnail {
+    float: left;
+}
+
+.entry {
+    display: table-cell;
+    width: 505px;
+}
+
+.post div.notification {
+    padding-left: 57px;
+}
+
 .entry .postmetadata {
   color: #999;
   text-align: left;
-	line-height: auto;
+  line-height: auto;
 }
   .entry div.postmetadata {
     margin-top: 7px;

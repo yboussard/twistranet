@@ -2,9 +2,11 @@
 {% load wiki %}
 {# Generate a summary for 'content' object #}
 <div class="post" id="post-{{content.id}}">
-    {% with content.owner_for_display as account %}
-        {% include 'account/medium.thumbnail.alone.html' %}
-    {% endwith %}
+    <div class="summary-thumbnail">
+        {% with content.owner_for_display as account %}
+            {% include 'account/medium.thumbnail.alone.html' %}
+        {% endwith %}
+    </div>
     <div class="entry">
         <div class="content-actions">
             {% include 'actions/content_summary.part.html' %}
