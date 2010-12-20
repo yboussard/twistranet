@@ -132,12 +132,17 @@ class TwistraNetJSONSearchView(BaseView):
             if res.object is not None :
                 res_obj = res.object
                 o['title'] = getattr(res_obj, 'title', u'')
+                o['type'] = type = getattr(res_obj, 'model_name', u'')
                 o['description'] = getattr(res_obj, 'description', u'')  
-                o['link'] = res_obj.get_absolute_url() or '/'   
+                # for some results we get account or community url as url
+                if type in ('StatusUpdate', ) :
+                    o['link'] = res_obj.owner_for_display().get_absolute_url() or '/'
+                else :
+                    o['link'] = res_obj.get_absolute_url() or '/'
                 if hasattr(res_obj, 'picture') :
                     picture = res_obj.picture 
-                elif hasattr(res_obj, 'publisher') :
-                    picture = res_obj.publisher.picture
+                else :
+                    picture = res_obj.owner_for_display().picture
                 if picture is not None :
                     from sorl.thumbnail import default
                     # generate the thumb or just get it

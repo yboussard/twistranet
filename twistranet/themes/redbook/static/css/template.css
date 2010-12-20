@@ -54,7 +54,7 @@ body {
 				border: none;
 				margin: 2px 0 0;
 				color: black;
-				width: 130px;
+				width: 145px;
 			}
 			.inactive_search {
         color: #999 !important;
@@ -63,6 +63,8 @@ body {
       #search-button:active {
         border: none;
         background: transparent !important;
+        padding: 3px 8px;
+        margin: 0;
       }
       #search-live-results {
         position: absolute;

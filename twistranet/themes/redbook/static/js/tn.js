@@ -83,21 +83,24 @@ setSelectedTopic = function(menu) {
           } 
       });
     });
-    if (!selected) jQuery('>ul>li:first', menu).addClass('selected'); 
+    if (!selected) jQuery('>ul>li:first', menu).addClass('selected');
 }
 
-liveSearchDisplayResult = function(link, thumblink, title, description) {
+liveSearchDisplayResult = function(link, thumblink, type, title, description) {
     template= ' \
-<a href="' + link + '" \
-   title="' + title + '" \
-   class="image-block image-block-50-50 image-block-alone"> \
-   <img src="' + thumblink + '" \
-        alt="'+ title + '" /> \
-</a> \
-\<p>'+ title + '</p> \
-<p>'+ description + '</p> \
+<div class="ls-result"> \
+   <a href="' + link + '" \
+      title="' + title + '" \
+      class="image-block image-block-50-50 image-block-alone"> \
+       <img src="' + thumblink + '" \
+            alt="'+ title + '" /> \
+   </a> \
+  <p><span class="ls-result-title">' + title + '</span><span class="ls-result-type">' + type + '</span></p> \
+  <p class="ls-result-description">' + description + '</p> \
+  <div class="clear"></div> \
+</div> \
 ';    
-return template;
+return template.replace('<span class="ls-result-title"></span>', '');
 }
 
 
@@ -108,21 +111,29 @@ liveSearch = function(searchTerm) {
     var nores_text = jQuery('#no-results-text').val();
     if (searchTerm) {
       jQuery.get(livesearchurl+'?q='+searchTerm, 
+          // get json data (eval)
           function(data) {
               results = eval(data);
               liveResults.hide();
               liveResults.html('');
               if (results.length) {
                   jQuery(results).each(function(){
-                      html_result = liveSearchDisplayResult(this.link, this.thumb, this.title, this.description);
+                      html_result = liveSearchDisplayResult(this.link, this.thumb, this.type, this.title, this.description);
                       liveResults.append(html_result);
-                  });              
+                      
+                  });   
+                  jQuery(document).ready(function() {
+                      jQuery('.ls-result').click( function(){
+                          location.replace( jQuery('a', this).attr('href'));
+                      })
+                  });
               }
               else {
                   liveResults.append('<p>' + nores_text + '</p>');
               }            
               liveResults.show(); 
-          } );      
+          }
+          );      
     }  
     else {
         liveResults.hide();

@@ -757,3 +757,33 @@ a.action:hover {
 #tn-dialog-blockmessage .ui-icon {
   display: none;
 }
+
+/**************************
+*** Live search styles ****
+***************************/ 
+
+.ls-result {
+    border-bottom: 1px solid #F7F7F7;
+    clear: both;
+    margin-top: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.ls-result:hover {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #F2F2F2;
+    border-bottom-color: white;
+}
+
+.ls-result-title {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #AD1C20;
+} 
+
+.ls-result-type {
+    color: #999;
+}
