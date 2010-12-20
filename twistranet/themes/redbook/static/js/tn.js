@@ -86,9 +86,24 @@ setSelectedTopic = function(menu) {
     if (!selected) jQuery('>ul>li:first', menu).addClass('selected'); 
 }
 
+liveSearchDisplayResult = function(link, thumblink, title, description) {
+    template= ' \
+<a href="' + link + '" \
+   title="' + title + '" \
+   class="image-block image-block-50-50 image-block-alone"> \
+   <img src="' + thumblink + '" \
+        alt="'+ title + '" /> \
+</a> \
+\<p>'+ title + '</p> \
+<p>'+ description + '</p> \
+';    
+return template;
+}
+
+
 // Live search ajax
 liveSearch = function(searchTerm) {
-    livesearchurl = '/static/js/livesearch-test.txt' ;
+    livesearchurl = '/search/json' ;
     var liveResults = jQuery('#search-live-results');
     if (searchTerm) {
       jQuery.get(livesearchurl+'?q='+searchTerm, 
@@ -97,29 +112,11 @@ liveSearch = function(searchTerm) {
               liveResults.hide();
               liveResults.html('');
               jQuery(results).each(function(){
-                  liveResults.append('<p><a href="'+this.link+'">'+this.title+'</a></p>');
+                  html_result = liveSearchDisplayResult(this.link, this.thumb, this.title, this.description);
+                  liveResults.append(html_result);
               }); 
               liveResults.show();
           } );      
-/*  for better control ...
-        jQuery.ajax({
-           type: "GET",
-           url: livesearchurl,
-           data: 'q='+searchTerm,
-           dataType: "json",
-           success: function(msg){
-             liveResults.hide();
-             liveResults.html('');
-             jQuery(msg).each(function(){
-                liveResults.append('<p>'+jQuery(this).title+'</p>');
-             }); 
-             liveResults.show();
-           },
-           error: function(XMLHttpRequest, textStatus, errorThrown) {
-             alert(textStatus);
-           }
-        });          
-*/
     }  
     else {
         liveResults.hide();
@@ -151,16 +148,15 @@ var twistranet = {
         });        
         searchGadget.bind('blur', function(){
             liveResults.trigger('mouseleave');
-        });
-        /* could also be nice on mouseenter, but perhaps too much */
-        searchGadget.bind('focus',function(){
+        });       
+        searchGadget.bind('mouseenter',function(){
             if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
-        });
+        }); 
         searchGadget.livesearch({
     				searchCallback: liveSearch,
     				innerText: defaultSearchText,
-    				queryDelay: 250,
-    				minimumSearchLength: 1
+    				queryDelay: 200,
+    				minimumSearchLength: 2
     			});
     },
     finalizestyles: function(e) {

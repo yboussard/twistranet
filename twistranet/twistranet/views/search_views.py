@@ -11,7 +11,17 @@ from haystack.forms import ModelSearchForm
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
 
+try :
+    #python 2.6
+    import json
+except :
+    #python 2.4
+    import simplejson as json
+
 RESULTS_PER_PAGE = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
+LIVE_SEARCH_RESULTS_NUMBER = 10
+LIVE_SEARCH_THUMBS_SIZE = u'50x50'
+
 
 class TwistraNetSearchView(BaseView):
     """
@@ -79,5 +89,73 @@ class TwistraNetSearchView(BaseView):
                     if url:
                         raise MustRedirect(url())
 
+class TwistraNetJSONSearchView(BaseView):
+    """
+    We overload this and try to mix a little bit of the things we do with base_views...
+    """
 
+    title = "Live Search results - return json data"
+
+    def render_view(self, ):
+        """
+        must overload the standard
+        twistranet render_view
+        """
+        data = self.basic_search(self.request)
+        return HttpResponse( json.dumps(data),
+                             mimetype='text/plain')
+
+
+    
+    def basic_search(self, request, load_all=True, form_class=ModelSearchForm, searchqueryset=None, ):
+        """
+        Context::
+            * form
+              An instance of the ``form_class``. (default: ``ModelSearchForm``)
+            * query
+              The query received by the form.
+        """
+        query = ''
+        results = []
+
+        if request.GET.get('q'):
+            form = form_class(request.GET, searchqueryset=searchqueryset, load_all=load_all)
+
+            if form.is_valid():
+                query = form.cleaned_data['q']
+                results = form.search()
+        else:
+            return []
+        data = []
+        for res in results[:LIVE_SEARCH_RESULTS_NUMBER] :
+            o = {}
+            if res.object is not None :
+                res_obj = res.object
+                o['title'] = getattr(res_obj, 'title', u'')
+                o['description'] = getattr(res_obj, 'description', u'')  
+                o['link'] = res_obj.get_absolute_url() or '/'   
+                if hasattr(res_obj, 'picture') :
+                    picture = res_obj.picture 
+                elif hasattr(res_obj, 'publisher') :
+                    picture = res_obj.publisher.picture
+                if picture is not None :
+                    from sorl.thumbnail import default
+                    # generate the thumb or just get it
+                    try :
+                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE )
+                        o['thumb'] = thumb.url 
+                    except :
+                        o['thumb'] = picture.get_absolute_url()
+                else :
+                    o['thumb'] = ''  
+                data.append(o)
+                
+        return data
+            
+    def prepare_view(self,):
+        """
+        Prepare response
+        """
+        pass
+                        
 
