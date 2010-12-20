@@ -3,24 +3,24 @@
 {# The (inline) search field #}
 
 {% block searchform %}   
-		<input type="hidden"
+    <input type="hidden"
            id="default-search-text"
            value="{% if query %}{{ query }}{% else %}{% trans 'Search...' %}{% endif %}" />     
-		<input type="hidden"
+    <input type="hidden"
            id="no-results-text"
            value="{% blocktrans %}No results found.{% endblocktrans %}" />
     <form action="{% url haystack_search %}" method="get" id="search-box">
         {% csrf_token %}
-    	<div class="search-wrapper">
+      <div class="search-wrapper">
         <input 
-    		    type="text"
-    		    autocomplete='off'
-    		    class="textfield" 
-    		    value=""
-    		    name="q" 
-    		    id="search-text" />
-    		<input type="submit" value=" " id="search-button" />
-    	</div>
-    	<div id="search-live-results"></div>
+            type="text"
+            autocomplete='off'
+            class="textfield" 
+            value=""
+            name="q" 
+            id="search-text" />
+        <input type="submit" value=" " id="search-button" />
+      </div>
+      <div id="search-live-results"></div>
     </form>
 {% endblock %}

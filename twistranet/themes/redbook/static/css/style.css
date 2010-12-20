@@ -795,6 +795,10 @@ a.action:hover {
     color: #AD1C20;
 } 
 
+.ls-result-description {
+    line-height: 1.2em;
+}
+
 .ls-result-type {
     color: #999;
 }
