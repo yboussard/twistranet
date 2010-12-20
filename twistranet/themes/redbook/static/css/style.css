@@ -770,6 +770,10 @@ a.action:hover {
     cursor: pointer;
 }
 
+.ls-result p {
+    margin: 0 0 3px;
+}
+
 .ls-result:hover {
     border-radius: 5px;
     -moz-border-radius: 5px;

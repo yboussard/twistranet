@@ -95,13 +95,13 @@ liveSearchDisplayResult = function(link, thumblink, type, title, description) {
        <img src="' + thumblink + '" \
             alt="'+ title + '" /> \
    </a> \
-  <p><span class="ls-result-title">' + title + '</span><span class="ls-result-type">' + type + '</span></p> \
+  <p><span class="ls-result-title">' + title + '</span><span class="ls-result-type"> ' + type + '</span></p> \
   <p class="ls-result-description">' + description + '</p> \
   <div class="clear"></div> \
 </div> \
 ';    
 // remove empty fields
-template = template.replace('<span class="ls-result-type"></span>', '');
+template = template.replace('<span class="ls-result-type"> </span>', '');
 template = template.replace('<p><span class="ls-result-title"></span></p>', '');
 return template;
 }
@@ -175,11 +175,11 @@ var twistranet = {
             if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
         }); 
         searchGadget.livesearch({
-    				searchCallback: liveSearch,
-    				innerText: defaultSearchText,
-    				queryDelay: 200,
-    				minimumSearchLength: 2
-    			});
+            searchCallback: liveSearch,
+            innerText: defaultSearchText,
+            queryDelay: 200,
+            minimumSearchLength: 2
+            });
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
