@@ -795,7 +795,7 @@ a.action:hover {
     color: #AD1C20;
 } 
 
-.ls-result-description {
+.ls-result p.ls-result-description {
     line-height: 1.2em;
 }
 
