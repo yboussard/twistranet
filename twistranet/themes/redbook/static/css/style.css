@@ -771,7 +771,8 @@ a.action:hover {
 }
 
 .ls-result p {
-    margin: 0 0 3px;
+    margin: 0 0 2px;
+    line-height: 1.3em;
 }
 
 .ls-result:hover {
@@ -780,6 +781,9 @@ a.action:hover {
     -webkit-border-radius: 5px;
     background-color: #F2F2F2;
     border-bottom-color: white;
+}
+.ls-result.first {
+    margin-top: 0;
 }
 .ls-result.last {
     border-bottom: none;
