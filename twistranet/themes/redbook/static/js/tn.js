@@ -105,17 +105,23 @@ return template;
 liveSearch = function(searchTerm) {
     livesearchurl = '/search/json' ;
     var liveResults = jQuery('#search-live-results');
+    var nores_text = jQuery('#no-results-text').val();
     if (searchTerm) {
       jQuery.get(livesearchurl+'?q='+searchTerm, 
           function(data) {
               results = eval(data);
               liveResults.hide();
               liveResults.html('');
-              jQuery(results).each(function(){
-                  html_result = liveSearchDisplayResult(this.link, this.thumb, this.title, this.description);
-                  liveResults.append(html_result);
-              }); 
-              liveResults.show();
+              if (results.length) {
+                  jQuery(results).each(function(){
+                      html_result = liveSearchDisplayResult(this.link, this.thumb, this.title, this.description);
+                      liveResults.append(html_result);
+                  });              
+              }
+              else {
+                  liveResults.append('<p>' + nores_text + '</p>');
+              }            
+              liveResults.show(); 
           } );      
     }  
     else {

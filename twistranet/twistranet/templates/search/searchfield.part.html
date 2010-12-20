@@ -5,7 +5,10 @@
 {% block searchform %}   
 		<input type="hidden"
            id="default-search-text"
-           value="{% if query %}{{ query }}{% else %}{% trans 'Search...' %}{% endif %}" />
+           value="{% if query %}{{ query }}{% else %}{% trans 'Search...' %}{% endif %}" />     
+		<input type="hidden"
+           id="no-results-text"
+           value="{% blocktrans %}No results found.{% endblocktrans %}" />
     <form action="{% url haystack_search %}" method="get" id="search-box">
         {% csrf_token %}
     	<div class="search-wrapper">
