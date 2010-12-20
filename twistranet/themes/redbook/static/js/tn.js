@@ -100,7 +100,10 @@ liveSearchDisplayResult = function(link, thumblink, type, title, description) {
   <div class="clear"></div> \
 </div> \
 ';    
-return template.replace('<span class="ls-result-title"></span>', '');
+// remove empty fields
+template = template.replace('<span class="ls-result-type"></span>', '');
+template = template.replace('<p><span class="ls-result-title"></span></p>', '');
+return template;
 }
 
 
@@ -130,6 +133,7 @@ liveSearch = function(searchTerm) {
                           liveResults.unbind('mouseleave');
                           location.replace( jQuery('a', this).attr('href'));
                       })
+                      setFirstAndLast('#search-live-results','.ls-result')
                   });
               }
               else {
@@ -179,7 +183,7 @@ var twistranet = {
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
-        jQuery([['.content-actions', 'li'],['#mainmenu > ul > li', '> ul> li']]).each(function(){
+        jQuery([['.content-actions', 'li'],['#mainmenu > ul > li', '> ul> li'],['#content','.post']]).each(function(){
            setFirstAndLast(this[0], this[1]);
         } );         
         // set how many thumbs by line in different blocks

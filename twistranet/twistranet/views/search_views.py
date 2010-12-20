@@ -91,7 +91,8 @@ class TwistraNetSearchView(BaseView):
 
 class TwistraNetJSONSearchView(BaseView):
     """
-    We overload this and try to mix a little bit of the things we do with base_views...
+    This view returns search results in json format
+    used by live search
     """
 
     title = "Live Search results - return json data"
@@ -134,9 +135,12 @@ class TwistraNetJSONSearchView(BaseView):
                 o['title'] = getattr(res_obj, 'title', u'')
                 o['type'] = type = getattr(res_obj, 'model_name', u'')
                 o['description'] = getattr(res_obj, 'description', u'')  
-                # for some results we get account or community url as url
+                # for some kind of objects we get account or community url as url
                 if type in ('StatusUpdate', ) :
-                    o['link'] = res_obj.owner_for_display().get_absolute_url() or '/'
+                    owner = res_obj.owner_for_display()
+                    o['title'] = owner.title
+                    o['type'] = ''
+                    o['link'] = owner.get_absolute_url() or '/'
                 else :
                     o['link'] = res_obj.get_absolute_url() or '/'
                 if hasattr(res_obj, 'picture') :

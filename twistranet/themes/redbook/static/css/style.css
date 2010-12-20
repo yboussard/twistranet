@@ -777,6 +777,9 @@ a.action:hover {
     background-color: #F2F2F2;
     border-bottom-color: white;
 }
+.ls-result.last {
+    border-bottom: none;
+}
 
 .ls-result-title {
     margin-right: 5px;

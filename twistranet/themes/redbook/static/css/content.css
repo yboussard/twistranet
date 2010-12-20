@@ -9,6 +9,10 @@
     /*cursor: pointer;*/
 }
 
+.post.last {
+    border-bottom:none !important;
+}
+
 .activepost {
   background-color: #F2F2F2;
   -moz-border-radius: 5px; 
