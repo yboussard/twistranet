@@ -123,7 +123,11 @@ liveSearch = function(searchTerm) {
                       
                   });   
                   jQuery(document).ready(function() {
-                      jQuery('.ls-result').click( function(){
+                      jQuery('.ls-result').click( function(e){
+                          e.preventDefault();
+                          e.stopPropagation();
+                          jQuery("#search-text").unbind('mouseleave');
+                          liveResults.unbind('mouseleave');
                           location.replace( jQuery('a', this).attr('href'));
                       })
                   });
@@ -162,10 +166,7 @@ var twistranet = {
         });
         liveResults.bind('mouseleave', function(){
             jQuery(this).hide('slow');
-        });        
-        searchGadget.bind('blur', function(){
-            liveResults.trigger('mouseleave');
-        });       
+        });               
         searchGadget.bind('mouseenter',function(){
             if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
         }); 
