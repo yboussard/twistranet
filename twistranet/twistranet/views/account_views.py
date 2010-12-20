@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from twistranet.twistranet.models import *
+from twistranet.twistranet.forms import account_forms
 from base_view import *
 
 class UserAccountView(BaseWallView):
@@ -38,9 +39,11 @@ class UserAccountView(BaseWallView):
         Actions available on account (or home) pages
         """
         actions = []
-        self.auth_account = Account.objects._getAuthenticatedAccount()
-        self.in_my_network = self.auth_account.network.filter(id = self.account.id)
-        return [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, ) ]
+        if self.account :
+            self.auth_account = Account.objects._getAuthenticatedAccount()
+            self.in_my_network = self.auth_account.network.filter(id = self.account.id)
+            actions = [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, ) ]
+        return actions
         
     def prepare_view(self, *args, **kw):
         """
@@ -48,8 +51,8 @@ class UserAccountView(BaseWallView):
         """
         super(UserAccountView, self).prepare_view(*args, **kw)
         self.account = self.useraccount
-        self.n_communities = self.account.communities.count()
-        self.n_network_members = self.account.network.count()
+        self.n_communities = self.account and self.account.communities.count() or False
+        self.n_network_members = self.account and self.account.network.count() or False
 
     def get_title(self,):
         return _("%(name)s's profile" % {'name': self.account.title} )  
@@ -225,6 +228,49 @@ class RemoveFromNetworkView(BaseObjectActionView):
                 self.request, 
                 _("Your network request to %(name)s has been canceled." % {'name': name})
             )
+
+
+#                                                                           #
+#                           Edition / Creation views                          #
+#                                                                           #
+
+class UserAccountEdit(UserAccountView):
+    """
+    Edit form for user account. Not so far from the view itself.
+    """
+    template = "account/edit.html"
+    form_class = account_forms.UserAccountForm
+    content_forms = []
+    latest_content_list = []
+    
+    action_label = "Edit"
+    action_reverse_url = "user_account_edit"
+    
+    def as_action(self, request_view):
+        if not request_view.object.can_edit:
+            return
+        return super(UserAccountView, self).as_action(request_view)
+    
+    def get_title(self,):
+        """
+        Title suitable for creation or edition
+        """
+        if not self.object:
+            return _("Create a user account")
+        return _("Edit %(name)s" % {'name' : self.object.title })
+
+
+class UserAccountCreate(UserAccountEdit):
+    """
+    UserAccount creation. Close to the edit class
+    """
+    context_boxes = []
+    
+    
+
+
+
+
 
 
 def account_logout(request):
