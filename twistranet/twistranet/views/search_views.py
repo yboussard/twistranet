@@ -132,19 +132,23 @@ class TwistraNetJSONSearchView(BaseView):
             o = {}
             if res.object is not None :
                 res_obj = res.object
-                o['title'] = getattr(res_obj, 'title', u'')
-                o['type'] = type = getattr(res_obj, 'model_name', u'')
+                type = res_obj.model_name
                 o['description'] = getattr(res_obj, 'description', u'')  
-                # for some kind of objects we get account or community url as url
+                # for some kind of objects we use owner_for_display title and url
                 if type in ('StatusUpdate', ) :
                     owner = res_obj.owner_for_display()
-                    o['title'] = owner.title
+                    o['title'] = getattr(owner, 'title', u'')   
+                    o['link'] = owner.get_absolute_url()
                     o['type'] = ''
-                    o['link'] = owner.get_absolute_url() or '/'
                 else :
-                    o['link'] = res_obj.get_absolute_url() or '/'
+                    o['title'] = getattr(res_obj, 'title', u'')
+                    o['link'] = res_obj.get_absolute_url()
+                    o['type'] = type
+                # if object has a picture, we try to use it, otherwise we use owner_for_display picture
                 if hasattr(res_obj, 'picture') :
                     picture = res_obj.picture 
+                    if not picture :
+                        picture = res_obj.owner_for_display().picture
                 else :
                     picture = res_obj.owner_for_display().picture
                 if picture is not None :
