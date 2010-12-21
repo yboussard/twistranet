@@ -55,10 +55,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme_advanced_buttons3': "",
 }
 
-# Sorl-thumbnail config
-THUMBNAIL_PREFIX = "cache/"
-THUMBNAIL_FORMAT = "PNG"
-
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
 HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"

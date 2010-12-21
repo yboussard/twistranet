@@ -136,7 +136,7 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # Sorl-thumbnail config
 THUMBNAIL_PREFIX = "cache/"
-THUMBNAIL_FORMAT = "PNG"
+THUMBNAIL_FORMAT = "JPEG"
 
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
@@ -155,7 +155,6 @@ INSTALLED_APPS = (
     
     # 3rd party modules
     'debug_toolbar',
-    'haystack',
     'piston',
     'tinymce',
     'sorl.thumbnail',
@@ -168,6 +167,9 @@ INSTALLED_APPS = (
     'twistranet.notifier',
     'twistranet.twistrans',
     'twistranet.twistorage',
+
+    # 3rd party modules - must be loaded AFTER TN
+    'haystack',
 )
 
 # Local settings.
