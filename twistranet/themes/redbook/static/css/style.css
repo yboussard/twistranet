@@ -775,7 +775,8 @@ a.action:hover {
     line-height: 1.3em;
 }
 
-.ls-result:hover {
+.ls-result:hover,
+.ls-result-active {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

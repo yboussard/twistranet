@@ -107,6 +107,7 @@ return template;
 }
 
 
+
 // Live search ajax
 liveSearch = function(searchTerm) {
     livesearchurl = '/search/json' ;
@@ -126,14 +127,46 @@ liveSearch = function(searchTerm) {
                       
                   });   
                   jQuery(document).ready(function() {
-                      jQuery('.ls-result').click( function(e){
+                      allResults = jQuery('.ls-result', liveResults);
+                      lenResults = allResults.length;
+                      allResults.click( function(e){
                           e.preventDefault();
                           e.stopPropagation();
-                          jQuery("#search-text").unbind('mouseleave');
-                          liveResults.unbind('mouseleave');
+                          jQuery("#search-text").unbind('focusout');
+                          liveResults.unbind('focusout');
                           location.replace( jQuery('a', this).attr('href'));
-                      })
-                      setFirstAndLast('#search-live-results','.ls-result')
+                      });
+                      var activeResult = jQuery('.ls-result:first', liveResults);
+                      activeResult.addClass('ls-result-active');       
+                      var i = 0;
+                      // classical keyboard behavior
+                      jQuery("#search-text").keydown(function(e){       
+                          if (e.keyCode == '13') {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              activeResult.trigger('click');
+                          }                          
+                          else {
+                              changes = false;
+                              if (e.keyCode == '38' && i>0) {
+                                  e.preventDefault();
+                                  i-=1;       
+                                  changes = true;
+                              }
+                              else if ( e.keyCode == '40' && i<lenResults-1 ) {
+                                  e.preventDefault();
+                                  i+=1;           
+                                  changes = true;               
+                              }
+                              if (changes) {          
+                                  activeResult.removeClass('ls-result-active');
+                                  activeResult = jQuery(allResults[i]);
+                                  activeResult.addClass('ls-result-active');
+                              }
+
+                          }
+                      });
+                      setFirstAndLast('#search-live-results','.ls-result');
                   });
               }
               else {
@@ -163,8 +196,10 @@ var twistranet = {
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jQuery("#default-search-text").val();
-        searchGadget = jQuery("#search-text");
+        searchGadget = jQuery("#search-text");                
         var liveResults = jQuery('#search-live-results');
+        /*
+        // more light behavior
         liveResults.bind('mouseenter', function(){
             jQuery(this).show();
         });
@@ -174,6 +209,20 @@ var twistranet = {
         searchGadget.bind('mouseenter',function(){
             if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
         }); 
+        */              
+        // classical behavior
+        searchGadget.bind('focusin',function(){
+            if (liveResults.html()!='') liveResults.show(); 
+        });   
+        searchGadget.bind('focusout',function(){
+            liveResults.hide(500); 
+        });  
+        liveResults.bind('focusin', function(){
+            jQuery(this).show();
+        });
+        liveResults.bind('focusout', function(){
+            jQuery(this).hide(500);
+        });                                                         
         searchGadget.livesearch({
             searchCallback: liveSearch,
             innerText: defaultSearchText,
