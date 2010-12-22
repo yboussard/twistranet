@@ -50,6 +50,10 @@ class Fixture(object):
             if isinstance(v, QuerySet):
                 v = v.get()
             setattr(obj, k, v)
-        obj.save()
+        try:
+            obj.save()
+        except:
+            log.debug("Exception while attempting to generate %s" % self.dict)
+            raise
         
         return obj

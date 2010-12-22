@@ -29,14 +29,13 @@ class Twistorage(FileSystemStorage):
     _PLUS_ POSIX permissions (TODO: POSIX PERMISSIONS!).
     This way, you can handle security both inside and outside twistranet.
     
-    name is always 'publisher_id|slug/filename'.
+    name is always 'publisher_id/filename'.
     base_url can't be specified: URLs will be handled by Django views. 
     """
     def __init__(self, location = None, ):
         if location is None:
             location = settings.TWISTRANET_MEDIA_ROOT
         self.location = os.path.abspath(location)
-        # self.base_url = reverse("tn_download", args = ("", ))
         self.base_url = None
 
     def _open(self, name, mode='rb'):
@@ -44,7 +43,6 @@ class Twistorage(FileSystemStorage):
 
     def _save(self, name, content):
         full_path = self.path(name, 'w')
-
         directory = os.path.dirname(full_path)
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -56,7 +54,6 @@ class Twistorage(FileSystemStorage):
         # same name, at which point all sorts of fun happens. So we need to
         # try to create the file, but if it already exists we have to go back
         # to get_available_name() and try again.
-
         while True:
             try:
                 # This file has a file path that we can move.
@@ -117,7 +114,6 @@ class Twistorage(FileSystemStorage):
         Mode is 'w' if write access is required, 'r' if only read access is necessary
         """
         from twistranet.twistranet.models import Account
-        
         try:
             # Fetch account id, join with self.location.
             # This avoids having files in the 'root' section of TN.

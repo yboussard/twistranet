@@ -24,10 +24,10 @@ class MenuItem(Twistable):
     url_name = models.CharField(max_length=100, help_text='URL Name for Reverse Lookup, eg comments.comment_was_posted', blank=True, null=True, )
     view_path = models.CharField(max_length=100, help_text='Python Path to View to Render, eg django.contrib.admin.views.main.index', blank=True, null=True, )
     link_url = models.CharField(max_length=100, help_text='URL or URI to the content, eg /about/ or http://foo.com/', blank=True, null=True, )
-    target = models.ForeignKey("Twistable", related_name = "menu_items", null = True)
+    target = models.ForeignKey("Twistable", related_name = "menu_items", null = True, blank = True)
     
     # Parenting stuff
-    parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
+    parent = models.ForeignKey('MenuItem', related_name = '_children', null = True, blank = True)
 
     permission_templates = permissions.content_templates        # This is the lazy man's solution, we use same perms as content ;)
     default_picture_resource_slug = "default_menu_picture"

@@ -5,7 +5,7 @@ Default content types for twistranet
 from django.db import models
 from twistranet.twistranet.lib import permissions
 from twistranet.twistranet.models.content import Content
-from twistranet.twistranet.forms import fields
+from twistranet.twistranet.models import fields
 
 
 class StatusUpdate(Content):
@@ -18,8 +18,6 @@ class StatusUpdate(Content):
 
     class Meta:
         app_label = 'twistranet'
-
-
 
 class Document(Content):
     """

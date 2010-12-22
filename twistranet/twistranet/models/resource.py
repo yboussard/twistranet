@@ -17,8 +17,6 @@ def twistorage_upload_to(instance, filename):
         raise ValueError("Can't upload a file before a publisher is set on the resource.")
     if not instance.publisher.can_edit:
         raise PermissionDenied("You're not allowed to upload a file on '%s'." % instance.publisher)
-    if instance.publisher.slug:
-        return os.path.join(instance.publisher.slug, filename)
     return os.path.join(str(instance.publisher.id), filename)
 
 class Resource(twistable.Twistable):
@@ -56,7 +54,6 @@ class Resource(twistable.Twistable):
         if not self.title:
             if self.resource_file:
                 self.title = self.resource_file.name
-
         return super(Resource, self).save(*args, **kw)
         
     @property

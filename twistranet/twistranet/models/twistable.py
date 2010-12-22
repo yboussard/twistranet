@@ -10,7 +10,10 @@ This abstract class provides a lot of little tricks to handle view/model articul
 such as the slug management, prepares translation management and so on.
 """
 
-import inspect, logging, traceback
+import re
+import inspect
+import logging
+import traceback
 from django.db import models
 from django.db.models import Q, loading
 from django.contrib.auth.models import User
@@ -19,8 +22,9 @@ from django.utils.safestring import mark_safe
 
 from twistranet.log import log
 from twistranet.twistranet.lib import roles, permissions
+from twistranet.twistranet.lib.slugify import slugify
 from twistranet.twistranet.signals import twistable_post_save
-from twistranet.twistranet.forms.fields import ResourceField, PermissionField
+from fields import ResourceField, PermissionField, TwistableSlugField
 
 class TwistableManager(models.Manager):
     """
@@ -164,8 +168,8 @@ class Twistable(_AbstractTwistable):
     XXX TODO: Securise the base manager!
     """
     # Object management. Slug is optional (id is not ;))
-    slug = models.SlugField(unique = True, db_index = True, null = True)                 # XXX TODO: Have a more personalized slug field (allowing dots for usernames?)
-    
+    slug = TwistableSlugField(unique = True, db_index = True, null = True, blank = True)
+        
     # This is a way to de-reference the underlying model rapidly
     app_label = models.CharField(max_length = 64, db_index = True)
     model_name = models.CharField(max_length = 64, db_index = True)
@@ -179,7 +183,7 @@ class Twistable(_AbstractTwistable):
         
     # Basic metadata shared by all Twist objects.
     # Title is mandatory!
-    title = models.CharField(max_length = 255, blank = False)
+    title = models.CharField(max_length = 255, blank = True)
     description = models.TextField(max_length = 1024, blank = True)
     created_at = models.DateTimeField(auto_now_add = True, null = True, db_index = False)
     modified_at = models.DateTimeField(auto_now = True, null = True, db_index = True)
@@ -190,11 +194,11 @@ class Twistable(_AbstractTwistable):
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = None
-    picture = ResourceField(null = True)
+    picture = ResourceField(null = True, blank = True)
     
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
-    publisher = models.ForeignKey("Account", null = True, related_name = "published_twistables", db_index = True, ) 
+    publisher = models.ForeignKey("Account", null = True, blank = True, related_name = "published_twistables", db_index = True, ) 
 
     # Security / Role shortcuts. These are the ppl/account the Owner / Network are given to.
     # The account this object belongs to (ie. the actual author)
@@ -203,7 +207,7 @@ class Twistable(_AbstractTwistable):
     # Our security model.
     permission_templates = ()       # Define this in your subclasses
     permissions = PermissionField(db_index = True)
-    _access_network = models.ForeignKey("Account", null = True, related_name = "+", db_index = True, )
+    _access_network = models.ForeignKey("Account", null = True, blank = True, related_name = "+", db_index = True, )
         
     # The permissions. It's strongly forbidden to edit those roles by hand, use the 'permissions' property instead.
     _p_can_view = models.IntegerField(default = 16, db_index = True)
@@ -318,8 +322,7 @@ class Twistable(_AbstractTwistable):
         # Set created_by and modified_by fields
         if self.id is None:
             self.created_by = auth
-        else:
-            self.modified_by = auth
+        self.modified_by = auth
             
         # Check if publisher is set. Only GlobalCommunity may have its publisher to None to make a site visible on the internet.
         if not self.publisher_id:
@@ -341,12 +344,35 @@ class Twistable(_AbstractTwistable):
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)
-                
+
         # Check if we're creating or not
         if self.id:
             created = False
         else:
-            created= True
+            created = True
+                
+        # Generate slug
+        if not self.slug:
+            if self.title:
+                self.slug = slugify(self.title)
+            elif self.description:
+                self.slug = slugify(self.description)
+            else:
+                self.slug = slugify(self.model_name)
+            self.slug = self.slug[:40]
+        if created:
+            while Twistable.objects.__booster__.filter(slug = self.slug).exists():
+                match = re.search("_(?P<num>[0-9]+)$", self.slug)
+                if match:
+                    root = self.slug[:match.start]
+                    num = int(match.groupdict()['num'])
+                else:
+                    root = self.slug
+                    num = 1
+                self.slug = "%s_%i" % (self.slug, num, )
+            
+        # Perform a full_clean on the model just to be sure it validates correctly
+        self.full_clean()
             
         # Save and update access network information
         ret = super(Twistable, self).save(*args, **kw)

@@ -15,7 +15,7 @@ from django.core.files.base import ContentFile
 
 from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions
-from twistranet.twistorage.storage import Twistorage
+from twistranet.twistranet.lib.slugify import slugify
 from twistranet.log import *
 
 from django.conf import settings
@@ -72,18 +72,11 @@ def bootstrap():
                 r = Resource()
 
             # Copy file to its actual location with the storage API
-            storage = Twistorage()
             source_fn = os.path.join(root, fname)
-            target_fn = os.path.join(__account__.slug, fname)
-            # f = File(open(source_fn, "rb"))
-            # storage.save(target_fn, f)
-            # f.close()
-
-            # Set pties and save
-            # target_fn = os.path.join(storage.location, target_fn)
             r.resource_file = File(open(source_fn, "rb"), fname)
-            r.slug = slug
+            r.slug = slugify(slug)
             r.save()
+
         break   # XXX We don't handle subdirs yet.
 
     # Set SystemAccount picture (which is a way to check if things are working properly).

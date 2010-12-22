@@ -72,6 +72,7 @@ class NotificationHandler(NotifierHandler):
         n = Notification(
             publisher = publisher,
             owner = owner,
+            title = "",
             description = self.message % message_dict,
             permissions = "public",     # Notifs. are always public
         )

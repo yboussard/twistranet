@@ -9,7 +9,7 @@ import twistable
 from resource import Resource
 from twistranet.twistranet.lib import permissions, roles, languages, slugify
 
-from twistranet.twistranet.forms import ResourceField
+from fields import ResourceField
 
 # Create your models here.
 class Account(twistable.Twistable):

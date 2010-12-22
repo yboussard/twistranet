@@ -22,6 +22,7 @@ RESERVED_KEYWORDS = [
 
 rsvd_kw = "$|".join(RESERVED_KEYWORDS)
 SLUG_REGEX = r"(?!%s$)[a-zA-Z_][a-zA-Z0-9_\-\.]*" % rsvd_kw         # XXX TODO: The . must not be last character in the slug
+FULL_SLUG_REGEX = "^%s$" % SLUG_REGEX
 
 def slugify(value):
     """
@@ -32,5 +33,8 @@ def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
     value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
     value = unicode(re.sub(' +', '_', value))
+    
+    if not re.search(FULL_SLUG_REGEX, value):
+        raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))
     return value[:50]
     
