@@ -119,12 +119,23 @@ class CommunityEdit(CommunityView):
     Edit form for community. Not so far from the view itself.
     """
     template = "community/edit.html"
-    form_class = community_forms.CommunityForm
     content_forms = []
     latest_content_list = []
     
     action_label = "Edit"
     action_reverse_url = "community_edit"
+    
+    def get_form_class(self,):
+        """
+        You can use self.request and self.object to find your form here
+        if you need to determinate it with an acute precision.
+        """
+        if isinstance(self.object, GlobalCommunity):
+            form_class = community_forms.GlobalCommunityForm
+        else:
+            form_class = community_forms.CommunityForm
+        
+        return form_class
     
     def as_action(self, request_view):
         if not request_view.object.can_edit:

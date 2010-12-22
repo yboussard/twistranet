@@ -5,6 +5,9 @@ from twistranet.twistranet.forms.widgets import PermissionsWidget
 
 
 class BaseForm(forms.ModelForm):
+    error_css_class = 'error'
+    required_css_class = 'required'
+    
     def __init__(self, *args, **kw):
         """
         Overload widget rendering: we have to provide the model so that the PermissionsWidget

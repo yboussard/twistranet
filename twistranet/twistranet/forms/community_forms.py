@@ -11,10 +11,7 @@ from twistranet.log import log
 class CommunityForm(BaseForm):
     """
     Community edition.
-    """    
-    error_css_class = 'error'
-    required_css_class = 'required'
-    
+    """
     class Meta:
         from twistranet.twistranet.models import Community
         model = Community
@@ -24,3 +21,13 @@ class CommunityForm(BaseForm):
             "picture":          ResourceWidget(),
         }
 
+class GlobalCommunityForm(CommunityForm):
+    """
+    Global community edition.
+    This is the same as communityform but with additional configuration
+    """
+    class Meta:
+        from twistranet.twistranet.models import GlobalCommunity
+        model = GlobalCommunity
+        fields = ('title', 'description', 'picture', 'permissions', "site_name", "baseline", )
+        
