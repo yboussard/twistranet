@@ -221,13 +221,14 @@ class Twistable(_AbstractTwistable):
         Return the kind of object it is (as a lower-cased string).
         """
         from twistranet.twistranet.models import Content, Account, Community, Resource
-        if issubclass(self.model_class, Content):
+        mc = self.model_class
+        if issubclass(mc, Content):
             return 'content'
-        elif issubclass(self.model_class, Community):
+        elif issubclass(mc, Community):
             return 'community'
-        elif issubclass(self.model_class, Account):
+        elif issubclass(mc, Account):
             return 'account'
-        elif issubclass(self.model_class, Resource):
+        elif issubclass(mc, Resource):
             return 'resource'
         raise NotImplementedError("Can't get twistable category for object %s" % self)
 
