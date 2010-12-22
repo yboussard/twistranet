@@ -42,11 +42,14 @@ class File(Content):
     """
     Abstract class which represents a File (as a Resource) in database.
     We just add filename information plus several methods to display it.
+
+    A file can always be uploaded (or re-uploaded or kept in place) but can never
+    be selected amongst current resources.
     """
     class Meta:
         app_label = 'twistranet'
 
-    file = fields.ResourceField()
+    file = fields.ResourceField(allow_select = False)
 
     type_detail_view = "content/view.file.html"
     type_summary_view = "content/summary.file.html"

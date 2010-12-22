@@ -13,13 +13,56 @@ from twistranet.log import log
 
 import widgets
 
+class PermissionFormField(forms.ChoiceField):
+    """
+    This overrides the regular ChoiceField to add additional rendering.
+    """
+    widget = widgets.PermissionsWidget
+
+    def __init__(
+        self, choices = (), required=True, widget=None, max_length = None,
+        label=None, initial=None, help_text=None, to_field_name=None, 
+        *args, **kwargs
+        ):
+        super(PermissionFormField, self).__init__(choices, required, widget, label, initial, help_text, *args, **kwargs)
+        
+        # We put this here to avoid import errors
+        self.default_error_messages = {
+            'invalid_choice': _(u'Select a valid choice. That choice is not one of'
+                                u' the available choices.'),
+        }
+    
+
+class PermissionField(models.CharField):
+    """
+    A field used to store permission template value.
+    It's a CharField with a special Choice() widget
+    """
+    max_length = 32
+    
+    def __init__(self, *args, **kw):
+        """Enforce max_length"""
+        kw['max_length'] = self.max_length
+        super(PermissionField, self).__init__(*args, **kw)
+        
+    
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': PermissionFormField,
+            'choices': (),
+        }
+        defaults.update(kwargs)
+        log.debug(defaults)
+        # return defaults
+        return super(PermissionField, self).formfield(**defaults)
+
+
 class ModelInputField(forms.Field):
     """
     This is a field used to enter a foreign key value inside a classic Input widget.
     This is used when there are a lot of values to check against (and ModelChoiceField is not
     efficient anymore), plus the value is checked against the QuerySet very late in the process.
     """
-
     def __init__(
         self, model, filter = None, required=True, widget=None, 
         label=None, initial=None, help_text=None, to_field_name=None, 
@@ -63,6 +106,8 @@ class ResourceFormField(forms.MultiValueField):
         Useful if you want to display only images for example.
     - filter which will be passed to model.objects.filter() call before rendering the widget.
         These model / filter params are the only solution to handle choices WITH the security model.
+    - allow_upload (upload is ok)
+    - allow_select (can select an existing resource from the given filter)
     """
     widget = widgets.ResourceWidget
     field = ModelInputField
@@ -74,15 +119,30 @@ class ResourceFormField(forms.MultiValueField):
         from twistranet.twistranet.models import Resource
         self.model = kwargs.pop("model", Resource)
         self.filter = kwargs.pop("filter", None)
-        self.widget = kwargs.pop("widget", self.widget(model = self.model, filter = self.filter))
+        self.allow_upload = kwargs.pop("allow_upload", True)
+        self.allow_select = kwargs.pop("allow_select", True)
+        self.widget = kwargs.pop("widget", self.widget(
+            model = self.model, filter = self.filter,
+            allow_upload = self.allow_upload,
+            allow_select = self.allow_select,
+        ))
         self.required = kwargs.pop("required", True)
         
         # The fields we'll use:
         # - A ModelInputField used to handle the ForeignKey.
         # - A FileField used to handle data upload.
+        fields = []
         field0 = self.field(model = self.model, filter = self.filter, required = self.required)
         field1 = forms.FileField(required = False)
-        fields = [ field0, field1, ]
+        dummy = forms.CharField(required = False)
+        if self.allow_select:
+            fields.append(field0)
+        else:
+            fields.append(dummy)
+        if self.allow_upload:
+            fields.append(field1)
+        else:
+            fields.append(dummy)
         
         # # Compatibility with form_for_instance
         # if kwargs.get('initial'):
@@ -113,10 +173,15 @@ class ResourceField(models.ForeignKey):
     - the resource id we're going to use (easy)
     - the File we're going to upload as a resource (more complicated)
     """
-    def __init__(self, model = "Resource", *args, **kw):
+    def __init__(self, model = "Resource", allow_upload = True, allow_select = True, *args, **kw):
         """
-        Default model is Resource
+        Default model is Resource.
+        - model: The model to use as the Resource target. Use only a Resource-derived object.
+        - allow_create: if False, won't allow to upload a new file.
+        - allow_select: il False, won't allow to select a file from existing resources.
         """
+        self.allow_upload = allow_upload
+        self.allow_select = allow_select
         super(ResourceField, self).__init__(model, *args, **kw)
     
     def delete_file(self, instance, *args, **kwargs):
@@ -164,21 +229,33 @@ class ResourceField(models.ForeignKey):
         resource = None
         
         # Process either upload file or resource id
-        log.debug("We have data: %s" % data)
         if data:
-            if data[1]:         # We have a file, it takes precedence.
-                resource = self.upload_resource(instance, data[1])
-            elif data[0] and isinstance(data[0], int):       # We just have an id. Try to get the resource.
-                resource = Resource.objects.get(id = data[0])
-            elif data[0] and isinstance(data[0], Resource):
-                resource = data[0]
+            data_select, data_upload = data
+            
+            if self.allow_upload and data_upload:         # We have a file, it takes precedence.
+                resource = self.upload_resource(instance, data_upload)
+            elif self.allow_select and data_select and isinstance(data_select, int):       # We just have an id. Try to get the resource.
+                resource = Resource.objects.get(id = data_select)
+            elif self.allow_select and data_select and isinstance(data_select, Resource):
+                resource = data_select
             else:
                 raise ValueError("Invalid incoming data for resource field: %s" % data)
-            
+
+        # If we don't have any data BUT just have a FileField (no select),
+        # then that means that content didn't change (a new file has not been
+        # downloaded).
+        # In the future, we should check explicit against file deletion here.
+        if not data and not self.allow_select:
+            return
+
         super(ResourceField, self).save_form_data(instance, resource)
 
     def formfield(self, **kwargs):
-        defaults = {'form_class': ResourceFormField}
+        defaults = {
+            'form_class': ResourceFormField,
+            'allow_upload': self.allow_upload,
+            'allow_select': self.allow_select,
+        }
         defaults.update(kwargs)
         return super(ResourceField, self).formfield(**defaults)
 

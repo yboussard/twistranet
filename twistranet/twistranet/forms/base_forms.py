@@ -14,14 +14,14 @@ class BaseForm(forms.ModelForm):
         from twistranet.twistranet.models.account import UserAccount
         super(BaseForm, self).__init__(*args, **kw)
         publisher = self.initial.get("publisher", None)
-        permissions = self.Meta.model.permission_templates.permissions()
+        permissions = self.instance.permission_templates.permissions()
         if isinstance(publisher, UserAccount):
             permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
         if isinstance(publisher, Community):
             permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
         self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
 
-    permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget)
+    # permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget)
 
 class BaseInlineForm(BaseForm):
     """

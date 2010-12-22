@@ -30,6 +30,7 @@ class MenuItem(Twistable):
     parent = models.ForeignKey('MenuItem', related_name = '_children', null = True)
 
     permission_templates = permissions.content_templates        # This is the lazy man's solution, we use same perms as content ;)
+    default_picture_resource_slug = "default_menu_picture"
     
     class Meta:
         app_label = "twistranet"

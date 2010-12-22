@@ -20,6 +20,7 @@ from django.utils.safestring import mark_safe
 from twistranet.log import log
 from twistranet.twistranet.lib import roles, permissions
 from twistranet.twistranet.signals import twistable_post_save
+from twistranet.twistranet.forms.fields import ResourceField, PermissionField
 
 class TwistableManager(models.Manager):
     """
@@ -184,7 +185,13 @@ class Twistable(_AbstractTwistable):
     modified_at = models.DateTimeField(auto_now = True, null = True, db_index = True)
     created_by = models.ForeignKey("Account", related_name = "created_twistables", db_index = True, ) 
     modified_by = models.ForeignKey("Account", null = True, related_name = "modified_twistables", db_index = True, ) 
-        
+    
+    # Picture management.
+    # If None, will use the default_picture_resource_slug attribute.
+    # If you want to get the account picture, use the 'picture' attribute.
+    default_picture_resource_slug = None
+    picture = ResourceField(null = True)
+    
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
     publisher = models.ForeignKey("Account", null = True, related_name = "published_twistables", db_index = True, ) 
@@ -195,10 +202,7 @@ class Twistable(_AbstractTwistable):
     
     # Our security model.
     permission_templates = ()       # Define this in your subclasses
-    permissions = models.CharField(
-        max_length = 32,
-        db_index = True,
-    )
+    permissions = PermissionField(db_index = True)
     _access_network = models.ForeignKey("Account", null = True, related_name = "+", db_index = True, )
         
     # The permissions. It's strongly forbidden to edit those roles by hand, use the 'permissions' property instead.
@@ -250,6 +254,25 @@ class Twistable(_AbstractTwistable):
             'url': self.get_absolute_url(),
         }
         return """<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
+        
+    @property
+    def forced_picture(self,):
+        """
+        Return actual picture for this content or default picture if not available.
+        May return None!
+        XXX SHOULD CACHE THIS
+        """
+        import resource
+        try:
+            picture = self.picture
+            if picture is None:
+                raise resource.Resource.DoesNotExist()
+        except resource.Resource.DoesNotExist:
+            try:
+                picture = resource.Resource.objects.get(slug = self.model_class.default_picture_resource_slug)
+            except resource.Resource.DoesNotExist:
+                return None
+        return picture
             
     #                                                                   #
     #           Internal management, ensuring DB consistancy            #    
@@ -312,8 +335,8 @@ class Twistable(_AbstractTwistable):
         if not tpl:
             # Didn't find? We restore default setting. XXX Should log/alert something here!
             tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.model_class.permission_templates.get_default() ]
-            log.notice("Restoring default permissions. Problem here.")
-            log.notice("Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict))
+            log.warning("Restoring default permissions. Problem here.")
+            log.warning("Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict))
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
                 setattr(self, "_p_%s" % perm, role)

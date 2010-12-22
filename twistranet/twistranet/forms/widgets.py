@@ -8,6 +8,8 @@ from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
+from twistranet.log import log
+
 N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
 
 
@@ -15,14 +17,21 @@ class ResourceWidget(forms.MultiWidget):
     query_set = None
     
     def __init__(self, initial = None, **kwargs):
-        widgets = (forms.HiddenInput(), forms.FileInput())
+        widgets = []
+        self.allow_select = kwargs.pop("allow_select", True)
+        widgets.append(forms.HiddenInput())
+        self.allow_upload = kwargs.pop("allow_upload", True)
+        if self.allow_upload:
+            widgets.append(forms.FileInput())
+        else:
+            widgets.append(forms.HiddenInput())
         super(ResourceWidget, self).__init__(widgets)
 
     def decompress(self, value):
         """
         Handle choices generation for the reference widget.
         """
-        return [value, None]
+        return (value, None)
 
     def render(self, name, value, attrs=None):
         """
@@ -42,6 +51,7 @@ class ResourceWidget(forms.MultiWidget):
         if self.is_localized:
             for widget in self.widgets:
                 widget.is_localized = self.is_localized
+                
         # value is a list of values, each corresponding to a widget
         # in self.widgets.
         if not isinstance(value, list):
@@ -67,34 +77,36 @@ class ResourceWidget(forms.MultiWidget):
                 """ % param_dict)
             
         # Render the File widget and the hidden resource ForeignKey
-        output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
-        for i, widget in enumerate(self.widgets):
-            try:
-                widget_value = value[i]
-            except IndexError:
-                widget_value = None
-            if id_:
-                final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
-            output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
+        if self.allow_upload:
+            output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
+            for i, widget in enumerate(self.widgets):
+                try:
+                    widget_value = value[i]
+                except IndexError:
+                    widget_value = None
+                if id_:
+                    final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
+                output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             
         # By now we just display resources from our own account.
         # Tomorrow, we should display some kind of album browser.
-        output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
-        images = self.query_set.all()[:25]
-        if len(images) >= N_DISPLAYED_ITEMS:
-            raise NotImplementedError("Should implement image searching & so on")
-        for image in images:
-            param_dict = {
-                "thumbnail_src":    image.get_absolute_url(),
-                "hidden_id":        'id_%s_0' % name,
-                "value":            image.id,
-                "selected":         (image.id == int(value[0] or 0)) and "resource-selected" or "",
-            }
-            output.append(u"""
-            <img src="%(thumbnail_src)s" class="resource-image %(selected)s" width="60" height="60"
-            onclick="javascript:document.getElementById('%(hidden_id)s').value = '%(value)s'"
-            >
-            """ % param_dict)
+        if self.allow_select:
+            output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+            images = self.query_set.all()[:25]
+            if len(images) >= N_DISPLAYED_ITEMS:
+                raise NotImplementedError("Should implement image searching & so on")
+            for image in images:
+                param_dict = {
+                    "thumbnail_src":    image.get_absolute_url(),
+                    "hidden_id":        'id_%s_0' % name,
+                    "value":            image.id,
+                    "selected":         (image.id == int(value[0] or 0)) and "resource-selected" or "",
+                }
+                output.append(u"""
+                <img src="%(thumbnail_src)s" class="resource-image %(selected)s" width="60" height="60"
+                onclick="javascript:document.getElementById('%(hidden_id)s').value = '%(value)s'"
+                >
+                """ % param_dict)
     
         # Return the computed string
         output.append("""</div>""") # (close the resource-widget div)
@@ -106,6 +118,7 @@ class ResourceWidget(forms.MultiWidget):
 class PermissionsWidget(forms.Select):
     def __init__(self, attrs=None):
         super(PermissionsWidget, self).__init__(attrs)
+        log.debug("Init perm widget")
         self.choices = ()
 
     def render(self, name, value, attrs=None, ):

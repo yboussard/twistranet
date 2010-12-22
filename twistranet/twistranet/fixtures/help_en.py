@@ -147,6 +147,7 @@ start inviting people in it!
         order = 90,
         target = Document.objects.filter(slug = "help_communities"),
         title = "Communities",
+        picture = Resource.objects.filter(slug = "default_community_picture"),
     ),
 
 

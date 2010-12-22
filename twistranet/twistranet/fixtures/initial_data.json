@@ -48,6 +48,7 @@
             "title":        "System Account",
             "slug":         "system",
             "description":  "TwistraNet system account",
+            "picture":      -1,
             "_p_can_list":  1,
             "_p_can_view":  1,
             "owner":        1,
@@ -59,7 +60,6 @@
         "model":    "twistranet.Account",
         "pk":       1,
         "fields":   {
-            "picture":      -1,
             "permissions":  "public"
         }
     },

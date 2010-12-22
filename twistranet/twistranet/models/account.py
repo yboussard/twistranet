@@ -17,12 +17,9 @@ class Account(twistable.Twistable):
     A generic account.
     This is an abstract class.
     Can be subclassed as a user account, group account, app account, etc
-    """                                        
+    """
     # Picture management.
-    # If None, will use the default_picture_resource_slug attribute.
-    # If you want to get the account picture, use the 'picture' attribute.
-    default_picture_resource_slug = "default_profile_picture"
-    picture = ResourceField()
+    default_picture_resource_slug = "default_account_picture"
     
     # Security models available for the user
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
@@ -76,10 +73,6 @@ class Account(twistable.Twistable):
         elif not self.slug:
             self.slug = slugify.slugify(self.title)
             
-        # Set default picture if not set (and if available)
-        if not self.picture_id: # and not self.object_type == 'SystemAccount':
-            self.picture = Resource.objects.__booster__.get(slug = self.default_picture_resource_slug)
-                    
         # Call parent and do post-save stuff
         return super(Account, self).save(*args, **kw)
 
@@ -130,9 +123,9 @@ class Account(twistable.Twistable):
             return True
 
         # If is a manager, validate all roles < mgr
-        # XXX TODO
-        if role == roles.managers:
-            raise NotImplementedError()
+        if role <= roles.managers:
+            if self.is_admin:
+                return True
         
         # If in the object's network, validate that. Dereference only if needed.
         if issubclass(obj.model_class, Account):
@@ -275,7 +268,7 @@ class SystemAccount(Account):
     There must be at least 1 system account called '_system'. It's its role to build initial content.
     System accounts can reach ALL content from ALL communities.
     """
-    default_picture_resource_slug = "default_system_picture"
+    default_picture_resource_slug = "default_systemaccount_picture"
     SYSTEMACCOUNT_ID = 1       # Global SystemAccount id. Should always be 1 as it's the first account created in the fixture.
     
     class Meta:

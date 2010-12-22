@@ -104,7 +104,7 @@ def bootstrap():
         log.info("twistrans not installed, translations are not installed.")
         
     # Check if default profile pictures are correctly imported
-    profile_picture = Resource.objects.get(slug = "default_profile_picture")
+    profile_picture = Resource.objects.get(slug = "default_account_picture")
     community_picture = Resource.objects.get(slug = "default_community_picture")
     
     # Load fixtures

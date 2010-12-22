@@ -42,6 +42,9 @@ class Resource(twistable.Twistable):
 
     # Resource securization
     permission_templates = permissions.content_templates        # This is the lazy man's solution, we use same perms as content ;)
+    
+    # General information
+    default_picture_resource_slug = "default_resource_picture"
 
     class Meta:
         app_label = 'twistranet'

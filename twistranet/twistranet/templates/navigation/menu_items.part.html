@@ -1,15 +1,38 @@
 {% load i18n %}
 {% load menubuilder %}
+{% load thumbnail %}
 
 {# This is a 2 levels menu #}
 {% menu menu_main %}
 {% for item in menuitems %}
     <li class="page_item">
-        <a href="{{ item.get_absolute_url }}">{{ item.label }}</a>
+        <a href="{{ item.get_absolute_url }}">
+            {# {% if item.picture %} #}
+            {#     {% thumbnail item.picture.image "16x16" as thumb %} #}
+            {#         <img #}
+            {#             title="{{ item.title }}" #}
+            {#             alt="{{ item.title }}" #}
+            {#             src="{{ thumb.url }}" /> #}
+            {#     {% endthumbnail %} #}
+            {# {% endif %} #}
+            {{ item.label }}
+        </a>
         {% if item.has_children %}
             <ul>
                 {% for subitem in item.children %}
-                    <li><a href="{{ subitem.get_absolute_url }}">{{ subitem.label }}</a></li>
+                    <li>
+                        <a href="{{ subitem.get_absolute_url }}">
+                            {# {% if subitem.picture %} #}
+                            {#     {% thumbnail subitem.picture.image "16x16" as thumb %} #}
+                            {#         <img #}
+                            {#             title="{{ subitem.title }}" #}
+                            {#             alt="{{ subitem.title }}" #}
+                            {#             src="{{ thumb.url }}" /> #}
+                            {#     {% endthumbnail %} #}
+                            {# {% endif %} #}
+                            {{ subitem.label }}
+                        </a>
+                    </li>
                 {% endfor %}
             </ul>
         {% endif %}

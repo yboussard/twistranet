@@ -26,7 +26,6 @@ class InlineFileForm(BaseInlineForm):
         from twistranet.content_types.models import File
         model = File
         fields = ('file', ) + BaseInlineForm.Meta.fields
-#        widgets = 
 
 class QuickDocumentForm(BaseRegularForm):
     """

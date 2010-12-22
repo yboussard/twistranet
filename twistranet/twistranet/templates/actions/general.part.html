@@ -32,24 +32,24 @@
       </ul>
     </div>
 </li>
-{% if logged_account %}
-<li class="tn-box global-box general-box">
-    <h3>{% trans "Toolbox" %}</h3>
-    <div class="tn-box-content">
-      <ul>
-        <li>
-          <a class="action"
-             href="{% url media_library_view logged_account.id %}">
-             {% blocktrans %}Browse files{% endblocktrans %}
-          </a>
-        </li>
-        <li>
-          <a class="action"
-             href="{% url media_create %}">
-            {% blocktrans %}Upload files{% endblocktrans %}
-          </a>
-        </li>
-      </ul>
-    </div>
-</li>
-{% endif %}
+{# {% if logged_account %} #}
+{# <li class="tn-box global-box general-box"> #}
+{#     <h3>{% trans "Toolbox" %}</h3> #}
+{#     <div class="tn-box-content"> #}
+{#       <ul> #}
+{#         <li> #}
+{#           <a class="action" #}
+{#              href="{% url media_library_view logged_account.id %}"> #}
+{#              {% blocktrans %}Browse files{% endblocktrans %} #}
+{#           </a> #}
+{#         </li> #}
+{#         <li> #}
+{#           <a class="action" #}
+{#              href="{% url media_create %}"> #}
+{#             {% blocktrans %}Upload files{% endblocktrans %} #}
+{#           </a> #}
+{#         </li> #}
+{#       </ul> #}
+{#     </div> #}
+{# </li> #}
+{# {% endif %} #}

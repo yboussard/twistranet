@@ -15,6 +15,7 @@
     {% if content %}
         <form action="{{ path }}"
               method="post"
+              enctype="multipart/form-data"
               class="edit-form enableAutoFocus">
     {% else %}
         <form action="{{ path }}"
