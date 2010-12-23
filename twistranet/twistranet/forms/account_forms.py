@@ -6,8 +6,9 @@ from django.forms import fields
 from twistranet.twistranet.lib import permissions
 from twistranet.twistranet.forms.widgets import ResourceWidget
 from twistranet.twistranet.models import UserAccount
+from twistranet.twistranet.forms.base_forms import BaseForm
 
-class UserAccountForm(forms.ModelForm):
+class UserAccountForm(BaseForm):
     """
     User account edition.
     """    
@@ -23,5 +24,18 @@ class UserAccountForm(forms.ModelForm):
             "picture":          ResourceWidget(),
         }
 
+
+class UserAccountCreationForm(UserAccountForm):
+    """
+    User account creation.
+    """    
+
+    class Meta:
+        model = UserAccount
+        fields = ('user', 'title', 'description', 'picture', 'permissions', )
+
+        widgets = {
+            "picture":          ResourceWidget(),
+        }
 
 

@@ -42,7 +42,7 @@ class UserAccountView(BaseWallView):
         if self.account :
             self.auth_account = Account.objects._getAuthenticatedAccount()
             self.in_my_network = self.auth_account.network.filter(id = self.account.id)
-            actions = [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, ) ]
+            actions = [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, UserAccountEdit ) ]
         return actions
         
     def prepare_view(self, *args, **kw):
@@ -265,6 +265,7 @@ class UserAccountCreate(UserAccountEdit):
     UserAccount creation. Close to the edit class
     """
     context_boxes = []
+    form_class = account_forms.UserAccountCreationForm
     
     
 

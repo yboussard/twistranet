@@ -331,7 +331,8 @@ class UserAccount(Account):
             __account__ = SystemAccount.objects.get()
             glob.join(self)
             self.follow(self)
-            self.save()
+            # don't work
+            # self.save()
             del __account__
         return ret
         
