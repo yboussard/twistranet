@@ -26,11 +26,12 @@ class BaseForm(forms.ModelForm):
             publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
             permissions = self.instance.permission_templates.permissions()
             log.debug("Publisher: %s (on %s)" % (publisher, self.initial, ))
-            if issubclass(publisher.model_class, UserAccount):
-                log.debug("Filtering UserAccount")
-                permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
-            if issubclass(publisher.model_class, Community):
-                permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
+            if publisher:
+                if issubclass(publisher.model_class, UserAccount):
+                    log.debug("Filtering UserAccount")
+                    permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
+                if issubclass(publisher.model_class, Community):
+                    permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
             self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
 
     # permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget)

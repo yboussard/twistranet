@@ -38,7 +38,7 @@ class NotificationHandler(NotifierHandler):
     You can customize the displayed description upon class creation: the message
     will be _'ed with %(xxx)s values filled from a dictionary.
     """
-    def __init__(self, owner_arg, publisher_arg, message):
+    def __init__(self, owner_arg, publisher_arg, message, permissions = "public"):
         """
         Store the message for future use.
         owner_arg and publisher_arg will be used to create the underlying content.
@@ -48,6 +48,7 @@ class NotificationHandler(NotifierHandler):
         self.owner_arg = owner_arg
         self.publisher_arg = publisher_arg
         self.message = message
+        self.permissions = permissions
 
     def __call__(self, sender, **kwargs):
         """
@@ -74,7 +75,7 @@ class NotificationHandler(NotifierHandler):
             owner = owner,
             title = "",
             description = self.message % message_dict,
-            permissions = "public",     # Notifs. are always public
+            permissions = self.permissions,
         )
         n.save()
 

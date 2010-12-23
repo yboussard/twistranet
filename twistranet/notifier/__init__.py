@@ -17,6 +17,16 @@ join_community.connect(
     weak = False,
 )
 
+request_add_to_network.connect(
+    handlers.NotificationHandler(
+        owner_arg = "target",
+        publisher_arg = "target",
+        message = _("""%(client)s wants to add you to his/her network."""),
+        permissions = "private",
+    ),
+    weak = False,
+)
+
 accept_in_network.connect(
     handlers.NotificationHandler(
         owner_arg = "client",

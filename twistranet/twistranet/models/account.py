@@ -8,6 +8,7 @@ from django.conf import settings
 import twistable
 from resource import Resource
 from twistranet.twistranet.lib import permissions, roles, languages, slugify
+from twistranet.twistranet.signals import request_add_to_network, accept_in_network
 from twistranet.log import log
 
 from fields import ResourceField
@@ -127,6 +128,8 @@ class Account(twistable.Twistable):
         if role <= roles.managers:
             if self.is_admin:
                 return True
+            elif role == roles.managers:
+                return False
         
         # If in the object's network, validate that. Dereference only if needed.
         if issubclass(obj.model_class, Account):
@@ -363,9 +366,23 @@ class UserAccount(Account):
         you_to_me = Network.objects.filter(client = auth, target = self)
         if you_to_me.exists():
             return
-        
+            
         # Add the relation itself
-        Network.objects.create(client = auth, target = self, is_manager = False)
+        Network.objects.create(client = auth, target = self)
+        
+        # Then send the proper signal according to the symetry
+        if Network.objects.filter(client = self, target = auth).exists():
+            accept_in_network.send(
+                sender = self.__class__,
+                client = auth,
+                target = self,
+            )
+        else:
+            request_add_to_network.send(
+                sender = self.__class__,
+                client = auth,
+                target = self,
+            )
         
     def remove_from_my_network(self):
         """

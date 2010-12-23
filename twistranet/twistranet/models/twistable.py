@@ -366,7 +366,7 @@ class Twistable(_AbstractTwistable):
             while Twistable.objects.__booster__.filter(slug = self.slug).exists():
                 match = re.search("_(?P<num>[0-9]+)$", self.slug)
                 if match:
-                    root = self.slug[:match.start]
+                    root = self.slug[:match.start()]
                     num = int(match.groupdict()['num'])
                 else:
                     root = self.slug

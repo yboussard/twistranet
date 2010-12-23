@@ -128,6 +128,17 @@ ephemeral_templates = PermissionTemplate((
         can_delete:         owner,
         "disabled_for_useraccount":  True,
     },
+    {
+        "id":               "private",
+        "name":             "Private",
+        "description":      "Content visible only for the author (only used for private notifications)",
+        can_list:           owner,
+        can_view:           owner,
+        can_edit:           owner,
+        can_delete:         owner,
+        "disabled_for_useraccount":     True,
+        "disabled_for_community":       True,
+    },
 ))
 
 # XXX TODO: Have some specific stuff for each account type. Not an easy problem to overload the choices field...
