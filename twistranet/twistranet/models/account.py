@@ -8,6 +8,7 @@ from django.conf import settings
 import twistable
 from resource import Resource
 from twistranet.twistranet.lib import permissions, roles, languages, slugify
+from twistranet.log import log
 
 from fields import ResourceField
 
@@ -171,7 +172,11 @@ class Account(twistable.Twistable):
         if v is not None:
             return v
         import community
-        self._is_admin = community.AdminCommunity.objects.__booster__.get().is_member
+        try:
+            self._is_admin = community.AdminCommunity.objects.__booster__.get().is_member
+        except community.AdminCommunity.DoesNotExist:
+            # No admin community? Strange but possible at boostrap-time.
+            self._is_admin = False
         return self._is_admin
 
 
@@ -289,6 +294,17 @@ class UserAccount(Account):
     """
     user = models.OneToOneField(User, unique=True, related_name = "useraccount")
     is_anonymous = False
+
+    # Actual user shortcuts.
+    @property
+    def email(self,):
+        return self.user.email
+    @property
+    def first_name(self):
+        return self.user.first_name
+    @property
+    def last_name(self):
+        return self.user.last_name
 
     class Meta:
         app_label = 'twistranet'
@@ -469,6 +485,36 @@ class UserAccount(Account):
         return UserAccount.objects.filter(requesting_network__client__id = self.id)
 
     
+# Register handler for User creation.
+# Each time a User object is created in DB, we create its profile here.
+from django.db.models.signals import post_save
+def create_profile(sender, instance, created, *args, **kw):
+    """
+    Create an empty profile for a new user.
+    XXX TODO: Handle particular LDAP attributes? 
+    See http://packages.python.org/django-auth-ldap/#user-objects for more info
+    """
+    if created:
+        # Here we check if AdminCommunity exists.
+        # If it doesn't, that probably means we're inside the bootstrap process,
+        # and in such case we don't want to create a profile now.
+        import community
+        if not community.AdminCommunity.objects.__booster__.exists():
+            log.debug("Admin community doesn't exist (yet)")
+            return
+            
+        # We consider we're the SystemAccount now.
+        __account__ = SystemAccount.get()
+        
+        # Actually create profile
+        log.info("Automatic creation of a UserAccount for %s" % instance)
+        profile = UserAccount(
+            user = instance,
+            slug = slugify.slugify(instance.username),
+        )
+        profile.save()
+    
+post_save.connect(create_profile, sender = User)
         
 
 class AccountLanguage(models.Model):

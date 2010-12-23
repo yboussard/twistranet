@@ -86,6 +86,10 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ("127.0.0.1", )
 
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
+)
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
 CACHE_BACKEND = "locmem:///"

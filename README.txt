@@ -54,6 +54,37 @@ SSO
 See http://docs.djangoproject.com/en/dev/howto/auth-remote-user/ to find what we've got to do on this topic.
 
 
+LDAP / ActiveDirectory
+-----------------------
+
+Twistranet works fairly well with LDAP. If you want to authenticate against LDAP, first install django-ldap-auth module,
+then update your settings.py with the following information (this if for default AD install, your mileage may vary):
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_LDAP_SERVER_URI = "ldap://xx.xx.xx.xx:389"
+AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=dom"
+AUTH_LDAP_BIND_PASSWORD = "admin-password"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=Users,dc=my-company,dc=dom", ldap.SCOPE_SUBTREE, "(SAMAccountName=%(user)s)")
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name":   "givenName", 
+    "last_name":    "sn",
+    "email":        "mail",
+}
+
+AUTH_LDAP_PROFILE_ATTR_MAP = {
+    "title":        "cn",
+    "slug":         "uid",
+}
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+
+With this configuration, user data will automatically get populated from AD upon login.
+
 Acknoledgements
 ================
 

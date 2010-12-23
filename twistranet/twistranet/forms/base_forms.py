@@ -1,8 +1,9 @@
 from django import forms
 from django.db import models
 from django.forms import widgets
-from twistranet.twistranet.forms.widgets import PermissionsWidget
 
+from twistranet.twistranet.forms.widgets import PermissionsWidget
+from twistranet.log import log
 
 class BaseForm(forms.ModelForm):
     error_css_class = 'error'
@@ -12,17 +13,25 @@ class BaseForm(forms.ModelForm):
         """
         Overload widget rendering: we have to provide the model so that the PermissionsWidget
         will find which permissions to display.
+        Note that we only do so on forms with a 'permissions' field.
+        XXX TODO: Move part of this code in the model
         """
+        super(BaseForm, self).__init__(*args, **kw)
         from twistranet.twistranet.models.community import Community
         from twistranet.twistranet.models.account import UserAccount
-        super(BaseForm, self).__init__(*args, **kw)
-        publisher = self.initial.get("publisher", None)
-        permissions = self.instance.permission_templates.permissions()
-        if isinstance(publisher, UserAccount):
-            permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
-        if isinstance(publisher, Community):
-            permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
-        self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
+
+        # Check if has permissions field
+        if self.fields.has_key('permissions'):
+            super(BaseForm, self).__init__(*args, **kw)
+            publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
+            permissions = self.instance.permission_templates.permissions()
+            log.debug("Publisher: %s (on %s)" % (publisher, self.initial, ))
+            if issubclass(publisher.model_class, UserAccount):
+                log.debug("Filtering UserAccount")
+                permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
+            if issubclass(publisher.model_class, Community):
+                permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
+            self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
 
     # permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget)
 

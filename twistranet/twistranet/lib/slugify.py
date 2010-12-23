@@ -31,8 +31,9 @@ def slugify(value):
     if not isinstance(value, unicode):
         value = unicode(value)
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
     value = unicode(re.sub(' +', '_', value))
+    value = unicode(re.sub('[.@]', '_', value))
+    value = unicode(re.sub('[^\w\s_-]', '', value).strip().lower())
     
     if not re.search(FULL_SLUG_REGEX, value):
         raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))

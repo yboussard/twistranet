@@ -72,7 +72,7 @@ class FileForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import File
         model = File
-        fields = ('title', 'description', 'file', )
+        fields = ('title', 'description', 'file', 'permissions', )
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }

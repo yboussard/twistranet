@@ -118,7 +118,7 @@ class ResourceWidget(forms.MultiWidget):
 class PermissionsWidget(forms.Select):
     def __init__(self, attrs=None):
         super(PermissionsWidget, self).__init__(attrs)
-        log.debug("Init perm widget")
+        # log.debug("Init perm widget")
         self.choices = ()
 
     def render(self, name, value, attrs=None, ):

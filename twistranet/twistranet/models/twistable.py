@@ -16,6 +16,7 @@ import logging
 import traceback
 from django.db import models
 from django.db.models import Q, loading
+from django.db.utils import DatabaseError
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.safestring import mark_safe
@@ -61,8 +62,9 @@ class TwistableManager(models.Manager):
         try:
             if auth.is_admin:
                 return base_query_set
-        except:
+        except DatabaseError:
             log.warning("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap.")
+            # traceback.print_exc()
             return base_query_set
 
         # Regular check. Works for anonymous as well...

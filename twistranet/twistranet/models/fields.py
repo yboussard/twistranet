@@ -41,7 +41,7 @@ class PermissionField(models.CharField):
             'choices': (),
         }
         defaults.update(kwargs)
-        log.debug(defaults)
+
         # return defaults
         return super(PermissionField, self).formfield(**defaults)
 
