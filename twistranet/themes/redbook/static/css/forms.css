@@ -179,5 +179,9 @@ ul.errorlist li {
     background: blue;
 }
 
+/* permissions select list too large sometimes */
 
+select#id_permissions {
+    max-width: 200px;
+}
 
