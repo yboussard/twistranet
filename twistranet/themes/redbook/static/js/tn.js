@@ -102,7 +102,8 @@ liveSearchDisplayResult = function(link, thumblink, type, title, description) {
 ';    
 // remove empty fields
 template = template.replace('<span class="ls-result-type"> </span>', '');
-template = template.replace('<p><span class="ls-result-title"></span></p>', '');
+template = template.replace('<span class="ls-result-title"></span>', '');
+template = template.replace('<p></p>', '');
 return template;
 }
 
