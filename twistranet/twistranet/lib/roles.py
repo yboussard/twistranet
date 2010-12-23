@@ -9,6 +9,6 @@ Difference between a role and a group? A role might be different for the same us
 # Global roles.
 public = 1
 network = 2
-managers = 4
+manager = 4
 owner = 8
 system = 16

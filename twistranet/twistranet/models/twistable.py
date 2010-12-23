@@ -61,14 +61,16 @@ class TwistableManager(models.Manager):
         # XXX This try/except is there so that things don't get stucked during boostrap
         try:
             if auth.is_admin:
-                return base_query_set
+                return base_query_set.filter(
+                    _p_can_list__lte = roles.manager,
+                )
         except DatabaseError:
             log.warning("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap.")
             # traceback.print_exc()
             return base_query_set
 
         # Regular check. Works for anonymous as well...
-        network_ids = auth.network_ids
+        # network_ids = auth.network_ids
         qs = base_query_set.filter(
             Q(
                 owner__id = auth.id,

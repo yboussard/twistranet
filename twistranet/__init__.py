@@ -12,4 +12,3 @@ from twistranet.conf import defaults
 # Register the logger
 from log import *
 log.debug("Twistranet loaded successfuly!")
-

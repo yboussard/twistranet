@@ -61,7 +61,6 @@ class Account(twistable.Twistable):
     def save(self, *args, **kw):
         """
         Populate special content information before saving it.
-        XXX TODO: Check saving rights
         """
         # Don't allow direct saving here
         if self.__class__ == Account:
@@ -125,10 +124,10 @@ class Account(twistable.Twistable):
             return True
 
         # If is a manager, validate all roles < mgr
-        if role <= roles.managers:
+        if role <= roles.manager:
             if self.is_admin:
                 return True
-            elif role == roles.managers:
+            elif role == roles.manager:
                 return False
         
         # If in the object's network, validate that. Dereference only if needed.
@@ -326,14 +325,15 @@ class UserAccount(Account):
 
         # Join the global community. For security reasons, it's SystemAccount who does this.
         # Add myself to my own community as well.
+        # XXX Maybe this has to be done BEFORE calling super() ?
         if creation:
             glob = community.GlobalCommunity.objects.get()
             __account__ = SystemAccount.objects.get()
             glob.join(self)
             self.follow(self)
-            # don't work
-            # self.save()
             del __account__
+            
+        log.debug("Saved %s (title = %s)" % (self, self.title, ))
         return ret
         
     def getDefaultOwner(self,):
