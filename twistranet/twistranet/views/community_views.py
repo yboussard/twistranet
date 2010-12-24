@@ -90,6 +90,25 @@ class CommunityListingView(BaseView):
         super(CommunityListingView, self).prepare_view()
         self.communities = Community.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
+class MyCommunitiesView(BaseView):
+    """
+    A list of n communities I manage
+    """
+    title = "Communities I manage"
+    template = "community/list.html"
+    template_variables = BaseView.template_variables + [
+        "communities",
+    ]
+
+    def prepare_view(self, ):
+        super(CommunityListingView, self).prepare_view()
+        auth = Account.objects._getAuthenticatedAccount()
+        self.communities = Community.objects.filter(
+            targeted_network__target__id = auth.id,
+            requesting_network__client__id = auth.id,
+            targeted_network__is_manager = True,
+        )[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
+
 
 class AccountCommunitiesView(UserAccountView):
     """

@@ -1,24 +1,24 @@
-{# {% extends "email/basemail.txt" %} #}
+{% extends "email/basemail.html" %}
 {% load i18n %}
-{% with client.title as client_title %}
-Subject: {% blocktrans %}{{ client_title }} wants to join your network.{% endblocktrans %}
 
+{% block content %}
+{% with client.title as client_title %}
 {% with target.title as target_title %}
 {% with client.get_absolute_url as client_get_absolute_url %}
+
+<p>
 {% blocktrans %}Dear {{ target_title }},{% endblocktrans %}
-  
+</p>
+<p>  
   {% blocktrans %}You just recieved a request from {{ client_title }} to join your network.{% endblocktrans %}
-  
+</p>
+<p>
   {% blocktrans %}You have to take an action!{% endblocktrans %}
-  
-  {% blocktrans %}Visit {{ client_get_absolute_url }} to accept or decline his/her request.{% endblocktrans %}
-  
+</p>
+<p>
+  {% blocktrans %}Visit <a href="{{ client_get_absolute_url }}">{{ client_title }}'s page</a> to accept or decline his/her request.{% endblocktrans %}
+</p>
 {% endwith %}
 {% endwith %}
-
-{% blocktrans %}
-  --
-  Greetings from twistranet
-{% endblocktrans %}
 {% endwith %}
-
+{% endblock %}

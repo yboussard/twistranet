@@ -45,6 +45,7 @@ request_add_to_network.connect(
     handlers.MailHandler(
         recipient_arg = "target",
         text_template = "email/request_add_to_network.txt",
+        html_template = "email/request_add_to_network.html",
     ),
     weak = False,
 )
