@@ -4,11 +4,16 @@ import sys
 import logging
 
 # Twistranet default settings.
+
+# XXXXXXXXXXXX
 # The following section is the most likely to be changed.
+# XXXXXXXXXXXX
 
 # Twistranet Theme.
 TWISTRANET_THEME_NAME = "redbook"
 
+# Default twistranet sending email
+SERVER_EMAIL = "twistranet <twistranet@numericube.com>"
 
 # Number of friends or communities displayed in a box
 TWISTRANET_NETWORK_IN_BOXES = 6
@@ -19,7 +24,9 @@ TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
 
 TWISTRANET_LOG_LEVEL = logging.WARNING
 
+# XXXXXXXXXXXX
 # End of the conveniently-changeable section.
+# XXXXXXXXXXXX
 
 TN_ROOT = os.path.abspath(os.path.join(
     os.path.dirname(__file__),

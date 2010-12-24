@@ -1,13 +1,23 @@
 """
 This is the main notifier service.
+
+The design philisophy here is to send notification for "heads-up" events, 
+that is events that MAY require a reaction from its recipient.
+
+Emails are sent for "actionnable" events, that is events that require an action
+to be taken (accept in a network or community, ...).
 """
 from django.utils.translation import ugettext as _
 
 from twistranet.twistranet.signals import *
 import handlers
 
-#twistable_post_save.connect(handlers.LogHandler(), weak = False)
 
+
+
+#                                       #
+#           Community signals           #
+#                                       #
 join_community.connect(
     handlers.NotificationHandler(
         owner_arg = "client",
@@ -17,12 +27,24 @@ join_community.connect(
     weak = False,
 )
 
+
+#                                       #
+#           Network Signals             #
+#                                       #
 request_add_to_network.connect(
     handlers.NotificationHandler(
         owner_arg = "target",
         publisher_arg = "target",
         message = _("""%(client)s wants to add you to his/her network."""),
         permissions = "private",
+    ),
+    weak = False,
+)
+
+request_add_to_network.connect(
+    handlers.MailHandler(
+        recipient_arg = "target",
+        text_template = "email/request_add_to_network.txt",
     ),
     weak = False,
 )
