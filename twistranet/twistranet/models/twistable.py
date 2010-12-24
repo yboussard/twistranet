@@ -366,14 +366,18 @@ class Twistable(_AbstractTwistable):
             self.slug = self.slug[:40]
         if created:
             while Twistable.objects.__booster__.filter(slug = self.slug).exists():
+                log.debug("%s exists" % self.slug)
                 match = re.search("_(?P<num>[0-9]+)$", self.slug)
                 if match:
+                    log.debug("match")
                     root = self.slug[:match.start()]
-                    num = int(match.groupdict()['num'])
+                    num = int(match.groupdict()['num']) + 1
                 else:
+                    log.debug("no match")
                     root = self.slug
                     num = 1
-                self.slug = "%s_%i" % (self.slug, num, )
+                self.slug = "%s_%i" % (root, num, )
+        log.debug("Generated slug: %s (%i). Created = %s" % (self.slug, len(self.slug), created))
             
         # Perform a full_clean on the model just to be sure it validates correctly
         self.full_clean()

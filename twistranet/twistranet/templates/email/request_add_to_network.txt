@@ -7,7 +7,7 @@ Subject: {% blocktrans %}{{ client_title }} wants to join your network.{% endblo
 {% with client.get_absolute_url as client_get_absolute_url %}
 {% blocktrans %}
 Dear {{ target_title }},
-
+  
   You just recieved a request from {{ client_title }} to join your network.
   
   You have to take an action!
@@ -19,8 +19,8 @@ Dear {{ target_title }},
 {% endwith %}
 
 {% blocktrans %}
-        --
-        Greetings from twistranet
+  --
+  Greetings from twistranet
 {% endblocktrans %}
 {% endwith %}
 

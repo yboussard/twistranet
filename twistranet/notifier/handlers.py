@@ -7,6 +7,8 @@ We use classes instead of functions to allow inheritance between handlers.
 Don't forget to connect to your signals with 'weak = False' !!
 """
 import logging
+import traceback
+import re
 
 from django.template.loader import get_template
 from django.template import Context
@@ -15,6 +17,8 @@ from django.conf import settings
 
 from twistranet.log import log
 
+SUBJECT_REGEX = re.compile(r"^[\s]*Subject:[ \t]?([^\n$]*)\n", re.IGNORECASE | re.DOTALL)
+EMPTY_LINE_REGEX = re.compile(r"\n\n+", re.DOTALL)
 
 class NotifierHandler(object):
     def __call__(self, sender, **kwargs):
@@ -101,6 +105,7 @@ class MailHandler(NotifierHandler):
     
     The TEXT (and only text) template _can_ provide a Subject: xxx line AS ITS VERY FIRST LINE line.
     But the 'subject' parameter always superseeds this.
+    This way, you can use 'Subject:' in your templates to have your subject use variables and translation.
     """
     def __init__(self, recipient_arg, text_template, subject = None, html_template = None, managers_only = False):
         self.recipient_arg = recipient_arg
@@ -123,7 +128,7 @@ class MailHandler(NotifierHandler):
         # Load both templates and render them with kwargs context
         text_tpl = get_template(self.text_template)
         c = Context(kwargs)
-        text_content = text_tpl.render(c)
+        text_content = text_tpl.render(c).strip()
         if self.html_template:
             html_tpl = get_template(self.html_template)
             html_content = html_tpl.render(c)
@@ -132,15 +137,16 @@ class MailHandler(NotifierHandler):
             
         # Fetch back subject from text template
         subject = self.subject
-        log.debug(text_content)
         if not subject:
-            lines = [ l for l in text_content.splitlines() if l.strip() ]
-            if lines:
-                subject_line = lines[0].strip()
-                if subject_line.startswith("Subject:"):
-                    subject = subject_line[len("Subject:"):].strip()
+            match = SUBJECT_REGEX.search(text_content)
+            if match:
+                subject = match.groups()[0]
         if not subject:
             raise ValueError("No subject provided nor 'Subject:' first line in your text template")
+            
+        # Remove empty lines and "Subject:" line from text templates
+        text_content = SUBJECT_REGEX.sub('', text_content)
+        text_content = EMPTY_LINE_REGEX.sub('\n', text_content)
         
         # Handle recipient emails
         recipient = kwargs.get(self.recipient_arg, None)
@@ -166,5 +172,13 @@ class MailHandler(NotifierHandler):
         msg = EmailMultiAlternatives(subject, text_content, from_email, to)
         if html_content:
             msg.attach_alternative(html_content, "text/html")
-        msg.send()
-        
+            
+        # Send safely
+        try:
+            log.debug("Sending mail: '%s' from '%s' to '%s'" % (subject, from_email, to))
+            msg.send()
+        except:
+            log.warning("Unable to send message to %s" % to)
+            traceback.print_exc()
+
+
