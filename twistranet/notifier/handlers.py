@@ -10,10 +10,11 @@ import logging
 import traceback
 import re
 
-from django.template.loader import get_template
+from django.conf import settings
 from django.template import Context
 from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.conf import settings
+from django.template.loader import get_template
+from django.contrib.sites.models import Site
 
 from twistranet.log import log
 
@@ -117,7 +118,7 @@ class MailHandler(NotifierHandler):
     def __call__(self, sender, **kwargs):
         """
         Generate the message itself.
-        XXX TODO: Handle translation
+        XXX TODO: Handle translation correctly (not from the request only)
         """
         # Fake-Login with SystemAccount so that everybody can be notified,
         # even users this current user can't list.
@@ -125,9 +126,20 @@ class MailHandler(NotifierHandler):
         __account__ = SystemAccount.get()
         from_email = settings.SERVER_EMAIL
         
+        # Append domain to kwargs
+        d = kwargs.copy()
+        domain = Site.objects.get_current().domain
+        protocol = "http"                   # XXX This may be wrong with https!!!
+        url_prefix = "%s://%s" % (protocol, domain, )
+        d.update({
+            "domain":       domain,
+            "protocol":     protocol,
+            "url_prefix":   url_prefix,
+        })
+        
         # Load both templates and render them with kwargs context
         text_tpl = get_template(self.text_template)
-        c = Context(kwargs)
+        c = Context(d)
         text_content = text_tpl.render(c).strip()
         if self.html_template:
             html_tpl = get_template(self.html_template)
@@ -149,7 +161,7 @@ class MailHandler(NotifierHandler):
         text_content = EMPTY_LINE_REGEX.sub('\n', text_content)
         
         # Handle recipient emails
-        recipient = kwargs.get(self.recipient_arg, None)
+        recipient = d.get(self.recipient_arg, None)
         if not recipient:
             raise ValueError("Recipient must be provided as a '%s' parameter" % self.recipient_arg)
         if isinstance(recipient, UserAccount):
