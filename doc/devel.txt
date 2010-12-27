@@ -78,6 +78,11 @@ Compile your .po (it's a mandatory after each change)
     (twistranet) $ python ../../manage.py compilemessages
 
 
+Running Tests
+-------------
 
+    (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+    (twistranet-devel) $ cd Twistranet
+    (twistranet-devel) $ python manage.py test
 
 
