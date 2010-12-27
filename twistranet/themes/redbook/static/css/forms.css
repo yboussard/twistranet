@@ -181,7 +181,7 @@ ul.errorlist li {
 
 /* permissions select list too large sometimes */
 
-select#id_permissions {
+select.permissions-widget {
     max-width: 200px;
 }
 

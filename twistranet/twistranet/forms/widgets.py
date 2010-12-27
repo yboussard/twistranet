@@ -123,6 +123,8 @@ class PermissionsWidget(forms.Select):
         default_attrs = {'class': 'permissions-widget'}
         if attrs:
             default_attrs.update(attrs)
+        # remove id (possible js conflict in inline forms) > TODO : improve in inline forms
+        default_attrs['id']=''
         self.attrs = default_attrs
 
     def render(self, name, value, attrs=None, ):

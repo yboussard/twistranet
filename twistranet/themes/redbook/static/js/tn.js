@@ -198,7 +198,8 @@ var twistranet = {
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
-        jQuery("select.permissions-widget").msDropDown({useSprite:'sprite'});
+        //jQuery("select.permissions-widget").msDropDown({useSprite:'sprite'});
+        jQuery("select.permissions-widget").msDropDown();
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jQuery("#default-search-text").val();
