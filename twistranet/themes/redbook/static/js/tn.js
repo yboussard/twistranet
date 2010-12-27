@@ -194,6 +194,11 @@ var twistranet = {
         twistranet.formsautofocus();
         twistranet.setEmptyCols(); 
         twistranet.enableLiveSearch();
+        twistranet.prettyCombosLists();
+    },
+    prettyCombosLists: function(e) {
+        // sexy combo list for permissions widget
+        jQuery("select.permissions-widget").msDropDown({useSprite:'sprite'});
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jQuery("#default-search-text").val();

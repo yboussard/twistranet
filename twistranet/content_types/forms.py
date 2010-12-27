@@ -1,21 +1,24 @@
 from django.db import models
-from django.forms import widgets
+from django.forms import widgets, ChoiceField
 
 from tinymce.widgets import TinyMCE
 
 from twistranet.twistranet.forms import form_registry
 from twistranet.twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm
+from twistranet.twistranet.forms.widgets import  PermissionsWidget
 
 class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
+    
     class Meta(BaseInlineForm.Meta):
         from twistranet.content_types.models import StatusUpdate
         model = StatusUpdate
         fields = ('description', ) + BaseInlineForm.Meta.fields
         widgets = {
             'description':             widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+            'permissions':             PermissionsWidget(),
         }
 
 class InlineFileForm(BaseInlineForm):
