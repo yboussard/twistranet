@@ -37,3 +37,5 @@ def authenticate(**credentials):
 
 auth.authenticate = authenticate
 log.info("Hotfixed django.contrib.auth.authenticate to allow all profiles access during authentication")
+
+log.debug("Twistranet loaded successfuly!")
