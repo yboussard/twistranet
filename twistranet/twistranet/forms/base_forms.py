@@ -34,7 +34,7 @@ class BaseForm(forms.ModelForm):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
             self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
 
-    # permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget)
+    permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget())
 
 class BaseInlineForm(BaseForm):
     """

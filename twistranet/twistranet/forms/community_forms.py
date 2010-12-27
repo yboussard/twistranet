@@ -18,7 +18,8 @@ class CommunityForm(BaseForm):
         fields = ('title', 'description', 'picture', 'permissions', )
 
         widgets = {
-            "picture":          ResourceWidget(),
+            "picture":          ResourceWidget(),   
+            "permissions":          PermissionsWidget(),
         }
 
 class GlobalCommunityForm(CommunityForm):

@@ -113,13 +113,17 @@ class ResourceWidget(forms.MultiWidget):
 
         return mark_safe(self.format_output(output))
 
-    
+
 
 class PermissionsWidget(forms.Select):
-    def __init__(self, attrs=None):
-        super(PermissionsWidget, self).__init__(attrs)
-        # log.debug("Init perm widget")
-        self.choices = ()
+
+    def __init__(self, attrs=None, choices=()):
+        log.debug("Init permissions widget")              
+        super(PermissionsWidget, self).__init__(attrs, choices)
+        default_attrs = {'class': 'permissions-widget'}
+        if attrs:
+            default_attrs.update(attrs)
+        self.attrs = default_attrs
 
     def render(self, name, value, attrs=None, ):
         if value is None: value = ''
@@ -134,8 +138,8 @@ class PermissionsWidget(forms.Select):
     def render_option(self, selected_choices, option_value, option_label):
         option_value = force_unicode(option_value)
         selected_html = (option_value in selected_choices) and u' selected="selected"' or ''
-        return u'<option value="%s"%s>%s</option>' % (
-            escape(option_value), selected_html,
+        return u'<option class="%s" value="%s"%s>%s</option>' % (
+            escape(option_value), escape(option_value), selected_html,
             conditional_escape(force_unicode(option_label)))
 
     def render_options(self, selected_choices):
