@@ -224,12 +224,15 @@ var twistranet = {
         liveResults.bind('focusout', function(){
             jQuery(this).hide(500);
         });                                                         
-        searchGadget.livesearch({
-            searchCallback: liveSearch,
-            innerText: defaultSearchText,
-            queryDelay: 200,
-            minimumSearchLength: 2
-            });
+        
+        if (searchGadget.length) {
+            searchGadget.livesearch({
+                searchCallback: liveSearch,
+                innerText: defaultSearchText,
+                queryDelay: 200,
+                minimumSearchLength: 2
+                });
+        }
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
