@@ -1,0 +1,10 @@
+{% load thumbnail %}
+{% thumbnail content.object.file.image "120x80" as thumb %}
+  <a title="{{content.title}}"
+     href="{{ content.get_absolute_url }}"
+     class="image-block image-block-thumb image-block-content">
+    <img title="{{content.title}}"
+         alt="{{content.title}}"
+         src="{{ thumb.url }}" />  
+  </a>
+{% endthumbnail %}

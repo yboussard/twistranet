@@ -350,8 +350,6 @@ ul.children li {
 .image-block {
   float: left;
   margin: 0;
-  width: 32px;
-  height: 32px;
   border: none;
   text-decoration: none;
   display: block;
@@ -360,23 +358,47 @@ ul.children li {
   position: relative;
 }
 
-.image-block img {
-  width: 32px;
-  height: 32px;
+.image-block img {       
+  position: relative;
 }  
 
-.image-block-50-50,
-.image-block-50-50 img {
+/* different named sizes */
+
+.image-block-tile,
+.image-block-tile img {
   width: 50px;
   height: 50px;
 } 
 
-.image-block-32-32,
-.image-block-32-32 img {
+.image-block-icon,
+.image-block-icon img {
   width: 32px;
   height: 32px;
 }
 
+
+.image-block-thumb img {
+  max-width: 120px;
+  max-height: 80px;
+  padding: 2px;
+}     
+
+
+.image-block-preview img {
+  max-width: 500px;
+  max-height: 333px;
+  padding: 5px;
+}
+
+a.image-block-content {
+  float: none;
+  display: inline;
+}
+
+.image-block-content img {
+  position: static;         
+  border: 1px solid #ccc;
+}
 .image-block-alone {
   margin: 0 7px 0 0 !important;
 }
@@ -399,6 +421,11 @@ ul.children li {
     font-size:      13px;
     font-weight:    bold;
     margin-bottom:  0.5em;
+}
+
+.legend-content {
+    display: block;
+    margin-bottom: 5px;
 }
 
 /* thumbnails blocks ******************

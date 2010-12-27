@@ -2,7 +2,7 @@
 {% thumbnail  account.forced_picture.image "50x50" as thumb %}
   <a title="{{account.title}}"
      href="{{ account.get_absolute_url }}"
-     class="image-block image-block-50-50 image-block-alone">
+     class="image-block image-block-tile image-block-alone">
     <img title="{{account.title}}"
          alt="{{account.title}}"
          src="{{ thumb.url }}" />  

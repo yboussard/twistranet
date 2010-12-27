@@ -24,9 +24,11 @@
                 {% if content.detail_view %}
                     <div class="summary-content">
                         <div class="headline-content">
-                            <a href="{{ content.get_absolute_url }}">
+                            <a class="legend-content"
+                               href="{{ content.get_absolute_url }}">
                                 {{ content.title_or_description }}
-                            </a>
+                            </a>                  
+                            {% include 'content/medium.thumbnail.html' %}
                         </div>
                 {% else %}
                     {{ content.title_or_description }}
