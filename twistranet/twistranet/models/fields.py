@@ -117,16 +117,16 @@ class ResourceField(models.ForeignKey):
                 resource = Resource.objects.get(id = data_select)
             elif self.allow_select and data_select and isinstance(data_select, Resource):
                 resource = data_select
+            elif not data_upload and not self.allow_select:
+                # If we don't have any data BUT just have a FileField (no select),
+                # then that means that content didn't change (a new file has not been
+                # downloaded).
+                # In the future, we should check explicit against file deletion here.
+                return
             else:
                 raise ValueError("Invalid incoming data for resource field: %s" % data)
 
-        # If we don't have any data BUT just have a FileField (no select),
-        # then that means that content didn't change (a new file has not been
-        # downloaded).
-        # In the future, we should check explicit against file deletion here.
-        if not data and not self.allow_select:
-            return
-
+        # Supersave data
         super(ResourceField, self).save_form_data(instance, resource)
 
     def formfield(self, **kwargs):
