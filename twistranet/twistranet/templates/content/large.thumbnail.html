@@ -1,0 +1,10 @@
+{% load thumbnail %}
+{% thumbnail content.object.file.image "500x333" as preview %}
+  <a title="{{content.title}}"
+     href="{{ content.get_absolute_url }}"
+     class="image-block image-block-preview image-block-content">
+    <img title="{{content.title}}"
+         alt="{{content.title}}"
+         src="{{ preview.url }}" />  
+  </a>
+{% endthumbnail %}
