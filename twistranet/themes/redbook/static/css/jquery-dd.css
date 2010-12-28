@@ -15,6 +15,7 @@
 	cursor:default;
 	overflow:hidden;
 	height:16px;
+	min-width: 125px;
 }
 .dd .ddTitle span.arrow {
 	background:url(dd_arrow.gif) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
@@ -32,10 +33,12 @@
 	border-top:none;
 	display:none;
 	margin:0;
-	width:auto;
+	/*width:auto;*/
 	overflow:auto;
 	overflow-x:hidden !important;
 	background-color:#ffffff;
+	min-width:131px;
+	
 }
 .dd .ddChild .opta a, .dd .ddChild .opta a:visited {padding-left:10px}
 .dd .ddChild a {
