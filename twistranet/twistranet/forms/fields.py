@@ -7,7 +7,7 @@ from django import forms
 from django.db import models
 from django.core.validators import EMPTY_VALUES
 from django.utils.translation import ugettext as _
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 import widgets
 
 class PermissionFormField(forms.ChoiceField):

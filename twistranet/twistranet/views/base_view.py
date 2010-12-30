@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms import form_registry
-from twistranet.log import *
+from  twistranet.twistranet.lib.log import *
 
 class MustRedirect(Exception):
     """

@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.safestring import mark_safe
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 from twistranet.twistranet.lib import roles, permissions
 from twistranet.twistranet.lib.slugify import slugify
 from twistranet.twistranet.signals import twistable_post_save

@@ -3,7 +3,7 @@ from django.db import models
 from django.forms import widgets
 
 from twistranet.twistranet.forms.widgets import PermissionsWidget
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 class BaseForm(forms.ModelForm):
     error_css_class = 'error'

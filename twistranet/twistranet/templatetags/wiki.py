@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from twistranet.twistranet.lib import slugify
 from twistranet.twistranet.models import Account, Content, Resource
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 register = template.Library()
 

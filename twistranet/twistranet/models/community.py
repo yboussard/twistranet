@@ -11,7 +11,7 @@ from account import Account, SystemAccount
 from twistable import Twistable
 from network import Network
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 class Community(Account):
     """

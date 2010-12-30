@@ -16,7 +16,7 @@ from django.core.files.base import ContentFile
 from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions
 from twistranet.twistranet.lib.slugify import slugify
-from twistranet.log import *
+from  twistranet.twistranet.lib.log import *
 
 from django.conf import settings
 

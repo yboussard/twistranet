@@ -6,7 +6,7 @@ from django.forms import fields
 from twistranet.twistranet.forms.base_forms import BaseForm
 from twistranet.twistranet.lib import permissions
 from twistranet.twistranet.forms.widgets import ResourceWidget, PermissionsWidget
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 class CommunityForm(BaseForm):
     """

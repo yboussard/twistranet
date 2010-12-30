@@ -16,7 +16,7 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 SUBJECT_REGEX = re.compile(r"^[\s]*Subject:[ \t]?([^\n$]*)\n", re.IGNORECASE | re.DOTALL)
 EMPTY_LINE_REGEX = re.compile(r"\n\n+", re.DOTALL)

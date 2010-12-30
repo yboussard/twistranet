@@ -15,7 +15,7 @@ from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 class CommunityView(UserAccountView):
     """

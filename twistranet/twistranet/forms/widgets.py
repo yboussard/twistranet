@@ -8,7 +8,7 @@ from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
 

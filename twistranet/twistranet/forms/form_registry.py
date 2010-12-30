@@ -1,4 +1,4 @@
-from twistranet.log import *
+from  twistranet.twistranet.lib.log import *
 
 class FormRegistryManager:
     """

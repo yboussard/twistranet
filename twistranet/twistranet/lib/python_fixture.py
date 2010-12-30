@@ -1,6 +1,6 @@
 from django.db.models.query import QuerySet
 from twistranet.twistranet.models import Twistable
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 class Fixture(object):
     """

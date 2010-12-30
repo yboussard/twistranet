@@ -1,6 +1,6 @@
 # Import / Load config & logger
 from twistranet.twistranet.conf import defaults
-from twistranet.log import log
+from twistranet.twistranet.lib.log import log
 
 # Then import models
 from twistranet.twistranet.models import *

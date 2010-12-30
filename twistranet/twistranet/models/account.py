@@ -9,7 +9,7 @@ import twistable
 from resource import Resource
 from twistranet.twistranet.lib import permissions, roles, languages, slugify
 from twistranet.twistranet.signals import request_add_to_network, accept_in_network
-from twistranet.log import log
+from  twistranet.twistranet.lib.log import log
 
 from fields import ResourceField
 
