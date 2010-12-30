@@ -55,6 +55,7 @@ urlpatterns = patterns('',
     url(r'^community/(\d+)/edit$', AsView(CommunityEdit), name = "community_edit"),
     url(r'^community/(\d+)/join$', AsView(CommunityJoin), name = "community_join"),
     url(r'^community/(\d+)/leave$', AsView(CommunityLeave), name = "community_leave"),
+    url(r'^community/(\d+)/invite$', AsView(CommunityInvite), name = "community_invite"),
     url(r'^community/new$', AsView(CommunityCreate), name = "community_create", ),
     url(r'^community/(\d+)/delete$', AsView(CommunityDelete), name = "community_delete", ),
 

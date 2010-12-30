@@ -183,7 +183,6 @@ account_templates = PermissionTemplate((
 ))
 
 # Community templates
-# Default is that, except interest groups, communities must be created by an admin 
 community_templates = PermissionTemplate((
     {
         "id":               "workgroup",

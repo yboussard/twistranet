@@ -15,6 +15,7 @@ from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView
 
+from twistranet.log import log
 
 class CommunityView(UserAccountView):
     """
@@ -177,6 +178,12 @@ class CommunityCreate(CommunityEdit):
     context_boxes = []
     
     
+class CommunityInvite(CommunityView):
+    """
+    Invite ppl in a community
+    """
+    
+    
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
     action_label = "Join"
@@ -192,8 +199,9 @@ class CommunityJoin(BaseObjectActionView):
         # If we're talking about community member, then the action must reflect that
         if request_view.community.is_member:
             ret["label"] = _("Invite people")
-            ret["url"] = reverse("twistranet_home")     # XXX TODO
+            ret["reverse_url"] = "community_invite"
             ret["main"] = False
+            ret["confirm"] = None
 
         return ret
     
@@ -214,6 +222,8 @@ class CommunityLeave(BaseObjectActionView):
     action_reverse_url = "community_leave"
 
     def as_action(self, request_view):
+        if not request_view.community.is_member:
+            return None
         if not request_view.object.can_leave:
             return None
         return super(CommunityLeave, self).as_action(request_view)

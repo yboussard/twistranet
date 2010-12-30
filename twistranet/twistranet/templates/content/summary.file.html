@@ -29,13 +29,11 @@
                                 {{ content.title_or_description }}
                             </a>                  
                             {% include 'content/medium.thumbnail.html' %}
+                            {{ content.description|wiki }}
                         </div>
-                {% else %}
-                    {{ content.title_or_description }}
                 {% endif %}
             </span>
             {% if content.detail_view %}
-                    {{ content.description|wiki }}
                 </div>
             {% endif %}
         </div>

@@ -11,6 +11,8 @@ from account import Account, SystemAccount
 from twistable import Twistable
 from network import Network
 
+from twistranet.log import log
+
 class Community(Account):
     """
     A simple community class.
@@ -114,15 +116,20 @@ class Community(Account):
             account = Community.objects._getAuthenticatedAccount()
             if not account:
                 return False    # Anon user
-        flt = Account.objects.__booster__.filter(
-            targeted_network__target__id = self.id,
-            targeted_network__client__id = account.id,
-            requesting_network__client__id = self.id,
-            requesting_network__target__id = account.id,
-        )
-
-        if is_manager:
-            flt = flt.filter(
+                
+        if not is_manager:
+            flt = Account.objects.__booster__.filter(
+                targeted_network__target__id = self.id,
+                targeted_network__client__id = account.id,
+                requesting_network__client__id = self.id,
+                requesting_network__target__id = account.id,
+            )
+        else:
+            flt = Account.objects.__booster__.filter(
+                targeted_network__target__id = self.id,
+                targeted_network__client__id = account.id,
+                requesting_network__client__id = self.id,
+                requesting_network__target__id = account.id,
                 targeted_network__is_manager = True,
             )
 
@@ -152,6 +159,7 @@ class Community(Account):
     def can_leave(self):
         # Special check if we're not the last (human) manager inside
         if self.is_manager:
+            log.debug("Is manager on %s" % self)
             if self.managers.count() == 1:
                 return False
         
@@ -212,8 +220,8 @@ class Community(Account):
         if not account:
             account = Account.objects._getAuthenticatedAccount()               
         
-        Network.objects.__booster__.filter(client__id = self.id, target__id = account.id).delete()
-        Network.objects.__booster__.filter(target__id = self.id, client__id = account.id).delete()
+        Network.objects.filter(client__id = self.id, target__id = account.id).delete()
+        Network.objects.filter(target__id = self.id, client__id = account.id).delete()
 
 
 class GlobalCommunity(Community):
