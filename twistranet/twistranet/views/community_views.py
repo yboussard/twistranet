@@ -256,7 +256,11 @@ class CommunityInvite(CommunityView):
                 targeted_network__target__id = self.community.id,
                 requesting_network__client__id = self.community.id,
             )
-        self.selectable = flt[:RESULTS_PER_PAGE]            
+            
+        # XXX SUBOPTIMAL PART
+        self.selectable = flt[:RESULTS_PER_PAGE]
+        member_ids = self.community.members.values_list('id', flat = True)
+        self.selectable = [ u for u in self.selectable if u.id not in member_ids ]
             
         # If we have some people to invite, just prepare invitations
         for id in self.account_ids:
