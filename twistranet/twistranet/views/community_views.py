@@ -215,12 +215,7 @@ class CommunityInvite(CommunityView):
         'community/members.box.html',
     ]
     template = "community/invite.html"
-    template_variables = UserAccountView.template_variables + [
-        "community",
-        "n_members",
-        "is_member",
-        "members",
-        "managers",
+    template_variables = CommunityView.template_variables + [
         "q",
         "selectable",
     ]
