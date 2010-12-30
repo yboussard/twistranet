@@ -13,7 +13,7 @@ from twistranet.twistranet.lib.decorators import require_access
 
 from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
-from account_views import UserAccountView
+from account_views import UserAccountView, AccountListingView
 
 from  twistranet.twistranet.lib.log import log
 
@@ -31,7 +31,8 @@ class CommunityView(UserAccountView):
     template = "community/view.html"
     template_variables = UserAccountView.template_variables + [
         "community",
-        "n_members",
+        "n_members",  
+        "n_managers",
         "is_member",
         "members",
         "managers", 
@@ -66,7 +67,8 @@ class CommunityView(UserAccountView):
         self.n_members = self.community and self.community.members.count() or 0
         self.is_member = self.community and self.community.is_member or False
         self.members = self.community and self.community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
-        self.managers = self.community and self.community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
+        self.managers = self.community and self.community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []  
+        self.n_managers = self.community and self.community.managers.count() or 0
         self.n_communities = []
         self.n_network_members = []
 
@@ -76,6 +78,33 @@ class CommunityView(UserAccountView):
 #                                                                               #
 #                               LISTING VIEWS                                   #
 #                                                                               #
+
+class CommunityMembers(CommunityView):
+    """
+    list members for a community
+    """
+    template = "account/list.html"
+    template_variables = CommunityView.template_variables + AccountListingView.template_variables
+
+    def get_title(self,):
+        return _("All members of %(name)s" % {'name': self.community.title} )
+
+    def prepare_view(self, *args, **kw):
+        super(CommunityMembers, self).prepare_view(*args, **kw)
+        self.accounts = self.community.members
+
+
+class CommunityManagers(CommunityMembers):
+    """
+    list managers for a community
+    """
+
+    def get_title(self,):
+        return _("All managers of %(name)s" % {'name': self.community.title} )
+
+    def prepare_view(self, *args, **kw):
+        super(CommunityMembers, self).prepare_view(*args, **kw)
+        self.accounts = self.community.managers    
 
 class CommunityListingView(BaseView):
     """
@@ -109,23 +138,6 @@ class MyCommunitiesView(BaseView):
             requesting_network__client__id = auth.id,
             targeted_network__is_manager = True,
         )[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
-
-
-class AccountCommunitiesView(UserAccountView):
-    """
-    All network members for an account.
-    """
-    template = CommunityListingView.template
-    template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
-
-    def get_title(self,):
-        if self.account.id == Account.objects._getAuthenticatedAccount().id:
-            return _("My communities")
-        return _("%(name)s's communities" % {'name': self.account.title} )
-
-    def prepare_view(self, *args, **kw):
-        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
-        self.communities = self.account.communities
 
 
     

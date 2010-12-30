@@ -124,7 +124,43 @@ class AccountNetworkView(UserAccountView):
 
     def prepare_view(self, *args, **kw):
         super(AccountNetworkView, self).prepare_view(*args, **kw)
-        self.accounts = self.account.network
+        self.accounts = self.account.network   
+
+
+class AccountCommunitiesView(UserAccountView):
+    """
+    All communities for an account.
+    """
+    template = AccountListingView.template
+    template_variables = UserAccountView.template_variables + AccountListingView.template_variables
+
+    def get_title(self,):
+        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+            return _("My communities")
+        return _("%(name)s's communities" % {'name': self.account.title} )
+
+    def prepare_view(self, *args, **kw):
+        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        self.accounts = self.account.communities    
+
+
+class AccountAdminCommunitiesView(UserAccountView):
+    """
+    All communities administred by an account.
+    """
+    template = AccountListingView.template
+    template_variables = UserAccountView.template_variables + AccountListingView.template_variables
+
+    # XXX TODO
+    
+    def get_title(self,):
+        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+            return _("My communities")
+        return _("%(name)s's communities" % {'name': self.account.title} )
+
+    def prepare_view(self, *args, **kw):
+        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        self.accounts = self.account.communities
 
 
 class PendingNetworkView(UserAccountView):

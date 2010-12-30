@@ -12,11 +12,11 @@ urlpatterns = patterns('',
     # The wall page for generic accounts
     url(r'^$',                 AsView(HomepageView), name='twistranet_home'),
     
-    # Account pages
-    url(r'^account/(\d+)/communities/$', AsView(AccountCommunitiesView), name='account_communities'), 
-    url(r'^account/(\d+)/network/$', AsView(AccountNetworkView), name='account_network'), 
+    # Account pages 
     url(r'^account/(\d+)/$', AsView(UserAccountView, lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(UserAccountView, lookup = 'slug'), name='account_by_slug'),      
+    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(UserAccountView, lookup = 'slug'), name='account_by_slug'),
+    url(r'^account/(%s)/communities/$' % SLUG_REGEX, AsView(AccountCommunitiesView, lookup = 'slug'), name='account_communities'),
+    url(r'^account/(%s)/network/$' % SLUG_REGEX, AsView(AccountNetworkView, lookup = 'slug'), name='account_network'),
     url(r'^account/(\d+)/edit$', AsView(UserAccountEdit), name = "user_account_edit"),              
     url(r'^account/new$', AsView(UserAccountCreate), name = "user_account_create", ),
     url(r'^account/(\d+)/add_to_network/$', AsView(AddToNetworkView), name = 'add_to_my_network'),
@@ -49,7 +49,9 @@ urlpatterns = patterns('',
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     url(r'^community/(\d+)$', AsView(CommunityView, lookup = "id"), name='community_by_id'),
-    url(r'^community/(%s)/$' % SLUG_REGEX, AsView(CommunityView, lookup = "slug"), name='community_by_slug'),
+    url(r'^community/(%s)/$' % SLUG_REGEX, AsView(CommunityView, lookup = "slug"), name='community_by_slug'),       
+    url(r'^community/(%s)/members$' % SLUG_REGEX, AsView(CommunityMembers, lookup = "slug"), name='community_members'),   
+    url(r'^community/(%s)/managers$' % SLUG_REGEX, AsView(CommunityManagers, lookup = "slug"), name='community_managers'),
     url(r'^communities/$', AsView(CommunityListingView), name = "communities", ),
     url(r'^communities/my$', AsView(MyCommunitiesView), name = "my_communities", ),
     url(r'^community/(\d+)/edit$', AsView(CommunityEdit), name = "community_edit"),
