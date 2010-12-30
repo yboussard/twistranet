@@ -198,8 +198,9 @@ var twistranet = {
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
-        //jQuery("select.permissions-widget").msDropDown({useSprite:'sprite'});
         jQuery("select.permissions-widget").msDropDown();
+        // remove the forced width (see also.dd .ddTitle in css) 
+        jQuery(document).ready(function(){jQuery('.dd').css('width','auto')});
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jQuery("#default-search-text").val();
