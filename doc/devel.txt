@@ -83,6 +83,6 @@ Running Tests
 
     (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
     (twistranet-devel) $ cd Twistranet
-    (twistranet-devel) $ python manage.py test
+    (twistranet-devel) $ python manage.py test twistranet
 
 

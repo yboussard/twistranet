@@ -6,7 +6,8 @@ from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from twistranet.twistranet.lib import dbsetup, notifier
+from twistranet.twistranet.lib import dbsetup
+from twistranet import notifier
 
 class SecurityTest(TestCase):
     """
