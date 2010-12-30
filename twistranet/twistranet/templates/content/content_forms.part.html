@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for form in content_forms %}
-<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
+<fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %} class="fieldset-inline-form">
     <legend>
         {% for formhandle in content_forms %}
             {% if formhandle.getName == form.getName %}

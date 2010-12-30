@@ -10,8 +10,7 @@ fieldset {
 	background-color: #F7F7F7;
 }
 
-fieldset#form-StatusUpdate,
-fieldset#form-File {
+.fieldset-inline-form {
   margin-top: 10px;
 }
 
