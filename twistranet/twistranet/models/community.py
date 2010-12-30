@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import NoReverseMatch
 
 from twistranet.twistranet.lib import permissions
-from twistranet.twistranet.signals import join_community
+from twistranet.twistranet.signals import join_community, invite_community, request_join_community
 
 from account import Account, SystemAccount
 from twistable import Twistable
@@ -166,6 +166,32 @@ class Community(Account):
         # Regular checks
         auth = Account.objects._getAuthenticatedAccount()
         return auth.has_permission(permissions.can_leave, self)
+        
+    def invite(self, account):
+        """
+        Invite a user to join the community.
+        """
+        # Check if we have the rights to do so
+        if not self.can_join:
+            raise PermissionDenied("You're not allow to invite somebody in a community.")
+        
+        # Ensure first that account is not already in
+        if self.isMember(account):
+            return
+
+        # Add one part of the relation
+        Network.objects.create(
+            client = self,
+            target = account,
+            is_manager = False,
+        )
+        
+        # Send the invite signal
+        invite_community.send(
+            sender = self.__class__,
+            target = account,
+            community = self
+        )
             
     def join(self, account = None, is_manager = False):
         """
@@ -188,16 +214,22 @@ class Community(Account):
             return
 
         # Actually add (symetrically).
-        Network.objects.create(
-            client = account,
-            target = self,
-            is_manager = is_manager,
-        )
-        Network.objects.create(
-            client = self,
-            target = account,
-            is_manager = False,
-        )
+        try:
+            Network.objects.create(
+                client = account,
+                target = self,
+                is_manager = is_manager,
+            )
+        except IntegrityError:
+            pass
+        try:
+            Network.objects.create(
+                client = self,
+                target = account,
+                is_manager = False,
+            )
+        except IntegrityError:
+            pass
         
         # Send the join signal
         join_community.send(

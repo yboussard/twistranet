@@ -27,7 +27,12 @@ request_add_to_network = django.dispatch.Signal(
     providing_args = ["client", "target", ],
 )
 
-# This one is sent when a user actually joins a community.
+# This one is sent when a user in invited into a community.
+invite_community = django.dispatch.Signal(
+    providing_args = ["target", "community", ]
+)
+
+# This one is sent when a user actually (and explicitly) joins a community.
 join_community = django.dispatch.Signal(
     providing_args = ["client", "community", ]
 )

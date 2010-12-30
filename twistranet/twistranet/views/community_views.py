@@ -3,10 +3,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, InvalidPage
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.db.models import Q
 
 from twistranet.twistranet.forms import community_forms
 from twistranet.twistranet.lib.decorators import require_access
@@ -16,6 +18,8 @@ from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView, AccountListingView
 
 from  twistranet.twistranet.lib.log import log
+
+RESULTS_PER_PAGE = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
 
 class CommunityView(UserAccountView):
     """
@@ -51,7 +55,7 @@ class CommunityView(UserAccountView):
             return []
         
         # Generate actions
-        for act_view in (CommunityEdit, CommunityJoin, CommunityLeave, CommunityDelete, ):
+        for act_view in (CommunityEdit, CommunityJoin, CommunityInvite, CommunityLeave, CommunityDelete, ):
             a = act_view(self.request).as_action(self)
             if a:
                 actions.append(a)
@@ -194,6 +198,87 @@ class CommunityInvite(CommunityView):
     """
     Invite ppl in a community
     """
+    # Various parameters
+    model_lookup = Community
+    title = "Invite people in this community"
+    
+    # Action rendering
+    action_label = "Invite"
+    action_confirm = None
+    action_reverse_url = "community_invite"
+    action_main = False
+    
+    context_boxes = [
+        'community/profile.box.html', 
+        'community/metadata.box.html',
+        'actions/context.box.html',
+        'community/members.box.html',
+    ]
+    template = "community/invite.html"
+    template_variables = UserAccountView.template_variables + [
+        "community",
+        "n_members",
+        "is_member",
+        "members",
+        "managers",
+        "q",
+        "selectable",
+    ]
+    model_lookup = Community
+    
+    def prepare_view(self, value):
+        """
+        This either performs a search or invite ppl in this community
+        """
+        from haystack.query import SearchQuerySet
+        
+        super(CommunityInvite, self).prepare_view(value)
+        self.q = self.request.GET.get("q", None)
+        self.account_ids = []
+        for k, v in self.request.POST.items():
+            if k.startswith("account_id_"):
+                self.account_ids.append(k[len("account_id_"):])
+        
+        # Perform the search. XXX Should use haystack one day...
+        if self.q:
+            # Search users
+            # sqs = SearchQuerySet()
+            # sqs = sqs.auto_query(self.q)
+            # # sqs = sqs.filter_and(model_class = "UserAccount")
+            # self.selectable = sqs.load_all()
+            # self.selectable = sqs[:RESULTS_PER_PAGE]
+            # self.selectable = [ s.object for s in self.selectable ]
+            flt = UserAccount.objects.filter(
+                Q(title__icontains = self.q) | Q(description__icontains = self.q) | Q(user__email__icontains = self.q)
+            ).distinct()
+        else:
+            # Just display current user's network which is not yet part of the community
+            flt = UserAccount.objects.filter(
+                targeted_network__target__id = self.auth.id,
+                requesting_network__client__id = self.auth.id,
+            )
+            flt = flt.exclude(
+                targeted_network__target__id = self.community.id,
+                requesting_network__client__id = self.community.id,
+            )
+        self.selectable = flt[:RESULTS_PER_PAGE]            
+            
+        # If we have some people to invite, just prepare invitations
+        for id in self.account_ids:
+            account = UserAccount.objects.get(id = int(id))
+            self.community.invite(account)
+            
+        # Redirect to the community page with a nice message
+        if self.account_ids:
+            messages.info(self.request, _("Invitations has been sent."))
+            raise MustRedirect(self.community.get_absolute_url())
+                    
+    def as_action(self, request_view):
+        if not request_view.community.is_member:
+            return None
+        if not request_view.object.can_join:
+            return None
+        return super(CommunityInvite, self).as_action(request_view)
     
     
 class CommunityJoin(BaseObjectActionView):
@@ -206,16 +291,9 @@ class CommunityJoin(BaseObjectActionView):
     def as_action(self, request_view):
         if not request_view.object.can_join:
             return None
-        ret = super(CommunityJoin, self).as_action(request_view)
-    
-        # If we're talking about community member, then the action must reflect that
         if request_view.community.is_member:
-            ret["label"] = _("Invite people")
-            ret["reverse_url"] = "community_invite"
-            ret["main"] = False
-            ret["confirm"] = None
-
-        return ret
+            return None
+        return super(CommunityJoin, self).as_action(request_view)
     
     def prepare_view(self, value):
         super(CommunityJoin, self).prepare_view(value)
@@ -224,8 +302,8 @@ class CommunityJoin(BaseObjectActionView):
             # XXX Should send a message to community managers for approval
             raise NotImplementedError("We should implement approval here!")
         self.community.join()
-        messages.info(self.request, _("You're now part of %(name)s! Welcome aboard." % {'name': name}))
-        self.redirect = self.community.get_absolute_url()
+        messages.info(self.request, _("You're now part of %(name)s!<br />Welcome aboard." % {'name': name}))
+        raise MustRedirect(self.community.get_absolute_url())
 
 class CommunityLeave(BaseObjectActionView):
     model_lookup = Community
@@ -240,14 +318,14 @@ class CommunityLeave(BaseObjectActionView):
             return None
         return super(CommunityLeave, self).as_action(request_view)
 
-    def prepare_view(self, value):
+    def prepare_view(self, value, ):
         super(CommunityLeave, self).prepare_view(value)
         name = self.community.title
         if not self.community.can_leave:
             raise NotImplementedError("Should return permission denied!")
         self.community.leave()
         messages.info(self.request, _("You've left %(name)s." % {'name': name}))
-        self.redirect = self.community.get_absolute_url()
+        raise MustRedirect(self.community.get_absolute_url())
 
 
 class CommunityDelete(BaseObjectActionView):
@@ -266,14 +344,13 @@ class CommunityDelete(BaseObjectActionView):
 
     def prepare_view(self, *args, **kw):
         super(CommunityDelete, self).prepare_view(*args, **kw)
-        self.redirect = reverse("twistranet_home")
         name = self.community.title
         self.community.delete()
         messages.info(
             self.request, 
             _("'%(name)s' community has been deleted." % {'name': name})
         )
-        self.redirect = reverse("twistranet_home")
+        raise MustRedirect(reverse("twistranet_home"))
 
 
 

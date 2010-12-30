@@ -185,3 +185,14 @@ select.permissions-widget {
     max-width: 200px;
 }
 
+/* The account search form */
+
+.networkGridItem {
+    display: inline;
+    width: 90px;
+}
+
+
+
+
+

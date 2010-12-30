@@ -1,0 +1,7 @@
+{# Generate a select box for an 'account' object #}
+{% load i18n %}
+{% load wiki %}
+<div class="networkGridItem">
+    {% include 'account/medium.thumbnail.html' %}
+    <input type="checkbox" name="account_id_{{ account.id }}" value="{{ account.id }}">
+</div>

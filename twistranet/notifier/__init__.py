@@ -27,6 +27,15 @@ join_community.connect(
     weak = False,
 )
 
+invite_community.connect(
+    handlers.NotificationHandler(
+        owner_arg = "target",
+        publisher_arg = "target",
+        permissions = "private",
+        message = _("""You are invited in %(community)s community"""),
+    ),
+    weak = False,
+)
 
 #                                       #
 #           Network Signals             #

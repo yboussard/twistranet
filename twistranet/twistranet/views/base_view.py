@@ -219,6 +219,7 @@ class BaseIndividualView(BaseView):
     def prepare_view(self, value = None, ):
         """
         Fetch the individual object.
+        'value' is the value used to fetch the object.
         """
         # Prepare specific parameters
         self.auth = Account.objects._getAuthenticatedAccount()

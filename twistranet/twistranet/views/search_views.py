@@ -70,7 +70,7 @@ class TwistraNetSearchView(BaseView):
 
         self.form = form
         self.page = page
-        self.paginator = paginator,
+        self.paginator = paginator
         self.query = query
         return results
             
