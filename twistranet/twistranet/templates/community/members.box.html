@@ -4,7 +4,7 @@
     <h3>{% blocktrans %}Community Managers{% endblocktrans %}</h3>
     <div class="tn-box-content-header">
       <div class="right-inbox">
-        <a href="{{community.get_absolute_url}}managers">
+        <a href="{% url community_managers community.id %}">
           {% blocktrans %}See all{% endblocktrans %}
         </a>
       </div>
@@ -26,7 +26,7 @@
     <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
     <div class="tn-box-content-header">
       <div class="right-inbox">
-        <a href="{{community.get_absolute_url}}members">
+        <a href="{% url community_members community.id %}">
           {% blocktrans %}See all{% endblocktrans %}
         </a>
       </div>

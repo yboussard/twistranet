@@ -8,7 +8,7 @@
     {%endifequal%}         
     <div class="tn-box-content-header">
       <div class="right-inbox">
-        <a href="{% url account_communities account.slug %}">
+        <a href="{% url account_communities account.id %}">
           {% blocktrans %}See all{% endblocktrans %}
         </a>
       </div>
@@ -37,7 +37,7 @@
     {%endifequal%}        
     <div class="tn-box-content-header">
       <div class="right-inbox">
-        <a href="{% url account_network account.slug %}">
+        <a href="{% url account_network account.id %}">
           {% blocktrans %}See all{% endblocktrans %}
         </a>
       </div>
