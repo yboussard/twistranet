@@ -423,9 +423,15 @@ a.image-block-content {
     margin-bottom:  0.5em;
 }
 
-.legend-content {
+.content-title {
     display: block;
     margin-bottom: 5px;
+}
+
+.content-description {
+    display: table-cell;
+    padding-left: 5px;
+    font-weight: lighter;
 }
 
 /* thumbnails blocks ******************

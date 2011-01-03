@@ -24,18 +24,21 @@
                 {% if content.detail_view %}
                     <div class="summary-content">
                         <div class="headline-content">
-                            <a class="legend-content"
+                            <a class="content-title"
                                href="{{ content.get_absolute_url }}">
                                 {{ content.title_or_description }}
-                            </a>                  
-                            {% include 'content/medium.thumbnail.html' %}
+                            </a>
+                            <div class="summary-thumbnail">                  
+                                {% include 'content/medium.thumbnail.html' %}
+                            </div>
+                            <div class="content-description">
                             {{ content.description|wiki }}
-                        </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>          
+                    </div>
                 {% endif %}
             </span>
-            {% if content.detail_view %}
-                </div>
-            {% endif %}
         </div>
         <div class="postmetadata">
             <ul>

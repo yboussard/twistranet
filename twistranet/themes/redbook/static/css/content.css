@@ -28,6 +28,7 @@
 
 .post .summary-thumbnail {
     float: left;
+    display: table-cell;
 }
 
 .entry {
@@ -45,7 +46,8 @@
   line-height: auto;
 }
   .entry div.postmetadata {
-    margin-top: 7px;
+    margin-top: 7px;  
+    clear: left;
   }
   .entry .postmetadata ul {
     margin: 0;
