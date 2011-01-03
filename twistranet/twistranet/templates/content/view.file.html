@@ -10,9 +10,16 @@
       </div>
       {% include 'content/large.thumbnail.html' %}
       <div class="content-file-link">
+        {% with content.file.title as filetitle %}
           <a href="{{content.file.get_absolute_url}}">
-              Download {{ content.file.title }}
+              {% blocktrans %}Download {{filetitle}}{% endblocktrans %}
           </a>
+         {% endwith %}
       </div>
+      <div class="content-file-size">
+        {% with content.size as filesize %}
+            {% blocktrans %}Size : {{filesize}}{% endblocktrans %}
+        {% endwith %}
+      </div>      
     </div>
 {% endblock %}

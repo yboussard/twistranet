@@ -3,7 +3,8 @@
 Default content types for twistranet
 """
 from django.db import models
-from twistranet.twistranet.lib import permissions
+from twistranet.twistranet.lib import permissions   
+from twistranet.twistranet.lib.utils import formatbytes
 from twistranet.twistranet.models.content import Content
 from twistranet.twistranet.models import fields
 
@@ -52,6 +53,12 @@ class File(Content):
     type_detail_view = "content/view.file.html"
     type_summary_view = "content/summary.file.html"
 
+    @property
+    def size(self) :
+        file = self.file.resource_file
+        if self.file is not None :
+            return formatbytes(self.file.resource_file.size)
+        
     def save(self, *args, **kw):
         """
         Before saving, we use filename as this content title
