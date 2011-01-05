@@ -95,8 +95,8 @@ class TwistraNetJSONSearchView(BaseView):
     This view returns search results in json format
     used by live search
     """
-
     title = "Live Search results - return json data"
+    name = "json_search_view"
 
     def render_view(self, ):
         """

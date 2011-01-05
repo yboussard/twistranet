@@ -71,22 +71,26 @@ class TwistableManager(models.Manager):
 
         # Regular check. Works for anonymous as well...
         # network_ids = auth.network_ids
-        qs = base_query_set.filter(
-            Q(
-                owner__id = auth.id,
-                _p_can_list = roles.owner,
-            ) | Q(
-                _access_network__targeted_network__target = auth,
-                _p_can_list = roles.network,
-            ) | Q(
-                _access_network__targeted_network__target = auth,
-                _p_can_list = roles.public,
-            ) | Q(
-                # Anonymous stuff
-                _access_network__isnull = True,
-                _p_can_list = roles.public,
+        if not auth.is_anonymous:
+            qs = base_query_set.filter(
+                Q(
+                    owner__id = auth.id,
+                    _p_can_list = roles.owner,
+                ) | Q(
+                    _access_network__targeted_network__target = auth,
+                    _p_can_list = roles.network,
+                ) | Q(
+                    _access_network__targeted_network__target = auth,
+                    _p_can_list = roles.public,
+                ) | Q(
+                    # Anonymous stuff
+                    _access_network__isnull = True,
+                    _p_can_list = roles.public,
+                )
             )
-        )
+        else:
+            # XXX TODO !!!
+            qs = base_query_set.none()
         return qs
                 
 

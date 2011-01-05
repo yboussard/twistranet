@@ -1,16 +1,21 @@
+import copy
+
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
+from django.utils.safestring import mark_safe
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms import form_registry
-from  twistranet.twistranet.lib.log import *
+from twistranet.twistranet.lib.log import *
+
+from twistranet.actions import *
 
 class MustRedirect(Exception):
     """
@@ -75,6 +80,9 @@ class BaseView(object):
         "content/content_creation.box.html",
     ]
     view_template = None
+    available_actions = []      # List of either Action objects or BaseView classes (that will be instanciated and called with view.as_action() method)
+    name = None                 # The name that this will be mapped to in url.py. But you can of course override this in url.py.
+    category = GLOBAL_ACTIONS   # Override this if you want to give another default category to this view.
     
     # The view attribute which will be passed to the templates
     template_variables = [
@@ -83,38 +91,100 @@ class BaseView(object):
         "context_boxes",
         "global_boxes",
         "breadcrumb",
-        "creatable_content_types",
-        ("actions", "get_actions", )
-    ]    
+    ]
     
-    @property
-    def creatable_content_types(self,):
-        klasses = form_registry.getFullpageForms(creation = True)
-        return klasses
+    # Some implicit parameters will be passed. They are:
+    # - actions: the list of actions defined for this view
+    
+    def __init__(self, request = None, other_view = None, ):
+        """
+        Instanciate a view, either from the main controller or from another view.
+        In the latter case, the view is simply copied from the caller's view data.
+        """
+        # Check initial parameters
+        if request and other_view:
+            raise ValueError("You must instanciate either with a 'request' or 'other_view' parameter, but not both.")
+        if not request and not other_view:
+            raise ValueError("You must instanciate with either a 'request' or 'other_view' parameter.")
+        
+        # Check class consistancy
+        if not self.name:
+            raise ValueError("View class '%s' should have a name" % self.__class__)
+        
+        # Default parameters
+        if request:
+            self.request = request
+            self.path = request and request.path
+            
+        if other_view:
+            for param in self.template_variables:
+                if isinstance(param, tuple):
+                    continue        # Ignore function calls for the sake of simplicity
+                if param in ("breadcrumb", ):
+                    continue
+                p = getattr(self, param, None)
+                if callable(p):
+                    continue
+                # log.debug("%s %s" % (self, param))
+                setattr(self, param, getattr(other_view, param, None))
+                
+    #                                                                                               #
+    #                                       Actions Management                                      #
+    #                                                                                               #
             
     def get_actions(self,):
         """
-        Return the main action, emphased in the templates.
-        Should return a list of dicts with the following keys :
-        - label (TRANSLATED)
-        - URL
-        - main as a boolean (assumed as False if absent). Only 1 main action is possible.
-        
-        Default is to return the self.actions object attribute.
-        The get_actions method is called in the last process before rendering, so your intermediate
-        methods can safely add stuff to the self.actions list.
+        Transform the available_actions list into an actions{} dict.
         """
-        return getattr(self, "actions", [])
-        
-    def get_action_from_view(self, view_class):
+        ret = {}
+        flat_actions = []
+
+        # Flatten the actions list
+        for act in self.available_actions:
+            if isinstance(act, Action):
+                flat_actions.append(act)
+            elif issubclass(act, BaseView):
+                view_instance = act(other_view = self)
+                as_action = view_instance.as_action()
+                if isinstance(as_action, Action):
+                    flat_actions.append(as_action)
+                elif isinstance(as_action, list) or isinstance(as_action, tuple):
+                    flat_actions.extend(as_action)
+                elif as_action is None:
+                    continue
+                else:
+                    raise ValueError("Invalid action type: %s for %s" % (as_action, act))
+            
+        for action in flat_actions:
+            # Mark the confirm msg as html_safe
+            if action.confirm:
+                action.confirm = mark_safe(action.confirm)
+            
+            # Append it to the proper actions category
+            if not ret.has_key(action.category.id):
+                ret[action.category.id] = [ action ]
+            else:
+                ret[action.category.id].append(action)
+
+        # Check that we've got only 1 main action at most
+        if len(ret.get("main", [])) > 1:
+            raise ValueError("More than 1 action in 'main' category: %s" % ret)
+        return ret
+            
+    def as_action(self):
         """
-        Instanciate the view_class correctly and return the action
+        Default action management (for global views)
         """
-        return view_class(self.request).as_action(self)
-        
+        return Action(
+            category = self.category,
+            label = self.get_title(),
+            url = reverse(self.name),
+            confirm = getattr(self, "confirm", None),
+        )
+                
     def get_title(self, ):
         if self.title is None:
-            raise NotImplementedError("You must override the title property in your derived view. Don't forget to _() your title!")
+            raise NotImplementedError("You must override the title property or get_title() method in %s. Don't forget to _() your get_title() result!" % self.__class__)
         return _(self.title)
              
     @property           
@@ -132,10 +202,6 @@ class BaseView(object):
             return (home, here, )
         else:
             return (home, )
-        
-    def __init__(self, request):
-        self.request = request
-        self.path = request and request.path
         
     def prepare_view(self):
         """
@@ -163,13 +229,8 @@ class BaseView(object):
             params[k] = v
             
         # Generate actions
-        actions = self.get_actions()
-        main = [ a for a in actions if a and a.get('main', False) ]
-        if len(main) > 1:
-            raise ValueError("Several main actions for %s: %s" % (self, main, ))
-        if main:
-            params["main_action"] = main[0]
-        params["actions"] = [ a for a in actions if a and not a.get('main', False) ]
+        params["actions"] = self.get_actions()
+        log.debug("Actions: %s" % params["actions"])
         
         # Render template
         t = get_template(self.template)
@@ -189,20 +250,21 @@ class BaseIndividualView(BaseView):
     model_lookup = None
     is_home = False
     form_class = None               # If set, will be used to generate a form for the view
-
     redirect = None
-    action_label = ""       # XXX TODO: give the ability to pass %(title)s
-    action_confirm = ""
-    action_reverse_url = '' # XXX TODO: deduce this from urls.py... not very clean that way.
-    action_main = False
 
-    def __init__(self, request, lookup = "id"):
+    def __init__(self, request = None, other_view = None, lookup = "id"):
         """
         The individual views take a lookup argument specifying on which attribute
         we'll check the individual model object.
         """
         # Call parent's init
-        super(BaseIndividualView, self).__init__(request)
+        super(BaseIndividualView, self).__init__(request, other_view)
+        
+        # Explicitly set 'object' if it's set on the other_view
+        if other_view:
+            object = getattr(other_view, 'object', None)
+            if object:
+                setattr(self, "object", object)
         
         # Check if everything is working
         if self.model_lookup is None:
@@ -244,29 +306,44 @@ class BaseIndividualView(BaseView):
                     self.object = self.form.save()
                     raise MustRedirect(self.object.get_absolute_url())
             else:
-                self.form = form_class(instance = self.object) # An unbound form
+                if self.object:
+                    self.form = form_class(instance = self.object)      # An unbound form with an explicit instance
+                else:
+                    initial = getattr(self, "initial", None)
+                    if initial:
+                        self.form = form_class(initial = initial)
+                    else:
+                        self.form = form_class()
 
         # Various data. Call parent LAST.
         setattr(self, model_name, self.object)
         super(BaseIndividualView, self).prepare_view()
 
-    def as_action(self, view_instance):
+    def as_action(self):
         """
-        Return this view as a dict action for another view.
-        This is useful to rapidly include actions.
-        You can check view execution conditons here.
-
-        Default is to pass the view_instance id to reverse_url URL.
+        Default action management
         """
-        if not self.action_label or not self.action_reverse_url:
-            raise ValueError("You must specify action_label and action_reverse_url in %s" % self.__name__)
-        return {
-            "label": _(self.action_label),
-            "url": reverse(self.action_reverse_url, args = (view_instance.object.id, )),
-            "confirm": self.action_confirm and _(self.action_confirm),
-            "main": self.action_main
-        }
+        confirm = getattr(self, "confirm", None)
+        if confirm:
+            confirm = mark_safe(_(confirm))
+        return Action(
+            category = getattr(self, "category", LOCAL_ACTIONS),
+            label = self.get_title(),
+            url = reverse(self.name, args = (self.object.id, ), ),
+            confirm = confirm,
+        )
 
+    @property
+    def is_model(self,):
+        """
+        Check if the current action matches the model.
+        """
+        if not hasattr(self, "object"):
+            return False
+        if not isinstance(self.object, self.model_lookup):
+            return False
+        return True
+        
 
 class BaseObjectActionView(BaseIndividualView):
     """

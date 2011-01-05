@@ -118,7 +118,6 @@ class ResourceWidget(forms.MultiWidget):
 class PermissionsWidget(forms.Select):
 
     def __init__(self, attrs=None, choices=()):
-        log.debug("Init permissions widget")              
         super(PermissionsWidget, self).__init__(attrs, choices)
         default_attrs = {'class': 'permissions-widget'}
         if attrs:

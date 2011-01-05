@@ -11,6 +11,7 @@ from django.conf import settings
 
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms import account_forms
+from twistranet.actions import *
 from base_view import *
 
 class UserAccountView(BaseWallView):
@@ -33,18 +34,9 @@ class UserAccountView(BaseWallView):
     is_home = False
     model_lookup = UserAccount
     template = "account/view.html"
+    title = None
+    name = "account_by_id"
     
-    def get_actions(self,):
-        """
-        Actions available on account (or home) pages
-        """
-        actions = []
-        if self.account :
-            self.auth_account = Account.objects._getAuthenticatedAccount()
-            self.in_my_network = self.auth_account.network.filter(id = self.account.id)
-            actions = [ self.get_action_from_view(view) for view in (AddToNetworkView, RemoveFromNetworkView, UserAccountEdit ) ]
-        return actions
-        
     def prepare_view(self, *args, **kw):
         """
         Add a few parameters for the view
@@ -55,7 +47,13 @@ class UserAccountView(BaseWallView):
         self.n_network_members = self.account and self.account.network.count() or False
 
     def get_title(self,):
-        return _("%(name)s's profile" % {'name': self.account.title} )  
+        """
+        We override get_title in a way that it could be removed easily in subclasses.
+        Just define a valid value for self.title and this get_title() will keep the BaseView behaviour
+        """
+        if not self.title:
+            return _("%(name)s's profile" % {'name': self.account.title} )
+        return super(UserAccountView, self).get_title()
 
 
 class HomepageView(UserAccountView):
@@ -63,6 +61,7 @@ class HomepageView(UserAccountView):
     Special treatment for homepage.
     """
     is_home = True
+    name = "twistranet_home"
     
     def get_title(self,):
         return _("Home")  
@@ -97,7 +96,7 @@ class HomepageView(UserAccountView):
 
 class AccountListingView(BaseView):
     """
-    Todo: account listing page
+    Todo: ALL accounts listing page.
     """
     title = "Accounts"
     template = "account/list.html"
@@ -110,7 +109,7 @@ class AccountListingView(BaseView):
         self.accounts = Account.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
         
         
-class AccountNetworkView(UserAccountView):
+class AccountNetworkView(AccountListingView, UserAccountView):
     """
     All networked accounts for an account page
     """
@@ -124,10 +123,11 @@ class AccountNetworkView(UserAccountView):
 
     def prepare_view(self, *args, **kw):
         super(AccountNetworkView, self).prepare_view(*args, **kw)
+        UserAccountView.prepare_view(self, *args, **kw)
         self.accounts = self.account.network   
 
 
-class AccountCommunitiesView(UserAccountView):
+class AccountCommunitiesView(AccountListingView, UserAccountView):
     """
     All communities for an account.
     """
@@ -141,10 +141,11 @@ class AccountCommunitiesView(UserAccountView):
 
     def prepare_view(self, *args, **kw):
         super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        UserAccountView.prepare_view(self, *args, **kw)
         self.accounts = self.account.communities    
 
 
-class AccountAdminCommunitiesView(UserAccountView):
+class AccountAdminCommunitiesView(AccountListingView, UserAccountView):
     """
     All communities administred by an account.
     """
@@ -160,23 +161,35 @@ class AccountAdminCommunitiesView(UserAccountView):
 
     def prepare_view(self, *args, **kw):
         super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        UserAccountView.prepare_view(self, *args, **kw)
         self.accounts = self.account.communities
 
 
-class PendingNetworkView(UserAccountView):
+class PendingNetworkView(AccountListingView, UserAccountView):
     """
     All pending network relations for an account
     """
     template = AccountListingView.template
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
     title = "Pending network requests"
+    name = "account_pending_network"
+    category = ACCOUNT_ACTIONS
     
-    def get_title(self,):
-        return _(self.title)
-
-    def prepare_view(self):
+    def as_action(self,):
+        """Only return the action if there's pending nwk requests
+        """
+        auth = UserAccount.objects._getAuthenticatedAccount()
+        req = auth.get_pending_network_requests()
+        if not req:
+            return
+        action = BaseView.as_action(self)
+        action.label = _("Pending network requests (%(number)d)") % {"number": len(req)}
+        return action
+            
+    def prepare_view(self, *args, **kw):
         auth = Account.objects._getAuthenticatedAccount()
-        super(PendingNetworkView, self).prepare_view(auth.id)
+        super(PendingNetworkView, self).prepare_view()
+        UserAccountView.prepare_view(self, auth.id)
         self.accounts = self.account.get_pending_network_requests()
 
 
@@ -189,26 +202,39 @@ class AddToNetworkView(BaseObjectActionView):
     Add sbdy to my network, with or without authorization
     """
     model_lookup = UserAccount
+    name = "add_to_my_network"
     
-    def as_action(self, request_view):
+    def as_action(self, ):
         """
-        as_action(self, request_view) => generate the proper action
+        as_action(self, ) => generate the proper action.
         """
+        if not hasattr(self, "object"):
+            return None
+        if not isinstance(self.object, UserAccount):
+            return None
+        
         # Networking actions
-        if request_view.useraccount.has_pending_network_request:
-            return {
-                "label": _("Accept in my network"),
-                "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
-                "confirm": _("Would you like to accept %(name)s in your network? He/She will be able to see your network-only content." % {'name': request_view.useraccount.title}),
-                "main": True,
-            }
-        if request_view.useraccount.can_add_to_my_network:
-            return {
-                "label": _("Add to my network"),
-                "url": reverse('add_to_my_network', args = (request_view.useraccount.id, ), ),
-                "confirm": _("Would you like to add %(name)s to your network? He/She will have to agree to your request." % {'name': request_view.useraccount.title}),
-                "main": True,
-            }
+        if self.object.has_pending_network_request:
+            return Action(
+                label = _("Accept in my network"),
+                url = reverse(self.name, args = (self.object.id, ), ),
+                confirm = _(
+                    "Would you like to accept %(name)s in your network?<br />"
+                    "He/She will be able to see your network-only content."
+                    ) % { "name": self.object.title },
+                category = MAIN_ACTION,
+            )
+                            
+        elif self.object.can_add_to_my_network:
+            return Action(
+                label = _("Add to my network"),
+                url = reverse(self.name, args = (self.object.id, ), ),
+                confirm = _(
+                    "Would you like to add %(name)s to your network?<br />"
+                    "He/She will have to agree to your request."
+                    ) % {"name": self.object.title},
+                category = MAIN_ACTION,
+            )
     
     def prepare_view(self, *args, **kw):
         super(AddToNetworkView, self).prepare_view(*args, **kw)
@@ -218,12 +244,12 @@ class AddToNetworkView(BaseObjectActionView):
         if self.useraccount in self.auth.network:
             messages.info(
                 self.request, 
-                _("You're now connected with %(name)s." % {'name': name})
+                _("You're now connected with %(name)s.") % {'name': name}
             )
         else:
             messages.info(
                 self.request, 
-                _("A network request has been sent to %(name)s for approval." % {'name': name})
+                _("A network request has been sent to %(name)s for approval.") % {'name': name}
             )
         
 
@@ -232,21 +258,25 @@ class RemoveFromNetworkView(BaseObjectActionView):
     Add sbdy to my network, with or without authorization
     """
     model_lookup = UserAccount
+    name = "remove_from_my_network"
 
-    def as_action(self, request_view):
-        if request_view.useraccount.has_received_network_request:
-            return {
-                "label": _("Cancel my network request"),
-                "url": reverse('remove_from_my_network', args = (request_view.useraccount.id, ), ),
-                "confirm": _("Would you like to cancel your network request?"),
-            }
-        if not request_view.auth_account.is_anonymous and not request_view.useraccount.id == request_view.auth_account.id:
-            return {
-                "label": _("Remove from my network"),
-                "url": reverse('remove_from_my_network', args = (request_view.account.id, ), ),
-                "confirm": _("Would you like to remove %(name)s from your network?" % {'name': request_view.account.title}),
-            }        
-        
+    def as_action(self, ):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if self.object.has_received_network_request:
+            return Action(
+                category = LOCAL_ACTIONS,
+                label = _("Cancel my network request"),
+                url = reverse(self.name, args = (self.object.id, ), ),
+                confirm = _("Would you like to cancel your network request?"),
+            )
+        if self.object.in_my_network:
+            return Action(
+                category = LOCAL_ACTIONS,
+                label = _("Remove from my network"),
+                url = reverse(self.name, args = (self.object.id, ), ),
+                confirm = _("Would you like to remove %(name)s from your network?") % {"name": self.object.title},
+            )
 
     def prepare_view(self, *args, **kw):
         super(RemoveFromNetworkView, self).prepare_view(*args, **kw)
@@ -257,12 +287,12 @@ class RemoveFromNetworkView(BaseObjectActionView):
         if was_in_my_network:
             messages.info(
                 self.request, 
-                _("You're not connected with %(name)s anymore." % {'name': name})
+                _("You're not connected with %(name)s anymore.") % {'name': name}
             )
         else:
             messages.info(
                 self.request, 
-                _("Your network request to %(name)s has been canceled." % {'name': name})
+                _("Your network request to %(name)s has been canceled.") % {'name': name}
             )
 
 
@@ -278,14 +308,17 @@ class UserAccountEdit(UserAccountView):
     form_class = account_forms.UserAccountForm
     content_forms = []
     latest_content_list = []
+    name = "user_account_edit"
+    category = LOCAL_ACTIONS
     
-    action_label = "Edit"
-    action_reverse_url = "user_account_edit"
-    
-    def as_action(self, request_view):
-        if not request_view.object.can_edit:
-            return
-        return super(UserAccountView, self).as_action(request_view)
+    def as_action(self,):
+        """
+        Return action only if can_edit user
+        """
+        if not self.is_model:
+            return None
+        if self.object.can_edit:
+            return super(UserAccountEdit, self).as_action()
     
     def get_title(self,):
         """
@@ -293,6 +326,8 @@ class UserAccountEdit(UserAccountView):
         """
         if not self.object:
             return _("Create a user account")
+        elif self.object.id == UserAccount.objects._getAuthenticatedAccount().id:
+            return _("Edit my account")
         return _("Edit %(name)s" % {'name' : self.object.title })
 
 
@@ -303,13 +338,6 @@ class UserAccountCreate(UserAccountEdit):
     context_boxes = []
     form_class = account_forms.UserAccountCreationForm
     
-    
-
-
-
-
-
-
 def account_logout(request):
     t = loader.get_template('registration/login.html')
     logout(request)

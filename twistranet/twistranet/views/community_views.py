@@ -12,6 +12,7 @@ from django.db.models import Q
 
 from twistranet.twistranet.forms import community_forms
 from twistranet.twistranet.lib.decorators import require_access
+from twistranet.actions import *
 
 from twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
@@ -42,26 +43,14 @@ class CommunityView(UserAccountView):
         "managers", 
     ]
     model_lookup = Community
+    title = None
         
     def get_title(self,):
-        return self.community.title
+        if not self.title:
+            return self.community.title
+        else:
+            return super(CommunityView, self).get_title()
         
-    def get_actions(self,):
-        """
-        Basic actions on communities
-        """
-        actions = []
-        if not self.community:
-            return []
-        
-        # Generate actions
-        for act_view in (CommunityEdit, CommunityJoin, CommunityInvite, CommunityLeave, CommunityDelete, ):
-            a = act_view(self.request).as_action(self)
-            if a:
-                actions.append(a)
-    
-        return actions
-
     def prepare_view(self, *args, **kw):
         """
         Prepare community view
@@ -89,22 +78,23 @@ class CommunityMembers(CommunityView):
     """
     template = "account/list.html"
     template_variables = CommunityView.template_variables + AccountListingView.template_variables
+    name = "community_members"
 
     def get_title(self,):
-        return _("All members of %(name)s" % {'name': self.community.title} )
+        return _("All members of %(name)s") % {'name': self.community.title}
 
     def prepare_view(self, *args, **kw):
         super(CommunityMembers, self).prepare_view(*args, **kw)
         self.accounts = self.community.members
 
-
 class CommunityManagers(CommunityMembers):
     """
     list managers for a community
     """
+    name = "community_managers"
 
     def get_title(self,):
-        return _("All managers of %(name)s" % {'name': self.community.title} )
+        return _("All managers of %(name)s") % {'name': self.community.title}
 
     def prepare_view(self, *args, **kw):
         super(CommunityMembers, self).prepare_view(*args, **kw)
@@ -157,9 +147,9 @@ class CommunityEdit(CommunityView):
     template = "community/edit.html"
     content_forms = []
     latest_content_list = []
-    
-    action_label = "Edit"
-    action_reverse_url = "community_edit"
+    name = "community_edit"
+    category = LOCAL_ACTIONS
+    title = None
     
     def get_form_class(self,):
         """
@@ -173,15 +163,19 @@ class CommunityEdit(CommunityView):
         
         return form_class
     
-    def as_action(self, request_view):
-        if not request_view.object.can_edit:
+    def as_action(self, ):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if not self.object.can_edit:
             return
-        return super(CommunityView, self).as_action(request_view)
+        return super(CommunityView, self).as_action()
     
     def get_title(self,):
         """
         Title suitable for creation or edition
         """
+        if self.title:
+            return super(CommunityEdit, self).get_title()
         if not self.object:
             return _("Create a community")
         return _("Edit %(name)s" % {'name' : self.object.title })
@@ -192,7 +186,12 @@ class CommunityCreate(CommunityEdit):
     Community creation. Close to the edit class
     """
     context_boxes = []
+    category = ACCOUNT_ACTIONS
+    title = "Create a community"
+    name = "community_create"
     
+    def as_action(self):
+        return BaseView.as_action(self)
     
 class CommunityInvite(CommunityView):
     """
@@ -272,27 +271,32 @@ class CommunityInvite(CommunityView):
             messages.info(self.request, _("Invitations has been sent."))
             raise MustRedirect(self.community.get_absolute_url())
                     
-    def as_action(self, request_view):
-        if not request_view.community.is_member:
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
             return None
-        if not request_view.object.can_join:
+        if not self.object.is_member:
             return None
-        return super(CommunityInvite, self).as_action(request_view)
+        if not self.object.can_join:
+            return None
+        return super(CommunityInvite, self).as_action()
     
     
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
-    action_label = "Join"
-    action_confirm = "Do you want to join this community?"
-    action_reverse_url = "community_join"
-    action_main = True
+    name = "community_join"
+    category = MAIN_ACTION
+    title = "Join community"
+    confirm = "Do you really want to join this community?"
 
-    def as_action(self, request_view):
-        if not request_view.object.can_join:
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
             return None
-        if request_view.community.is_member:
+        if not self.object.can_join:
+            # XXX TODO: Implement request join!
             return None
-        return super(CommunityJoin, self).as_action(request_view)
+        if self.object.is_member:
+            return None
+        return super(CommunityJoin, self).as_action()
     
     def prepare_view(self, value):
         super(CommunityJoin, self).prepare_view(value)
@@ -301,21 +305,24 @@ class CommunityJoin(BaseObjectActionView):
             # XXX Should send a message to community managers for approval
             raise NotImplementedError("We should implement approval here!")
         self.community.join()
-        messages.info(self.request, _("You're now part of %(name)s!<br />Welcome aboard." % {'name': name}))
+        messages.info(self.request, _("You're now part of %(name)s!<br />Welcome aboard.") % {'name': name})
         raise MustRedirect(self.community.get_absolute_url())
 
 class CommunityLeave(BaseObjectActionView):
     model_lookup = Community
-    action_label = "Leave"
-    action_confirm = "Do you really want to leave this community?"
-    action_reverse_url = "community_leave"
+    category = LOCAL_ACTIONS
+    name = "community_leave"
+    title = "Leave community"
+    confirm = "Do you really want to leave this community?"
 
-    def as_action(self, request_view):
-        if not request_view.community.is_member:
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
             return None
-        if not request_view.object.can_leave:
+        if not self.object.is_member:
             return None
-        return super(CommunityLeave, self).as_action(request_view)
+        if not self.object.can_leave:
+            return None
+        return super(CommunityLeave, self).as_action()
 
     def prepare_view(self, value, ):
         super(CommunityLeave, self).prepare_view(value)
@@ -323,7 +330,7 @@ class CommunityLeave(BaseObjectActionView):
         if not self.community.can_leave:
             raise NotImplementedError("Should return permission denied!")
         self.community.leave()
-        messages.info(self.request, _("You've left %(name)s." % {'name': name}))
+        messages.info(self.request, _("You've left %(name)s.") % {'name': name})
         raise MustRedirect(self.community.get_absolute_url())
 
 
@@ -332,14 +339,18 @@ class CommunityDelete(BaseObjectActionView):
     Delete a community from the base
     """
     model_lookup = Community
-    action_label = "Delete community"
-    action_confirm = "Do you really want to delete this community?"
-    action_reverse_url = "community_delete"
+    name = "community_delete"
+    confirm = _("Do you really want to delete this community?")
+    
+    def get_title(self,):
+        return _("Delete %(name)s") % {"name": self.object.title}
  
-    def as_action(self, request_view):
-        if not request_view.object.can_delete:
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
             return None
-        return super(CommunityDelete, self).as_action(request_view)
+        if not self.object.can_delete:
+            return None
+        return super(CommunityDelete, self).as_action()
 
     def prepare_view(self, *args, **kw):
         super(CommunityDelete, self).prepare_view(*args, **kw)
@@ -347,7 +358,7 @@ class CommunityDelete(BaseObjectActionView):
         self.community.delete()
         messages.info(
             self.request, 
-            _("'%(name)s' community has been deleted." % {'name': name})
+            _("'%(name)s' community has been deleted.") % {'name': name},
         )
         raise MustRedirect(reverse("twistranet_home"))
 

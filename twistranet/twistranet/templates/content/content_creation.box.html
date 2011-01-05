@@ -1,19 +1,19 @@
 {% load i18n %}
-{% if creatable_content_types %}
+{% if actions.content_creation %}
 <li class="tn-box global-box creation-box">
-    <h3>{% blocktrans %}Create content{% endblocktrans %}</h3>
+    <h3>{% trans "Create content" %}</h3>
     <div class="tn-box-content">
-      <ul>
-        {% for ctype in creatable_content_types %}
-            <li>
-                <a href="{% url create_content ctype.content_type %}"
-                   class="action">
-                    {{ ctype.content_type }}
-                </a>
-            </li>
-        {% endfor %}
-      </ul>
+        <ul>
+            {% for action in actions.content_creation %}
+              <li>
+                  <a
+                      class="action"
+                      href="{{ action.url }}">
+                      {{ action.label }}
+                  </a>
+              </li>
+            {% endfor %}
+        </ul>
     </div>
 </li>
 {% endif %}
-

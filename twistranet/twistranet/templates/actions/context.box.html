@@ -3,7 +3,7 @@
 {% if actions %}
 <li id="actions-box" class="tn-box actions-box">
     <ul class="edit-actions">
-        {% for action in actions %}
+        {% for action in actions.local %}
         <li>
             <a href="{{ action.url }}" title="{{ action.label }}" class="action {% if action.confirm %}confirmbefore{% endif %}">{{ action.label }}
                 {% if action.confirm %}

@@ -1,7 +1,10 @@
-{% if main_action %}
-  <a class="main-action {% if main_action.confirm %}confirmbefore{% endif %}" href="{{ main_action.url }}" title="{{ main_action.label }}">{{ main_action.label }}
-      {% if main_action.confirm %}
-          <span class="confirm-message">{{ main_action.confirm }}</span>
-      {% endif %}
-  </a>
+{% if actions.main %}
+    {% for main_action in actions.main %}
+        {#  This is a fake 'for' loop ; we know there should be only one main_action.  #}
+          <a class="main-action {% if main_action.confirm %}confirmbefore{% endif %}" href="{{ main_action.url }}" title="{{ main_action.label }}">{{ main_action.label }}
+              {% if main_action.confirm %}
+                  <span class="confirm-message">{{ main_action.confirm }}</span>
+              {% endif %}
+          </a>
+    {% endfor %}
 {% endif %}

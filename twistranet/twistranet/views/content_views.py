@@ -1,18 +1,13 @@
 # Create your views here.
-#from django.template import Context, RequestContext, loader
-#from django.http import HttpResponse, HttpResponseRedirect
-#from django.template.loader import get_template
-#from django.contrib.auth.decorators import login_required
-#from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-#from django.db.models import Q
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-#from twistranet.twistranet.lib.decorators import require_access
 
 from twistranet.twistranet.models import Content, Account
 from twistranet.twistranet.forms import form_registry
+from twistranet.twistranet.lib.log import *
+from twistranet.actions import *
 from base_view import *
 
 class ContentView(BaseIndividualView):
@@ -29,27 +24,11 @@ class ContentView(BaseIndividualView):
         "content",
     ]
     model_lookup = Content
+    name = "content_by_id"
         
     def get_title(self,):
         return self.content.title_or_description
         
-    def get_actions(self,):
-        """
-        Basic actions on communities
-        """
-        actions = []
-        if not self.content:
-            return []
-        
-        # Contributor stuff
-        if self.content.can_edit:
-            actions.append({
-                "label": _("Edit content"),
-                "url": reverse("edit_content", args = (self.content.id, )),
-            })
-    
-        return actions
-
     def prepare_view(self, *args, **kw):
         """
         Prepare community view.
@@ -67,6 +46,13 @@ class ContentEdit(ContentView):
     Generic edit form for content.
     """
     template = "content/edit.html"
+    name = "edit_content"
+    category = LOCAL_ACTIONS
+    
+    def as_action(self):
+        if self.is_model:
+            if self.object.can_edit:
+                return super(ContentEdit, self).as_action()
 
     def get_form_class(self,):
         if self.object:
@@ -92,19 +78,80 @@ class ContentCreate(ContentEdit):
     Community creation. Close to the edit class
     """
     context_boxes = []
+    name = "create_content"
 
-    def prepare_view(self, content_type):
+    def prepare_view(self, publisher_id, content_type):
         """
-        We pass the content_type instead of the value
+        We pass the content_type here.
         """
+        publisher = Account.objects.get(id = publisher_id)
+        self.initial = {"publisher": publisher}
         self.content_type = content_type
         super(ContentCreate, self).prepare_view(None)
+        
+    def as_action(self,):
+        """
+        We just override the as_action() method to add the publisher information.
+        And we return a list of content types to create.
+        
+        We can create content either on a community or on our own account.
+        """
+        # Try to guess where are we going to publish on.
+        auth = Account.objects._getAuthenticatedAccount()
+        publisher = None
+        if not hasattr(self, "object"):
+            publisher = auth
+        elif self.object.id == auth.id:
+            publisher = auth
+        elif issubclass(self.object.model_class, Community):
+            publisher = self.object
+        elif issubclass(self.object.model_class, Content):
+            # If we're looking at a content, we may try to publish on its publisher
+            content_pub = self.object.publisher
+            if isinstance(content_pub, Community):
+                publisher = content_pub
+            elif content_pub.id == auth.id:
+                publisher = auth
+                
+        # Ok, we've found what are we going to publish to. Let's check if we have the rights to do so.
+        if not publisher or not publisher.can_publish:
+            return None
+            
+        # Wow! We've just got to fetch the action now.
+        # XXX We may need to have a content creation action register system someday.
+        actions = []
+        for ctype in form_registry.getFullpageForms(creation = True):
+            actions.append(
+                Action(
+                    category = CONTENT_CREATION_ACTIONS,
+                    label = _("Create Document"),
+                    url = reverse(self.name, args = (publisher.id, ctype["content_type"])),
+                    confirm = None,
+                )
+            )
+        return actions
 
 class ContentDelete(BaseObjectActionView):
     """
     Remove a content from the base
     """
     model_lookup = Content
+    name = "delete_content"
+    
+    def get_title(self,):
+        """
+        Title suitable for creation or edition
+        """
+        return _("Delete %(name)s") % {'name' : self.object.title_or_description }
+        
+    def as_action(self,):
+        if not self.is_model:
+            return
+        if not self.object.can_delete:
+            return
+        action = super(ContentDelete, self).as_action()
+        action.confirm = _("Do you really want to delete '%(name)s'?<br />This action cannot be undone.") % {"name": self.object.title}
+        return action
 
     def prepare_view(self, *args, **kw):
         super(ContentDelete, self).prepare_view(*args, **kw)

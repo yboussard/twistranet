@@ -36,6 +36,12 @@ class BaseForm(forms.ModelForm):
 
     permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget())
 
+    def getName(self):
+        """
+        Return a friendly name for this form, usually used as the tab label
+        """
+        return self.Meta.model.__name__
+
 class BaseInlineForm(BaseForm):
     """
     Abstract class to describe the basic inline (ie. in-the-wall) content creation form
@@ -45,12 +51,6 @@ class BaseInlineForm(BaseForm):
     required_css_class = 'required'
 
     publisher_id = forms.IntegerField(required = True, widget = widgets.HiddenInput)
-
-    def getName(self):
-        """
-        Return a friendly name for this form, usually used as the tab label
-        """
-        return self.Meta.model.__name__
 
     class Meta:
         fields = ('permissions', )

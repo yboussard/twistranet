@@ -253,16 +253,18 @@ class Account(twistable.Twistable):
         return self.communities.filter(targeted_network__is_manager = True)   
 
 
-class AnonymousAccount(Account):
+class AnonymousAccount(object):
     """
     Representation of an anonymous account.
     Never instanciate that directly, the _getAuthenticatedAccount() takes care for you.
     
     Note that there is an AnonymousAccount table in DB, unfortunately :(
     """
+    id = -1
+    is_admin = False
     is_anonymous = True
+    
     class Meta:
-        # abstract = True
         app_label = "twistranet"
         managed=False
 
@@ -418,6 +420,19 @@ class UserAccount(Account):
         if self.id == auth.id:
             return False
         return not Network.objects.filter(client = auth, target = self).exists()        
+        
+    @property
+    def in_my_network(self):
+        """
+        True if current object is in auth's user nwk (or at least has a nwk confirmation pending)
+        """
+        from twistranet.twistranet.models.network import Network
+        auth = Account.objects._getAuthenticatedAccount()
+        if auth.is_anonymous:
+            return False
+        if self.id == auth.id:
+            return False
+        return Network.objects.filter(client = auth, target = self).exists()        
         
     @property
     def has_pending_network_request(self):

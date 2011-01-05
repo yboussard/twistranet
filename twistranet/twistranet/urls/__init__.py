@@ -10,18 +10,18 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # The wall page for generic accounts
-    url(r'^$',                 AsView(HomepageView), name='twistranet_home'),
+    url(r'^$',                 AsView(HomepageView), name = HomepageView.name),
     
     # Account pages 
-    url(r'^account/(\d+)/$', AsView(UserAccountView, lookup = 'id'), name='account_by_id'),              # The 'profile' page
-    url(r'^account/(%s)/$' % SLUG_REGEX, AsView(UserAccountView, lookup = 'slug'), name='account_by_slug'),
-    url(r'^account/(\d+)/communities/$', AsView(AccountCommunitiesView), name='account_communities'),
-    url(r'^account/(\d+)/network/$', AsView(AccountNetworkView), name='account_network'),
-    url(r'^account/(\d+)/edit$', AsView(UserAccountEdit), name = "user_account_edit"),              
-    url(r'^account/new$', AsView(UserAccountCreate), name = "user_account_create", ),
-    url(r'^account/(\d+)/add_to_network/$', AsView(AddToNetworkView), name = 'add_to_my_network'),
-    url(r'^account/(\d+)/remove_from_network/$', AsView(RemoveFromNetworkView), name = 'remove_from_my_network'),
-    url(r'^pending_network/$', AsView(PendingNetworkView), name = 'account_pending_network'),
+    url(r'^account/(\d+)/$',                        AsView(UserAccountView, lookup = 'id'), name = 'account_by_id'),              # The 'profile' page
+    url(r'^account/(%s)/$' % SLUG_REGEX,            AsView(UserAccountView, lookup = 'slug'), name = 'account_by_slug'),
+    url(r'^account/(\d+)/communities/$',            AsView(AccountCommunitiesView), name='account_communities'),
+    url(r'^account/(\d+)/network/$',                AsView(AccountNetworkView), name='account_network'),
+    url(r'^account/(\d+)/edit$',                    AsView(UserAccountEdit), name = "user_account_edit"),              
+    url(r'^account/new$',                           AsView(UserAccountCreate), name = "user_account_create", ),
+    url(r'^account/(\d+)/add_to_network/$',         AsView(AddToNetworkView), name = AddToNetworkView.name),
+    url(r'^account/(\d+)/remove_from_network/$',    AsView(RemoveFromNetworkView), name = RemoveFromNetworkView.name),
+    url(r'^pending_network/$',                      AsView(PendingNetworkView), name = PendingNetworkView.name),
     
     # Resource links (w/ id or w/ alias or from an account or content)
     url(r'^resource/(\d+)$', 'twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
@@ -41,25 +41,25 @@ urlpatterns = patterns('',
     url(r'^media_library/(\d+)$',               'twistranet.twistranet.views.view_media_library', name = "media_library_view", ),
     
     # Content links
-    url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name='content_by_id'),
-    url(r'^content/(%s)/$' % SLUG_REGEX,        AsView(ContentView, lookup = 'slug'), name='content_by_slug'),
-    url(r'^content/new/(\w+)$',                 AsView(ContentCreate), name = "create_content", ),
-    url(r'^content/(\d+)/edit$',                AsView(ContentEdit), name = "edit_content", ),
-    url(r'^content/(\d+)/delete$',              AsView(ContentDelete), name = "delete_content", ),
+    url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name = 'content_by_id'),
+    url(r'^content/(%s)/$' % SLUG_REGEX,        AsView(ContentView, lookup = 'slug'), name = 'content_by_slug'),
+    url(r'^content/(\d+)/new/(\w+)$',           AsView(ContentCreate), name = ContentCreate.name, ),
+    url(r'^content/(\d+)/edit$',                AsView(ContentEdit), name = ContentEdit.name, ),
+    url(r'^content/(\d+)/delete$',              AsView(ContentDelete), name = ContentDelete.name, ),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
-    url(r'^community/(\d+)$', AsView(CommunityView, lookup = "id"), name='community_by_id'),
-    url(r'^community/(%s)/$' % SLUG_REGEX, AsView(CommunityView, lookup = "slug"), name='community_by_slug'),       
-    url(r'^community/(\d+)/members$', AsView(CommunityMembers), name='community_members'),   
-    url(r'^community/(\d+)/managers$', AsView(CommunityManagers), name='community_managers'),
-    url(r'^communities/$', AsView(CommunityListingView), name = "communities", ),
-    url(r'^communities/my$', AsView(MyCommunitiesView), name = "my_communities", ),
-    url(r'^community/(\d+)/edit$', AsView(CommunityEdit), name = "community_edit"),
-    url(r'^community/(\d+)/join$', AsView(CommunityJoin), name = "community_join"),
-    url(r'^community/(\d+)/leave$', AsView(CommunityLeave), name = "community_leave"),
-    url(r'^community/(\d+)/invite$', AsView(CommunityInvite), name = "community_invite"),
-    url(r'^community/new$', AsView(CommunityCreate), name = "community_create", ),
-    url(r'^community/(\d+)/delete$', AsView(CommunityDelete), name = "community_delete", ),
+    url(r'^community/(\d+)$',                   AsView(CommunityView, lookup = "id"), name = 'community_by_id'),
+    url(r'^community/(%s)/$' % SLUG_REGEX,      AsView(CommunityView, lookup = "slug"), name = 'community_by_slug'),       
+    url(r'^community/(\d+)/members$',           AsView(CommunityMembers), name = CommunityMembers.name),   
+    url(r'^community/(\d+)/managers$',          AsView(CommunityManagers), name = 'community_managers'),
+    url(r'^communities/$',                      AsView(CommunityListingView), name = "communities", ),
+    url(r'^communities/my$',                    AsView(MyCommunitiesView), name = "my_communities", ),
+    url(r'^community/(\d+)/edit$',              AsView(CommunityEdit), name = "community_edit"),
+    url(r'^community/(\d+)/join$',              AsView(CommunityJoin), name = CommunityJoin.name),
+    url(r'^community/(\d+)/leave$',             AsView(CommunityLeave), name = CommunityLeave.name),
+    url(r'^community/(\d+)/invite$',            AsView(CommunityInvite), name = CommunityInvite.name),
+    url(r'^community/new$',                     AsView(CommunityCreate), name = CommunityCreate.name, ),
+    url(r'^community/(\d+)/delete$',            AsView(CommunityDelete), name = CommunityDelete.name, ),
 
     # Additional inclusions for extensions, etc
     (r'^search/',                               include('twistranet.twistranet.urls.search')),
