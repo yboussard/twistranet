@@ -27,6 +27,7 @@ class Account(twistable.Twistable):
     # XXX TODO: Use a foreign key instead with some clever checking? Or a specific PermissionField?
     # XXX because there's a problem here as choices cannot be re-defined for subclasses.
     permission_templates = permissions.account_templates
+    is_anonymous = False    # User shouldn't be anonymous
     
     # View overriding support
     type_summary_view = "account/summary.part.html"
