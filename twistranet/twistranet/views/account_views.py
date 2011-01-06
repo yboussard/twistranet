@@ -140,7 +140,7 @@ class AccountCommunitiesView(AccountListingView, UserAccountView):
         return _("%(name)s's communities" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
-        super(AccountCommunitiesView, self).prepare_view(*args, **kw)
+        super(AccountCommunitiesView, self).prepare_view()
         UserAccountView.prepare_view(self, *args, **kw)
         self.accounts = self.account.communities    
 

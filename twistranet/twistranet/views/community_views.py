@@ -66,8 +66,6 @@ class CommunityView(UserAccountView):
         self.n_network_members = []
 
 
-
-
 #                                                                               #
 #                               LISTING VIEWS                                   #
 #                                                                               #
@@ -109,6 +107,7 @@ class CommunityListingView(BaseView):
     template_variables = BaseView.template_variables + [
         "communities",
     ]
+    name = "communities"
 
     def prepare_view(self, ):
         super(CommunityListingView, self).prepare_view()
@@ -123,17 +122,27 @@ class MyCommunitiesView(BaseView):
     template_variables = BaseView.template_variables + [
         "communities",
     ]
+    name = "my_communities"
+    category = ACCOUNT_ACTIONS
+    
+    def as_action(self,):
+        auth = Account.objects._getAuthenticatedAccount()
+        if not Account.objects.filter(
+            targeted_network__target__id = auth.id,
+            requesting_network__client__id = auth.id,
+            requesting_network__is_manager = True,
+            ).exists():
+            return None
+        return super(MyCommunitiesView, self).as_action()
 
     def prepare_view(self, ):
-        super(CommunityListingView, self).prepare_view()
+        super(MyCommunitiesView, self).prepare_view()
         auth = Account.objects._getAuthenticatedAccount()
         self.communities = Community.objects.filter(
             targeted_network__target__id = auth.id,
             requesting_network__client__id = auth.id,
-            targeted_network__is_manager = True,
+            requesting_network__is_manager = True,
         )[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
-
-
     
 
 #                                                                           #
@@ -178,7 +187,7 @@ class CommunityEdit(CommunityView):
             return super(CommunityEdit, self).get_title()
         if not self.object:
             return _("Create a community")
-        return _("Edit %(name)s" % {'name' : self.object.title })
+        return _("Edit community")
 
 
 class CommunityCreate(CommunityEdit):
@@ -341,9 +350,7 @@ class CommunityDelete(BaseObjectActionView):
     model_lookup = Community
     name = "community_delete"
     confirm = _("Do you really want to delete this community?")
-    
-    def get_title(self,):
-        return _("Delete %(name)s") % {"name": self.object.title}
+    title = "Delete community"
  
     def as_action(self):
         if not isinstance(getattr(self, "object", None), self.model_lookup):

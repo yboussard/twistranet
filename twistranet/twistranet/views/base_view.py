@@ -82,7 +82,7 @@ class BaseView(object):
     view_template = None
     available_actions = []      # List of either Action objects or BaseView classes (that will be instanciated and called with view.as_action() method)
     name = None                 # The name that this will be mapped to in url.py. But you can of course override this in url.py.
-    category = GLOBAL_ACTIONS   # Override this if you want to give another default category to this view.
+    # category = GLOBAL_ACTIONS   # Override this if you want to give another default category to this view.
     
     # The view attribute which will be passed to the templates
     template_variables = [
@@ -192,16 +192,28 @@ class BaseView(object):
         """
         Return a list of (translated title, url) tuples. The first one should be the root.
         This method uses 2 ways of finding the breadcrumb path:
-        - it inspects the menus to find if current view is specified somewhere (XXX TODO)
+        - it inspects the menus to find if current view is specified somewhere (XXX TODO).
+        - if not in the menus, we use publisher's information for content.
         - if not, it uses a good ol' stupid home > here scheme.
         """
         home_url = reverse("twistranet_home")
         home = (_("Home"), home_url, )
-        if not self.request.path == home_url:
-            here = (self.get_title(), self.request.path, )
-            return (home, here, )
-        else:
+        here = (self.get_title(), self.request.path, )
+        
+        # The homepage: trivial case
+        if self.request.path == home_url:
             return (home, )
+            
+        # XXX TODO: Menu management
+            
+        # Content: we preceed by the publisher
+        elif hasattr(self, "object") and isinstance(self.object, Twistable) and issubclass(self.object.model_class, Content):
+            pub = (self.object.publisher.title, self.object.publisher.get_absolute_url())
+            return (home, pub, here)
+            
+        # Default case: home > here
+        else:
+            return (home, here, )
         
     def prepare_view(self):
         """
@@ -302,14 +314,25 @@ class BaseIndividualView(BaseView):
             self.template_variables = self.template_variables + ["form", ]
             if self.request.method == 'POST': # If the form has been submitted...
                 self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
+                publisher_id = self.request.POST.get('publisher_id', None)
+                if publisher_id:
+                    publisher = Account.objects.get(id = publisher_id)    # Will raise if unauthorized
+                else:
+                    publisher = None
                 if self.form.is_valid(): # All validation rules pass
-                    self.object = self.form.save()
+                    # Save object and set publisher
+                    self.object = self.form.save(commit = False)
+                    if publisher:
+                        self.object.publisher = publisher
+                    self.object.save()
+                    self.form.save_m2m()
                     raise MustRedirect(self.object.get_absolute_url())
             else:
                 if self.object:
                     self.form = form_class(instance = self.object)      # An unbound form with an explicit instance
                 else:
                     initial = getattr(self, "initial", None)
+                    log.debug("Initial: %s" % initial)
                     if initial:
                         self.form = form_class(initial = initial)
                     else:

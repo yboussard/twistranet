@@ -11,7 +11,6 @@ class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
-    
     class Meta(BaseInlineForm.Meta):
         from twistranet.content_types.models import StatusUpdate
         model = StatusUpdate

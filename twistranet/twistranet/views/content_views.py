@@ -70,7 +70,8 @@ class ContentEdit(ContentView):
         """
         if not self.object:
             return _("New content")
-        return _("Edit %(name)s" % {'name' : self.object.title_or_description })
+        # We translate model_name separately!
+        return _("Edit %(model_name)s") % {'model_name' : _(self.object.model_name)}
 
 
 class ContentCreate(ContentEdit):
@@ -84,10 +85,21 @@ class ContentCreate(ContentEdit):
         """
         We pass the content_type here.
         """
-        publisher = Account.objects.get(id = publisher_id)
-        self.initial = {"publisher": publisher}
+        self.publisher = Account.objects.get(id = publisher_id)
+        self.initial = {"publisher": self.publisher, "publisher_id": self.publisher.id,}
         self.content_type = content_type
         super(ContentCreate, self).prepare_view(None)
+        
+    @property
+    def breadcrumb(self,):
+        """
+        We override breadcrumb to always consider the publisher here.
+        """
+        # This should be (home, here, ):
+        bc = super(ContentCreate, self).breadcrumb
+        
+        # We insert the publisher
+        return (bc[0], (self.publisher.title, self.publisher.get_absolute_url(), ), bc[1], )
         
     def as_action(self,):
         """
@@ -108,12 +120,14 @@ class ContentCreate(ContentEdit):
         elif issubclass(self.object.model_class, Content):
             # If we're looking at a content, we may try to publish on its publisher
             content_pub = self.object.publisher
-            if isinstance(content_pub, Community):
+            log.debug("Content pub: %s" % content_pub)
+            if issubclass(content_pub.model_class, Community):
                 publisher = content_pub
             elif content_pub.id == auth.id:
                 publisher = auth
                 
         # Ok, we've found what are we going to publish to. Let's check if we have the rights to do so.
+        log.debug("publisher: %s" % publisher)
         if not publisher or not publisher.can_publish:
             return None
             
@@ -124,7 +138,7 @@ class ContentCreate(ContentEdit):
             actions.append(
                 Action(
                     category = CONTENT_CREATION_ACTIONS,
-                    label = _("Create Document"),
+                    label = _("Create %(model_name)s") % {"model_name": _(ctype["content_type"])},
                     url = reverse(self.name, args = (publisher.id, ctype["content_type"])),
                     confirm = None,
                 )
@@ -139,10 +153,8 @@ class ContentDelete(BaseObjectActionView):
     name = "delete_content"
     
     def get_title(self,):
-        """
-        Title suitable for creation or edition
-        """
-        return _("Delete %(name)s") % {'name' : self.object.title_or_description }
+        # We translate model_name separately!
+        return _("Delete %(model_name)s") % {'model_name' : _(self.object.model_name)}
         
     def as_action(self,):
         if not self.is_model:

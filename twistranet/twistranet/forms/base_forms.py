@@ -35,6 +35,7 @@ class BaseForm(forms.ModelForm):
             self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
 
     permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget())
+    publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)
 
     def getName(self):
         """
@@ -49,8 +50,6 @@ class BaseInlineForm(BaseForm):
     is_inline = True
     error_css_class = 'error'
     required_css_class = 'required'
-
-    publisher_id = forms.IntegerField(required = True, widget = widgets.HiddenInput)
 
     class Meta:
         fields = ('permissions', )

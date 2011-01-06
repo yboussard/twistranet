@@ -89,8 +89,14 @@ class TwistableManager(models.Manager):
                 )
             )
         else:
-            # XXX TODO !!!
-            qs = base_query_set.none()
+            # Anon query. Easy: We just return public stuff. 
+            qs = base_query_set.filter(
+                Q(
+                    # Anonymous stuff
+                    _access_network__isnull = True,
+                    _p_can_list = roles.public,
+                )
+            )
         return qs
                 
 
