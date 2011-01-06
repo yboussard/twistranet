@@ -3,6 +3,7 @@ This is a set of account permissions tests
 """
 from django.test import TestCase
 from twistranet.twistranet.models import *
+from twistranet.content_types import *
 from twistranet.twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
