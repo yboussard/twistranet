@@ -141,7 +141,8 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # Sorl-thumbnail config
 THUMBNAIL_PREFIX = "cache/"
-THUMBNAIL_FORMAT = "JPEG"
+THUMBNAIL_FORMAT = "PNG"
+THUMBNAIL_COLORSPACE = None
 
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
