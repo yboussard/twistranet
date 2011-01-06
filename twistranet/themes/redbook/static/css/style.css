@@ -829,3 +829,46 @@ a.action:hover {
 .ls-result-type {
     color: #999;
 }
+
+/* TN Buttons (could be used anywhere) */
+
+a.tn-button {
+   display: block;
+   border:  1px solid #999999;
+   padding: 2px 15px;
+   cursor: pointer;
+   text-decoration: none !important;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
+   color: white;
+   width: auto;
+}
+
+a.tn-button-default {     
+   background-color: #278fb8 !important;     
+   color: white !important;
+}
+a.tn-button-default:active {     
+   background-color: #165169 !important;     
+}   
+
+a.tn-button-discreet {     
+   background-color: #efefef !important;     
+   color: #8c8c8c !important;
+}  
+a.tn-button-discreet:active {     
+   background-color: #686868 !important;
+   color: white !important;
+}
+
+ul.network-actions {
+
+}
+
+ul.network-actions li.action {
+   display: block;
+   float: right;
+   margin-left: 10px;
+   padding: 0 !important;
+}

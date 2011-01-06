@@ -9,11 +9,16 @@
             {{ account.description|wiki }}
         </div>
         <div class="postmetadata">
-            <ul>
+            <ul class="network-actions">
                 {% if account.has_pending_network_request %}
                     <li class="action">
-                        <a href="{% url add_to_my_network account.id %}">{% blocktrans %}Accept network request{% endblocktrans %}</a>
+                        <a class="tn-button tn-button-default"
+                           href="{% url add_to_my_network account.id %}">{% blocktrans %}Accept network request{% endblocktrans %}</a>
                     </li>
+                    <li class="action">
+                        <a class="tn-button tn-button-discreet"
+                           href="">{% blocktrans %}Refuse network request{% endblocktrans %}</a>
+                    </li>                    
                 {% else %}
                     {% if account.can_add_to_my_network %}
                         <li class="action">
