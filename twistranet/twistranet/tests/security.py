@@ -3,6 +3,7 @@ This is a basic wall test.
 """
 from django.test import TestCase
 from twistranet.twistranet.models import *
+from twistranet.content_types import *
 from twistranet.twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
@@ -143,7 +144,7 @@ class SecurityTest(TestCase):
         Check if public content on an account is visible by anyone
         """
         __account__ = self.A
-        s = StatusUpdate(text = "Hello, World!", permissions = "public")
+        s = StatusUpdate(description = "Hello, World!", permissions = "public")
         s.save()
         self.failUnless(s.content_ptr in Content.objects.all())
         __account__ = self.admin       # admin is in A's network
@@ -157,7 +158,7 @@ class SecurityTest(TestCase):
         """
         # I should be able to delete a content I wrote
         __account__ = self.A
-        StatusUpdate(text = "Hi, there.").save()
+        StatusUpdate(description = "Hi, there.").save()
         c = StatusUpdate.objects.filter(owner = self.A)[0]
         _id = c.id
         c.delete()
@@ -245,21 +246,9 @@ class SecurityTest(TestCase):
         __account__ = self.B
         self.B.permissions = "listed"
         self.B.object.save()
-        hello = StatusUpdate(text = "Hello there", permissions = "public")
+        hello = StatusUpdate(description = "Hello there", permissions = "public")
         hello.save()
         self.failUnless(hello.can_view)
         
-    def test_notification(self):
-        """
-        Check if a notification for B is seen only by those who can see B
-        """
-        __account__ = self.C
-        hello = Document(text = "Hello there", permissions = "private")
-        hello.save()
-        n = notifier.likes(self.C, hello)
-        nid = n.id
-        self.failUnless(Content.objects.filter(id = nid).exists())
-        __account__ = self.A
-        self.failIf(Content.objects.filter(id = nid).exists())
         
 

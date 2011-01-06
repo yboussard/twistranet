@@ -4,6 +4,7 @@ Test basic menu features.
 """
 from django.test import TestCase
 from twistranet.twistranet.models import *
+from twistranet.content_types import *
 from twistranet.twistranet.lib import dbsetup
 
 class MenuTest(TestCase):

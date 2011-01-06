@@ -79,7 +79,7 @@ class ViewsTest(TestCase):
         The community page
         """
         # response = self.admin_client.get("/account/administrators") # XXX TODO: Follow redirect
-        response = self.admin_client.get("/community/9") # XXX TODO: Follow redirect
+        response = self.admin_client.get("/community/administrators/") # XXX TODO: Follow redirect
         self.failUnlessEqual(response.status_code, 200)
         # self.print_query_stats()
 

@@ -5,6 +5,7 @@ import pprint
 from django.test import TestCase
 from twistranet.twistranet.models import *
 from twistranet.twistranet.lib import permissions, roles
+from twistranet.content_types import *
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 
@@ -175,7 +176,7 @@ class AccountSecurityTest(TestCase):
         self.failIf(admin.can_view)
 
         # Create a community and perform the same kind of checks
-        c = Community.objects.create(slug = "My Workgroup", permissions = "workgroup")
+        c = Community.objects.create(slug = "MyWorkgroup", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_view)
         __account__ = self.B
@@ -235,7 +236,7 @@ class AccountSecurityTest(TestCase):
         We create a community and check basic stuff
         """
         __account__ = self.A
-        c = Community.objects.create(slug = "My Workgroup", permissions = "workgroup")
+        c = Community.objects.create(slug = "MyWorkgroup", permissions = "workgroup")
         c.save()
         self.failUnless(c.can_view)
         self.failUnless(c.is_manager)
