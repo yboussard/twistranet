@@ -89,8 +89,8 @@ body {
 			border-width: 0 1px;
 			border-style: none solid;
 			padding: 5px 10px 2px;
-			height: 12px;
-			background-color: transparent;
+			height: 13px;
+			background-color: white;
 			overflow: hidden;
 		  }
 		  #breadcrumb a {
