@@ -6,7 +6,7 @@ Devel platform installation
 
 Prerequis:: 
 
-subversion, wget, python2.6-dev, gettext, virtualenv
+git, wget, python2.6-dev, PIL (with lib-jpeg, lib-png), gettext, virtualenv
 
 .. note:: Under Linux all these packages can be installed using the system packages manager
 
@@ -26,18 +26,21 @@ Under  windows, the command is :
 
     $ Scripts\activate.bat
 
-Download Twistranet from svn
+Fork Twistranet from github (with your login or public adress git://github.com/numericube/twistranet.git)
 
-    (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+    (twistranet-devel) $ git clone https://yourlogin@github.com/numericube/twistranet.git ./Twistranet
 
 >> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnails, tinymce ...)
 
-    (twistranet-devel) $ pip install -e ./Twistranet    
+    (twistranet-devel) $ pip install -e ./Twistranet
+
+.. note:: the './' is important here, it can be replaced by any "path to" expression
+
 
 Create Twistranet Database
 Reply "no" to the question about superuser creation  
 (since the AUTH_PROFILE_MODULE has changed, it doesn't work)  
-By default (using sqlite), the data is stored in tn.db
+By default (using sqlite), the data is stored in data/tn.db
     
     (twistranet) $ python manage.py syncdb
 
@@ -80,9 +83,8 @@ Compile your .po (it's a mandatory after each change)
 
 Running Tests
 -------------
+At your Twistranet repository root, just enter
 
-    (twistranet-devel) $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
-    (twistranet-devel) $ cd Twistranet
     (twistranet-devel) $ python manage.py test twistranet
 
 

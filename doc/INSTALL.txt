@@ -20,6 +20,8 @@ Requirements
     choose, download, and install the last Python 2.xx for your platform.
     Under Linux or Mac OS, Python is often pre-installed
 
+- PIL http://www.pythonware.com/products/pil/
+
 - PIP
 
 PIP is the new installer for python packages, it replaces
@@ -51,6 +53,7 @@ Open a command prompt::
 
 .. seealso:: More information can be found here : http://guide.python-distribute.org/installation.html
 
+- if you want to install the devel version of Twistranet, install also GIT (more information here https://github.com/)
 
 Installation
 ------------
@@ -58,15 +61,20 @@ Installation
 Open a command line
 To install the last Twistranet released version (not released at this time)
 
-    $ pip install Twistranet
+    $ pip install Twistranet        
 
-Or to install the devel version from svn
+.. note:: behind an http proxy you need to add an option to pip, exemple:: pip --proxy proxy-server:proxy-port install ./Twistranet 
 
-    $ svn co https://svn.liances.com/svnroot/projects/TwistraNet/trunk Twistranet
+Or to install the devel version from github Twistranet public repository, open a command line
+
+    $ git clone git://github.com/numericube/twistranet.git ./Twistranet
     $ pip install ./Twistranet 
-    $ rm -Rf ./Twistranet
 
-.. behind an http proxy you need to add an option to pip, exemple:: pip --proxy proxy-server:proxy-port install ./Twistranet 
+.. note:: the './' is important here, it can be replaced by any "path to" expression
+
+Delete the installation folder, no more used
+
+    $ rm -Rf ./Twistranet
 
 Twistranet and all its dependencies are downloaded and installed
 in your python path ::
@@ -80,6 +88,10 @@ in your python path ::
   - django-haystack
   
   - django-debug-toolbar
+  
+  - django-tinymce
+  
+  - sorl-thumbnail
 
 
 Create a new Twistranet project
