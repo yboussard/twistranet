@@ -6,14 +6,19 @@
         {% blocktrans %}Select people in the form below or search users. When you send an invitation, they receive a message asking them to join your community.{% endblocktrans %}
     </p>
 
-    <form action="" method="GET" class="edit-form enableAutoFocus">
+    <form action="" method="GET" class="edit-form three-blocks-form enableAutoFocus">
         <fieldset>
-            <label>{% blocktrans %}Search users{% endblocktrans %}</label>
-            <div class="fieldWrapper">
+            <h2>{% blocktrans %}Search users{% endblocktrans %}</h2>
+            <div class="formBlock">
                 <label for="user_search">{% blocktrans %}Name, email, ...{% endblocktrans %}</label>
-                <input type="text" value="{% if q %}{{ q }}{% endif %}" name="q" id="user_search" style="width: 250px" size="30" />
-                <input type="submit" value="{% blocktrans %}Search{% endblocktrans %}" />
             </div>
+            <div class="formBlock">
+                <input type="text" value="{% if q %}{{ q }}{% endif %}" name="q" id="user_search" style="width: 250px" size="30" />
+            </div>     
+            <div class="formBlock">                                   
+                <input type="submit" value="{% blocktrans %}Search{% endblocktrans %}" />   
+            </div> 
+            <div class="clear"><!-- --></div>
         </fieldset>
     </form>
 
@@ -22,11 +27,11 @@
     <form action="" method="POST" class="edit-form">
         {% csrf_token %}
         <fieldset>
-            <label>
+            <h2>
                 {% if q %}{% blocktrans %}Search results{% endblocktrans %}
                 {% else %}{% blocktrans %}Invite people from your network{% endblocktrans %}
-                {% endif %}
-            </label>
+                {% endif %}       
+            </h2>
         
             <div class="fieldWrapper">
                 <div class="networkGrid">
@@ -38,8 +43,9 @@
                 </div>
             </div>
 
-            <div class="fieldWrapper">
+            <div class="form-controls">
                 <input type="submit" value="{% blocktrans %}Invite{% endblocktrans %}" />
+                <div class="clear"><!-- --></div>
             </div>
 
         </fieldset>

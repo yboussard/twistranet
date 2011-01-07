@@ -1,5 +1,7 @@
 /* Fieldset for form containment */
 
+/* All TN forms styles */
+
 fieldset {
 	padding: 0 5px 5px;
 	margin: 0 0 15px;
@@ -10,76 +12,10 @@ fieldset {
 	background-color: #F7F7F7;
 }
 
-.fieldset-inline-form {
-  margin-top: 10px;
+.formBlock {
+  padding: 10px;
+  clear: both;
 }
-
-fieldset legend {
-	text-transform: capitalize;
-	margin: -3px 0 -3px -1px;
-	padding: 1px 1px 2px;
-	background-color: #efefef;
-	border: 1px solid #999;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-}
-
-fieldset legend a,
-fieldset legend a:link,
-fieldset legend a:hover,
-fieldset legend a:visited,
-fieldset legend span {
-  padding: 0 7px; 
-  color: #686868;
-  text-decoration: none;
-}
-
-fieldset legend span {
-  font-weight: bold;
-}
-
-/* inline forms */
-
-ul.inline-form {
-  margin: 8px 0 0;
-  padding: 0;
-}
-
-ul.inline-form li {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 5px;
-}
-
-ul.inline-form li.inlinefield {
-  display: inline;
-  padding: 0 10px 0 0;
-  margin: 0;
-}
-
-ul.inline-form li label {
-  width: 50%;
-  vertical-align: top;
-  margin-top: 1em;
-  display: none;
-}
-
-ul.inline-form textarea {
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px; 
-	border-radius: 5px;
-  width: 545px;
-	padding: 5px;
-}
-
-ul.inline-form select {
-  background-color: #efefef;
-}
-
-/* fields global,
-   can be used by edit forms
-   or search forms */
 
 .fieldWrapper {
   padding: 10px;
@@ -135,6 +71,77 @@ ul.errorlist li {
   padding: 15px 10px 0;
 }
 
+
+/* inline forms */
+
+.fieldset-inline-form {
+  margin-top: 10px;
+}
+
+.fieldset-inline-form legend {
+	text-transform: capitalize;
+	margin: -3px 0 -3px -1px;
+	padding: 1px 1px 2px;
+	background-color: #efefef;
+	border: 1px solid #999;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	font-weight: normal;
+}
+
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend a:link,
+.fieldset-inline-form legend a:hover,
+.fieldset-inline-form legend a:visited,
+.fieldset-inline-form legend span {
+  padding: 0 7px; 
+  color: #686868;
+  text-decoration: none;
+}
+
+.fieldset-inline-form legend span {
+  font-weight: bold;
+}
+
+
+ul.inline-form {
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+ul.inline-form li {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 5px;
+}
+
+ul.inline-form li.inlinefield {
+  display: inline;
+  padding: 0 10px 0 0;
+  margin: 0;
+}
+
+ul.inline-form li label {
+  width: 50%;
+  vertical-align: top;
+  margin-top: 1em;
+  display: none;
+}
+
+ul.inline-form textarea {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+  width: 545px;
+	padding: 5px;
+}
+
+ul.inline-form select {
+  background-color: #efefef;
+}
+
+
 /* edit forms */
 
 .edit-form fieldset {
@@ -142,6 +149,42 @@ ul.errorlist li {
    background-color: #f7f7f7;
    padding: 5px 0 10px;
    margin: 10px 0 0 0;
+}
+
+.edit-form legend {
+   /* not used for now */
+}
+
+.edit-form h2 {
+   font-size: 16px;
+   padding: 0 10px 8px;
+}
+
+/* specific for forms with some fields inline */
+.two-blocks-form .formBlock {
+    padding: 0;
+    width: 50%;
+    float: left;
+    clear: none;
+}
+
+.three-blocks-form .formBlock {
+    padding: 0;
+    width: 33%;
+    float: left;
+    clear: none;
+}
+
+.three-blocks-form .formBlock input[type="submit"] {
+    position: relative;
+    top: -5px;
+    right: 15px;
+}
+
+.formBlock label {
+  font-size: 13px;
+  padding: 0 10px 0 0;
+  text-align: right;
 }
 
 /* Form handles for inline content */
