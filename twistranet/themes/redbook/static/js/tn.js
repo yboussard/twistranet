@@ -183,6 +183,55 @@ liveSearch = function(searchTerm) {
     } 
 }
 
+
+/* fix grid styles depending on Cols Number 
+   the number is given by className
+   ng  : 'tngridcols-9x' = 9 columns
+ */
+
+gridStyle = function(grid) {
+    className = grid.className;
+    /* fix cols */
+    if ( className.split('tngridcols-').length ) {
+        ncols = parseInt(className.split('tngridcols-')[1].split('x')[0]);
+        if (ncols) {
+            jQuery(grid).hide();
+            jQuery('.networkGridItem', grid).each(function(i) {
+                if ((i+1)%ncols==1) jQuery(grid).append('<div class="networkGridRow"></div>');
+                gridRow= jQuery('.networkGridRow:last', grid);
+                gridRow.append(jQuery(this));
+                
+            })
+        }
+        jQuery(grid).show();
+    } 
+}
+
+/* actions on grid selection
+   could be check/uncheck value before submit */
+   
+gridOnSelect = function(grid) {
+    jQuery('.networkGridItem', grid).each(function() {
+        var item = jQuery(this);       
+        var checkbox = jQuery('>input:checkbox', this);
+        item.click(function(e) {
+            if (checkbox.is(':checked')) {
+                jQuery(this).removeClass('itemSelected');
+                checkbox.removeAttr("checked");
+            }
+            else {
+                checkbox.attr('checked', 'checked');
+                jQuery(this).addClass('itemSelected');
+            }
+        })
+        jQuery('a', item).click(function(e) {
+            e.preventDefault();
+            item.fireEvent("click");
+        })
+    })
+}
+
+
 // main class
 var twistranet = {
     __init__: function(e) {
@@ -194,7 +243,8 @@ var twistranet = {
         twistranet.formsautofocus();
         twistranet.setEmptyCols(); 
         twistranet.enableLiveSearch();
-        twistranet.prettyCombosLists();
+        twistranet.prettyCombosLists(); 
+        twistranet.netWorkGridActions();
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -259,6 +309,10 @@ var twistranet = {
         jQuery('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
           jQuery(this).parents('li').addClass('inlinefield');
         });
+        /* finalize grids style */
+        jQuery('.networkGrid').each(function(){
+            gridStyle(this);
+        });
     },
     setEmptyCols : function(e) {
         if (! $('#contextbar .tn-box-container:first').children().size() ) $('body').addClass('noleftcol');
@@ -305,7 +359,12 @@ var twistranet = {
     formsautofocus: function(e) {
      if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
          jQuery("form.enableAutoFocus :input:visible:first").focus();
-    }  
+    }, 
+    netWorkGridActions: function(e) {
+     jQuery('.edit-form .networkGrid').each(function(){
+            gridOnSelect(this);
+        });
+    }
 }
 
 jQuery(document).ready(twistranet.__init__)
