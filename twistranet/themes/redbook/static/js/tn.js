@@ -91,7 +91,7 @@ liveSearchDisplayResult = function(link, thumblink, type, title, description) {
 <div class="ls-result"> \
    <a href="' + link + '" \
       title="' + title + '" \
-      class="image-block image-block-50-50 image-block-alone"> \
+      class="image-block image-block-tile image-block-alone"> \
        <img src="' + thumblink + '" \
             alt="'+ title + '" /> \
    </a> \
