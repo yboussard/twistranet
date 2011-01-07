@@ -31,6 +31,7 @@ class Account(twistable.Twistable):
     
     # View overriding support
     type_summary_view = "account/summary.part.html"
+    is_account = True
     
     _role_cache = {}
     
