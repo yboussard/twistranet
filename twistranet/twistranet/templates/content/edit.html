@@ -28,8 +28,9 @@
                 <div class="fieldWrapper">
                     {{ field.errors }}
                     {{ field.label_tag }} {{ field }}
+                    <div class="clear"><!-- --></div>
                 </div>
-            {% else %}
+            {% else %}                                                          
                 {{ field }}
             {% endif %}
         {% endfor %}
