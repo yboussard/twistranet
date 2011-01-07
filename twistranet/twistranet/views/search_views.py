@@ -35,7 +35,8 @@ class TwistraNetSearchView(BaseView):
         "paginator",
         "query",
     ]
-    title = "Search results"
+    title = "Search results"         
+    name = "search_view"
     
     def basic_search(self, request, load_all=True, form_class=ModelSearchForm, searchqueryset=None, ):
         """
