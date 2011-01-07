@@ -226,8 +226,8 @@ gridOnSelect = function(grid) {
         })
         jQuery('a', item).click(function(e) {
             e.preventDefault();
-            try { item.fireEvent("click");} 
-            catch(e) {  return false }
+            e.stopPropagation();
+            item.trigger("click");
         })
     })
 }
