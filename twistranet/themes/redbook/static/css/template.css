@@ -42,7 +42,8 @@ body {
 			right: -2px;
 			width: 182px;
 			height: 22px;
-			background: transparent url(../images/search-bg.png) top left no-repeat;
+			background: transparent url(../images/search-bg.png) top left no-repeat;       
+			z-index: 500;
 			}
 			#search-box {
 				width: 182px;
