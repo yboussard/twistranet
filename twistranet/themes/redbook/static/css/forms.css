@@ -192,8 +192,12 @@ ul.inline-form select {
 /* forms using results inside (eg: invite users grid) */
 
 .resultsInFormBlock {
-    padding: 0 15px;
+    padding: 0 10px;
     clear: both;
+}
+.networkGrid {
+    display: table;
+    border-spacing: 1px;
 }
 
 /* rows are added in js, depending on grid class */
