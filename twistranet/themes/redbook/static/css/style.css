@@ -873,3 +873,10 @@ ul.network-actions li.action {
    margin-left: 10px;
    padding: 0 !important;
 }
+
+/* batch bar */
+
+.batch-bar {
+    float: right;
+    padding: 5px 10px;
+}
