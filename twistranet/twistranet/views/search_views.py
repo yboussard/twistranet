@@ -3,6 +3,7 @@ The magnifiscent TN searching stuff.
 Uses haystack.
 """
 from django.conf import settings
+from django.utils.translation import ugettext as _
 from haystack.views import SearchView
 from django.http import HttpResponse, HttpResponseRedirect
 from twistranet.twistranet.lib.decorators import require_access
@@ -128,29 +129,20 @@ class TwistraNetJSONSearchView(BaseView):
                 query = form.cleaned_data['q']
                 results = form.search()
         else:
-            return []
+            return {'results' : [] }
+        
+        nb_results = len(results)
         data = []
         for res in results[:LIVE_SEARCH_RESULTS_NUMBER]:
             o = {}
             if res.object is not None:
                 res_obj = res.object
-                # type = res_obj.model_name
                 o['description'] = truncate(getattr(res_obj, 'description', u''), 140)  
-                # for some kind of objects we use owner_for_display title and url
-                # if type in ('StatusUpdate', ) :
-                #     owner = res_obj.owner_for_display()
-                #     o['title'] = getattr(owner, 'title', u'')   
-                #     o['link'] = owner.get_absolute_url()
-                #     o['type'] = ''
-                # else :
                 o['title'] = getattr(res_obj, 'title', u'')
                 o['link'] = res_obj.get_absolute_url()
                 o['type'] = res_obj.model_name
 
-                # if object has a picture, we try to use it, otherwise we use owner_for_display picture
                 picture = res_obj.forced_picture
-                # if not picture :
-                #     picture = res_obj.owner_for_display().picture
 
                 if picture is not None :
                     from sorl.thumbnail import default
@@ -164,7 +156,12 @@ class TwistraNetJSONSearchView(BaseView):
                     o['thumb'] = ''  
                 data.append(o)
                 
-        return data
+        complete_data = {'results' : data, 'has_more_results' : False }
+        if nb_results > LIVE_SEARCH_RESULTS_NUMBER :
+            complete_data['has_more_results'] = True
+            complete_data['all_results_url'] = '/search?q=%s' %request.GET.get('q')
+            complete_data['all_results_text'] = _(u'All results') + ' (%i)' %nb_results
+        return complete_data
             
     def prepare_view(self,):
         """

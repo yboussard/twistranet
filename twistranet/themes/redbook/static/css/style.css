@@ -831,6 +831,11 @@ a.action:hover {
     color: #999;
 }
 
+.ls-allresults-link {
+    text-align: right;
+    padding: 10px 5px;
+}
+
 /* TN Buttons (could be used anywhere) */
 
 a.tn-button {

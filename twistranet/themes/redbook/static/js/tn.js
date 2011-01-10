@@ -7,6 +7,8 @@
 
 var defaultDialogMessage = '';
 var curr_url = window.location.href;
+// live searchbox disparition effect
+var ls_hide_effect_speed = 300;    
 
 // helpers
 
@@ -116,26 +118,43 @@ liveSearch = function(searchTerm) {
     var nores_text = jQuery('#no-results-text').val();
     if (searchTerm) {
       jQuery.get(livesearchurl+'?q='+searchTerm, 
-          // get json data (eval)
           function(data) {
-              results = eval(data);
+              jsondata = eval( "(" + data + ")" );
+              results = jsondata.results;
               liveResults.hide();
               liveResults.html('');
-              if (results.length) {
+              if (results.length) {        
                   jQuery(results).each(function(){
                       html_result = liveSearchDisplayResult(this.link, this.thumb, this.type, this.title, this.description);
                       liveResults.append(html_result);
-                      
-                  });   
+                  });
+                  if (jsondata.has_more_results) {
+                      html_more_results = '<div class="ls-result ls-allresults-link">';
+                      html_more_results += '<a href="' + jsondata.all_results_url + '" title="' +  jsondata.all_results_text + '">';
+                      html_more_results += jsondata.all_results_text + '</a></div>';
+                      liveResults.append(html_more_results);
+                  }
                   jQuery(document).ready(function() {
                       allResults = jQuery('.ls-result', liveResults);
                       lenResults = allResults.length;
-                      allResults.click( function(e){
-                          e.preventDefault();
-                          e.stopPropagation();
-                          jQuery("#search-text").unbind('focusout');
-                          liveResults.unbind('focusout');
-                          location.replace( jQuery('a', this).attr('href'));
+                      allResults.each( function(){
+                          var resBlock = jQuery(this);
+                          resBlock.click(function(e){                  
+                              e.preventDefault();
+                              e.stopPropagation();
+                              // it's really difficult to remove focusout event binder on click
+                              jQuery("#search-text").unbind('focusout');
+                              liveResults.unbind('focusout');
+                              liveResults.stop();
+                              liveResults.attr("style", "display: block");
+                              location.replace(jQuery('a', this).attr('href'));
+                          });
+                          jQuery('a', resBlock).click(function(e){
+                              e.preventDefault();
+                              e.stopPropagation();
+                              resBlock.trigger('click');
+                              return false;
+                          });
                       });
                       var activeResult = jQuery('.ls-result:first', liveResults);
                       activeResult.addClass('ls-result-active');       
@@ -146,6 +165,7 @@ liveSearch = function(searchTerm) {
                               e.preventDefault();
                               e.stopPropagation();
                               activeResult.trigger('click');
+                              return false;
                           }                          
                           else {
                               changes = false;
@@ -164,7 +184,6 @@ liveSearch = function(searchTerm) {
                                   activeResult = jQuery(allResults[i]);
                                   activeResult.addClass('ls-result-active');
                               }
-
                           }
                       });
                       setFirstAndLast('#search-live-results','.ls-result');
@@ -257,32 +276,18 @@ var twistranet = {
         var defaultSearchText = jQuery("#default-search-text").val();
         searchGadget = jQuery("#search-text");                
         var liveResults = jQuery('#search-live-results');
-        /*
-        // more light behavior
-        liveResults.bind('mouseenter', function(){
-            jQuery(this).show();
-        });
-        liveResults.bind('mouseleave', function(){
-            jQuery(this).hide('slow');
-        });               
-        searchGadget.bind('mouseenter',function(){
-            if (liveResults.html()!='') liveResults.trigger('mouseenter'); 
-        }); 
-        */              
-        // classical behavior
         searchGadget.bind('focusin',function(){
-            if (liveResults.html()!='') liveResults.show(); 
-        });   
+            if (liveResults.html()!='') liveResults.show();
+        });
         searchGadget.bind('focusout',function(){
-            liveResults.hide(500); 
-        });  
+            liveResults.hide(ls_hide_effect_speed);
+        });
         liveResults.bind('focusin', function(){
             jQuery(this).show();
         });
         liveResults.bind('focusout', function(){
-            jQuery(this).hide(500);
-        });                                                         
-        
+            jQuery(this).hide();
+        });  
         if (searchGadget.length) {
             searchGadget.livesearch({
                 searchCallback: liveSearch,
