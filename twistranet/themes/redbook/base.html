@@ -127,6 +127,7 @@
 
         </div><!-- end #wrapper -->
     </div><!-- end #page -->
+    <!-- translated things used by javascript -->
     <!-- Confirmation Box -->
     <div id="tn-dialog" title="{% trans 'Confirmation Required' %}">
       <p id="tn-dialog-blockmessage">
@@ -135,6 +136,9 @@
       </p>            
         <span id="tn-dialog-button-cancel">{% blocktrans %}Cancel{% endblocktrans %}</span>
         <span id="tn-dialog-button-ok">{% blocktrans %}OK{% endblocktrans %}</span>
-    </div>                                      
+    </div>
+    <!-- -->
+    <!-- form protect against unload message -->
+    <div id="form-protect-unload-message">{% blocktrans %}Changes have been made on this form, do you really want to quit without saving ?{% endblocktrans %}</div>
 </body>
 </html>

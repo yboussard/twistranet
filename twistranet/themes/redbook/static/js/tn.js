@@ -371,7 +371,8 @@ var twistranet = {
             jQuery(window).bind('beforeunload', function(e){
                 if (form_has_changes) {
                     // use the standard navigator beforeunload method
-                    return true;
+                    msg = jQuery('#form-protect-unload-message').html();
+                    return msg;
                 }
             })
         }

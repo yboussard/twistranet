@@ -284,6 +284,6 @@ select.permissions-widget {
     max-width: 200px;
 }
 
-#form-undo-block {
+#form-protect-unload-message {
     display: none;
 }
