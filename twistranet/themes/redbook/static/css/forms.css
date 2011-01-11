@@ -226,7 +226,7 @@ ul.inline-form select {
 
 .networkGrid .itemSelected {
     background-color: white;
-    border-color: #AAA;
+    border-color: #333;
 }
 
 .networkGridItem .thumbnail-account-part {
