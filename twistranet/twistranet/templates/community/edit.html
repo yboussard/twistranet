@@ -5,13 +5,13 @@
     {% if community %}
         <form action="{{ path }}"
               method="post"
-              class="edit-form enableAutoFocus"
+              class="edit-form enableAutoFocus enableUnloadProtect"
               enctype="multipart/form-data"
               >
     {% else %}
         <form action="{{ path }}" 
               method="post"
-              class="edit-form enableAutoFocus">
+              class="edit-form enableAutoFocus enableUnloadProtect">
     {% endif %}
         <fieldset>
         {% for field in form %}

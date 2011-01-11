@@ -46,7 +46,7 @@ initConfirmBox = function(elt){
     var okLabel = jQuery('#tn-dialog-button-ok', dialogBox).text();
     var tnbuttons = {};  
     tnbuttons[okLabel] = function() {
-    // ok action for now just redirect to the link
+      // ok action for now just redirect to the link
       window.location.replace(actionLink);
     };
     tnbuttons[cancelLabel] = function() {
@@ -259,6 +259,7 @@ var twistranet = {
         twistranet.enableLiveSearch();
         twistranet.prettyCombosLists(); 
         twistranet.netWorkGridActions();
+        twistranet.formProtection();
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -353,7 +354,28 @@ var twistranet = {
     formsautofocus: function(e) {
      if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
          jQuery("form.enableAutoFocus :input:visible:first").focus();
-    }, 
+    },
+    formProtection: function(e) {
+        var form_has_changes = false;
+        oform = jQuery('.enableUnloadProtect');
+        if (oform.length) {
+            jQuery('input, textarea, select', oform).change(function() {
+                form_has_changes = true;
+            });
+            jQuery(oform).submit(function(){
+                form_has_changes = false;
+            });   
+            jQuery('input[type=reset]',oform).click(function(){
+                form_has_changes = false;
+            });
+            jQuery(window).bind('beforeunload', function(e){
+                if (form_has_changes) {
+                    // use the standard navigator beforeunload method
+                    return true;
+                }
+            })
+        }
+    },
     netWorkGridActions: function(e) {
      jQuery('.edit-form .networkGrid').each(function(){
             gridOnSelect(this);

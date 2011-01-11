@@ -16,11 +16,11 @@
         <form action="{{ path }}"
               method="post"
               enctype="multipart/form-data"
-              class="edit-form enableAutoFocus">
+              class="edit-form enableAutoFocus enableUnloadProtect">
     {% else %}
         <form action="{{ path }}"
               method="post"
-              class="edit-form enableAutoFocus">
+              class="edit-form enableAutoFocus enableUnloadProtect">
     {% endif %}
         <fieldset>
         {% for field in form %}
