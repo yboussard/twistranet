@@ -8,7 +8,7 @@
 var defaultDialogMessage = '';
 var curr_url = window.location.href;
 // live searchbox disparition effect
-var ls_hide_effect_speed = 300;    
+var ls_hide_effect_speed = 300;
 
 // helpers
 
@@ -99,7 +99,7 @@ liveSearchDisplayResult = function(link, thumblink, type, title, description) {
    </a> \
   <p><span class="ls-result-title">' + title + '</span><span class="ls-result-type"> ' + type + '</span></p> \
   <p class="ls-result-description">' + description + '</p> \
-  <div class="clear"></div> \
+  <div class="clear"><!-- --></div> \
 </div> \
 ';    
 // remove empty fields
@@ -131,63 +131,57 @@ liveSearch = function(searchTerm) {
                   if (jsondata.has_more_results) {
                       html_more_results = '<div class="ls-result ls-allresults-link">';
                       html_more_results += '<a href="' + jsondata.all_results_url + '" title="' +  jsondata.all_results_text + '">';
-                      html_more_results += jsondata.all_results_text + '</a></div>';
+                      html_more_results += jsondata.all_results_text + '</a>';
+                      html_more_results += '<div class="clear"></div></div>';
                       liveResults.append(html_more_results);
                   }
-                  jQuery(document).ready(function() {
-                      allResults = jQuery('.ls-result', liveResults);
-                      lenResults = allResults.length;
-                      allResults.each( function(){
-                          var resBlock = jQuery(this);
-                          resBlock.click(function(e){                  
-                              e.preventDefault();
-                              e.stopPropagation();
-                              // it's really difficult to remove focusout event binder on click
-                              jQuery("#search-text").unbind('focusout');
-                              liveResults.unbind('focusout');
-                              liveResults.stop();
-                              liveResults.attr("style", "display: block");
-                              location.replace(jQuery('a', this).attr('href'));
-                          });
-                          jQuery('a', resBlock).click(function(e){
-                              e.preventDefault();
-                              e.stopPropagation();
-                              resBlock.trigger('click');
-                              return false;
-                          });
+                  allResults = jQuery('>.ls-result', liveResults);
+                  lenResults = allResults.length;
+                  allResults.each( function(){
+                      var resBlock = jQuery(this);
+                      resBlock.click( function(e){
+                          jQuery("#search-text").unbind('focusout');
+                          liveResults.stop();
+                          location = jQuery('a', this).attr('href');
                       });
-                      var activeResult = jQuery('.ls-result:first', liveResults);
-                      activeResult.addClass('ls-result-active');       
-                      var i = 0;
-                      // classical keyboard behavior
-                      jQuery("#search-text").keydown(function(e){       
-                          if (e.keyCode == '13') {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              activeResult.trigger('click');
-                              return false;
-                          }                          
-                          else {
-                              changes = false;
-                              if (e.keyCode == '38' && i>0) {
-                                  e.preventDefault();
-                                  i-=1;       
-                                  changes = true;
-                              }
-                              else if ( e.keyCode == '40' && i<lenResults-1 ) {
-                                  e.preventDefault();
-                                  i+=1;           
-                                  changes = true;               
-                              }
-                              if (changes) {          
-                                  activeResult.removeClass('ls-result-active');
-                                  activeResult = jQuery(allResults[i]);
-                                  activeResult.addClass('ls-result-active');
-                              }
-                          }
+                      jQuery('a', resBlock).click(function(e){
+                          e.preventDefault();
+                          e.stopPropagation();
+                          resBlock.trigger('click');
+                          return false;
                       });
-                      setFirstAndLast('#search-live-results','.ls-result');
                   });
+                  var activeResult = jQuery('.ls-result:first', liveResults);
+                  activeResult.addClass('ls-result-active');       
+                  var i = 0;
+                  // live search results keyboard behavior
+                  jQuery("#search-text").keydown(function(e){       
+                      if (e.keyCode == '13') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          activeResult.trigger('click');
+                          return false;
+                      }                          
+                      else {
+                          changes = false;
+                          if (e.keyCode == '38' && i>0) {
+                              e.preventDefault();
+                              i-=1;       
+                              changes = true;
+                          }
+                          else if ( e.keyCode == '40' && i<lenResults-1 ) {
+                              e.preventDefault();
+                              i+=1;           
+                              changes = true;               
+                          }
+                          if (changes) {          
+                              activeResult.removeClass('ls-result-active');
+                              activeResult = jQuery(allResults[i]);
+                              activeResult.addClass('ls-result-active');
+                          }
+                      }
+                  });
+                  setFirstAndLast('#search-live-results','.ls-result');
               }
               else {
                   liveResults.append('<p>' + nores_text + '</p>');
@@ -280,13 +274,7 @@ var twistranet = {
             if (liveResults.html()!='') liveResults.show();
         });
         searchGadget.bind('focusout',function(){
-            liveResults.hide(ls_hide_effect_speed);
-        });
-        liveResults.bind('focusin', function(){
-            jQuery(this).show();
-        });
-        liveResults.bind('focusout', function(){
-            jQuery(this).hide();
+            liveResults.delay(50).hide(ls_hide_effect_speed);
         });  
         if (searchGadget.length) {
             searchGadget.livesearch({

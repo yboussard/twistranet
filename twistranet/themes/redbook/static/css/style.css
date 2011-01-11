@@ -836,6 +836,11 @@ a.action:hover {
     padding: 10px 5px;
 }
 
+.ls-allresults-link  a {
+    display: inline;
+}
+
+
 /* TN Buttons (could be used anywhere) */
 
 a.tn-button {
