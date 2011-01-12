@@ -99,7 +99,6 @@ class TwistableManager(models.Manager):
             )
         return qs
                 
-
     def _getAuthenticatedAccount(self):
         """
         Dig the stack to find the authenticated account object.

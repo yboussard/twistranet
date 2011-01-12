@@ -8,6 +8,23 @@ from twistranet.twistorage.storage import Twistorage
 from twistranet.twistranet.lib import languages, permissions
 import twistable
 
+class ResourceModelManager(twistable.TwistableManager):
+    """
+    We just add a few method to fetch resource-specific objects.
+    """
+    
+    def selectable_accounts(self, account):
+        """
+        We just return current account (if not anon.) PLUS all the communities I rule.
+        This is to fetch resources from specific accounts / communities.
+        This is especially used in the Resource Selection Widget.
+        Anonymous have no accounts to select things from.
+        """
+        if account.is_anonymous:
+            return []
+        com = [account]
+        com.extend(account.communities.all())
+        return com
 
 def twistorage_upload_to(instance, filename):
     """
@@ -27,7 +44,7 @@ class Resource(twistable.Twistable):
     XXX TODO: Implement URL resources.
     """
     # Special manager for resources
-    # objects = ResourceModelManager()
+    objects = ResourceModelManager()
     
     # Resource actual information.
     resource_file = FileField(upload_to = twistorage_upload_to, storage = Twistorage(), null = True)
