@@ -107,7 +107,8 @@ def _getResourceResponse(request, resource, last_modified = None):
 @require_access
 def resource_cache(request, cache_path):
     """
-    Return a resource by its cache path
+    Return a resource by its cache path.
+    XXX TODO: HANDLE SECURITY ON THIS
     """
     return serve(request, cache_path, os.path.join(settings.MEDIA_ROOT, "cache"))
 

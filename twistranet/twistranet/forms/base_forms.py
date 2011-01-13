@@ -25,10 +25,8 @@ class BaseForm(forms.ModelForm):
             super(BaseForm, self).__init__(*args, **kw)
             publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
             permissions = self.instance.permission_templates.permissions()
-            log.debug("Publisher: %s (on %s)" % (publisher, self.initial, ))
             if publisher:
                 if issubclass(publisher.model_class, UserAccount):
-                    log.debug("Filtering UserAccount")
                     permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
                 if issubclass(publisher.model_class, Community):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]

@@ -254,28 +254,6 @@ class Account(twistable.Twistable):
         """The communities I'm a manager of"""
         return self.communities.filter(targeted_network__is_manager = True)   
 
-
-class AnonymousAccount(object):
-    """
-    Representation of an anonymous account.
-    Never instanciate that directly, the _getAuthenticatedAccount() takes care for you.
-    
-    Note that there is an AnonymousAccount table in DB, unfortunately :(
-    """
-    id = -1
-    is_admin = False
-    is_anonymous = True
-    
-    class Meta:
-        app_label = "twistranet"
-        managed=False
-
-    def save(self, *args, **kw):
-        """
-        Prohibit object saving.
-        """
-        raise RuntimeError("You're not allowed to save or edit the anonymous account.")
-        
 class SystemAccount(Account):
     """
     The system accounts for TwistraNet.
@@ -522,6 +500,26 @@ class UserAccount(Account):
         """
         return UserAccount.objects.filter(requesting_network__client__id = self.id)
 
+class AnonymousAccount(UserAccount):
+    """
+    Representation of an anonymous account.
+    Never instanciate that directly, the _getAuthenticatedAccount() takes care for you.
+
+    Note that there is an AnonymousAccount table in DB, unfortunately :(
+    """
+    id = None
+    is_admin = False
+    is_anonymous = True
+
+    class Meta:
+        app_label = "twistranet"
+        managed = False
+
+    def save(self, *args, **kw):
+        """
+        Prohibit object saving.
+        """
+        raise RuntimeError("You're not allowed to save or edit the anonymous account.")
     
 # Register handler for User creation.
 # Each time a User object is created in DB, we create its profile here.

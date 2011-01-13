@@ -10,7 +10,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # The wall page for generic accounts
-    url(r'^$',                 AsView(HomepageView), name = HomepageView.name),
+    url(r'^$',                                      AsView(HomepageView), name = HomepageView.name),
+    url(r'^timeline$',                              AsView(PublicTimelineView), name = PublicTimelineView.name),
     
     # Account pages 
     url(r'^account/(\d+)/$',                        AsView(UserAccountView, lookup = 'id'), name = 'account_by_id'),              # The 'profile' page

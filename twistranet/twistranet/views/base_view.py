@@ -59,6 +59,7 @@ class AsView(object):
             
         except MustRedirect as redirect:
             # Here we redirect if necessary
+            log.debug("Redirecting.")
             if redirect.url is None:
                 redirect.url = request.path
             return HttpResponseRedirect(redirect.url)
@@ -468,9 +469,9 @@ class BaseWallView(BaseIndividualView):
         Fetch the individual object, plus its latest content.
         """
         super(BaseWallView, self).prepare_view(value)
-        if self.object:
-            self.latest_content_list = self.get_recent_content_list()
-            if len(self.latest_content_list) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
-                self.too_few_content = True
-            self.content_forms = self.get_inline_forms(self.object)
+        # if self.object:
+        self.latest_content_list = self.get_recent_content_list()
+        if len(self.latest_content_list) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
+            self.too_few_content = True
+        self.content_forms = self.get_inline_forms(self.object)
         

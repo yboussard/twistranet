@@ -53,7 +53,7 @@ class TwistableManager(models.Manager):
         # XXX TODO: Make a special query for admin members? Or at least mgrs of the global community?
         # XXX Make this more efficient?
         # XXX Or, better, check if current user is manager of the owner ?
-        if auth.id:
+        if auth.id > 0:
             managed_accounts = [auth.id, ]
         else:
             managed_accounts = []
@@ -89,11 +89,21 @@ class TwistableManager(models.Manager):
                 )
             )
         else:
-            # Anon query. Easy: We just return public stuff. 
+            # Anon query. Easy: We just return public stuff.
+            # Warning: nested query is surely inefficient...
+            free_access_network = Twistable.objects.__booster__.filter(
+                _access_network__isnull = True,
+                _p_can_list = roles.public,
+            )
             qs = base_query_set.filter(
                 Q(
-                    # Anonymous stuff
+                    # Strictly anonymous stuff
                     _access_network__isnull = True,
+                    _p_can_list = roles.public,
+                ) | Q(
+                    # Incidently anonymous stuff (public stuff published by an anon account)
+                    _access_network__isnull = False,
+                    _access_network__id__in = free_access_network,
                     _p_can_list = roles.public,
                 )
             )
@@ -375,14 +385,11 @@ class Twistable(_AbstractTwistable):
             self.slug = self.slug[:40]
         if created:
             while Twistable.objects.__booster__.filter(slug = self.slug).exists():
-                log.debug("%s exists" % self.slug)
                 match = re.search("_(?P<num>[0-9]+)$", self.slug)
                 if match:
-                    log.debug("match")
                     root = self.slug[:match.start()]
                     num = int(match.groupdict()['num']) + 1
                 else:
-                    log.debug("no match")
                     root = self.slug
                     num = 1
                 self.slug = "%s_%i" % (root, num, )
@@ -403,10 +410,10 @@ class Twistable(_AbstractTwistable):
     def _update_access_network(self, ):
         """
         Update hierarchy of driven objects.
-        If save is False, won't save result (useful when save() is performed later)
+        If save is False, won't save result (useful when save() is performed later).
         """
         # No id => this twistable doesn't control anything, we pass. Value will be set AFTER saving.
-        import account
+        import account, community
         if not self.id:
             raise ValueError("Can't set _access_network before saving the object.")
             
@@ -421,7 +428,7 @@ class Twistable(_AbstractTwistable):
         
         # If restricted to content owner, no access network mentionned here.
         if _p_can_list in (roles.owner, ):
-            self._access_network = None
+            self._access_network = None     # XXX We have to double check this, esp. on the GlobalCommunity object.
             
         # Network role: same as current network for an account, same as publisher's network for a content
         elif _p_can_list == roles.network:
@@ -432,16 +439,25 @@ class Twistable(_AbstractTwistable):
             
         # Public content (or so it seems)
         elif _p_can_list == roles.public:
-            obj = obj.publisher
-            while obj:
-                if obj._p_can_list == roles.public:
-                    obj = obj.publisher
-                    continue
-                elif obj._p_can_list in (roles.owner, roles.network, ):
-                    self._access_network = obj
-                    break
-                else:
-                    raise ValueError("Unexpected can_list role found: %d on object %s" % (obj._p_can_list, obj))
+            # GlobalCommunity special case: if can_list goes public, then we can unrestrict the _access_network
+            if issubclass(self.model_class, community.GlobalCommunity):
+                self._access_network = None     # Let's go public!
+                
+            else:
+                # Regular treatment
+                obj = obj.publisher
+                while obj:
+                    if obj._p_can_list == roles.public:
+                        if obj == obj.publisher:
+                            # If an object is its own publisher (eg. GlobalCommunity),
+                            # we avoid infinite recursions here.
+                            break
+                        obj = obj.publisher
+                    elif obj._p_can_list in (roles.owner, roles.network, ):
+                        self._access_network = obj
+                        break
+                    else:
+                        raise ValueError("Unexpected can_list role found: %d on object %s" % (obj._p_can_list, obj))
         else:
             raise ValueError("Unexpected can_list role found: %d on object %s" % (obj._p_can_list, obj))
 
@@ -452,11 +468,14 @@ class Twistable(_AbstractTwistable):
         Twistable.objects.__booster__.filter(
             Q(_access_network__id = self.id) | Q(publisher = self.id),
             _p_can_list = roles.public,
-        ).update(_access_network = obj)
-            
-        # Special case: if the global community is not anonymously-available anymore,
-        # we need to do this additional query to update "None" objects.
-        # XXX TODO
+        ).exclude(id = self.id).update(_access_network = obj)
+        
+        # This is an additional check to ensure that no _access_network = None object with _p_can_list|_p_can_view = public still remains
+        # glob = community.GlobalCommunity.get()
+        # Twistable.objects.__booster__.filter(
+        #     _access_network__isnull = True,
+        #     _p_can_list = roles.public
+        # ).update(_access_network = glob)
             
     @property
     def model_class(self):

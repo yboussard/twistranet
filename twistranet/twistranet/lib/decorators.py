@@ -12,11 +12,11 @@ def require_access(function=None, ):
         If not, then that means we certainly need a login here.
         """
         from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
-        # return GlobalCommunity.objects.exists()
-        mgr = GlobalCommunity.objects
-        return not isinstance(mgr._getAuthenticatedAccount(), AnonymousAccount)
-        # XXX TODO
-        return mgr.__booster__.filter(mgr.get_public_filter() | mgr.get_network_filter()).exists()
+        return GlobalCommunity.objects.exists()
+        # mgr = GlobalCommunity.objects
+        # return not isinstance(mgr._getAuthenticatedAccount(), AnonymousAccount)
+        # # XXX TODO
+        # return mgr.__booster__.filter(mgr.get_public_filter() | mgr.get_network_filter()).exists()
         
     actual_decorator = user_passes_test(check_access)
     if function:

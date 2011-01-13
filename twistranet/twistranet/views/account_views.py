@@ -84,11 +84,29 @@ class HomepageView(UserAccountView):
         """
         # Get the actual view instance. Not optimal, but, well, works.
         auth = Account.objects._getAuthenticatedAccount()
-        if auth:
+        if auth and not auth.is_anonymous:
+            # XXX TODO: handle newcomers
             return super(HomepageView, self).prepare_view(auth.id)
         else:
-            raise NotImplementedError("XXX TODO: Handle anonymous access here.")
+            raise MustRedirect(PublicTimelineView.name)
 
+class PublicTimelineView(UserAccountView):
+    name = "timeline"
+    title = "Public timeline"
+    
+    def get_recent_content_list(self):
+        """
+        Just return all public / available content for this user
+        """
+        latest_ids = Content.objects.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
+        return latest_list
+
+    def prepare_view(self, ):
+        """
+        We just have the account set as curently-auth account.
+        """
+        return super(PublicTimelineView, self).prepare_view(None)
 
 #                                                                               #
 #                               LISTING VIEWS                                   #
