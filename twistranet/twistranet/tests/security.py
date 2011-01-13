@@ -244,7 +244,7 @@ class SecurityTest(TestCase):
         Check if can_view permission works as expected
         """
         __account__ = self.B
-        self.B.permissions = "listed"
+        self.B.permissions = "private"
         self.B.object.save()
         hello = StatusUpdate(description = "Hello there", permissions = "public")
         hello.save()
