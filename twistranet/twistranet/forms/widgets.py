@@ -9,9 +9,9 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from sorl.thumbnail import default
 
-from  twistranet.twistranet.lib.log import log
+from twistranet.twistranet.lib.log import log
 
-N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
+N_DISPLAYED_ITEMS = 30         # Number of images to display in the inline field
 
 
 class ResourceWidget(forms.MultiWidget):
@@ -52,7 +52,7 @@ class ResourceWidget(forms.MultiWidget):
         - The file upload field
         - The resource browser.
         """
-        from twistranet.twistranet.models.resource import Resource
+        from twistranet.twistranet.models import Resource, Twistable
         
         # Beginning of the super-render() code
         if self.is_localized:
@@ -98,44 +98,82 @@ class ResourceWidget(forms.MultiWidget):
             
         # By now we just display resources from our own account.
         # Tomorrow, we should display some kind of album browser.
-        if self.allow_select:                    
-            output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+        if self.allow_select: 
+            account = Twistable.objects._getAuthenticatedAccount()
+            selectable_accounts = Resource.objects.selectable_accounts(account)
             output.append( '<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name )
-            output.append("""<div class="tnGrid tngridcols-6x">""")
-            images = self.query_set.all()[:25]
-            if len(images) >= N_DISPLAYED_ITEMS:
-                raise NotImplementedError("Should implement image searching & so on")
-            for img in images:
-                thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
-                is_selected = img.id == int(value[0] or 0)
+            # first we display the scopes to select resources (each selectable account)
+            output.append( """<div id="resourcepane-main" class="resourcePane">""")
+            output.append(u"""<div class="mediaresource-help">""" + _(u"Select an account:") + u"""</div>""")
+            output.append( u"""<div class="tnGrid tngridcols-6x">""")
+            for scope in selectable_accounts :
+                img = scope.forced_picture
+                thumb = default.backend.get_thumbnail( img.image,  u'50x50' )
                 param_dict = {
-                    "fullimage_url":    img.get_absolute_url(),
+                    "url":    scope.get_absolute_url(),
                     "thumbnail_url":    thumb.url,
-                    "value":            img.id,          
-                    "title":            img.title,
-                    "selected":    is_selected and ' checked="checked"' or '',
+                    "title":            scope.title,
                 }
                 output.append(u"""
                   <div class="tnGridItem">
                     <div class="thumbnail-account-part thumbnail-50-bottom">
-                      <a href="%(fullimage_url)s"      
+                      <a href="%(url)s"      
                          title="%(title)s"
                          class="image-block image-block-tile">
                         <img src="%(thumbnail_url)s" 
                              alt="%(title)s" />
                       </a>
                       <label>
-                        <a href="%(fullimage_url)s">%(title)s</a>
+                        <a href="%(url)s">%(title)s</a>
                       </label>
                     </div>
-                    <input type="radio"
-                           name="grid-item-input"
-                           class="grid-item-input"
-                           value="%(value)s"
-                           %(selected)s />
                   </div>""" % param_dict)
-                  
-            output.append("""</div>""") # (close the tnGrid div)
+            output.append( """</div>""")
+            output.append( """</div>""")
+            
+            for scope in selectable_accounts :
+                # Pane with objects in each selected account              
+                images = Resource.objects.filter(publisher=scope)[:N_DISPLAYED_ITEMS]
+                output.append( u"""<div id="resourcepane-%s" class="resourcePane">""" %scope.id)
+                if images :
+                    output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+                else :
+                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in this account:") + u"""</div>""")
+                output.append( u"""<div class="tnGrid tngridcols-6x">""")
+                if len(images) >= N_DISPLAYED_ITEMS:
+                    raise NotImplementedError("Should implement image searching & so on")
+                for img in images:
+                    thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
+                    is_selected = img.id == int(value[0] or 0)
+                    param_dict = {
+                        "fullimage_url":    img.get_absolute_url(),
+                        "thumbnail_url":    thumb.url,
+                        "value":            img.id,          
+                        "title":            img.title,
+                        "selected":    is_selected and ' checked="checked"' or '',
+                    }
+                    output.append(u"""
+                      <div class="tnGridItem">
+                        <div class="thumbnail-account-part thumbnail-50-bottom">
+                          <a href="%(fullimage_url)s"      
+                             title="%(title)s"
+                             class="image-block image-block-tile">
+                            <img src="%(thumbnail_url)s" 
+                                 alt="%(title)s" />
+                          </a>
+                          <label>
+                            <a href="%(fullimage_url)s">%(title)s</a>
+                          </label>
+                        </div>
+                        <input type="radio"
+                               name="grid-item-input"
+                               class="grid-item-input"
+                               value="%(value)s"
+                               %(selected)s />
+                      </div>""" % param_dict)
+                      
+                output.append("""</div>""") # (close the tnGrid div)
+                output.append("""</div>""") # (close the resourcepane div)
         
         # finalize and return the complete resource widget
         
