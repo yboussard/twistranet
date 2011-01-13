@@ -7,3 +7,20 @@
 .noleftcol .resource-widget .tnGrid {
     border-spacing: 5px;
 }
+
+.fieldWrapper .thumbnail-50-bottom label {
+    width: 100% !important;
+}
+
+.resourcePane {
+    display: none;
+}
+
+.resourcePane {
+    display: none;
+    min-height: 300px;
+}
+
+#resourcepane-main {
+    display: block;
+}

@@ -113,6 +113,7 @@ class ResourceWidget(forms.MultiWidget):
                     "url":    scope.get_absolute_url(),
                     "thumbnail_url":    thumb.url,
                     "title":            scope.title,
+                    "value":            scope.id,
                 }
                 output.append(u"""
                   <div class="tnGridItem">
@@ -125,8 +126,12 @@ class ResourceWidget(forms.MultiWidget):
                       </a>
                       <label>
                         <a href="%(url)s">%(title)s</a>
-                      </label>
-                    </div>
+                      </label>    
+                    </div>    
+                    <input type="hidden"
+                           name="scope-input"
+                           class="scope-input"
+                           value="%(value)s" />
                   </div>""" % param_dict)
             output.append( """</div>""")
             output.append( """</div>""")
@@ -138,7 +143,7 @@ class ResourceWidget(forms.MultiWidget):
                 if images :
                     output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
                 else :
-                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in this account:") + u"""</div>""")
+                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in this account") + u"""</div>""")
                 output.append( u"""<div class="tnGrid tngridcols-6x">""")
                 if len(images) >= N_DISPLAYED_ITEMS:
                     raise NotImplementedError("Should implement image searching & so on")
