@@ -195,18 +195,18 @@ ul.inline-form select {
     padding: 0 10px;
     clear: both;
 }
-.networkGrid {
+.tnGrid {
     display: table;
     border-spacing: 1px;
 }
 
 /* rows are added in js, depending on grid class */
-.networkGridRow {
+.tnGridRow {
     /* possible js fix needed for IE<=7 in future */
     display: table-row;
 }
 
-.networkGridItem {
+.tnGridItem {
     height: auto;
     width: auto;
     /* possible fix needed for IE<=7 in future */
@@ -220,25 +220,25 @@ ul.inline-form select {
     cursor: pointer;
 }
 
-.networkGridItem:hover {
+.tnGridItem:hover {
     border-color: #AAA;
 }
 
-.networkGrid .itemSelected {
+.tnGrid .itemSelected {
     background-color: white;
     border-color: #333;
 }
 
-.networkGridItem .thumbnail-account-part {
+.tnGridItem .thumbnail-account-part {
     margin: 0 !important;
 }
 
-.networkGridItem a,
-.networkGridItem a:hover {
+.tnGridItem a,
+.tnGridItem a:hover {
     text-decoration: none !important;
 }
 
-.resultsInFormBlock .networkGridItem input[type="checkbox"] {
+.tnGridItem input[type="checkbox"] {
     display: none;
 }
 

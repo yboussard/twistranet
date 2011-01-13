@@ -209,9 +209,9 @@ gridStyle = function(grid) {
         ncols = parseInt(className.split('tngridcols-')[1].split('x')[0]);
         if (ncols) {
             jQuery(grid).hide();
-            jQuery('.networkGridItem', grid).each(function(i) {
-                if ((i+1)%ncols==1) jQuery(grid).append('<div class="networkGridRow"></div>');
-                gridRow= jQuery('.networkGridRow:last', grid);
+            jQuery('.tnGridItem', grid).each(function(i) {
+                if ((i+1)%ncols==1) jQuery(grid).append('<div class="tnGridRow"></div>');
+                gridRow= jQuery('.tnGridRow:last', grid);
                 gridRow.append(jQuery(this));
                 
             })
@@ -224,7 +224,7 @@ gridStyle = function(grid) {
    could be check/uncheck value before submit */
    
 gridOnSelect = function(grid) {
-    jQuery('.networkGridItem', grid).each(function() {
+    jQuery('.tnGridItem', grid).each(function() {
         var item = jQuery(this);       
         var checkbox = jQuery('>input:checkbox', this);
         item.click(function(e) {
@@ -258,7 +258,7 @@ var twistranet = {
         twistranet.setEmptyCols(); 
         twistranet.enableLiveSearch();
         twistranet.prettyCombosLists(); 
-        twistranet.netWorkGridActions();
+        twistranet.tnGridActions();
         twistranet.formProtection();
     },
     prettyCombosLists: function(e) {
@@ -305,7 +305,7 @@ var twistranet = {
           jQuery(this).parents('li').addClass('inlinefield');
         });
         /* finalize grids style */
-        jQuery('.networkGrid').each(function(){
+        jQuery('.tnGrid').each(function(){
             gridStyle(this);
         });
     },
@@ -377,8 +377,8 @@ var twistranet = {
             })
         }
     },
-    netWorkGridActions: function(e) {
-     jQuery('.edit-form .networkGrid').each(function(){
+    tnGridActions: function(e) {
+     jQuery('.tnGrid').each(function(){
             gridOnSelect(this);
         });
     }
