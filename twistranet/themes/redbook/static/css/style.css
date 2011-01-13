@@ -462,12 +462,13 @@ formats are :
   margin-bottom: 5px;    
 }
 .thumbnail-50-bottom label {
-  text-align: center;
-  clear: left;
-  padding-top: 2px;     
-  font-weight: lighter;     
-  font-size: 10px;
-  line-height: 10px;
+  text-align: center !important;
+  clear: left !important;
+  padding-top: 2px !important;     
+  font-weight: lighter !important;     
+  font-size: 10px !important;
+  line-height: 10px !important;
+  margin: 0 !important;
 }
 
 .thumbnail-50-none {

@@ -1,0 +1,9 @@
+/* resource widget helper */
+
+.resource-widget {
+    display: table-cell;
+}
+
+.noleftcol .resource-widget .tnGrid {
+    border-spacing: 5px;
+}

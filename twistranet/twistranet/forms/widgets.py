@@ -7,6 +7,7 @@ from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from sorl.thumbnail import default
 
 from  twistranet.twistranet.lib.log import log
 
@@ -16,6 +17,12 @@ N_DISPLAYED_ITEMS = 25         # Number of images to display in the inline field
 class ResourceWidget(forms.MultiWidget):
     query_set = None
     
+    class Media:
+        css = {
+            'all': ('/static/css/tn_resource_widget.css',),
+        }
+        js = ('/static/js/tn_resource_widget.js',)
+
     def __init__(self, initial = None, **kwargs):
         widgets = []
         self.allow_select = kwargs.pop("allow_select", True)
@@ -64,17 +71,18 @@ class ResourceWidget(forms.MultiWidget):
         # Render the current resource widget
         if value[0]:
             try:
-                image = Resource.objects.get(id = value[0])
+                img = Resource.objects.get(id = value[0])
             except Resource.DoesNotExist:
                 raise       # XXX TODO: Handle the case of a deleted resource
+            thumb = default.backend.get_thumbnail( img.object.image, u'100x100' )
             output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
             param_dict = {
-                "thumbnail_src":    image.get_absolute_url(),
-                "value":            image.id,
+                "thumbnail_src":    thumb.url,
+                "value":            img.id,
             }
-            output.append(u"""<img src="%(thumbnail_src)s" class="resource-image" width="60" height="60"
-                >
-                """ % param_dict)
+            output.append(u"""<img src="%(thumbnail_src)s" class="resource-image"
+             width="100" height="100" />
+             """ % param_dict)
             
         # Render the File widget and the hidden resource ForeignKey
         if self.allow_upload:
@@ -90,25 +98,47 @@ class ResourceWidget(forms.MultiWidget):
             
         # By now we just display resources from our own account.
         # Tomorrow, we should display some kind of album browser.
-        if self.allow_select:
+        if self.allow_select:                    
             output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+            output.append( '<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name )
+            output.append("""<div class="tnGrid tngridcols-6x">""")
             images = self.query_set.all()[:25]
             if len(images) >= N_DISPLAYED_ITEMS:
                 raise NotImplementedError("Should implement image searching & so on")
-            for image in images:
+            for img in images:
+                thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
+                is_selected = img.id == int(value[0] or 0)
                 param_dict = {
-                    "thumbnail_src":    image.get_absolute_url(),
-                    "hidden_id":        'id_%s_0' % name,
-                    "value":            image.id,
-                    "selected":         (image.id == int(value[0] or 0)) and "resource-selected" or "",
+                    "fullimage_url":    img.get_absolute_url(),
+                    "thumbnail_url":    thumb.url,
+                    "value":            img.id,          
+                    "title":            img.title,
+                    "selected":    is_selected and ' checked="checked"' or '',
                 }
                 output.append(u"""
-                <img src="%(thumbnail_src)s" class="resource-image %(selected)s" width="60" height="60"
-                onclick="javascript:document.getElementById('%(hidden_id)s').value = '%(value)s'"
-                >
-                """ % param_dict)
-    
-        # Return the computed string
+                  <div class="tnGridItem">
+                    <div class="thumbnail-account-part thumbnail-50-bottom">
+                      <a href="%(fullimage_url)s"      
+                         title="%(title)s"
+                         class="image-block image-block-tile">
+                        <img src="%(thumbnail_url)s" 
+                             alt="%(title)s" />
+                      </a>
+                      <label>
+                        <a href="%(fullimage_url)s">%(title)s</a>
+                      </label>
+                    </div>
+                    <input type="radio"
+                           name="grid-item-input"
+                           class="grid-item-input"
+                           value="%(value)s"
+                           %(selected)s />
+                  </div>""" % param_dict)
+                  
+            output.append("""</div>""") # (close the tnGrid div)
+        
+        # finalize and return the complete resource widget
+        
         output.append("""</div>""") # (close the resource-widget div)
 
         return mark_safe(self.format_output(output))
