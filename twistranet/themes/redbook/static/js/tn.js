@@ -46,7 +46,7 @@ initConfirmBox = function(elt){
     var okLabel = jQuery('#tn-dialog-button-ok', dialogBox).text();
     var tnbuttons = {};  
     tnbuttons[okLabel] = function() {
-    // ok action for now just redirect to the link
+      // ok action for now just redirect to the link
       window.location.replace(actionLink);
     };
     tnbuttons[cancelLabel] = function() {
@@ -209,9 +209,9 @@ gridStyle = function(grid) {
         ncols = parseInt(className.split('tngridcols-')[1].split('x')[0]);
         if (ncols) {
             jQuery(grid).hide();
-            jQuery('.networkGridItem', grid).each(function(i) {
-                if ((i+1)%ncols==1) jQuery(grid).append('<div class="networkGridRow"></div>');
-                gridRow= jQuery('.networkGridRow:last', grid);
+            jQuery('.tnGridItem', grid).each(function(i) {
+                if ((i+1)%ncols==1) jQuery(grid).append('<div class="tnGridRow"></div>');
+                gridRow= jQuery('.tnGridRow:last', grid);
                 gridRow.append(jQuery(this));
                 
             })
@@ -224,7 +224,7 @@ gridStyle = function(grid) {
    could be check/uncheck value before submit */
    
 gridOnSelect = function(grid) {
-    jQuery('.networkGridItem', grid).each(function() {
+    jQuery('.tnGridItem', grid).each(function() {
         var item = jQuery(this);       
         var checkbox = jQuery('>input:checkbox', this);
         item.click(function(e) {
@@ -258,7 +258,8 @@ var twistranet = {
         twistranet.setEmptyCols(); 
         twistranet.enableLiveSearch();
         twistranet.prettyCombosLists(); 
-        twistranet.netWorkGridActions();
+        twistranet.tnGridActions();
+        twistranet.formProtection();
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -304,7 +305,7 @@ var twistranet = {
           jQuery(this).parents('li').addClass('inlinefield');
         });
         /* finalize grids style */
-        jQuery('.networkGrid').each(function(){
+        jQuery('.tnGrid').each(function(){
             gridStyle(this);
         });
     },
@@ -353,9 +354,31 @@ var twistranet = {
     formsautofocus: function(e) {
      if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
          jQuery("form.enableAutoFocus :input:visible:first").focus();
-    }, 
-    netWorkGridActions: function(e) {
-     jQuery('.edit-form .networkGrid').each(function(){
+    },
+    formProtection: function(e) {
+        var form_has_changes = false;
+        oform = jQuery('.enableUnloadProtect');
+        if (oform.length) {
+            jQuery('input, textarea, select', oform).change(function() {
+                form_has_changes = true;
+            });
+            jQuery(oform).submit(function(){
+                form_has_changes = false;
+            });   
+            jQuery('input[type=reset]',oform).click(function(){
+                form_has_changes = false;
+            });
+            jQuery(window).bind('beforeunload', function(e){
+                if (form_has_changes) {
+                    // use the standard navigator beforeunload method
+                    msg = jQuery('#form-protect-unload-message').html();
+                    return msg;
+                }
+            })
+        }
+    },
+    tnGridActions: function(e) {
+     jQuery('.tnGrid').each(function(){
             gridOnSelect(this);
         });
     }
