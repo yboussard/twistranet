@@ -1,3 +1,8 @@
+from twistranet import __author__, VERSION
+__author__ = 'numeriCube'
+__version__ = '.'.join(map(str, VERSION))
+
+
 # Import / Load config & logger
 from twistranet.twistranet.conf import defaults
 from twistranet.twistranet.lib.log import log
