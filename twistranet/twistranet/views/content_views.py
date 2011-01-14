@@ -127,7 +127,6 @@ class ContentCreate(ContentEdit):
                 publisher = auth
                 
         # Ok, we've found what are we going to publish to. Let's check if we have the rights to do so.
-        log.debug("publisher: %s" % publisher)
         if not publisher or not publisher.can_publish:
             return None
             

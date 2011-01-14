@@ -28,10 +28,8 @@ class UserAccountView(BaseWallView):
         "account",
         "n_communities",
         "n_network_members",
-        "is_home",
     ]
     
-    is_home = False
     model_lookup = UserAccount
     template = "account/view.html"
     title = None
@@ -41,10 +39,25 @@ class UserAccountView(BaseWallView):
         """
         Add a few parameters for the view
         """
+        # Regular creation
         super(UserAccountView, self).prepare_view(*args, **kw)
         self.account = self.useraccount
         self.n_communities = self.account and self.account.communities.count() or False
         self.n_network_members = self.account and self.account.network.count() or False
+        
+        # Add a message for ppl who have no content
+        auth = Twistable.objects.getCurrentAccount(self.request)
+        if self.account and auth and self.account.id == auth.id:
+            if not Content.objects.filter(publisher = auth).exists():
+                messages.info(self.request, _("""<p>
+                    It seems that you do not have created content yet. Maybe it's time to do so!<br />
+                    Creating content in twistranet is easy.
+                    </p>
+                    <p>
+                    For example, just tell what you're working on in the form below and click the "Send" button.<br />
+                    Want to learn about what you can do in twistranet? Just take a look here: [help]
+                    </p>
+                """))
 
     def get_title(self,):
         """
@@ -60,7 +73,6 @@ class HomepageView(UserAccountView):
     """
     Special treatment for homepage.
     """
-    is_home = True
     name = "twistranet_home"
     
     def get_title(self,):
@@ -71,9 +83,12 @@ class HomepageView(UserAccountView):
         Retrieve recent content list for the given account.
         XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
         This way we can just query objects with id > last_twistable_on_home
-        XXX TODO: Handle the anonymous users case!
         """
-        latest_ids = Content.objects.followed
+        auth = Account.objects._getAuthenticatedAccount()
+        latest_ids = Content.objects
+        if not auth.is_anonymous:
+            if Content.objects.filter(publisher = auth).exists():
+                latest_ids = Content.objects.followed
         latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
@@ -84,11 +99,11 @@ class HomepageView(UserAccountView):
         """
         # Get the actual view instance. Not optimal, but, well, works.
         auth = Account.objects._getAuthenticatedAccount()
-        if auth and not auth.is_anonymous:
-            # XXX TODO: handle newcomers
-            return super(HomepageView, self).prepare_view(auth.id)
+        if not auth.is_anonymous:
+            prep_id = auth.id
         else:
-            raise MustRedirect(PublicTimelineView.name)
+            prep_id = None
+        super(HomepageView, self).prepare_view(prep_id)
 
 class PublicTimelineView(UserAccountView):
     name = "timeline"
@@ -96,17 +111,11 @@ class PublicTimelineView(UserAccountView):
     
     def get_recent_content_list(self):
         """
-        Just return all public / available content for this user
+        Just return all public / available content
         """
         latest_ids = Content.objects.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
-
-    def prepare_view(self, ):
-        """
-        We just have the account set as curently-auth account.
-        """
-        return super(PublicTimelineView, self).prepare_view(None)
 
 #                                                                               #
 #                               LISTING VIEWS                                   #
@@ -260,7 +269,7 @@ class AddToNetworkView(BaseObjectActionView):
         self.useraccount.add_to_my_network()
         name = self.useraccount.title
         if self.useraccount in self.auth.network:
-            messages.info(
+            messages.success(
                 self.request, 
                 _("You're now connected with %(name)s.") % {'name': name}
             )
@@ -303,7 +312,7 @@ class RemoveFromNetworkView(BaseObjectActionView):
         self.useraccount.remove_from_my_network()
         name = self.useraccount.title
         if was_in_my_network:
-            messages.info(
+            messages.success(
                 self.request, 
                 _("You're not connected with %(name)s anymore.") % {'name': name}
             )

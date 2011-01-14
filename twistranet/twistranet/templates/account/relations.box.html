@@ -1,7 +1,7 @@
 {% load i18n %}
 {% if account.communities_for_display %}
 <li class="tn-box relations-box">
-    {% ifequal account.id logged_account.id %}
+    {% ifequal account.id current_account.id %}
         <h3>{% blocktrans %}My Communities{% endblocktrans %}</h3>
     {% else %}
         <h3>{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>    
@@ -30,7 +30,7 @@
 
 {% if account.network_for_display %}
 <li class="tn-box relations-box">
-    {%ifequal account.id logged_account.id %}
+    {%ifequal account.id current_account.id %}
         <h3>{% blocktrans %}My Network{% endblocktrans %}</h3>
     {%else%}
         <h3>{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
