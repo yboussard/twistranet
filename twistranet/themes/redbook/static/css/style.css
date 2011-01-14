@@ -376,13 +376,34 @@ ul.children li {
   height: 32px;
 }
 
+/* block with 9 small icons */
+.image-block-withicons {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #DEDEDE;
+  background-color: #DEDEDE;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
 
+.image-block-withicons:hover {
+  border-color: #777;
+}
+
+.image-block-withicons img {
+  width: 16px;
+  height: 16px;
+  float: left;
+  padding: 2px;
+}
+
+/* blocks images used in status */
 .image-block-thumb img {
   max-width: 120px;
   max-height: 80px;
   padding: 2px;
-}     
-
+}
 
 .image-block-preview img {
   max-width: 500px;
@@ -462,6 +483,21 @@ formats are :
   margin-bottom: 5px;    
 }
 .thumbnail-50-bottom label {
+  text-align: center !important;
+  clear: left !important;
+  padding-top: 2px !important;     
+  font-weight: lighter !important;     
+  font-size: 10px !important;
+  line-height: 10px !important;
+  margin: 0 !important;
+}
+
+.thumbnail-62-bottom {
+  width: 62px;
+  margin-right: 5px;
+  margin-bottom: 5px;    
+}
+.thumbnail-62-bottom label {
   text-align: center !important;
   clear: left !important;
   padding-top: 2px !important;     

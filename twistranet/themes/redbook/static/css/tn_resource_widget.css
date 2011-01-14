@@ -24,8 +24,9 @@
     border-spacing: 5px;
 }
 
-.fieldWrapper .thumbnail-50-bottom label {
+.fieldWrapper .tnGridItem label {
     width: 100% !important;
+    line-height: 12px !important;
 }
 
 
@@ -35,6 +36,10 @@
 
 #resourcepane-main {
     display: block;
+}
+
+#resourcepane-main .tnGridItem:hover {
+    border-color: #F7F7F7 !important;
 }
 
 .resource-back-button {

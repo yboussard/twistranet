@@ -8,6 +8,7 @@ from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from sorl.thumbnail import default
+from django.template import loader, Context
 
 from twistranet.twistranet.lib.log import log
 
@@ -105,90 +106,42 @@ class ResourceWidget(forms.MultiWidget):
         if self.allow_select:
             account = Twistable.objects._getAuthenticatedAccount()
             selectable_accounts = Resource.objects.selectable_accounts(account)
-            output.append( '<div id="resources-selector">' )
-            output.append( '<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name )
-
-            # first we display the scopes (each selectable account) to select resources
-            output.append( """<div id="resourcepane-main" class="resourcePane">""")
-            output.append(u"""<div class="mediaresource-help">""" + _(u"Select an account:") + u"""</div>""")
-            output.append( u"""<div class="tnGrid tngridcols-6x">""")
-            for scope in selectable_accounts :
-                img = scope.forced_picture
-                thumb = default.backend.get_thumbnail( img.image,  u'50x50' )
-                param_dict = {
-                    "url":    scope.get_absolute_url(),
-                    "thumbnail_url":    thumb.url,
-                    "title":            scope.title,
-                    "value":            scope.id,
+            
+            
+            t = loader.get_template('resource/resource_browser.html')
+            scopes = []
+            for account in selectable_accounts :
+                img = account.forced_picture
+                icon = default.backend.get_thumbnail( img.image,  u'16x16' )
+                scope = {
+                    "url":              account.get_absolute_url(),
+                    "icon_url":         icon.url,
+                    "title":            account.title,
+                    "id":               account.id, 
                 }
-                output.append(u"""
-                  <div class="tnGridItem">
-                    <div class="thumbnail-account-part thumbnail-50-bottom">
-                      <a href="%(url)s"
-                         title="%(title)s"
-                         class="image-block image-block-tile">
-                        <img src="%(thumbnail_url)s"
-                             alt="%(title)s" />
-                      </a>
-                      <label>
-                        <a href="%(url)s">%(title)s</a>
-                      </label>
-                    </div>
-                    <input type="hidden"
-                           name="scope-input"
-                           class="scope-input"
-                           value="%(value)s" />
-                  </div>""" % param_dict)
-
-            output.append( """</div>""")# (close the tnGrid div)
-            output.append( """</div>""") # (close the resourcepane div)
-
-            for scope in selectable_accounts :
-                # Pane with objects in each selected account
-                images = Resource.objects.filter(publisher=scope)[:N_DISPLAYED_ITEMS]
-                output.append( u"""<div id="resourcepane-%s" class="resourcePane">""" %scope.id)
-                if images :
-                    output.append(u"""<div class="mediaresource-help">""" + _(u'Select a picture from account <strong>%(account_title)s</strong>:' % {'account_title': scope.title}) + u"""</div>""")
-                else :
-                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in account <strong>%(account_title)s</strong>" % {'account_title': scope.title}) + u"""</div>""")
-                output.append( u"""<div class="resource-back-button">%s</div>""" % _('Go back to all accounts'))
-                output.append( u"""<div class="tnGrid tngridcols-6x">""")
+                scope['images'] = []
+                scope['icons'] = []
+                images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
                 if len(images) >= N_DISPLAYED_ITEMS:
                     raise NotImplementedError("Should implement image searching & so on")
-                for img in images:
+                for img in images :
                     thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
                     is_selected = img.id == int(value[0] or 0)
-                    param_dict = {
-                        "fullimage_url":    img.get_absolute_url(),
-                        "thumbnail_url":    thumb.url,
-                        "value":            img.id,
-                        "title":            img.title,
-                        "selected":    is_selected and ' checked="checked"' or '',
-                    }
-                    output.append(u"""
-                      <div class="tnGridItem">
-                        <div class="thumbnail-account-part thumbnail-50-bottom">
-                          <a href="%(fullimage_url)s"
-                             title="%(title)s"
-                             class="image-block image-block-tile">
-                            <img src="%(thumbnail_url)s"
-                                 alt="%(title)s" />
-                          </a>
-                          <label>
-                            <a href="%(fullimage_url)s">%(title)s</a>
-                          </label>
-                        </div>
-                        <input type="radio"
-                               name="grid-item-input"
-                               class="grid-item-input"
-                               value="%(value)s"
-                               %(selected)s />
-                      </div>""" % param_dict)
+                    image = {
+                            "url":              img.get_absolute_url(),
+                            "thumbnail_url":    thumb.url,
+                            "id":               img.id,
+                            "title":            img.title,
+                            "selected":         is_selected and ' checked="checked"' or ''
+                            }
+                    scope['images'].append(image)
+                    if len(scope['icons'])<=9 :               
+                        icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
+                        scope['icons'].append(icon.url)
+                scopes.append(scope)
 
-                output.append("""</div>""") # (close the tnGrid div)
-                output.append("""</div>""") # (close the resourcepane div)
-
-            output.append("""</div>""") # (close the resource-selector div)
+            c = Context({ 'name': name, 'scopes' : scopes, })
+            output.append (t.render(c))
 
         # finalize and return the complete resource widget
 
