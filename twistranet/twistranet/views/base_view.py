@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms import form_registry
 from twistranet.twistranet.lib.log import *
+from twistranet.twistranet.lib import utils
 
 from twistranet.actions import *
 
@@ -25,7 +26,7 @@ class MustRedirect(Exception):
         self.url = url
         super(MustRedirect, self).__init__(self, url)
 
-class AsView(object):
+class AsPublicView(object):
     """
     A wrapper around an actual View Instance class.
     
@@ -39,15 +40,16 @@ class AsView(object):
         self.args = args
         self.kw = kw
         
+    def has_access(self):
+        return True         # Can always access a public view
+        
     def __call__(self, request, *args, **kw):
         """
         This generates the actual view instance.
         """
         try:
             # Check if we have access to TN, if not we redirect to the login page.
-            from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
-            mgr = GlobalCommunity.objects
-            if not mgr.exists():
+            if not self.has_access():
                 path = urlquote(request.get_full_path())
                 raise MustRedirect('%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path, ))
 
@@ -63,6 +65,15 @@ class AsView(object):
             if redirect.url is None:
                 redirect.url = request.path
             return HttpResponseRedirect(redirect.url)
+            
+class AsView(AsPublicView):
+    """
+    Same as AsPublicView but for a (possibly) restricted view.
+    """
+    def has_access(self,):
+        from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
+        mgr = GlobalCommunity.objects
+        return mgr.exists()
             
 class BaseView(object):
     """
@@ -246,12 +257,14 @@ class BaseView(object):
         # Generate actions and other params
         params["actions"] = self.get_actions()
         params["current_account"] = Twistable.objects.getCurrentAccount(self.request)
+        params["site_name"] = utils.get_site_name()
+        params["baseline"] = utils.get_baseline()
         
         # Render template
         t = get_template(self.template)
         c = RequestContext(self.request, params)
         return HttpResponse(t.render(c))
-        
+                
 
 class BaseIndividualView(BaseView):
     """

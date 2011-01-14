@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-from django.contrib.auth.views import login, logout
 import os.path
 from twistranet.twistranet.views import *
 from twistranet.twistranet.lib.slugify import SLUG_REGEX
@@ -68,8 +67,8 @@ urlpatterns = patterns('',
     (r'^download/',                             include('twistranet.twistorage.urls')),
 
     # Login / Logout / Register stuff
-    (r'^login/$', login),
-    (r'^logout/$',                              'twistranet.twistranet.views.account_logout'),  
+    url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
+    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),  
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

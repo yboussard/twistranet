@@ -56,32 +56,6 @@ def bootstrap():
         log.info("DatabaseError while bootstraping. Your tables are probably not created yet.")
         traceback.print_exc()
         return
-    
-    # Create default resources by associating them to the SystemAccount.
-    # XXX TODO: Make this work with subdirs
-    log.debug("Default res. dir: %s" % settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
-    for root, dirs, files in os.walk(settings.TWISTRANET_DEFAULT_RESOURCES_DIR):
-        for fname in files:
-            slug = os.path.splitext(os.path.split(fname)[1])[0]
-            objects = Resource.objects.filter(slug = slug)
-            if objects:
-                if len(objects) > 1:
-                    raise IntegrityError("More than one resource with '%s' slug" % slug)
-                r = objects[0]
-            else:
-                r = Resource()
-
-            # Copy file to its actual location with the storage API
-            source_fn = os.path.join(root, fname)
-            r.resource_file = File(open(source_fn, "rb"), fname)
-            r.slug = slugify(slug)
-            r.save()
-
-        break   # XXX We don't handle subdirs yet.
-
-    # Set SystemAccount picture (which is a way to check if things are working properly).
-    __account__.picture = Resource.objects.get(slug = "default_tn_picture")
-    __account__.save()
         
     # Now create the bootstrap / default / help fixture objects.
     # Import your fixture there, if you don't do so they may not be importable.
@@ -95,10 +69,6 @@ def bootstrap():
         HELP_FR_FIXTURES = []
         BOOTSTRAP_FR_FIXTURES = []
         log.info("twistrans not installed, translations are not installed.")
-        
-    # Check if default profile pictures are correctly imported
-    profile_picture = Resource.objects.get(slug = "default_account_picture")
-    community_picture = Resource.objects.get(slug = "default_community_picture")
     
     # Load fixtures
     for obj in BOOTSTRAP_FIXTURES:          obj.apply()
@@ -111,6 +81,31 @@ def bootstrap():
     glob.save()
     admin.publisher = glob
     admin.save()
+
+    # Create default resources by associating them to the SystemAccount and publishing them on GlobalCommunity.
+    log.debug("Default res. dir: %s" % settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
+    for root, dirs, files in os.walk(settings.TWISTRANET_DEFAULT_RESOURCES_DIR):
+        for fname in files:
+            slug = os.path.splitext(os.path.split(fname)[1])[0]
+            objects = Resource.objects.filter(slug = slug)
+            if objects:
+                if len(objects) > 1:
+                    raise IntegrityError("More than one resource with '%s' slug" % slug)
+                r = objects[0]
+            else:
+                r = Resource()
+    
+            # Copy file to its actual location with the storage API
+            source_fn = os.path.join(root, fname)
+            r.publisher = glob
+            r.resource_file = File(open(source_fn, "rb"), fname)
+            r.slug = slugify(slug)
+            r.save()
+        break   # XXX We don't handle subdirs yet.
+    
+    # Set SystemAccount picture (which is a way to check if things are working properly).
+    __account__.picture = Resource.objects.get(slug = "default_tn_picture")
+    __account__.save()
 
     # for obj in BOOTSTRAP_FR_FIXTURES:       obj.apply()
     for obj in HELP_EN_FIXTURES:            obj.apply()

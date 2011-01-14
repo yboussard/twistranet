@@ -6,10 +6,11 @@
 <head profile="http://gmpg.org/xfn/11">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>{{ global_community.site_name }} - {{ title }}</title>
+    <title>{{ site_name }} - {{ title }}</title>
 
     <meta name="generator" content="TwistraNet" />
     <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/css/login.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/css/forms.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/css/content.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/css/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />      
@@ -53,8 +54,8 @@
                     {% endblock %}
                     <a class="logotext"
                        href="{% url twistranet_home %}">
-                        <div class="logo-title">{{ global_community.site_name|safe }}</div>
-                        <div class="logo-slogan">{{ global_community.baseline|safe }}</div>
+                        <div class="logo-title">{{ site_name|safe }}</div>
+                        <div class="logo-slogan">{{ baseline|safe }}</div>
                     </a>
                     <div id="menubar">
                         <div id="mainmenu">
@@ -67,10 +68,12 @@
                     </div>
                 </div>
 
-                <div id="searchform">
-                    {% include "search/searchfield.part.html" %}
-                </div>
-
+                {% block searchform %}
+                    <div id="searchform">
+                        {% include "search/searchfield.part.html" %}
+                    </div>
+                {% endblock %}
+                
                 <div id="breadcrumb">
                     {% block breadcrumb %}
                         {% include "navigation/breadcrumb.part.html" %}
@@ -79,7 +82,8 @@
             
             </div><!-- End header --> 
 
-            <div id="wrap">                 
+            <div id="wrap">
+                {% block globalbar %}
                 <div id="globalbar" class="sidebar">
                     <ul class="tn-box-container">
                         {% for box in global_boxes %}
@@ -87,8 +91,10 @@
                         {% endfor %}
                     </ul>
                 </div>
+                {% endblock %}
+                
                 <div id="container">
-
+                    {% block contextbar %}
                     <div id="contextbar" class="sidebar">
                       <ul class="tn-box-container">
                           {% for box in context_boxes %}
@@ -96,6 +102,7 @@
                           {% endfor %}
                        </ul>
                     </div>
+                    {% endblock %}
                     
                 
                     <div id="content">

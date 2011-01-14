@@ -1,66 +1,16 @@
-/* Reset Browser Default */ 
-/*\*/@import url(./reset.css); /**/
-
-/* Typography */
-/*\*/@import url(./typography.css); /**/
-
-body.login {
-    background: url("../images/body-bg.png") repeat-x scroll left top #F9F9F9;
-}
-#logo {
-    width: 963px;
-    margin: 0 auto;
-    color: white;
-    font-size: 14px;
-    padding: 5px 8px;
-}
-.logo-title {
-    font-weight: bold;
-}
-.logo-title,
-.logo-slogan {
-   float: left;
-}
-.login #container {
+.login #login-container {
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
-	width: 330px;
+	margin: auto;
+	width: 130px;
 }
-.login #container #content {
+.login #login-container #login-content {
 	padding: 10px 15px;
 	margin: 0;
 }
-input{
-	border: 1px solid #ccc;
-	padding: 3px 10px;
-	background-color: #F9FFFF;
-}
-input:focus {
-  border-color: #aaa;
-}
-input[type="submit"],
-input[type="submit"]:focus,
-input[type="submit"]:active {
-  cursor:pointer;
-  float: none; 
-	background-image: none;
-}		
-#tn-message {
-  position: absolute;
-  top: 60px;
-  left: -14em;
-  width: 27em;
-  margin: 0 50%;
-  text-align: center;
-  padding: 5px 0.5em 0;
-  font-size: 110%;
-}
-.error {          
-  color: red;		  
-}
 
-.logout-message {
+.login .logout-message {
   position: relative;
   margin-top: 40px;
   width: 963px;

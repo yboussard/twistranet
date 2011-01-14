@@ -50,11 +50,12 @@ class UserAccountView(BaseWallView):
         if self.account and auth and self.account.id == auth.id:
             if not Content.objects.filter(publisher = auth).exists():
                 messages.info(self.request, _("""<p>
-                    It seems that you do not have created content yet. Maybe it's time to do so!<br />
-                    Creating content in twistranet is easy.
+                    It seems that you do not have created content yet. Maybe it's time to do so!
                     </p>
                     <p>
-                    For example, just tell what you're working on in the form below and click the "Send" button.<br />
+                    Creating content in twistranet is easy. For example, just tell what you're working on in the form below and click the "Send" button.
+                    </p>
+                    <p>
                     Want to learn about what you can do in twistranet? Just take a look here: [help]
                     </p>
                 """))
@@ -365,14 +366,74 @@ class UserAccountCreate(UserAccountEdit):
     context_boxes = []
     form_class = account_forms.UserAccountCreationForm
     
-def account_logout(request):
-    t = loader.get_template('registration/login.html')
-    logout(request)
-    c = RequestContext(
-        request,
-        {
-            "justloggedout":True,
-        },
-        )
-    return HttpResponse(t.render(c))
+
+class AccountLogin(BaseView):
+    template = "registration/login.html"
+    name = "login"
+    title = "Login"
+    template_variables = BaseView.template_variables + \
+        ['form', 'site', 'next', ]
+    
+    def prepare_view(self,):
+        """
+        request, template_name='registration/login.html',
+              redirect_field_name=REDIRECT_FIELD_NAME,
+              authentication_form=AuthenticationForm):
+        Displays the login form and handles the login action.
+        this is from django.contrib.auth.views
+        """
+        from django.contrib.auth.views import REDIRECT_FIELD_NAME as redirect_field_name        # = 'next'
+        from django.contrib.auth.views import AuthenticationForm as authentication_form
+        from django.contrib.auth.views import auth_login, Site, RequestSite
+        redirect_to = self.request.REQUEST.get(redirect_field_name, '')
+
+        if self.request.method == "POST":
+            self.form = authentication_form(data=self.request.POST)
+            if self.form.is_valid():
+                # Light security check -- make sure redirect_to isn't garbage.
+                if not redirect_to or ' ' in redirect_to:
+                    redirect_to = settings.LOGIN_REDIRECT_URL
+
+                # Heavier security check -- redirects to http://example.com should 
+                # not be allowed, but things like /view/?param=http://example.com 
+                # should be allowed. This regex checks if there is a '//' *before* a
+                # question mark.
+                elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
+                    redirect_to = settings.LOGIN_REDIRECT_URL
+
+                # Okay, security checks complete. Log the user in.
+                auth_login(self.request, self.form.get_user())
+                setattr(self, redirect_field_name, redirect_to)    
+                if self.request.session.test_cookie_worked():
+                    self.request.session.delete_test_cookie()
+                raise MustRedirect(redirect_to)
+            else:
+                # Invalid user/password
+                messages.warning(self.request, _("Sorry, that's not a valid username or password"))
+        else:
+            self.form = authentication_form(self.request)
+
+        self.request.session.set_test_cookie()
+
+        if Site._meta.installed:
+            self.site = Site.objects.get_current()
+        else:
+            self.site = RequestSite(self.request)
+        setattr(self, redirect_field_name, redirect_to)
+    
+    
+class AccountLogout(BaseView):
+    template = "registration/login.html"
+    template_variables = BaseView.template_variables + ["justloggedout", ]
+    name = "logout"
+    title = "Logged out"
+
+    def prepare_view(self,):
+        messages.info(self.request, _("You are now logged out.<br />Thanks for spending some quality time on Twistranet."))
+        self.justloggedout = True
+        logout(self.request)
+
+
+
+
 
