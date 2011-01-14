@@ -33,7 +33,7 @@ FIXTURES = [
         slug = "B",
         title = "Bernard Dubois De La Fontaine",
 		description = "A twistranet sample user",
-        permissions = "listed",
+        permissions = "private",
         user = User.objects.get(id = 3),
         picture = Resource.objects.filter(slug = "default_b_picture"),
     ),

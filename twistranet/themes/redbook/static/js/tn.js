@@ -204,11 +204,10 @@ liveSearch = function(searchTerm) {
 
 gridStyle = function(grid) {
     className = grid.className;
-    /* fix cols */
+    /* define cols */
     if ( className.split('tngridcols-').length ) {
         ncols = parseInt(className.split('tngridcols-')[1].split('x')[0]);
         if (ncols) {
-            jQuery(grid).hide();
             jQuery('.tnGridItem', grid).each(function(i) {
                 if ((i+1)%ncols==1) jQuery(grid).append('<div class="tnGridRow"></div>');
                 gridRow= jQuery('.tnGridRow:last', grid);
@@ -216,27 +215,55 @@ gridStyle = function(grid) {
                 
             })
         }
-        jQuery(grid).show();
-    } 
+    }            
+    // see if something is selected
+    gridOnChange(grid);
+    // IMPORTANT : the grid is always shown at the end 
+    // to avoid bad moving effect      
+    jQuery(grid).css('display', 'table');
+}
+
+/* When something has changed on grid
+   called on load or when selecting
+   a radio button to check/uncheck elements */
+   
+gridOnChange = function(grid) {
+    jQuery('.tnGridItem', grid).each(function(){
+        var item = jQuery(this);       
+        var checkbox = jQuery('>input:checkbox, >input:radio', this);
+        if (checkbox.length) {
+            if (checkbox.is(':checked')) {
+                jQuery(this).addClass('itemSelected');
+            }
+            else {
+                jQuery(this).removeClass('itemSelected');    
+            }
+        }
+    });
 }
 
 /* actions on grid selection
-   could be check/uncheck value before submit */
-   
+   eg : check/uncheck value before submit */
+
 gridOnSelect = function(grid) {
     jQuery('.tnGridItem', grid).each(function() {
         var item = jQuery(this);       
-        var checkbox = jQuery('>input:checkbox', this);
-        item.click(function(e) {
-            if (checkbox.is(':checked')) {
-                jQuery(this).removeClass('itemSelected');
-                checkbox.removeAttr("checked");
-            }
-            else {
-                checkbox.attr('checked', 'checked');
-                jQuery(this).addClass('itemSelected');
-            }
-        })
+        var checkbox = jQuery('>input:checkbox, >input:radio', this);
+        var radio = jQuery('>input:radio', this);
+        if (checkbox.length) {
+            item.click(function(e) {
+                if (checkbox.is(':checked')) {
+                    jQuery(this).removeClass('itemSelected');
+                    checkbox.removeAttr("checked");
+                }
+                else {
+                    checkbox.attr('checked', 'checked');
+                    jQuery(this).addClass('itemSelected');
+                }
+                // for radios buttons unselect other items
+                if (radio.length) gridOnChange(grid);
+            })
+        }
         jQuery('a', item).click(function(e) {
             e.preventDefault();
             e.stopPropagation();

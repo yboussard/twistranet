@@ -195,9 +195,10 @@ ul.inline-form select {
     padding: 0 10px;
     clear: both;
 }
-.tnGrid {
-    display: table;
+.tnGrid {         
     border-spacing: 1px;
+    /* IMPORTANT : the grid is shown by javascript tn.js > gridStyle */
+    display: none;
 }
 
 /* rows are added in js, depending on grid class */
@@ -238,7 +239,8 @@ ul.inline-form select {
     text-decoration: none !important;
 }
 
-.tnGridItem input[type="checkbox"] {
+.tnGridItem input[type="checkbox"],
+.tnGridItem input[type="radio"] {
     display: none;
 }
 
@@ -268,14 +270,6 @@ ul.inline-form select {
 
 .resource-widget {
     margin-left: 150px;
-}
-
-.resource-image {
-    padding: 2px;
-}
-
-.resource-selected {
-    background: blue;
 }
 
 /* permissions select list too large sometimes */
