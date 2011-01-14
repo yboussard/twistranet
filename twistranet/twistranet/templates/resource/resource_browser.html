@@ -12,6 +12,8 @@
                    class="image-block image-block-withicons">
                 {% for icon_url in scope.icons %}
                     <img src="{{icon_url}}" />
+                {% empty %}          
+                    <img src="{{scope.icon_url}}" />
                 {% endfor %}
                 </a>
                 <label>

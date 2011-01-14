@@ -380,14 +380,15 @@ ul.children li {
 .image-block-withicons {
   width: 60px;
   height: 60px;
-  border: 1px solid #AAA;
+  border: 1px solid #DEDEDE;
+  background-color: #DEDEDE;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
 }
 
 .image-block-withicons:hover {
-  border-color: #444;
+  border-color: #777;
 }
 
 .image-block-withicons img {
