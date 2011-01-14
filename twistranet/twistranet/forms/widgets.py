@@ -16,7 +16,7 @@ N_DISPLAYED_ITEMS = 30         # Number of images to display in the inline field
 
 class ResourceWidget(forms.MultiWidget):
     query_set = None
-    
+
     class Media:
         css = {
             'all': ('/static/css/tn_resource_widget.css',),
@@ -43,22 +43,22 @@ class ResourceWidget(forms.MultiWidget):
     def render(self, name, value, attrs=None):
         """
         Returns this Widget rendered as HTML, as a Unicode string.
-    
+
         The 'value' given is just the resource number or None if not given.
-        
+
         Basically, this widget has 3 zones:
-        
+
         - The current resource, if there is already one.
         - The file upload field
         - The resource browser.
         """
         from twistranet.twistranet.models import Resource, Twistable
-        
+
         # Beginning of the super-render() code
         if self.is_localized:
             for widget in self.widgets:
                 widget.is_localized = self.is_localized
-                
+
         # value is a list of values, each corresponding to a widget
         # in self.widgets.
         if not isinstance(value, list):
@@ -67,9 +67,10 @@ class ResourceWidget(forms.MultiWidget):
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         output.append(u"""<div class="resource-widget">""")
-        
+
         # Render the current resource widget
         if value[0]:
+            output.append( """<div id="resources-renderer">""" )
             try:
                 img = Resource.objects.get(id = value[0])
             except Resource.DoesNotExist:
@@ -83,9 +84,12 @@ class ResourceWidget(forms.MultiWidget):
             output.append(u"""<img src="%(thumbnail_src)s" class="resource-image"
              width="100" height="100" />
              """ % param_dict)
-            
+
+            output.append( """</div>""" ) # close resources-renderer div
+
         # Render the File widget and the hidden resource ForeignKey
         if self.allow_upload:
+            output.append( """<div id="resources-uploader">""" )
             output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
             for i, widget in enumerate(self.widgets):
                 try:
@@ -95,14 +99,16 @@ class ResourceWidget(forms.MultiWidget):
                 if id_:
                     final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
                 output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
-            
-        # By now we just display resources from our own account.
-        # Tomorrow, we should display some kind of album browser.
-        if self.allow_select: 
+            output.append( """</div>""" ) # close resources-uploader div
+
+        # Display resources from all selectable accounts.
+        if self.allow_select:
             account = Twistable.objects._getAuthenticatedAccount()
             selectable_accounts = Resource.objects.selectable_accounts(account)
+            output.append( '<div id="resources-selector">' )
             output.append( '<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name )
-            # first we display the scopes to select resources (each selectable account)
+
+            # first we display the scopes (each selectable account) to select resources
             output.append( """<div id="resourcepane-main" class="resourcePane">""")
             output.append(u"""<div class="mediaresource-help">""" + _(u"Select an account:") + u"""</div>""")
             output.append( u"""<div class="tnGrid tngridcols-6x">""")
@@ -118,32 +124,34 @@ class ResourceWidget(forms.MultiWidget):
                 output.append(u"""
                   <div class="tnGridItem">
                     <div class="thumbnail-account-part thumbnail-50-bottom">
-                      <a href="%(url)s"      
+                      <a href="%(url)s"
                          title="%(title)s"
                          class="image-block image-block-tile">
-                        <img src="%(thumbnail_url)s" 
+                        <img src="%(thumbnail_url)s"
                              alt="%(title)s" />
                       </a>
                       <label>
                         <a href="%(url)s">%(title)s</a>
-                      </label>    
-                    </div>    
+                      </label>
+                    </div>
                     <input type="hidden"
                            name="scope-input"
                            class="scope-input"
                            value="%(value)s" />
                   </div>""" % param_dict)
-            output.append( """</div>""")
-            output.append( """</div>""")
-            
+
+            output.append( """</div>""")# (close the tnGrid div)
+            output.append( """</div>""") # (close the resourcepane div)
+
             for scope in selectable_accounts :
-                # Pane with objects in each selected account              
+                # Pane with objects in each selected account
                 images = Resource.objects.filter(publisher=scope)[:N_DISPLAYED_ITEMS]
                 output.append( u"""<div id="resourcepane-%s" class="resourcePane">""" %scope.id)
                 if images :
-                    output.append(u"""<div class="mediaresource-help">""" + _(u"Select a picture:") + u"""</div>""")
+                    output.append(u"""<div class="mediaresource-help">""" + _(u'Select a picture from account <strong>%(account_title)s</strong>:' % {'account_title': scope.title}) + u"""</div>""")
                 else :
-                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in this account") + u"""</div>""")
+                    output.append(u"""<div class="mediaresource-help">""" + _(u"No picture available in account <strong>%(account_title)s</strong>" % {'account_title': scope.title}) + u"""</div>""")
+                output.append( u"""<div class="resource-back-button">%s</div>""" % _('Go back to all accounts'))
                 output.append( u"""<div class="tnGrid tngridcols-6x">""")
                 if len(images) >= N_DISPLAYED_ITEMS:
                     raise NotImplementedError("Should implement image searching & so on")
@@ -153,17 +161,17 @@ class ResourceWidget(forms.MultiWidget):
                     param_dict = {
                         "fullimage_url":    img.get_absolute_url(),
                         "thumbnail_url":    thumb.url,
-                        "value":            img.id,          
+                        "value":            img.id,
                         "title":            img.title,
                         "selected":    is_selected and ' checked="checked"' or '',
                     }
                     output.append(u"""
                       <div class="tnGridItem">
                         <div class="thumbnail-account-part thumbnail-50-bottom">
-                          <a href="%(fullimage_url)s"      
+                          <a href="%(fullimage_url)s"
                              title="%(title)s"
                              class="image-block image-block-tile">
-                            <img src="%(thumbnail_url)s" 
+                            <img src="%(thumbnail_url)s"
                                  alt="%(title)s" />
                           </a>
                           <label>
@@ -176,12 +184,14 @@ class ResourceWidget(forms.MultiWidget):
                                value="%(value)s"
                                %(selected)s />
                       </div>""" % param_dict)
-                      
+
                 output.append("""</div>""") # (close the tnGrid div)
                 output.append("""</div>""") # (close the resourcepane div)
-        
+
+            output.append("""</div>""") # (close the resource-selector div)
+
         # finalize and return the complete resource widget
-        
+
         output.append("""</div>""") # (close the resource-widget div)
 
         return mark_safe(self.format_output(output))

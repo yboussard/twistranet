@@ -16,12 +16,17 @@ jQuery(
                  jQuery('input .tnGrid', reswidget).remove();
             })
             // when selecting a scope (account show the good pane)
-            jQuery('#resourcepane-main .tnGridItem').click(function(){
+            jQuery('#resourcepane-main .tnGridItem').click(function(e){
                 var scope_id = jQuery('>input:hidden', this).val();
                 jQuery('.resourcePane').hide();
                 jQuery('#resourcepane-'+scope_id).show(1000);
             })
             
+            // back to all accounts action
+            jQuery('.resource-back-button').click(function(e){
+                jQuery('.resourcePane').hide();
+                jQuery('#resourcepane-main').show(500);
+            })
             // redefine the gridOnChange method
             // because we want to unselect all elements from all panels
             gridOnChange = function(grid) {
