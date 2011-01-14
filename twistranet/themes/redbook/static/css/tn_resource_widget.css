@@ -11,10 +11,6 @@
     margin-bottom: 5px;
 }
 
-#resources-selector {
-    min-height: 300px;
-}
-
 #resources-renderer,
 #resources-uploader {
     margin-bottom: 10px;

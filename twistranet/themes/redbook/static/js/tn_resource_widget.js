@@ -27,6 +27,15 @@ jQuery(
                 jQuery('.resourcePane').hide();
                 jQuery('#resourcepane-main').show(500);
             })
+            // calculate the good height 
+            //it's important when displaying widget in a form to avod bad moving effects
+            var selector_height = 0;
+            jQuery('.tnGrid').each(function(){
+                nbrows = jQuery('.tnGridRow', this).length ;
+                new_height = 100*nbrows+20;
+                if (new_height > selector_height) selector_height = new_height;
+            });
+            jQuery('#resources-selector').height(selector_height);
             // redefine the gridOnChange method
             // because we want to unselect all elements from all panels
             gridOnChange = function(grid) {
