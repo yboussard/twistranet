@@ -1,0 +1,62 @@
+{% load i18n %}
+<div id="resources-selector">
+    <input type="hidden" id="selector_target" name="selector_target" value="id_{{name}}_0" />
+    <div id="resourcepane-main" class="resourcePane">
+        <div class="mediaresource-help">{% blocktrans %}Select an account:{% endblocktrans %}</div>
+        <div class="tnGrid tngridcols-6x">
+        {% for scope in scopes %}
+            <div class="tnGridItem">
+              <div class="thumbnail-account-part thumbnail-50-bottom">
+                <a href="{{scope.url}}"
+                   title="{{scope.title}}"
+                   class="image-block image-block-tile">
+                  <img src="{{scope.thumbnail_url}}"
+                       alt="{{scope.title}}" />
+                </a>
+                <label>
+                  <a href="{{scope.url}}">{{scope.title}}</a>
+                </label>
+              </div>
+              <input type="hidden"
+                     name="scope-input"
+                     class="scope-input"
+                     value="{{scope.id}}" />
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% for scope in scopes %}
+    <div id="resourcepane-{{scope.id}}" class="resourcePane">
+    {% with scope.title as scope_title %}
+    {% if scope.images %}
+        <div class="mediaresource-help">{% blocktrans %}Select a picture from account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
+    {% else %}                            
+        <div class="mediaresource-help">{% blocktrans %}No picture available in account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
+    {% endif %}
+    {% endwith %}
+        <div class="resource-back-button">{% blocktrans %}Go back to all selectable accounts{% endblocktrans %}</div>
+        <div class="tnGrid tngridcols-6x">
+        {% for image in scope.images %}
+            <div class="tnGridItem">
+              <div class="thumbnail-account-part thumbnail-50-bottom">
+                <a href="{{image.url}}"
+                   title="{{image.title}}"
+                   class="image-block image-block-tile">
+                  <img src="{{image.thumbnail_url}}"
+                       alt="{{image.title}}" />
+                </a>
+                <label>
+                  <a href="{{image.url}}">{{image.title}}</a>
+                </label>
+              </div>
+              <input type="radio"
+                     name="grid-item-input"
+                     class="grid-item-input"
+                     value="{{image.id}}"
+                     {{image.selected}} />
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+</div>
