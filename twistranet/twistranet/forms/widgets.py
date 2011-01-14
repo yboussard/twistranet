@@ -120,6 +120,7 @@ class ResourceWidget(forms.MultiWidget):
                     "id":               account.id, 
                 }
                 scope['images'] = []
+                scope['icons'] = []
                 images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
                 if len(images) >= N_DISPLAYED_ITEMS:
                     raise NotImplementedError("Should implement image searching & so on")
@@ -134,6 +135,9 @@ class ResourceWidget(forms.MultiWidget):
                             "selected":         is_selected and ' checked="checked"' or ''
                             }
                     scope['images'].append(image)
+                    if len(scope['icons'])<=9 :               
+                        icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
+                        scope['icons'].append(icon.url)
                 scopes.append(scope)
 
             c = Context({ 'name': name, 'scopes' : scopes, })

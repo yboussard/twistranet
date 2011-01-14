@@ -3,15 +3,16 @@
     <input type="hidden" id="selector_target" name="selector_target" value="id_{{name}}_0" />
     <div id="resourcepane-main" class="resourcePane">
         <div class="mediaresource-help">{% blocktrans %}Select an account:{% endblocktrans %}</div>
-        <div class="tnGrid tngridcols-6x">
+        <div class="tnGrid tngridcols-5x">
         {% for scope in scopes %}
             <div class="tnGridItem">
-              <div class="thumbnail-account-part thumbnail-50-bottom">
+              <div class="thumbnail-account-part thumbnail-62-bottom">
                 <a href="{{scope.url}}"
                    title="{{scope.title}}"
-                   class="image-block image-block-tile">
-                  <img src="{{scope.thumbnail_url}}"
-                       alt="{{scope.title}}" />
+                   class="image-block image-block-withicons">
+                {% for icon_url in scope.icons %}
+                    <img src="{{icon_url}}" />
+                {% endfor %}
                 </a>
                 <label>
                   <a href="{{scope.url}}">{{scope.title}}</a>
