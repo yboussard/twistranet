@@ -1,3 +1,33 @@
+from django.core.cache import cache
+
+def _get_site_name_or_baseline(return_baseline = False):
+    """
+    Read the site name from global community.
+    We use tricks to ensure we can get the glob com. even with anonymous requests.
+    """
+    d = cache.get_many(["twistranet_site_name", "twistranet_baseline"])
+    site_name = d.get("site_name", None)
+    baseline = d.get("baseline", None)
+    if site_name is None or baseline is None:
+        from twistranet.twistranet.models import *
+        try:
+            __account__ = SystemAccount.get()
+            glob = GlobalCommunity.get()
+            site_name = glob.site_name
+            baseline = glob.baseline
+        finally:
+            del __account__
+        cache.set('twistranet_site_name', site_name)
+        cache.set("twistranet_baseline", baseline)
+    if return_baseline:
+        return baseline
+    return site_name
+    
+def get_site_name():
+    return _get_site_name_or_baseline(return_baseline = False)
+def get_baseline():
+    return _get_site_name_or_baseline(return_baseline = True)
+
 
 def truncate(text, length, ellipsis=u'\u2026'):
     if text is None:

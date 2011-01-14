@@ -5,7 +5,6 @@ def security_context(request):
     """
     Retrieve the logged account and populate the variable (don't do anything with anon account by now).
     Also get the content form available.
-    And get the main_menu menu manager. (XXX TODO: Cache menu items)
     """
     from twistranet.twistranet.models import GlobalCommunity, Account
     ret = dict()

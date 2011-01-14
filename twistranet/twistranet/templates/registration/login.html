@@ -1,55 +1,34 @@
+{% extends "base.html" %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
 
-    <script type="text/javascript" src="/static/js/jquery.js" charset="utf-8"></script>
-    <script type="text/javascript">
-        jQuery(document).ready( function() {
-            jQuery("form.enableAutoFocus :input:visible:first").focus()
-        })
-    </script>
-    <link rel="stylesheet" href="/media/css/base.css" />
-    <link rel="stylesheet" href="/media/css/login.css" />
-    <link rel="stylesheet" href="/static/css/typography.css" type="text/css" media="screen" />   
-    <link rel="stylesheet" href="/static/css/login.css" type="text/css" media="screen" />
-	  <style>
-          
-    {% if justloggedout %}
-      .login #container {
-        display: none;
-      }
-    {% endif %}
-    
-	  </style>
-  
-  <title>{% block title %}{% blocktrans %}TwistraNet - The social content management system.{% endblocktrans %}{% endblock %}</title>
-</head>
+{% block topbar %}
+{% endblock %}
 
-<body class="login">
-<div id="logo">
-    <div class="logo-title">TwistraNet.</div>
-</div>
+{% block menu_items %}
+{% endblock %}
 
-<div class="clear"><!-- --></div>
+{% block searchform %}
+{% endblock %}
+
+{% block globalbar %}
+{% endblock %}
+
+{% block contextbar %}
+{% endblock %}
 
 {% block content %}
+<div class="login">
 
-  {% if form.errors %}
-    <div id="tn-message">
-      <p class="error">{% blocktrans %}Sorry, that's not a valid username or password{% endblocktrans %}</p>
-    </div>
-  {% endif %}
   {% if justloggedout %}
     <div class="logout-message">
-      <h2>{% blocktrans %}Logged out{% endblocktrans %}</h2>
-      <p>{% blocktrans %}Thanks for spending some quality time on Twistranet.{% endblocktrans %}</p>
       <p><a href="/login" class="login-again">{% blocktrans %}Log in again{% endblocktrans %}</a></p>
     </div>
-  {% endif %}  
-  <div id="container">
-	<div class="colM" id="content">
+  {% endif %}
+
+{% if not justloggedout %}
+
+  <div id="login-container">
+	<div class="colM" id="login-content">
 	  <form id="login-form" action="" method="post" class="enableAutoFocus">
 	      {% csrf_token %}
 	    <div class="form-row">
@@ -67,6 +46,9 @@
 	  </form>
 	</div>
   </div>
+  
+{% endif %}
+
+</div>
 
 {% endblock %}
-</body>
