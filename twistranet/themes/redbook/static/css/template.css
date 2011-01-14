@@ -125,22 +125,41 @@ body {
         display: none;
       } 
   		#tn-message {
-        color: white;
-        font-weight: bold;
-        border: solid 1px #d0b6b7;
-        background: #278FB8;
-        text-align: center;
-        padding: 0em;
-        margin: 10px;
       }
       #tn-message ul {
           display: block;
-          margin: 5px;
-          padding: 5px;
       }
       #tn-message ul li {
+          color: white;
+          font-weight: bold;
+          border: solid 1px #d0b6b7;
+          text-align: center;
+          padding: 8px 8px 8px 52px;
+          margin: 0;
           display: block;
+          min-height: 35px;
       }
+      
+      #tn-message ul li.debug {
+          background: #278FB8 url(../images/icons/debug.png) 10px 10px no-repeat;
+      }
+      #tn-message ul li.info {
+          background: #278FB8 url(../images/icons/info.png) 10px 10px no-repeat;
+      }
+      #tn-message ul li.success {
+          background: #A9CC23 url(../images/icons/success.png) 10px 10px no-repeat;
+      }
+      #tn-message ul li.warning {
+          background: #F6777D url(../images/icons/warning.png) 10px 10px no-repeat;
+      }
+      #tn-message ul li.error {
+          background: #DF2429 url(../images/icons/error.png) 10px 10px no-repeat;
+      }
+      
+      
+        #tn-message ul li p {
+          text-align: left;
+        }
 			#content {
 				width: 571px;
 				float: left;

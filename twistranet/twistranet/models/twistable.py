@@ -109,6 +109,24 @@ class TwistableManager(models.Manager):
             )
         return qs
                 
+    def getCurrentAccount(self, request):
+        """
+        The official and hassle-free method of getting the currently auth account from a view.
+        Just pass the request object.
+        """
+        from account import Account, AnonymousAccount, UserAccount
+        u = getattr(request, 'user', None)
+        if isinstance(u, User):
+            # We use this instead of the get_profile() method to avoid an infinite recursion here.
+            # We mimic the _profile_cache behavior of django/contrib/auth/models.py to avoid doing a lot of requests on the same object
+            if not hasattr(u, '_account_cache'):
+                u._account_cache = UserAccount.objects.__booster__.get(user__id__exact = u.id)
+                u._account_cache.user = u
+            return u._account_cache
+
+        # Didn't find anything. We must be anonymous.
+        return AnonymousAccount()
+                
     def _getAuthenticatedAccount(self):
         """
         Dig the stack to find the authenticated account object.

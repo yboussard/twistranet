@@ -1,5 +1,5 @@
 """
-Special context processor to handle the logged_account variable for all of TN calls.
+Special context processor to handle the current_account variable for all of TN calls.
 """
 def security_context(request):
     """
@@ -19,8 +19,8 @@ def security_context(request):
         return {}
         raise RuntimeError("Should issue a redirect exception here")
 
-    # The logged-in account
-    ret['logged_account'] = Account.objects._getAuthenticatedAccount()
+    # # The logged-in account
+    # ret['current_account'] = Account.objects._getAuthenticatedAccount()
     
     # Various shortcuts
     ret['path'] = request.path

@@ -225,7 +225,9 @@ class BaseView(object):
     def render_view(self, ):
         """
         Render the given template with the specified params (dict)...
-        ...PLUS adds some parameters to provide better integration.
+        ...PLUS adds some parameters to provide better integration:
+        - actions
+        - current_account
         """
         # Populate parameters
         params = {}
@@ -241,9 +243,9 @@ class BaseView(object):
                 v = v()
             params[k] = v
             
-        # Generate actions
+        # Generate actions and other params
         params["actions"] = self.get_actions()
-        log.debug("Actions: %s" % params["actions"])
+        params["current_account"] = Twistable.objects.getCurrentAccount(self.request)
         
         # Render template
         t = get_template(self.template)
@@ -261,7 +263,6 @@ class BaseIndividualView(BaseView):
     will be model_lookup.__name__.lower().
     """
     model_lookup = None
-    is_home = False
     form_class = None               # If set, will be used to generate a form for the view
     redirect = None
 
@@ -474,4 +475,8 @@ class BaseWallView(BaseIndividualView):
         if len(self.latest_content_list) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
             self.too_few_content = True
         self.content_forms = self.get_inline_forms(self.object)
+        
+        
+        
+        
         
