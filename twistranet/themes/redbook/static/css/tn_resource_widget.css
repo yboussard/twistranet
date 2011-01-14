@@ -1,13 +1,12 @@
 /* resource widget helper */
 
 .resource-widget {
-    display: table-cell;
-    min-width: 50%;
+
 }
 
 .mediaresource-help {
     font-size: 13px;
-    color: #AD1C20;
+    color: #686868;
     margin-bottom: 5px;
 }
 
@@ -41,4 +40,5 @@
 .resource-back-button {
     cursor: pointer;
     text-align: right;
+    color: #AD1C20;
 }

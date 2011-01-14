@@ -19,13 +19,13 @@ jQuery(
             jQuery('#resourcepane-main .tnGridItem').click(function(e){
                 var scope_id = jQuery('>input:hidden', this).val();
                 jQuery('.resourcePane').hide();
-                jQuery('#resourcepane-'+scope_id).show(1000);
+                jQuery('#resourcepane-'+scope_id).fadeIn(1000);
             })
             
             // back to all accounts action
             jQuery('.resource-back-button').click(function(e){
                 jQuery('.resourcePane').hide();
-                jQuery('#resourcepane-main').show(500);
+                jQuery('#resourcepane-main').fadeIn(500);
             })
             // calculate the good height 
             //it's important when displaying widget in a form to avod bad moving effects

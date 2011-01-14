@@ -37,7 +37,7 @@
         <div class="mediaresource-help">{% blocktrans %}No picture available in account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
     {% endif %}
     {% endwith %}
-        <div class="resource-back-button">{% blocktrans %}Go back to all selectable accounts{% endblocktrans %}</div>
+        <div class="resource-back-button">{% blocktrans %}Go back{% endblocktrans %}</div>
         <div class="tnGrid tngridcols-6x">
         {% for image in scope.images %}
             <div class="tnGridItem">
@@ -62,4 +62,5 @@
         </div>
     </div>
 {% endfor %}
+    <div class="clear"><!-- --></div>
 </div>
