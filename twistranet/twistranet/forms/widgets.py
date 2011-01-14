@@ -115,7 +115,7 @@ class ResourceWidget(forms.MultiWidget):
                 icon = default.backend.get_thumbnail( img.image,  u'16x16' )
                 scope = {
                     "url":              account.get_absolute_url(),
-                    "icon_url":    thumb.url,
+                    "icon_url":         icon.url,
                     "title":            account.title,
                     "id":               account.id, 
                 }
