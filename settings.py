@@ -143,6 +143,10 @@ THUMBNAIL_COLORSPACE = None
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
 HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
 
+QUICKUPLOAD_AUTO_UPLOAD = True
+QUICKUPLOAD_FILL_TITLES = False 
+QUICKUPLOAD_SIZE_LIMIT = 0  
+QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
 
 INSTALLED_APPS = (
     'django.contrib.auth',

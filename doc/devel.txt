@@ -30,6 +30,8 @@ Fork Twistranet from github (with your login or public adress git://github.com/n
 
     (twistranet-devel) $ git clone https://yourlogin@github.com/numericube/twistranet.git ./Twistranet
 
+.. note:: don't call the cloned folder 'twistranet' in all lowercase if you want to start Django directly from this folder
+
 >> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnails, tinymce ...)
 
     (twistranet-devel) $ pip install -e ./Twistranet
@@ -41,7 +43,7 @@ Create Twistranet Database
 Reply "no" to the question about superuser creation  
 (since the AUTH_PROFILE_MODULE has changed, it doesn't work)  
 By default (using sqlite), the data is stored in data/tn.db
-    
+    (twistranet) $ cd Twistranet
     (twistranet) $ python manage.py syncdb
 
 Bootstrap the first data
