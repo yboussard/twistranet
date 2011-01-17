@@ -384,7 +384,8 @@ class AccountLogin(BaseView):
         """
         from django.contrib.auth.views import REDIRECT_FIELD_NAME as redirect_field_name        # = 'next'
         from django.contrib.auth.views import AuthenticationForm as authentication_form
-        from django.contrib.auth.views import auth_login, Site, RequestSite
+        from django.contrib.auth.views import auth_login
+        from django.contrib.sites.models import Site, RequestSite
         redirect_to = self.request.REQUEST.get(redirect_field_name, '')
 
         if self.request.method == "POST":

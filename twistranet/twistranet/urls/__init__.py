@@ -29,7 +29,8 @@ urlpatterns = patterns('',
     (r'^resource/new$',                         'twistranet.twistranet.views.create_resource'),
     (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_slug_or_id'),
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
-    (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty
+    (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty   
+    (r'^resource_browser/$',                    'twistranet.twistranet.views.resource_browser'),
     
     # Thumbnail cache links
     url(r'\Wcache/([\w\./]+)$',                 'twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
@@ -37,7 +38,7 @@ urlpatterns = patterns('',
     
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
     url(r'^media_resource/new$',                'twistranet.twistranet.views.create_media', name = "media_create", ),
-    url(r'^media_resource/(\d+)/edit$',         'twistranet.twistranet.views.edit_media', name = "media_edit", ),
+    url(r'^media_resource/(\d+)/edit$',         'twistranet.twistranet.views.edit_media', name = "media_edit", ),    
     url(r'^media_library/(\d+)$',               'twistranet.twistranet.views.view_media_library', name = "media_library_view", ),
     
     # Content links

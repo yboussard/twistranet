@@ -3,6 +3,8 @@ from django.db import models
 from django.forms import widgets
 
 from twistranet.twistranet.models import Resource
+from fields import ResourceFormField
+from base_forms import BaseForm
 
 class ResourceForm(forms.ModelForm):
     """
@@ -30,3 +32,8 @@ class MediaForm(forms.Form):
     title = forms.CharField(max_length=50)
     file  = forms.FileField()
     url = forms.URLField()
+
+class ResourceBrowserForm(forms.Form):
+    """just a basic form to browse and upload resources"""
+
+    browsed_resource = ResourceFormField(label='', allow_select=True, allow_upload=True)

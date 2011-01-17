@@ -14,12 +14,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.http import http_date
 
 from twistranet.twistranet.models import *
-from twistranet.twistranet.forms.resource_forms import ResourceForm
+from twistranet.twistranet.forms.resource_forms import ResourceForm, ResourceBrowserForm
 from twistranet.twistranet.lib.decorators import require_access
 
 from django.conf import settings
 from django.views.static import was_modified_since
 from twistranet.twistorage.storage import Twistorage
+from twistranet.twistranet.lib import utils
 
 
 def serve(request, path, document_root = None, show_indexes = False, nocache = False):
@@ -219,4 +220,24 @@ def create_resource(request):
     return edit_resource(request)
 
 
-        
+@require_access
+def resource_browser(request):
+    """
+    A view used to browse and upload resources
+    Based on resource field
+    """
+    
+    form = ResourceBrowserForm()
+    params = {}
+    params["account"] = request.user.get_profile()
+    params["actions"] = ''
+    params["site_name"] = utils.get_site_name()
+    params["baseline"] = utils.get_baseline()
+    params['form'] = form
+    template = 'resource/resource_browser_form.html'
+    t = loader.get_template(template)
+    c = RequestContext(
+        request,
+        params
+        )
+    return HttpResponse(t.render(c))
