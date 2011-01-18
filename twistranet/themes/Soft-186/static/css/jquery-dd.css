@@ -1,0 +1,89 @@
+/************** Skin 1 *********************/
+.dd {
+  /*display:inline-block !important;*/
+  text-align:left;
+  float:left;
+}
+.dd .ddTitle {
+  border:1px solid #555;
+  padding:0 3px 0 22px;
+  text-indent:0;
+  cursor:default;
+  overflow:hidden;
+  height:17px;
+  /* take care - could be a mandatory in some situations */
+  /* min-width: 125px;    */
+  display: inline-block;
+  font-weight: bold;
+  float: left;
+  background: #ebebeb url(../images/icons/permissions.png) 4px 1px no-repeat; 
+  cursor:pointer;
+}
+.dd .ddTitle > span {
+}
+.dd .ddTitle span.arrow {
+  background: transparent url(../images/icons/dd-arrow-dn.png) no-repeat 0 0; 
+  float:right; 
+  display:inline-block;
+  width:13px; 
+  height:15px; 
+  cursor:pointer; 
+  margin-left: 10px;
+}
+
+.dd .ddTitle span.ddTitleText {text-indent:1px; overflow:hidden; line-height:16px;}
+.dd .ddTitle span.ddTitleText img{text-align:left; padding:0 2px 0 0}
+.dd .ddTitle img.selected {
+  padding:0 3px 0 0;
+  vertical-align:top;
+}
+.dd .ddChild {
+  position:absolute;
+  border:1px solid #555;
+  border-top:none;
+  display:none;
+  margin:0;
+  /*width:auto;*/
+  overflow:auto;
+  overflow-x:hidden !important;
+  background-color:#ffffff;
+  min-width:150px;
+  margin-top: -1px;
+  
+}
+.dd .ddChild .opta a, .dd .ddChild .opta a:visited {padding-left:10px}
+.dd .ddChild a {
+  display:block;
+  padding:2px 0 2px 24px;
+  text-decoration:none;
+  color:#333;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor:pointer;
+  background: transparent;
+}
+.dd .ddChild a:hover {
+  text-decoration: none !important;
+  color: black;
+  background-color: #f3f3f3;
+}
+.dd .ddChild a img {
+  border:0;
+  padding:0 2px 0 0;
+  vertical-align:middle;
+}
+.dd .ddChild a.selected {
+  background: transparent url(../images/icons/dd-selected.png) 4px 2px no-repeat;
+  color: black;
+  
+}
+.dd .ddChild a.selected:hover {
+  background: #f3f3f3 url(../images/icons/dd-selected.png) 4px 2px no-repeat;
+}
+.hidden {display:none;}
+
+.dd .borderTop{border-top:1px solid #555 !important;}
+.dd .noBorderTop{
+/*border-top:none 0  !important*/
+}
+

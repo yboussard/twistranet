@@ -1,0 +1,44 @@
+/* resource widget helper */
+
+.resource-widget {
+
+}
+
+.mediaresource-help {
+    font-size: 13px;
+    color: #686868;
+    margin-bottom: 5px;
+}
+
+#resources-renderer,
+#resources-uploader {
+    margin-bottom: 10px;
+}
+
+.noleftcol .resource-widget .tnGrid {
+    border-spacing: 5px;
+}
+
+.fieldWrapper .tnGridItem label {
+    width: 100% !important;
+    line-height: 12px !important;
+}
+
+
+.resourcePane {
+    display: none;
+}
+
+#resourcepane-main {
+    display: block;
+}
+
+#resourcepane-main .tnGridItem:hover {
+    border-color: #F7F7F7 !important;
+}
+
+.resource-back-button {
+    cursor: pointer;
+    text-align: right;
+    color: #AD1C20;
+}

@@ -1,0 +1,18 @@
+[
+{
+  'title' : 'Test Status update',
+  'type' : 'Status',  
+  'description' : '',
+  'link': 'http://localhost:8000/community/test_communaute/',
+  'thumb':'http://localhost:8000/community/test_communaute/cache/9a/db/9adbcfe255991525318da79d2bd90ee4.png'
+},
+
+{
+  'title' : 'Test Document',
+  'type' : 'Document',  
+  'description' : 'Lorem ipsum dolor sit amet ...',
+  'link': 'http://localhost:8000/account/A/',
+  'thumb':'http://localhost:8000/search/cache/83/79/8379572c3414576774276292da1d8d0c.png'
+}
+
+ ]                                           
