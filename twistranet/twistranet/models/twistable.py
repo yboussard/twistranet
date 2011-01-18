@@ -358,7 +358,8 @@ class Twistable(_AbstractTwistable):
         else:
             # XXX TODO: Check that nobody sets /unsets the owner or the publisher of an object
             # raise PermissionDenied("You're not allowed to set the content owner by yourself.")
-            pass
+            if not self.can_edit:
+                raise PermissionDenied("You're not allowed to edit this content.")
             
         # Set created_by and modified_by fields
         if self.id is None:
