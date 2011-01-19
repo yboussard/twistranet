@@ -189,6 +189,11 @@ class TwistableManager(models.Manager):
     def __booster__(self):
         return super(TwistableManager, self).get_query_set()
 
+    @property
+    def can_create(self,):
+        auth = self._getAuthenticatedAccount()
+        return not auth.is_anonymous
+
 
 class _AbstractTwistable(models.Model):
     """

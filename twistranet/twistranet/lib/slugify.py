@@ -15,6 +15,7 @@ RESERVED_KEYWORDS = [
     "delete",
     "download",
     "id",
+    "invitations",
     "join",
     "media",
     "media_resource",

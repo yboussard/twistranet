@@ -8,6 +8,7 @@ from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from django.db.models import Q
 
 from twistranet.twistranet.forms import community_forms
@@ -123,6 +124,34 @@ class CommunityListingView(BaseView):
         super(CommunityListingView, self).prepare_view()
         self.communities = Community.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
+class CommunityInvitations(CommunityListingView, UserAccountView):
+    """
+    Pending invitations to communities
+    """
+    template = CommunityListingView.template
+    template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
+    title = "Community invitations"
+    name = "community_invitations"
+    category = ACCOUNT_ACTIONS
+    
+    def as_action(self,):
+        """Only return the action if there's pending nwk requests
+        """
+        auth = UserAccount.objects._getAuthenticatedAccount()
+        req = auth.get_pending_network_requests(returned_model = Community)
+        if not req:
+            return
+        action = BaseView.as_action(self)
+        action.label = mark_safe(_('Community invitations <span class="badge">(%(number)d)</span>') % {"number": len(req)})
+        return action
+            
+    def prepare_view(self, *args, **kw):
+        auth = Account.objects._getAuthenticatedAccount()
+        super(CommunityInvitations, self).prepare_view()
+        UserAccountView.prepare_view(self, auth.id)
+        self.communities = self.account.get_pending_network_requests(returned_model = Community)
+    
+
 class MyCommunitiesView(BaseView):
     """
     A list of n communities I manage
@@ -219,6 +248,8 @@ class CommunityCreate(CommunityEdit):
     name = "community_create"
     
     def as_action(self):
+        if not Community.objects.can_create:
+            return None
         return BaseView.as_action(self)
     
 class CommunityInvite(CommunityView):
