@@ -228,10 +228,10 @@ class ConfigurationEdit(CommunityEdit):
         """
         Check that I'm an admin
         """
-        glob = GlobalCommunity.get()
-        if not glob.can_edit:
-            return None
-        return BaseView.as_action(self,)
+        if GlobalCommunity.objects.exists():
+            glob = GlobalCommunity.get()
+            if glob.can_edit:
+                return BaseView.as_action(self,)
         
     def prepare_view(self):
         glob_id = GlobalCommunity.get().id

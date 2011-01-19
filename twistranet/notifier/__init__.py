@@ -22,7 +22,7 @@ join_community.connect(
     handlers.NotificationHandler(
         owner_arg = "client",
         publisher_arg = "community",
-        message = _("""%(client)s joined %(community)s."""),
+        message = _(u"""%(client)s joined %(community)s."""),
     ),
     weak = False,
 )
@@ -32,7 +32,7 @@ invite_community.connect(
         owner_arg = "target",
         publisher_arg = "target",
         permissions = "private",
-        message = _("""You are invited in %(community)s community"""),
+        message = _(u"""You are invited in %(community)s community"""),
     ),
     weak = False,
 )
@@ -44,7 +44,7 @@ request_add_to_network.connect(
     handlers.NotificationHandler(
         owner_arg = "target",
         publisher_arg = "target",
-        message = _("""%(client)s wants to add you to his/her network."""),
+        message = _(u"""%(client)s wants to add you to his/her network."""),
         permissions = "private",
     ),
     weak = False,
@@ -63,7 +63,7 @@ accept_in_network.connect(
     handlers.NotificationHandler(
         owner_arg = "client",
         publisher_arg = "target",
-        message = _("""%(client)s is now connected to %(target)s."""),
+        message = _(u"""%(client)s is now connected to %(target)s."""),
     ),
     weak = False,
 )

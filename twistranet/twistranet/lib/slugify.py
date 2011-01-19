@@ -6,7 +6,6 @@ from django.core.exceptions import ObjectDoesNotExist
 # List of words you're not allowed to use as a slug
 RESERVED_KEYWORDS = [
     "account",
-    "admin",
     "add_to_network",
     "cache",
     "configuration",

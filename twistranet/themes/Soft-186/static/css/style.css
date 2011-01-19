@@ -1,12 +1,5 @@
 /*
-Theme Name: dfBlog
-Theme URI: http://www.danielfajardo.com/dfblog/
-Description: Clean and clear, fixed width, two columns, right sidebar, standards compliant. Compatible with WordPress 2.8. Valid CSS & HTML. Style combinations available configurable from the Theme Options Admin Page. Supported languages: English, Spanish, Italian, Czech, Dutch, German, Norwegian, Russian, French, Chinese, Slovenian, Hungarian, Polish, Swedish and Danish. Please contact us, if you like to contribute your own language. Designed by danielfajardo web. See http://www.danielfajardo.com/dfblog/ for more info.
-Version: 1.1.5
-Author: danielfajardo web
-Author URI: http://www.danielfajardo.com/
-Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments, custom-colors, light, white, red, blue, pink, silver
-
+    Inpired from http://www.danielfajardo.com/
 	The CSS, XHTML and design is released under GPL:
 	http://www.opensource.org/licenses/gpl-license.php
 */
@@ -28,9 +21,10 @@ Tags: fixed-width, two-columns, right-sidebar, theme-options, threaded-comments,
 ***************************************************************************** */
 
 #head a.logotext {
-    background: url(../images/logo-tn.png) 11px 5px no-repeat;
+    background: url(../images/logo-tn.png) 0px 5px no-repeat;
     font-size: 14px;
-	padding: 5px 0 5px 70px;
+    margin-left: 0;
+	padding: 5px 0 5px 65px;
 	display: block;
 	height: 45px;
 	cursor: pointer;
@@ -664,8 +658,7 @@ li.actions-box {
   border-top: 1px solid #CCC;
   padding: 5px 8px 3px 25px;
   font-size: 11px;
-  margin-top: 10px;
-  margin-bottom: 0px;
+  margin: 0;
 }
 
 .current-selected-box {
@@ -871,7 +864,7 @@ a.action:hover {
 .ls-result-title {
     margin-right: 5px;
     font-weight: bold;
-    color: #AD1C20;
+    color: #e00023;
 } 
 
 .ls-result p.ls-result-description {
@@ -961,9 +954,9 @@ ul.network-actions li.action {
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.9);
-	-moz-box-shadow: 0 3px 5px rgba(0,0,0,0.9);
-	box-shadow: 0 3px 5px rgba(0,0,0,0.9);
+	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+	box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
 /* A Firefoxnak megint baja van a padding-gel */

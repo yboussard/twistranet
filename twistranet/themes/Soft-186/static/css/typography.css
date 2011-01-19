@@ -118,6 +118,12 @@ input[type="submit"] {
   cursor:pointer;
   float: right; 
   margin-left: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+	box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
 button,
@@ -132,7 +138,7 @@ input[type="submit"] {
   background-color: #0093E0;
   color: #fff;
   font-weight: bold;
-  border: solid 1px #ccc;
+  border: solid 1px #165169;
 }
 
 input[type="submit"]:active,
@@ -155,10 +161,10 @@ textarea {
 ***************************************************************************** */
 
 a {	text-decoration: none; }
-	a:link    { color: #ad1c20; }     
-	a:visited { color: #ad1c20; }
-	a:hover   { color: #ad1c20; }
-	a:active  { color: #ad1c20; }
+	a:link    { color: #e00023; }     
+	a:visited { color: #e00023; }
+	a:hover   { color: #e00023; }
+	a:active  { color: #e00023; }
 
 a img {	border: none;	}
 

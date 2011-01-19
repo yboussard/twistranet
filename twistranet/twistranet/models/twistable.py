@@ -304,7 +304,7 @@ class Twistable(_AbstractTwistable):
             'label': self.title_or_description,
             'url': self.get_absolute_url(),
         }
-        return """<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
+        return u"""<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
         
     @property
     def forced_picture(self,):
@@ -428,7 +428,6 @@ class Twistable(_AbstractTwistable):
 
         # Send TN's post-save signal
         twistable_post_save.send(sender = self.__class__, instance = self, created = created)
-        # XXX TODO: Check responses against exceptions
         return ret
 
     def _update_access_network(self, ):

@@ -75,22 +75,45 @@ ul.sf-menu li li li.sfHover ul {
 	}
 	#mainmenu ul li {
 		display: inline;
+		margin-right: 4px;
 		}
 		#mainmenu ul li a {
 			font-weight: bold;
 			padding: 8px 20px;
 			color: white;
 		}
-    #mainmenu ul li a:link    { color: white; }  
-    #mainmenu ul li a:visited { color: white; }	
+    #mainmenu ul li a:link,
+    #mainmenu ul li a:visited {
+    	-webkit-box-shadow: inset 0 3px 3px rgba(0,0,0,0.3);
+    	-moz-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    	box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+        background-color: rgba(0, 0, 0, 0.3);
+        -webkit-border-radius: 5px 5px 0 0;
+        -moz-border-radius: 5px 5px 0 0;
+        border-radius: 5px 5px 0 0;
+        color: white;
+    }
     #mainmenu ul li.selected > a,
     #mainmenu ul li.sfHover > a,
-    #mainmenu ul li a:active   { 
-      background-color: #e00023;
-      color: white;
+    #mainmenu ul li a:active   {
+    	-webkit-box-shadow: inset 0 3px 3px rgba(0,0,0,0.3);
+    	-moz-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    	box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+        background-color: #e00023;
+        -webkit-border-radius: 5px 5px 0 0;
+        -moz-border-radius: 5px 5px 0 0;
+        border-radius: 5px 5px 0 0;
+        color: white;
       }	
     #mainmenu ul li a:hover {
-  		background-color: #db8689;
+    	-webkit-box-shadow: inset 0 3px 3px rgba(0,0,0,0.3);
+    	-moz-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    	box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+        background-color: #e00023;
+        -webkit-border-radius: 5px 5px 0 0;
+        -moz-border-radius: 5px 5px 0 0;
+        border-radius: 5px 5px 0 0;
+        color: white;
       }
 
 	#mainmenu ul ul {

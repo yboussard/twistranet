@@ -11,8 +11,8 @@ FIXTURES = [
     Fixture(
         GlobalCommunity,
         slug = "all_twistranet",
-        title = "All TwistraNet Members",
-        description = "This community contains all TwistraNet members. It's mainly used for critical information.",
+        title = "All Twistranauts",
+        description = "You can find all twistranauts in here. This community is a good place to start looking for people or for critical information about twistranet.",
         permissions = "intranet",
     ),
     Fixture(

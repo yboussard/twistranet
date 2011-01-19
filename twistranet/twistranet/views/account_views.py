@@ -78,7 +78,7 @@ class HomepageView(UserAccountView):
     name = "twistranet_home"
     
     def get_title(self,):
-        return _("Home")  
+        return _("Timeline")  
         
     def get_recent_content_list(self):
         """
