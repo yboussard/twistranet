@@ -941,14 +941,8 @@ ul.network-actions li.action {
 }
 
 /* Badge label */
+/* Taken from: http://dribbble.com/shots/23701-CSS-Only-iPhone-Badges */
 
-/*.badge {
-    font-weight: bold;
-    background-color: #e00023;
-    color: #fff;
-    padding: 0 2px 2px 3px;
-}
-*/
 .badge {
 	overflow:hidden;
 	float: right;
