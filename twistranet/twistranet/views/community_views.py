@@ -142,7 +142,7 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
         if not req:
             return
         action = BaseView.as_action(self)
-        action.label = mark_safe(_('Community invitations <span class="badge">(%(number)d)</span>') % {"number": len(req)})
+        action.label = mark_safe(_('<span class="badge">%(number)d</span> Community invitations') % {"number": len(req)})
         return action
             
     def prepare_view(self, *args, **kw):
