@@ -43,7 +43,7 @@ FIXTURES = [
         UserAccount,
         slug = "C",
         title = "Chris Williams",
-		description = "I'm a private kind of guy. Don't be surprised if I don't say too much about myself!",
+		description = "I'm a private kind of person. Don't be surprised if I don't say too much about myself!",
         permissions = "private",
         user = User.objects.get(id = 4),
         picture = Resource.objects.filter(slug = "default_c_picture"),
