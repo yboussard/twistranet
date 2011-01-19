@@ -578,12 +578,16 @@ ul.tn-box-container,
 li.tn-box,
 ul.tn-box-container ul,
 ul.tn-box-container ul li {
-  list-style: none;   
-  list-style-image: none;
-  margin: 0;
-  padding: 0;
-} 
+    list-style: none;   
+    list-style-image: none;
+    margin: 0;
+    padding: 0;
+}
 
+/*ul.tn-box-container {
+    border-right: solid 1px #ccc;
+}
+*/
 .tn-box {
   clear: both;
 }
@@ -603,7 +607,7 @@ ul.tn-box-container ul li {
   background-color:#f9f9f9;
   color: #686868;
   border-top: 1px solid #CCC;
-  padding:2px 5px;
+  padding:2px 5px 2px 25px;
   font-size: 11px;
   margin-top: 10px;
   margin-bottom: 0px;
@@ -631,6 +635,9 @@ ul.tn-box-container ul li {
   display: block;
   float: right;
 }
+.right-inbox a {
+    color: #0093E0;
+}
 .left-inbox {
   display: block;
   float: left;
@@ -655,7 +662,7 @@ li.actions-box {
   background-color:#f9f9f9;
   color: #686868;
   border-top: 1px solid #CCC;
-  padding: 5px 8px 3px;
+  padding: 5px 8px 3px 25px;
   font-size: 11px;
   margin-top: 10px;
   margin-bottom: 0px;
@@ -675,11 +682,13 @@ li.actions-box {
 /* particular boxes */
 
 .profile-box {
-  padding: 0 0 0 10px !important;
-}
+    padding: 0 0 0 10px !important;
+/*    border-top: solid 1px #ccc;
+    background-color: #f9f9f9;
+*/}
 .profile-box h2 {
-  padding-left: 57px;  
-  line-height: 1.2em;  
+    padding-left: 57px;  
+    line-height: 1.2em;  
 }
 
 .profile-box .under-name {
@@ -702,12 +711,12 @@ li.actions-box {
 /* particular links */  
 
 a.action {
-  color: #686868;
+  color: #0093E0;
   display: block;
   padding: 3px 10px;
 }
 a.action:hover {
-  background-color: #686868;
+  background-color: #0093E0;
   color: white;
 } 
 
@@ -723,6 +732,7 @@ a.action:hover {
   text-decoration: none !important;
   cursor: pointer;
   margin: 15px 0 10px 10px;
+  font-weight: bold;
 }
 
 /* particular text classes */
@@ -886,19 +896,17 @@ a.action:hover {
 
 a.tn-button {
    display: block;
-   border:  1px solid #999999;
+   border:  1px solid #ccc;
    padding: 2px 15px;
    cursor: pointer;
    text-decoration: none !important;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
-   border-radius: 5px;
    color: white;
    width: auto;
 }
 
 a.tn-button-default {     
-   background-color: #278fb8 !important;     
+   background-color: #0093e0 !important;
+   font-weight: bold;
    color: white !important;
 }
 a.tn-button-default:active {     
@@ -907,7 +915,7 @@ a.tn-button-default:active {
 
 a.tn-button-discreet {     
    background-color: #efefef !important;     
-   color: #8c8c8c !important;
+   color: #686868 !important;
 }  
 a.tn-button-discreet:active {     
    background-color: #686868 !important;
@@ -931,3 +939,36 @@ ul.network-actions li.action {
     float: right;
     padding: 5px 10px;
 }
+
+/* Badge label */
+
+.badge {
+    font-weight: bold;
+    background-color: #e00023;
+    color: #fff;
+    padding: 0 2px 2px 3px;
+}
+
+/* Action category icons */
+
+.global-actions {
+    background: url(../images/icons/global-actions.png) 5px 5px no-repeat;
+}
+
+.account-actions {
+    background: url(../images/icons/account-actions.png) 5px 8px no-repeat;
+}
+
+.content-creation-actions {
+    background: url(../images/icons/content-creation-actions.png) 5px 5px no-repeat;
+}
+
+.community-actions {
+    background: url(../images/icons/community-actions.png) 5px 5px no-repeat;
+}
+
+.network-actions {
+    background: url(../images/icons/network-actions.png) 5px 5px no-repeat;
+}
+
+

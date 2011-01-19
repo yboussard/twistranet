@@ -404,10 +404,7 @@ class BaseWallView(BaseIndividualView):
     template_variables = BaseIndividualView.template_variables + [
         "content_forms",
         "latest_content_list",
-        "too_few_content",
     ]
-
-    too_few_content = False
 
     select_related_summary_fields = (
         "owner",
@@ -485,8 +482,6 @@ class BaseWallView(BaseIndividualView):
         super(BaseWallView, self).prepare_view(value)
         # if self.object:
         self.latest_content_list = self.get_recent_content_list()
-        if len(self.latest_content_list) < (settings.TWISTRANET_CONTENT_PER_PAGE / 2):
-            self.too_few_content = True
         self.content_forms = self.get_inline_forms(self.object)
         
         

@@ -92,7 +92,7 @@ body {
 			border-style: none solid;
 			padding: 5px 10px 2px;
 			height: 13px;
-			background-color: white;
+            background-color: white;
 			color: #999;
 			overflow: hidden;
 		  }
@@ -165,7 +165,6 @@ body {
           text-align: left;
         }
 			#content {
-			    border-left: solid 1px #ccc;
 				width: 551px;
 				float: left;
 				padding: 0 20px;

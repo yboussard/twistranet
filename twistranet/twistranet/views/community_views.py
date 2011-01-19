@@ -65,6 +65,16 @@ class CommunityView(UserAccountView):
         self.n_communities = []
         self.n_network_members = []
 
+        # Check if there is content, display a pretty message if there's not
+        if not len(self.latest_content_list):
+            msg = _("""
+        <p>There is not much content on this community. But it's up to YOU to create some!</p>
+        <p>Feel free to add content with the simple form on this page.</p>
+        <p>For example, you can express:<br />
+        - What are you working on right now?<br />
+        - What would you like to find on this community page?</p>""")
+            messages.info(self.request, msg)
+
 
 #                                                                               #
 #                               LISTING VIEWS                                   #
@@ -159,18 +169,7 @@ class CommunityEdit(CommunityView):
     name = "community_edit"
     category = LOCAL_ACTIONS
     title = None
-    
-    def get_form_class(self,):
-        """
-        You can use self.request and self.object to find your form here
-        if you need to determinate it with an acute precision.
-        """
-        if isinstance(self.object, GlobalCommunity):
-            form_class = community_forms.GlobalCommunityForm
-        else:
-            form_class = community_forms.CommunityForm
-        
-        return form_class
+    form_class = community_forms.CommunityForm
     
     def as_action(self, ):
         if not isinstance(getattr(self, "object", None), self.model_lookup):
@@ -188,6 +187,26 @@ class CommunityEdit(CommunityView):
         if not self.object:
             return _("Create a community")
         return _("Edit community")
+        
+        
+class ConfigurationEdit(CommunityEdit):
+    name = "twistranet_config"
+    form_class = community_forms.AdministrationForm
+    title = "Configuration"
+    category = GLOBAL_ACTIONS
+    
+    def as_action(self,):
+        """
+        Check that I'm an admin
+        """
+        glob = GlobalCommunity.get()
+        if not glob.can_edit:
+            return None
+        return BaseView.as_action(self,)
+        
+    def prepare_view(self):
+        glob_id = GlobalCommunity.get().id
+        super(ConfigurationEdit, self).prepare_view(glob_id)
 
 
 class CommunityCreate(CommunityEdit):

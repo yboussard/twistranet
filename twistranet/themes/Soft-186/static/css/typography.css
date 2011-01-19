@@ -155,10 +155,10 @@ textarea {
 ***************************************************************************** */
 
 a {	text-decoration: none; }
-	a:link    { color: #d00; }     
-	a:visited { color: #690010; }
+	a:link    { color: #ad1c20; }     
+	a:visited { color: #ad1c20; }
 	a:hover   { color: #ad1c20; }
-	a:active  { color: #d00; }
+	a:active  { color: #ad1c20; }
 
 a img {	border: none;	}
 

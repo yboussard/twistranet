@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.safestring import mark_safe
 from django.conf import settings
 
 from twistranet.twistranet.models import *
@@ -150,7 +151,7 @@ class AccountNetworkView(AccountListingView, UserAccountView):
         return _("%(name)s's network" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
-        super(AccountNetworkView, self).prepare_view(*args, **kw)
+        super(AccountNetworkView, self).prepare_view()
         UserAccountView.prepare_view(self, *args, **kw)
         self.accounts = self.account.network   
 
@@ -211,7 +212,7 @@ class PendingNetworkView(AccountListingView, UserAccountView):
         if not req:
             return
         action = BaseView.as_action(self)
-        action.label = _("Pending network requests (%(number)d)") % {"number": len(req)}
+        action.label = mark_safe(_('Pending network requests <span class="badge">(%(number)d)</span>') % {"number": len(req)})
         return action
             
     def prepare_view(self, *args, **kw):

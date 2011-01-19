@@ -9,6 +9,7 @@ RESERVED_KEYWORDS = [
     "admin",
     "add_to_network",
     "cache",
+    "configuration",
     "content",
     "create",
     "delete",

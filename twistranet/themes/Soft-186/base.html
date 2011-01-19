@@ -36,7 +36,7 @@
                             <ul>
                                 {% if user.is_authenticated %}
                                 <li>
-                                    <a href="/">{% blocktrans %}{{ user }}{% endblocktrans %}</a>
+                                    <a href="/">{{ current_account.title }}</a>
                                 </li>
                                 {% endif %}
                                 {% block useractions %}
