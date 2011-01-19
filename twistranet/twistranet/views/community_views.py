@@ -251,6 +251,34 @@ class CommunityCreate(CommunityEdit):
         if not Community.objects.can_create:
             return None
         return BaseView.as_action(self)
+
+
+class CommunityManageMembers(CommunityView):
+    """
+    Manage ppl in a community
+    """
+    title = "Manage members"
+    template = "community/manage.html"
+    name = "manage_members"
+    template_variables = CommunityView.template_variables + [
+        "selectable",
+    ]
+
+    def prepare_view(self, value):
+        super(CommunityManageMembers, self).prepare_view(value)
+        
+        # Fetch members except myself
+        auth = Twistable.objects.getCurrentAccount(self.request)
+        self.selectable = self.community.members.exclude(id = auth.id)
+            
+
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if not self.community.is_manager:
+            return None
+        return super(CommunityManageMembers, self).as_action()
+
     
 class CommunityInvite(CommunityView):
     """
@@ -339,6 +367,7 @@ class CommunityInvite(CommunityView):
             return None
         return super(CommunityInvite, self).as_action()
     
+
     
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
