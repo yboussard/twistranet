@@ -10,9 +10,6 @@ jQuery(
         if (target_selector.length) {
             theform.bind('submit', function(){
                  selectedfield = jQuery('.tnGrid input:checked', reswidget);
-                 if (selectedfield.length) {
-                     jQuery('#' + target_selector.val()).val(selectedfield.val());
-                 }
                  target_selector.remove();
                  jQuery('input .tnGrid', reswidget).remove();
             })
@@ -46,27 +43,14 @@ jQuery(
                     if (checkbox.length) {
                         if (checkbox.is(':checked')) {
                             jQuery(this).addClass('itemSelected');
+                            jQuery('#' + target_selector.val()).val(checkbox.val());
                         }
                         else {
-                            jQuery(this).removeClass('itemSelected');    
+                            jQuery(this).removeClass('itemSelected');
+                            jQuery('#' + target_selector.val()).val();
                         }
                     }
                 });
-            }
-            // redefine the preview on upload method (we don't want to select different sizes here)
-            TwistranetQuickUpload.onAllUploadsComplete = function(){
-                resultContainer = jQuery('#tnuploadresult');
-                result= '\
-            <a class=".image-block upload-preview"\
-               href="'+ lastUploadUrl +'"\
-               title="' + lastUploadLegend + '">\
-               <img src="' + lastUploadPreviewUrl + '"\
-                    alt="' + lastUploadLegend + '" />\
-            </a>\
-            <label>' + lastUploadLegend + '</label>\
-            ';
-                resultContainer.html(result);
-                resultContainer.show();
             }
         }
     }

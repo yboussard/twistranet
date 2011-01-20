@@ -7,7 +7,8 @@
 var TwistranetQuickUpload = {};
 var lastUploadUrl = '';
 var lastUploadPreviewUrl = '';  
-var lastUploadLegend = '';
+var lastUploadLegend = '';   
+var lastUploadValue = '';
     
 TwistranetQuickUpload.addUploadFields = function(uploader, domelement, file, id, fillTitles) {
     if (fillTitles)  {
@@ -56,8 +57,26 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
 }    
 TwistranetQuickUpload.onAllUploadsComplete = function(){
     resultContainer = jQuery('#tnuploadresult');
-    result= '\
-<a class=".image-block upload-preview"\
+    newResultContainer = jQuery('#renderer-new');
+    if (newResultContainer.length) {           
+        currentResultContainer = jQuery('#renderer-current');
+        result= '\
+<a class="image-block image-block-mini"\
+   href="'+ lastUploadUrl +'"\
+   title="' + lastUploadLegend + '">\
+   <img src="' + lastUploadPreviewUrl + '"\
+        alt="' + lastUploadLegend + '" />\
+</a>\
+';
+        jQuery('a', newResultContainer).remove();
+        newResultContainer.append(result);
+        newResultContainer.css('visibility', 'visible');
+        if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
+    }
+    
+    else if (resultContainer.length) {
+        result= '\
+<a class="image-block image-block-mini"\
    href="'+ lastUploadUrl +'"\
    title="' + lastUploadLegend + '">\
    <img src="' + lastUploadPreviewUrl + '"\
@@ -65,8 +84,14 @@ TwistranetQuickUpload.onAllUploadsComplete = function(){
 </a>\
 <label>' + lastUploadLegend + '</label>\
 ';
-    resultContainer.html(result);
-    resultContainer.show();
+        resultContainer.html(result);
+        resultContainer.show();
+    }
+    // fix selector value in a form
+    target_selector = jQuery('#selector_target');
+    if (target_selector.length) {
+        jQuery('#' + target_selector.val()).val(lastUploadValue);
+    }
 }
 TwistranetQuickUpload.clearQueue = function(uploader, domelement) {
     var handler = uploader._handler;
@@ -90,7 +115,8 @@ TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, file
             if (! newlist.length) {
                 lastUploadUrl = responseJSON.url;
                 lastUploadPreviewUrl = responseJSON.preview_url;  
-                lastUploadLegend = responseJSON.preview_legend;
+                lastUploadLegend = responseJSON.preview_legend; 
+                lastUploadValue = responseJSON.value;
                 window.setTimeout( TwistranetQuickUpload.onAllUploadsComplete, 5);
             }       
         }, 50);

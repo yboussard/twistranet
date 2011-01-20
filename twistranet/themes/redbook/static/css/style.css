@@ -398,6 +398,12 @@ ul.children li {
   padding: 2px;
 }
 
+.image-block-mini,
+.image-block-mini img {
+  width: 100px;
+  height: 100px;
+} 
+
 /* blocks images used in status */
 .image-block-thumb img {
   max-width: 120px;

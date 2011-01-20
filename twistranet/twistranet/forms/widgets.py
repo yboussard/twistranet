@@ -26,12 +26,14 @@ class ResourceWidget(forms.MultiWidget):
 
     def __init__(self, initial = None, **kwargs):
         widgets = []
+        self.display_renderer = kwargs.pop("display_renderer", True)
         self.allow_select = kwargs.pop("allow_select", True)
         widgets.append(forms.HiddenInput())
         self.allow_upload = kwargs.pop("allow_upload", True)
-        if self.allow_upload:
+        if self.allow_upload  and not self.allow_select :
             widgets.append(forms.FileInput())
         else:
+            # question : is it important ?
             widgets.append(forms.HiddenInput())
         super(ResourceWidget, self).__init__(widgets)
 
@@ -40,6 +42,7 @@ class ResourceWidget(forms.MultiWidget):
         Handle choices generation for the reference widget.
         """
         return (value, None)
+    
 
     def render(self, name, value, attrs=None):
         """
@@ -68,27 +71,38 @@ class ResourceWidget(forms.MultiWidget):
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         output.append(u"""<div class="resource-widget">""")
-
-        # Render the current resource widget
-        if value[0]:
+        # Render the current resource widget and the place for preview
+        if self.display_renderer or value[0]:
             output.append( """<div id="resources-renderer">""" )
-            try:
-                img = Resource.objects.get(id = value[0])
-            except Resource.DoesNotExist:
-                raise       # XXX TODO: Handle the case of a deleted resource
-            thumb = default.backend.get_thumbnail( img.object.image, u'100x100' )
-            output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
-            param_dict = {
-                "thumbnail_src":    thumb.url,
-                "value":            img.id,
-            }
-            output.append(u"""<img src="%(thumbnail_src)s" class="resource-image"
-             width="100" height="100" />
-             """ % param_dict)
-
+            if value[0]:
+                output.append("""<div id="renderer-current" class="renderer-preview">""")
+                try:
+                    img = Resource.objects.get(id = value[0])
+                except Resource.DoesNotExist:
+                    raise       # XXX TODO: Handle the case of a deleted resource
+                thumb = default.backend.get_thumbnail( img.object.image, u'100x100' )
+                output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
+                param_dict = {
+                    "thumbnail_url":    thumb.url,
+                    "value":            img.id,
+                    "img_url":          img.get_absolute_url(),
+                }
+                output.append(u"""
+                  <a class="image-block image-block-mini"
+                     href="%(img_url)s"
+                      <img src="%(thumbnail_url)s" 
+                           id="resource-current" />
+                   </a>
+                 """ % param_dict)
+    
+                output.append( """</div>""" ) # close renderer-current div
+                
+            output.append("""<div id="renderer-new" class="renderer-preview">""")
+            output.append("""<div class="mediaresource-help">""" + _(u"New:") + """</div></div>""")
+            
             output.append( """</div>""" ) # close resources-renderer div
-
-        # Render the File widget and the hidden resource ForeignKey
+        
+        # Render the classic File widget and the hidden resource ForeignKey
         if self.allow_upload and not self.allow_select :
             output.append( """<div id="resources-uploader">""" )
             output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
@@ -104,6 +118,14 @@ class ResourceWidget(forms.MultiWidget):
 
         # Display resources from all selectable accounts.
         if self.allow_select:
+            for i, widget in enumerate(self.widgets):
+                try:
+                    widget_value = value[i]
+                except IndexError:
+                    widget_value = None
+                if id_:
+                    final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
+                output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             account = Twistable.objects._getAuthenticatedAccount()
             selectable_accounts = Resource.objects.selectable_accounts(account)
             

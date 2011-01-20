@@ -125,15 +125,17 @@
 
 #tnuploadresult {
     float: right;
-    width: 100px;
+    width: 39%;
     display: none;
-    margin-left: 10px;
+    margin-left: 1%;  
+}
+
+#tnuploadresult .image-block {
+  margin-right: 10px;
 }
 
 #tnuploadresult label {
-    font-weight: lighter;
     padding: 3px 0;
-    text-align: center;
 }
 /* IE7 fixes */
 

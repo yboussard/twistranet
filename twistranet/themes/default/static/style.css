@@ -405,6 +405,13 @@ ul.children li {
 .image-block-tile img {
   width: 50px;
   height: 50px;
+}   
+
+
+.image-block-mini,
+.image-block-mini img {
+  width: 50px;
+  height: 50px;
 } 
 
 .image-block-icon,

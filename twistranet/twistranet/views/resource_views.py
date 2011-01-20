@@ -320,6 +320,7 @@ UPLOAD_JS = """
 
 
 # This view is rendering html and is called in ajax
+# TODO : call it with a simple include
 @require_access
 def resource_quickupload(request):
     qu_settings = dict(
@@ -388,7 +389,7 @@ def resource_quickupload_file(request):
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
         if not title :
             # try to split filenames when there's no title to avoid potential css surprises
-            title = file_name.split('.')[0].replace('_',' ').replace('-',' ')           
+            title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
         try :
             new_file = Resource(resource_file=file_data, title = title )
             new_file.save() 
@@ -398,7 +399,11 @@ def resource_quickupload_file(request):
                 preview_url = thumb.url
             except :
                 preview_url = ''
-            msg = {u'success': True, 'url' : new_file.get_absolute_url(), 'preview_url' : preview_url, 'preview_legend' : title}
+            msg = {'success': True,
+                   'value': new_file.id,
+                   'url' : new_file.get_absolute_url(), 
+                   'preview_url' : preview_url, 
+                   'preview_legend' : title, }
         except:            
             msg = {u'error': u'serverError'}
     else:

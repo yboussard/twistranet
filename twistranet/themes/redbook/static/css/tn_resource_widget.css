@@ -44,6 +44,26 @@
     color: #AD1C20;
 }
 
+.renderer-preview {
+    display: table-cell;
+    min-width: 150px;
+}
+
+#renderer-new {
+    visibility: hidden;
+}
+
+*html .renderer-preview {
+    display: block;
+    float: left;
+    width: 150px;
+    overflow: visible;
+}
+*+html .renderer-preview {
+    display: block;
+    float: left;
+}
+
 .tnQuickUpload {
     height: 65px;
     overflow: visible;
