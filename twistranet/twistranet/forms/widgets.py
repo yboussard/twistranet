@@ -9,63 +9,10 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from sorl.thumbnail import default
 from django.template import loader, Context
-from django.conf import settings
 
 from twistranet.twistranet.lib.log import log
 
 N_DISPLAYED_ITEMS = 30         # Number of images to display in the inline field
-
-QUICK_UPLOAD_JS = """       
-    var fillTitles = %(ul_fill_titles)s;
-    var auto = %(ul_auto_upload)s;
-    addUploadFields_%(ul_id)s = function(file, id) {
-        var uploader = xhr_%(ul_id)s;
-        TwistranetQuickUpload.addUploadFields(uploader, uploader._element, file, id, fillTitles);
-    }
-    sendDataAndUpload_%(ul_id)s = function() {
-        var uploader = xhr_%(ul_id)s;
-        TwistranetQuickUpload.sendDataAndUpload(uploader, uploader._element, '%(typeupload)s');
-    }    
-    clearQueue_%(ul_id)s = function() {
-        var uploader = xhr_%(ul_id)s;
-        TwistranetQuickUpload.clearQueue(uploader, uploader._element);    
-    }    
-    onUploadComplete_%(ul_id)s = function(id, fileName, responseJSON) {       
-        var uploader = xhr_%(ul_id)s;
-        TwistranetQuickUpload.onUploadComplete(uploader, uploader._element, id, fileName, responseJSON);
-    }
-    createUploader_%(ul_id)s= function(){    
-        xhr_%(ul_id)s = new qq.FileUploader({
-            element: jQuery('#%(ul_id)s')[0],
-            action: '/resource_quickupload',
-            autoUpload: auto,
-            onAfterSelect: addUploadFields_%(ul_id)s,
-            onComplete: onUploadComplete_%(ul_id)s,
-            allowedExtensions: %(ul_file_extensions_list)s,
-            sizeLimit: %(ul_xhr_size_limit)s,
-            simUploadLimit: %(ul_sim_upload_limit)s,
-            template: '<div class="qq-uploader">' +
-                      '<div class="qq-upload-drop-area"><span>%(ul_draganddrop_text)s</span></div>' +
-                      '<div class="qq-upload-button">%(ul_button_text)s</div>' +
-                      '<ul class="qq-upload-list"></ul>' + 
-                      '</div>',
-            fileTemplate: '<li>' +
-                    '<a class="qq-upload-cancel" href="#">&nbsp;</a>' +
-                    '<div class="qq-upload-infos"><span class="qq-upload-file"></span>' +
-                    '<span class="qq-upload-spinner"></span>' +
-                    '<span class="qq-upload-failed-text">%(ul_msg_failed)s</span></div>' +
-                    '<div class="qq-upload-size"></div>' +
-                '</li>',                      
-            messages: {
-                serverError: "%(ul_error_server)s",
-                typeError: "%(ul_error_bad_ext)s {file}. %(ul_error_onlyallowed)s {extensions}.",
-                sizeError: "%(ul_error_file_large)s {file}, %(ul_error_maxsize_is)s {sizeLimit}.",
-                emptyError: "%(ul_error_empty_file)s {file}, %(ul_error_try_again_wo)s"
-            }            
-        });           
-    }
-    jQuery(document).ready(createUploader_%(ul_id)s); 
-"""
 
 
 class ResourceWidget(forms.MultiWidget):
@@ -73,9 +20,9 @@ class ResourceWidget(forms.MultiWidget):
 
     class Media:
         css = {
-            'all': ('/static/css/fileuploader.css', '/static/css/tn_resource_widget.css', ),
+            'all': ('/static/css/tn_resource_widget.css', ),
         }
-        js = ('/static/js/fileuploader.js', '/static/js/tn_resource_widget.js', )
+        js = ('/static/js/tn_resource_widget.js', )
 
     def __init__(self, initial = None, **kwargs):
         widgets = []
@@ -175,10 +122,13 @@ class ResourceWidget(forms.MultiWidget):
                 scope['images'] = []
                 scope['icons'] = []
                 images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
-                if len(images) >= N_DISPLAYED_ITEMS:
-                    raise NotImplementedError("Should implement image searching & so on")
+                # TODO  raise NotImplementedError("Should implement image searching, batching & so on")
                 for img in images :
-                    thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
+                    try :
+                        thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
+                    except :
+                        # file do not support thumbnails for any kind of reason
+                        continue
                     is_selected = img.id == int(value[0] or 0)
                     image = {
                             "url":              img.get_absolute_url(),
@@ -196,35 +146,7 @@ class ResourceWidget(forms.MultiWidget):
             c = Context({ 'name': name, 'scopes' : scopes, })     
             
             if self.allow_upload :
-                
-                qu_settings = dict(
-                    typeupload             = 'File',
-                    ul_id                  = 'tnuploader', # improve it to get multiple uploader in a same page, change it also in 'resource_quickupload.html'
-                    ul_file_extensions_list = '[]', #could be ['jpg,'png','gif']
-                    
-                    ul_fill_titles         = settings.QUICKUPLOAD_FILL_TITLES and 'true' or 'false',
-                    ul_auto_upload         = settings.QUICKUPLOAD_AUTO_UPLOAD and 'true' or 'false',
-                    ul_xhr_size_limit      = settings.QUICKUPLOAD_SIZE_LIMIT and str(settings.QUICKUPLOAD_SIZE_LIMIT*1024) or '0',
-                    ul_sim_upload_limit    = str(settings.QUICKUPLOAD_SIM_UPLOAD_LIMIT),
-                    ul_button_text         = _(u'Browse'),
-                    ul_draganddrop_text    = _(u'Drag and drop files to upload'),
-                    ul_msg_all_sucess      = _( u'All files uploaded with success.'),
-                    ul_msg_some_sucess     = _( u' files uploaded with success, '),
-                    ul_msg_some_errors     = _( u" uploads return an error."),
-                    ul_msg_failed          = _( u"Failed"),
-                    ul_error_try_again_wo  = _( u"please select files again without it."),
-                    ul_error_try_again     = _( u"please try again."),
-                    ul_error_empty_file    = _( u"This file is empty :"),
-                    ul_error_file_large    = _( u"This file is too large :"),
-                    ul_error_maxsize_is    = _( u"maximum file size is :"),
-                    ul_error_bad_ext       = _( u"This file has invalid extension :"),
-                    ul_error_onlyallowed   = _( u"Only allowed :"),
-                    ul_error_server        = _( u"Server error, please contact support and/or try again."),
-                )
-                qu_script = QUICK_UPLOAD_JS % qu_settings
-                uc = Context({ 'qu_script': qu_script, }) 
-                upload_template = loader.get_template('resource/resource_quickupload.html')
-                output.append (upload_template.render(uc))
+                output.append('<div class="tnQuickUpload"></div>')
             
             output.append (t.render(c))
 

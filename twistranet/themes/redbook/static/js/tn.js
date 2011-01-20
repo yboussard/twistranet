@@ -272,6 +272,24 @@ gridOnSelect = function(grid) {
     })
 }
 
+// TODO in future : remove cache: true
+// and improve ajax request with data 
+// for multiple uploaders in a same page 
+loadQuickUpload = function(obj) {
+    var uploadUrl = '/resource_quickupload/' ;
+    var tnUploader = jQuery(obj);
+    jQuery.ajax({
+        type: "GET",
+        url: uploadUrl,
+        dataType: 'html', 
+        contentType: 'text/html; charset=utf-8', 
+        cache: true,
+        data: '',
+        success: function(content){
+            tnUploader.html(content);
+        }
+    });
+}
 
 // main class
 var twistranet = {
@@ -287,6 +305,7 @@ var twistranet = {
         twistranet.prettyCombosLists(); 
         twistranet.tnGridActions();
         twistranet.formProtection();
+        twistranet.loadUploaders();
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -405,8 +424,13 @@ var twistranet = {
         }
     },
     tnGridActions: function(e) {
-     jQuery('.tnGrid').each(function(){
+        jQuery('.tnGrid').each(function(){
             gridOnSelect(this);
+        });
+    },
+    loadUploaders: function(e) {
+        jQuery('.tnQuickUpload').each(function(){
+            loadQuickUpload(this);
         });
     }
 }

@@ -1,7 +1,10 @@
 {% load i18n %}
 <div id="resources-quickupload" class="quick-uploader">
     <div class="mediaresource-help">{% blocktrans %}Select one or more files to upload:{% endblocktrans %}</div>
-    <!-- uploader comes here the css id is important -->
+    <!-- uploader comes here the css id (tnuploader) is important 
+         TODO : improve view to get different ids for multiple uploaders -->
+    <div id="tnuploadresult">
+    </div>
     <div id="tnuploader"
          class="main-uploader"></div>
     <input type="hidden"

@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.conf import settings
 
 def _get_site_name_or_baseline(return_baseline = False):
     """
@@ -116,3 +117,17 @@ def stringround(main, rest):
     # divide an int by a float... get a float
     value = main + rest/1024.0
     return str(round(value, 1))
+
+def _check_file_size(data):
+    """
+    check file size depending on max upload in settings
+    """
+    max_size = int(settings.QUICKUPLOAD_SIZE_LIMIT)
+    if not max_size :
+        return 1
+    data.seek(0, os.SEEK_END)
+    file_size = data.tell() / 1024
+    data.seek(0, os.SEEK_SET )
+    if file_size<=max_size:
+        return 1
+    return 0  

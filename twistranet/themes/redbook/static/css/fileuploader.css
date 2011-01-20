@@ -50,13 +50,17 @@
 .qq-upload-spinner {display:none; background: url("/++resource++quickupload_static/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
 .qq-upload-size,.qq-upload-cancel {font-size:11px;}
 
-.qq-upload-list .qq-upload-cancel {
+.qq-upload-list .qq-upload-cancel,
+.qq-upload-list .qq-upload-cancel:hover,
+.qq-upload-list .qq-upload-cancel:active {
    display: block;
    float: right;
    width: 16px;
-   height: 16px;
-   /* note : the '/++resource++quickupload_static' inside url is for Plone3 portal_css compliance */
-   background: transparent url("/++resource++quickupload_static/cancel.png") top left no-repeat;
+   height: 16px;    
+   background-image: url("../images/icons/icons-normal.png");
+   background-position: 0 -96px;
+   background-repeat: no-repeat;
+   text-decoration: none !important;
 }
 
 
@@ -119,6 +123,18 @@
     background: none !important;
 }
 
+#tnuploadresult {
+    float: right;
+    width: 100px;
+    display: none;
+    margin-left: 10px;
+}
+
+#tnuploadresult label {
+    font-weight: lighter;
+    padding: 3px 0;
+    text-align: center;
+}
 /* IE7 fixes */
 
 *+html .quick-uploader #label-upload {
