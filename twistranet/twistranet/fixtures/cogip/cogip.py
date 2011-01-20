@@ -16,6 +16,8 @@ from django.core.files import File as DjangoFile
 HERE_COGIP = os.path.abspath(os.path.dirname(__file__))
 
 def get_cogip_fixtures():
+    # Just to be sure, we log as system account
+    __account__ = SystemAccount.get()
     FIXTURES = []
 
     # Import the whole file, creating all needed fixtures, including Service as communities.
@@ -23,10 +25,6 @@ def get_cogip_fixtures():
     c = csv.DictReader(f, delimiter = ';', fieldnames = ['index', 'firstname', 'lastname', 'sex', 'service', 'function', 'email', 'picture_file'])
     services = []
     for useraccount in c:
-        if not useraccount['service'] in services:
-            # XXX TODO: Create services
-            services.append(useraccount['service'])
-    
         # Create the user if necessary (still have to do this by hand)
         username = slugify("%s%s" % (useraccount['firstname'][0], useraccount['lastname'], ))
         username = username.lower()
@@ -49,6 +47,21 @@ def get_cogip_fixtures():
             user = User.objects.get(username = username),
             force_update = True,
         ).apply()
+        
+        # Create a community matching user's service or make him join the service
+        service_slug = slugify(useraccount['service'])
+        if not service_slug in services:
+            services.append(service_slug)
+            Fixture(
+                Community,
+                slug = service_slug,
+                title = useraccount['service'],
+                permissions = "workgroup",
+                logged_account = username,
+                force_update = True,
+            ).apply()
+        else:
+            Community.objects.get(slug = service_slug).join(UserAccount.objects.get(slug = username))
 
         # Create / Replace the profile picture
         picture_slug = slugify("pict_%s" % useraccount['picture_file'])
