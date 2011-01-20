@@ -8,6 +8,7 @@ from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from django.db.models import Q
 
 from twistranet.twistranet.forms import community_forms
@@ -65,6 +66,16 @@ class CommunityView(UserAccountView):
         self.n_communities = []
         self.n_network_members = []
 
+        # Check if there is content, display a pretty message if there's not
+        if not len(self.latest_content_list):
+            msg = _("""
+        <p>There is not much content on this community. But it's up to YOU to create some!</p>
+        <p>Feel free to add content with the simple form on this page.</p>
+        <p>For example, you can express:<br />
+        - What are you working on right now?<br />
+        - What would you like to find on this community page?</p>""")
+            messages.info(self.request, msg)
+
 
 #                                                                               #
 #                               LISTING VIEWS                                   #
@@ -113,6 +124,34 @@ class CommunityListingView(BaseView):
         super(CommunityListingView, self).prepare_view()
         self.communities = Community.objects.get_query_set()[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
 
+class CommunityInvitations(CommunityListingView, UserAccountView):
+    """
+    Pending invitations to communities
+    """
+    template = CommunityListingView.template
+    template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
+    title = "Community invitations"
+    name = "community_invitations"
+    category = ACCOUNT_ACTIONS
+    
+    def as_action(self,):
+        """Only return the action if there's pending nwk requests
+        """
+        auth = UserAccount.objects._getAuthenticatedAccount()
+        req = auth.get_pending_network_requests(returned_model = Community)
+        if not req:
+            return
+        action = BaseView.as_action(self)
+        action.label = mark_safe(_('<span class="badge">%(number)d</span> Community invitations') % {"number": len(req)})
+        return action
+            
+    def prepare_view(self, *args, **kw):
+        auth = Account.objects._getAuthenticatedAccount()
+        super(CommunityInvitations, self).prepare_view()
+        UserAccountView.prepare_view(self, auth.id)
+        self.communities = self.account.get_pending_network_requests(returned_model = Community)
+    
+
 class MyCommunitiesView(BaseView):
     """
     A list of n communities I manage
@@ -159,18 +198,7 @@ class CommunityEdit(CommunityView):
     name = "community_edit"
     category = LOCAL_ACTIONS
     title = None
-    
-    def get_form_class(self,):
-        """
-        You can use self.request and self.object to find your form here
-        if you need to determinate it with an acute precision.
-        """
-        if isinstance(self.object, GlobalCommunity):
-            form_class = community_forms.GlobalCommunityForm
-        else:
-            form_class = community_forms.CommunityForm
-        
-        return form_class
+    form_class = community_forms.CommunityForm
     
     def as_action(self, ):
         if not isinstance(getattr(self, "object", None), self.model_lookup):
@@ -188,6 +216,26 @@ class CommunityEdit(CommunityView):
         if not self.object:
             return _("Create a community")
         return _("Edit community")
+        
+        
+class ConfigurationEdit(CommunityEdit):
+    name = "twistranet_config"
+    form_class = community_forms.AdministrationForm
+    title = "Configuration"
+    category = GLOBAL_ACTIONS
+    
+    def as_action(self,):
+        """
+        Check that I'm an admin
+        """
+        if GlobalCommunity.objects.exists():
+            glob = GlobalCommunity.get()
+            if glob.can_edit:
+                return BaseView.as_action(self,)
+        
+    def prepare_view(self):
+        glob_id = GlobalCommunity.get().id
+        super(ConfigurationEdit, self).prepare_view(glob_id)
 
 
 class CommunityCreate(CommunityEdit):
@@ -200,7 +248,68 @@ class CommunityCreate(CommunityEdit):
     name = "community_create"
     
     def as_action(self):
+        if not Community.objects.can_create:
+            return None
         return BaseView.as_action(self)
+
+
+class CommunityManageMembers(CommunityView):
+    """
+    Manage ppl in a community
+    """
+    title = "Manage members"
+    template = "community/manage.html"
+    name = "manage_members"
+    template_variables = CommunityView.template_variables + [
+        "selectable",
+        "manager_ids",
+    ]
+
+    def prepare_view(self, value):
+        super(CommunityManageMembers, self).prepare_view(value)
+        
+        # Fetch members except myself
+        auth = Twistable.objects.getCurrentAccount(self.request)
+        self.manager_ids = self.community.managers.exclude(id = auth.id).values_list('id', flat = True)
+        self.selectable = self.community.members.exclude(id = auth.id).order_by("title")
+
+        # Perform form actions
+        if self.request.method == 'POST': # If the form has been submitted...
+            self.account_ids = []
+            for k, v in self.request.POST.items():
+                if k.startswith("account_id_"):
+                    self.account_ids.append(k[len("account_id_"):])
+            
+            # Select action kind
+            action_kind = self.request.POST.get('action_kind', None)
+            if action_kind == 'remove':
+                method = self.community.leave
+            elif action_kind == 'set_as_manager':
+                method = self.community.set_as_manager
+            elif action_kind == 'unset_as_manager':
+                method = self.community.unset_as_manager
+            else:
+                raise ValueError("Unknown or unset community management action kind: %s" % action_kind)
+                
+            # Execute on each selected account
+            for id in self.account_ids:
+                account = UserAccount.objects.get(id = int(id))
+                method(account)
+
+            # Redirect to the community page with a nice message
+            if self.account_ids:
+                messages.success(self.request, _("Users updated successfuly."))
+                raise MustRedirect(self.community.get_absolute_url())
+            else:
+                message.error(self.request, _("Please select a user to operate on."))
+
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if not self.community.is_manager:
+            return None
+        return super(CommunityManageMembers, self).as_action()
+
     
 class CommunityInvite(CommunityView):
     """
@@ -267,17 +376,27 @@ class CommunityInvite(CommunityView):
             
         # XXX SUBOPTIMAL PART
         self.selectable = flt[:RESULTS_PER_PAGE]
-        member_ids = self.community.members.values_list('id', flat = True)
+        member_ids = self.community.members.values_list('id', flat = True).order_by("title")
         self.selectable = [ u for u in self.selectable if u.id not in member_ids ]
             
+        # Invite or join?
+        join_immediately = self.request.POST.get("join_immediately", False)
+        if join_immediately:
+            method = self.community.join
+        else:
+            method = self.community.invite
+
         # If we have some people to invite, just prepare invitations
         for id in self.account_ids:
             account = UserAccount.objects.get(id = int(id))
-            self.community.invite(account)
+            method(account)
             
         # Redirect to the community page with a nice message
         if self.account_ids:
-            messages.info(self.request, _("Invitations has been sent."))
+            if join_immediately:
+                messages.info(self.request, _("Users join the community."))
+            else:
+                messages.info(self.request, _("Invitations has been sent."))
             raise MustRedirect(self.community.get_absolute_url())
                     
     def as_action(self):
@@ -289,6 +408,7 @@ class CommunityInvite(CommunityView):
             return None
         return super(CommunityInvite, self).as_action()
     
+
     
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community

@@ -137,7 +137,7 @@ class ContentCreate(ContentEdit):
             actions.append(
                 Action(
                     category = CONTENT_CREATION_ACTIONS,
-                    label = _("Create %(model_name)s") % {"model_name": _(ctype["content_type"])},
+                    label = _(ctype["content_type"]),
                     url = reverse(self.name, args = (publisher.id, ctype["content_type"])),
                     confirm = None,
                 )

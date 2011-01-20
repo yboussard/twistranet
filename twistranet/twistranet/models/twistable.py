@@ -189,6 +189,11 @@ class TwistableManager(models.Manager):
     def __booster__(self):
         return super(TwistableManager, self).get_query_set()
 
+    @property
+    def can_create(self,):
+        auth = self._getAuthenticatedAccount()
+        return not auth.is_anonymous
+
 
 class _AbstractTwistable(models.Model):
     """
@@ -299,7 +304,7 @@ class Twistable(_AbstractTwistable):
             'label': self.title_or_description,
             'url': self.get_absolute_url(),
         }
-        return """<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
+        return u"""<a href="%(url)s" title="%(label)s">%(label)s</a>""" % d
         
     @property
     def forced_picture(self,):
@@ -358,7 +363,8 @@ class Twistable(_AbstractTwistable):
         else:
             # XXX TODO: Check that nobody sets /unsets the owner or the publisher of an object
             # raise PermissionDenied("You're not allowed to set the content owner by yourself.")
-            pass
+            if not self.can_edit:
+                raise PermissionDenied("You're not allowed to edit this content.")
             
         # Set created_by and modified_by fields
         if self.id is None:
@@ -411,7 +417,6 @@ class Twistable(_AbstractTwistable):
                     root = self.slug
                     num = 1
                 self.slug = "%s_%i" % (root, num, )
-        log.debug("Generated slug: %s (%i). Created = %s" % (self.slug, len(self.slug), created))
             
         # Perform a full_clean on the model just to be sure it validates correctly
         self.full_clean()
@@ -422,7 +427,6 @@ class Twistable(_AbstractTwistable):
 
         # Send TN's post-save signal
         twistable_post_save.send(sender = self.__class__, instance = self, created = created)
-        # XXX TODO: Check responses against exceptions
         return ret
 
     def _update_access_network(self, ):
@@ -544,7 +548,7 @@ class Twistable(_AbstractTwistable):
         The return value is considered HTML-safe.
         """
         for attr in ('title', 'description', 'slug', 'id'):
-            v = getattr(self, attr, None)
+            v = unicode(getattr(self, attr, None))
             if v:
                 return mark_safe(v)
             

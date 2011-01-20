@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from django import forms
 from django.db import models
@@ -148,8 +149,13 @@ class ResourceWidget(forms.MultiWidget):
                 images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
                 # TODO  Should implement image searching, batching & so on
                 for img in images :
-                    if len(scope['icons'])<=9 :               
-                        icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
+                    if len(scope['icons'])<=9 :
+                        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
+                        try :               
+                            icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
+                        except IOError:
+                            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+                            continue
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
 

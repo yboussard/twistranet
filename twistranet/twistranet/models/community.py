@@ -244,16 +244,38 @@ class Community(Account):
         Leave the community.
         Fails silently is account is not a member of the community.
         """
-        if not self.can_leave:
-            if account:
-                raise PermissionDenied("You're not allowed to exclude somebody from this community.")
-            else:
-                raise PermissionDenied("You're not allowed to leave this community")
+        auth = Account.objects._getAuthenticatedAccount()
         if not account:
-            account = Account.objects._getAuthenticatedAccount()               
+            account = auth
+        if auth == account and not self.can_leave:
+            raise PermissionDenied("You're not allowed to leave this community")
+        if not auth.id == account.id:
+            if not self.is_manager:
+                raise PermissionDenied("You're not allowed to oust somebody from this community.")
         
         Network.objects.filter(client__id = self.id, target__id = account.id).delete()
         Network.objects.filter(target__id = self.id, client__id = account.id).delete()
+
+    def set_as_manager(self, account):
+        """
+        Mark an account as a community manager.
+        Will probably fail if account is not already a member of the community.
+        This is reserved to ppl who is already cty_mgr (or have the can_edit permission).
+        """
+        if not self.can_edit:
+            raise PermissionDenied("You can't name somebody as a community manager")
+        Network.objects.filter(client__id = account.id, target__id = self.id).update(is_manager = True)
+
+    def unset_as_manager(self, account):
+        """
+        You can bail yourself out of the managers pool only if you can leave the cty per se.
+        """
+        if not self.can_edit:
+            raise PermissionDenied("You can't bail a community manager")
+        auth = Account.objects._getAuthenticatedAccount()
+        if auth.id == account.id:
+            raise PermissionDenied("You can't ban yourself from the community managers")
+        Network.objects.filter(client__id = account.id, target__id = self.id).update(is_manager = False)
 
 
 class GlobalCommunity(Community):

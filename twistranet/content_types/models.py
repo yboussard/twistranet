@@ -31,6 +31,16 @@ class Document(Content):
 
     text = models.TextField()
 
+class Task(Content):
+    """
+    This is the base element of a a GTD-inspired task manager.
+    """
+    class Meta:
+        app_label = 'twistranet'
+    
+    text = models.TextField()
+    due_date = models.DateTimeField()
+
 
 # class Link(Content):
 #     class Meta:

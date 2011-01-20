@@ -1,7 +1,7 @@
 {% load i18n %}
 {% if actions.account %}
 <li class="tn-box global-box general-box">
-    <h3>{% trans "Users and Communities" %}</h3>
+    <h3 class="account-actions">{% trans "Users and Communities" %}</h3>
     <div class="tn-box-content">
       <ul>
           {% for action in actions.account %}
@@ -21,7 +21,7 @@
 
 {% if actions.global %}
 <li class="tn-box global-box general-box">
-    <h3>{% trans "Toolbox" %}</h3>
+    <h3 class="global-actions">{% trans "Toolbox" %}</h3>
     <div class="tn-box-content">
         <ul>
             {% for action in actions.global %}

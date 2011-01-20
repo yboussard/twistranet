@@ -60,7 +60,7 @@ msgstr "Supprimer le contenu"
 
 #: .\templates\actions\content_summary.part.html.py:10
 msgid "This action can't be undone, are you sure ?"
-msgstr "Cette action ne pourra pas être annulée, êtes vous sûr ?"
+msgstr "Cette action est définitive, êtes vous sûr ?"
 
 #: .\templates\actions\general.part.html.py:3
 msgid "Communities"
@@ -120,7 +120,7 @@ msgstr "Voulez-vous vraiment quitter la communauté '%(title)s' ?"
 #: .\templates\community\community_forms.part.html.py:23
 #: .\templates\content\content_forms.part.html.py:22
 msgid "Send message"
-msgstr "Envoyer le message"
+msgstr "Envoyer"
 
 #: .\templates\community\edit.html.py:23 .\templates\content\edit.html.py:37
 #: .\templates\resource\edit.html.py:39
@@ -134,7 +134,7 @@ msgstr "Annuler"
 
 #: .\templates\community\list.html.py:10
 msgid "No community available on your system."
-msgstr "Aucune communauté disponible sur votre système."
+msgstr "Vous n'avez accès à aucune communauté."
 
 #: .\templates\community\members.box.html.py:4
 msgid "Community Managers"
@@ -239,11 +239,6 @@ msgstr "Créé le :"
 msgid "Permissions:"
 msgstr "Permissions :"
 
-#: .\templates\registration\login.html.py:22
-#, fuzzy
-msgid "TwistraNet - The social content management system."
-msgstr "TwistraNet - Vous allez aimer travailler."
-
 #: .\templates\registration\login.html.py:36
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
@@ -251,7 +246,7 @@ msgstr ""
 
 #: .\templates\registration\login.html.py:41
 msgid "Logged out"
-msgstr "Déconnexion"
+msgstr "Me déconnecter"
 
 #: .\templates\registration\login.html.py:42
 msgid "Thanks for spending some quality time on Twistranet."
@@ -259,7 +254,7 @@ msgstr "Merci pour le temps passé sur Twistranet"
 
 #: .\templates\registration\login.html.py:43
 msgid "Log in again"
-msgstr "Se connecter à nouveau"
+msgstr "Me connecter à nouveau"
 
 #: .\templates\registration\login.html.py:51
 msgid "User name :"
@@ -271,19 +266,11 @@ msgstr "Mot de passe :"
 
 #: .\templates\registration\login.html.py:59
 msgid "login"
-msgstr "Se connecter"
-
-#: .\templates\resource\edit.html.py:6 .\templates\resource\edit.html.py:18
-msgid "Edit Resource"
-msgstr "Modifier la Ressource"
-
-#: .\templates\resource\edit.html.py:8 .\templates\resource\edit.html.py:24
-msgid "New Resource"
-msgstr "Nouvelle Ressource"
+msgstr "Me connecter"
 
 #: .\templates\search\search.html.py:6
 msgid "Search results"
-msgstr "Résultats de recherche"
+msgstr "Résultats de la recherche"
 
 #: .\templates\search\search.html.py:8
 msgid "Search"
@@ -293,11 +280,11 @@ msgstr "Rechercher"
 #: .\templates\search\searchfield.part.html.py:15
 #: .\templates\search\searchfield.part.html.py:16
 msgid "Search..."
-msgstr "Rechercher ..."
+msgstr "Rechercher..."
 
 #: .\themes\default\base.html.py:8
-msgid "TwistraNet"
-msgstr "TwistraNet"
+msgid "twistranet"
+msgstr "twistranet"
 
 #: .\themes\default\base.html.py:40 .\themes\redbook\base.html.py:35
 #, python-format
@@ -306,11 +293,11 @@ msgstr "%(user)s"
 
 #: .\themes\default\base.html.py:47 .\themes\redbook\base.html.py:42
 msgid "Log out"
-msgstr "Déconnexion"
+msgstr "Me déconnecter"
 
 #: .\themes\default\base.html.py:50 .\themes\redbook\base.html.py:45
 msgid "Log in"
-msgstr "Se connecter"
+msgstr "Me connecter"
 
 #: .\themes\default\base.html.py:65
 msgid "The social content management system."
@@ -322,7 +309,7 @@ msgstr "Accueil"
 
 #: .\themes\default\base.html.py:131 .\themes\redbook\base.html.py:118
 msgid "Powered By "
-msgstr "Propulsé par "
+msgstr "Ce site fonctionne avec "
 
 #: .\themes\default\base.html.py:137 .\themes\redbook\base.html.py:124
 msgid "Confirmation Required"
@@ -369,48 +356,3 @@ msgstr "La communauté %(name)s a été supprimée"
 msgid "The %(name)s has been deleted."
 msgstr "La communauté %(name)s a été supprimée"
 
-#~ msgid "%(title)s's Profile"
-#~ msgstr "Profil de %(title)s"
-
-#~ msgid "My files"
-#~ msgstr "Mes fichiers"
-
-#~ msgid "My wall"
-#~ msgstr "Mon mur"
-
-#, fuzzy
-#~ msgid "You will love your work."
-#~ msgstr "Vous allez aimer travailler."
-
-#~ msgid "German"
-#~ msgstr "Allemand"
-
-#~ msgid "English"
-#~ msgstr "Anglais"
-
-#~ msgid "French"
-#~ msgstr "Français"
-
-#~ msgid "You follow them"
-#~ msgstr "Je les suis"
-
-#~ msgid "He/She follows them"
-#~ msgstr "Il/elle les suis"
-
-#~ msgid "They follow you"
-#~ msgstr "Ils me suivent"
-
-#~ msgid "They follow him/her"
-#~ msgstr "Ils le/la suivent"
-
-#~ msgid "Delete"
-#~ msgstr "Supprimer"
-
-#~ msgid "Help"
-#~ msgstr "Aide"
-
-#~ msgid "Wall"
-#~ msgstr "Mur"
-
-#~ msgid "My amazing site"
-#~ msgstr "Mon incroyable site"

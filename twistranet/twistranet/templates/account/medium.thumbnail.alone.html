@@ -1,5 +1,5 @@
 {% load thumbnail %}
-{% thumbnail  account.forced_picture.image "50x50" as thumb %}
+{% thumbnail  account.forced_picture.image "50x50" crop="center top" as thumb %}
   <a title="{{account.title}}"
      href="{{ account.get_absolute_url }}"
      class="image-block image-block-tile image-block-alone">

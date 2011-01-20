@@ -1,0 +1,280 @@
+/* Fieldset for form containment */
+
+/* All TN forms styles */
+
+fieldset {
+	padding: 0 5px 5px;
+	margin: 0 0 15px;
+	border: 1px solid #ccc;
+	background-color: #f9f9f9;
+    border-radius: 4px;
+    -moz-border-radius: 4px;  
+    -mozwebkit-border-radius: 4px;
+}
+
+.formBlock {
+  padding: 10px;
+  clear: both;
+}
+
+.fieldWrapper {
+  padding: 10px;
+  border-bottom: 1px solid #EEEEEE ;
+  clear: both;
+}
+
+.fieldWrapper label {
+  font-size: 13px;
+  float:left;
+  margin-right:10px;
+  padding: 0;
+  text-align:right;
+  width:25%;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.fieldWrapper  input[type="text"],
+.fieldWrapper  textarea {
+  display: block;
+  margin-bottom: 5px;
+  width: 60%;
+}
+
+.fieldWrapper  select {
+
+}
+
+.fieldWrapperWithError {
+  background-color: #DF2429;
+}
+
+.fieldWrapperWithError label {
+  color: white; 
+}
+
+ul.errorlist {
+  color: #efd3d4;
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+}
+ul.errorlist li {
+  list-style: none;
+  list-style-image: none;
+  margin: 0 10px 10px;
+  padding: 2px 0;
+}
+
+.form-controls {
+  padding: 15px 10px 0;
+  clear: both;
+}
+
+
+/* inline forms */
+
+.fieldset-inline-form {
+  margin-top: 10px;
+}
+
+.fieldset-inline-form legend {
+	text-transform: capitalize;
+	margin: -3px 0 -3px 0;
+	padding: 1px 1px 2px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	font-weight: normal;
+}
+
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend a:link,
+.fieldset-inline-form legend a:hover,
+.fieldset-inline-form legend a:visited,
+.fieldset-inline-form legend span {
+  padding: 0 7px; 
+  color: #0093e0;
+  text-decoration: none;
+}
+
+.fieldset-inline-form legend span {
+  font-weight: bold;
+}
+
+
+ul.inline-form {
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+ul.inline-form li {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 5px;
+}
+
+ul.inline-form li.inlinefield {
+  display: inline;
+  padding: 0 10px 0 0;
+  margin: 0;
+}
+
+ul.inline-form li label {
+  width: 50%;
+  vertical-align: top;
+  margin-top: 1em;
+  display: none;
+}
+
+ul.inline-form textarea {
+    width: 525px;
+	padding: 5px;
+}
+
+ul.inline-form select {
+  background-color: #efefef;
+}
+
+
+/* edit forms */
+
+.edit-form fieldset {
+   border: none;
+   background-color: #f7f7f7;
+   padding: 5px 0 10px;
+   margin: 10px 0 0 0;
+   clear: both;
+}
+
+.edit-form legend {
+   /* not used for now */
+}
+
+.edit-form h2 {
+   font-size: 16px;
+   padding: 0 10px 8px;
+}
+
+/* specific for forms with some fields inline (ex: search for invite in community) */
+
+.two-blocks-form .formBlock {
+    padding: 0;
+    width: 50%;
+    float: left;
+    clear: none;
+}
+
+.three-blocks-form .formBlock {
+    padding: 0;
+    width: 33%;
+    float: left;
+    clear: none;
+}
+
+.three-blocks-form .formBlock input[type="submit"] {
+    position: relative;
+    top: -5px;
+}
+
+.formBlock label {
+  font-size: 13px;
+  padding: 0 10px 0 0;
+  text-align: right;
+}
+
+/* forms using results inside (eg: invite users grid) */
+
+.resultsInFormBlock {
+    padding: 0 10px;
+    clear: both;
+}
+.tnGrid {         
+    border-spacing: 1px;
+    /* IMPORTANT : the grid is shown by javascript tn.js > gridStyle */
+    display: none;
+}
+
+/* rows are added in js, depending on grid class */
+.tnGridRow {
+    /* possible js fix needed for IE<=7 in future */
+    display: table-row;
+}
+
+.tnGridItem {
+    height: auto;
+    width: auto;
+    /* possible fix needed for IE<=7 in future */
+    display: table-cell;
+    vertical-align: top;
+    padding: 4px;
+    border: 1px solid #F7F7F7;
+    cursor: pointer;
+}
+
+.tnGridItem:hover {
+    border-color: #AAA;
+}
+
+.tnGrid .itemSelected {
+    background-color: white;
+    border-color: #333;
+}
+
+.tnGridItem .thumbnail-account-part {
+    margin: 0 !important;
+}
+
+.tnGridItem a,
+.tnGridItem a:hover {
+    text-decoration: none !important;
+}
+
+.tnGridItem input[type="checkbox"],
+.tnGridItem input[type="radio"] {
+    display: none;
+}
+
+
+/* Form handles for inline content */
+
+#formhandle-StatusUpdate  { 
+    background: url(../images/icons/statusupdate.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 17px;
+}
+
+/*#formhandle-Document  { 
+    background: url(../images/icons/document.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 15px;
+}
+*/
+#formhandle-File  {
+    background: url(../images/icons/upload.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 15px;
+}
+
+#formhandle-Task  {
+    background: url(../images/icons/task.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 15px;
+}
+
+
+/* Our great resource widget */
+
+.resource-widget {
+    margin-left: 150px;
+}
+
+/* permissions select list too large sometimes */
+
+select.permissions-widget {
+    max-width: 200px;
+}
+
+#form-protect-unload-message {
+    display: none;
+}

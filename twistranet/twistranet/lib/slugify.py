@@ -8,14 +8,21 @@ RESERVED_KEYWORDS = [
     "account",
     "add_to_network",
     "cache",
+    "configuration",
     "content",
     "create",
     "delete",
+    "download",
     "id",
+    "invitations",
     "join",
     "media",
+    "media_resource",
     "new",
+    "resource",
     "remove_from_network",
+    "search",
+    "static",
     "twistranet",
     "twistable",
 ]
@@ -29,9 +36,10 @@ def slugify(value):
     Transform a string value into a 50 characters slug
     """
     if not isinstance(value, unicode):
-        value = unicode(value)
+        # Double-check against invalid encodings
+        value = unicode(value, errors = 'ignore')
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub(' +', '_', value))
+    value = unicode(re.sub('\s+', '_', value))
     value = unicode(re.sub('[.@]', '_', value))
     value = unicode(re.sub('[^\w\s_-]', '', value).strip().lower())
     

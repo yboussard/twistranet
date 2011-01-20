@@ -18,17 +18,17 @@ class CommunityForm(BaseForm):
         fields = ('title', 'description', 'picture', 'permissions', )
 
         widgets = {
-            "picture":          ResourceWidget(),   
+            "picture":              ResourceWidget(),   
             "permissions":          PermissionsWidget(),
         }
 
-class GlobalCommunityForm(CommunityForm):
+class AdministrationForm(CommunityForm):
     """
-    Global community edition.
-    This is the same as communityform but with additional configuration
+    Global community edition form.
+    This holds the global-community specific configuration options.
     """
     class Meta:
         from twistranet.twistranet.models import GlobalCommunity
         model = GlobalCommunity
-        fields = ('title', 'description', 'picture', 'permissions', "site_name", "baseline", )
+        fields = ("site_name", "baseline", "permissions", )
         

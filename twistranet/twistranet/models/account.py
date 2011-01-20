@@ -443,11 +443,15 @@ class UserAccount(Account):
         return False                # No request pending
         
         
-    def get_pending_network_requests(self):
+    def get_pending_network_requests(self, returned_model = None):
         """
         List pending nwk user requests, ie. requests I yet have to approve.
         XXX MORE THAN SUBOPTIMAL !!!
+        You can use the 'returned_model' parameter to restrict invitations to a specific model.
+        Default is to return only UserAccount requests
         """
+        if not returned_model:
+            returned_model = UserAccount
         from twistranet.twistranet.models.network import Network
         requested_ids = Network.objects.filter(target = self).values_list("client__id", flat = True)
         accepted_ids = Network.objects.filter(client = self).values_list("target__id", flat = True)
@@ -458,7 +462,7 @@ class UserAccount(Account):
                 continue
             unvalidated_ids.append(i)
             
-        return UserAccount.objects.filter(id__in = unvalidated_ids)
+        return returned_model.objects.filter(id__in = unvalidated_ids)
         
 
     # Follow / Unfollow support

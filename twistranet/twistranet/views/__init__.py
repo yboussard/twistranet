@@ -8,13 +8,13 @@ from media_views import *
 
 # Reference actions.
 # Note that actions may be pushed into database one day.
-BaseView.available_actions = [ PendingNetworkView, MyCommunitiesView, CommunityCreate, ContentCreate, ]
+BaseView.available_actions = [ ConfigurationEdit, PendingNetworkView, CommunityInvitations, MyCommunitiesView, CommunityCreate, ContentCreate, ]
 
 UserAccountView.available_actions = super(UserAccountView, UserAccountView).available_actions + \
     [ AddToNetworkView, RemoveFromNetworkView, UserAccountEdit ]
 
 CommunityView.available_actions = super(CommunityView, CommunityView).available_actions + \
-    [ CommunityEdit, CommunityJoin, CommunityInvite, CommunityLeave, CommunityDelete, ]
+    [ CommunityEdit, CommunityJoin, CommunityManageMembers, CommunityInvite, CommunityLeave, CommunityDelete, ]
 
 ContentView.available_actions = super(ContentView, ContentView).available_actions + \
     [ ContentEdit, ContentDelete, ]

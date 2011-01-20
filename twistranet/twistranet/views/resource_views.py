@@ -1,6 +1,7 @@
 import time
 import mimetypes
 import os
+import traceback
 import posixpath
 import re
 import stat
@@ -404,13 +405,14 @@ def resource_quickupload_file(request):
                 params['publisher'] = Account.objects.get(id = publisher_id)
             new_file = Resource(**params)
             new_file.save() 
-            # XXX TODO : return an icon when file is not an image
+            # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
             try :
                 preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
                 preview_url = preview.url
                 mini = default.backend.get_thumbnail( new_file.object.image, u'100x100' ) 
                 mini_url = mini.url
             except :
+                log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
                 preview_url = ''
             msg = {'success': True,
                    'value':        new_file.id,
@@ -445,6 +447,7 @@ def resource_by_publisher_json(request, publisher_id):
     files = Resource.objects.filter(publisher=request_account)
     results = []
     for file in files :
+        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
         try :
             thumb = default.backend.get_thumbnail( file.object.image, u'50x50' )
             mini = default.backend.get_thumbnail( file.object.image, u'100x100' )       
@@ -452,7 +455,8 @@ def resource_by_publisher_json(request, publisher_id):
             thumbnail_url = thumb.url        
             mini_url = mini.url
             preview_url = preview.url
-        except :
+        except IOError:
+            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
             thumbnail_url = ''        
             mini_url = ''
             preview_url = ''

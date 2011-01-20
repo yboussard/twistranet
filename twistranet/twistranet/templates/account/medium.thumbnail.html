@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <div class="thumbnail-account-part thumbnail-50-bottom">
       <a href="{{ account.get_absolute_url }}" class="image-block image-block-tile">
-      {% thumbnail account.forced_picture.image "50x50" as thumb %}
+      {% thumbnail account.forced_picture.image "50x50" crop="center top" as thumb %}
           <img
               title="{{ account.title }}"
               alt="{{ account.title }}"

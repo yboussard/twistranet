@@ -62,6 +62,8 @@ urlpatterns = patterns('',
     url(r'^community/(\d+)/join$',              AsView(CommunityJoin), name = CommunityJoin.name),
     url(r'^community/(\d+)/leave$',             AsView(CommunityLeave), name = CommunityLeave.name),
     url(r'^community/(\d+)/invite$',            AsView(CommunityInvite), name = CommunityInvite.name),
+    url(r'^community/(\d+)/manage_members$',    AsView(CommunityManageMembers), name = CommunityManageMembers.name),
+    url(r'^community/invitations$',             AsView(CommunityInvitations), name = CommunityInvitations.name, ),
     url(r'^community/new$',                     AsView(CommunityCreate), name = CommunityCreate.name, ),
     url(r'^community/(\d+)/delete$',            AsView(CommunityDelete), name = CommunityDelete.name, ),
 
@@ -78,7 +80,8 @@ urlpatterns = patterns('',
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    # Uncomment the next line to enable the admin:
+    # Administration pages.
+    url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
     (r'^admin/', include(admin.site.urls)),
 )
 

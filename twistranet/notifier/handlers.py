@@ -125,6 +125,10 @@ class MailHandler(NotifierHandler):
         from twistranet.twistranet.models import SystemAccount, Account, UserAccount, Community
         __account__ = SystemAccount.get()
         from_email = settings.SERVER_EMAIL
+        host = settings.EMAIL_HOST
+        if not host:
+            # If host is disabled (EMAIL_HOST is None), skip that
+            return
         
         # Append domain to kwargs
         d = kwargs.copy()
