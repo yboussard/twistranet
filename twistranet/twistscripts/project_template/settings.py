@@ -108,9 +108,7 @@ LANGUAGES = (
     ('fr', gettext('French')),
 )
 
-#TWISTRANET_THEME_NAME = "Soft-186"
-TWISTRANET_THEME_NAME = "redbook"
-TWISTRANET_IMPORT_COGIP = True
+TWISTRANET_THEME_NAME = "Soft-186"
 
 THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 TEMPLATE_DIRS = (
