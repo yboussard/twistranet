@@ -8,7 +8,6 @@ from twistranet.twistranet.lib.python_fixture import Fixture
 from django.contrib.auth.models import User
 
 FIXTURES = [
-
     Fixture(
         UserAccount,
         slug = "admin",
@@ -18,7 +17,7 @@ FIXTURES = [
         user = User.objects.get(id = 1),
         picture = Resource.objects.filter(slug = "default_admin_picture"),
     ),
-    
+
     Fixture(
         UserAccount,
         slug = "A",

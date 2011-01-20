@@ -13,7 +13,6 @@ class FormRegistryManager:
         """
         Register a model class into the TwistraNet application.
         Will bind the form to the model.
-        XXX TODO: Provide a way of ordering forms?
         """
         # Prepare the form itself
         from base_forms import BaseInlineForm, BaseRegularForm
@@ -24,7 +23,8 @@ class FormRegistryManager:
             'allow_inline_creation': issubclass(form_class, BaseInlineForm),
             'allow_fullpage_creation': issubclass(form_class, BaseRegularForm) and form_class.allow_creation,
             "allow_fullpage_edition": issubclass(form_class, BaseRegularForm) and form_class.allow_edition,
-            'content_type': model.__name__
+            'content_type': model.__name__,
+            'order': len(self._registry_) + 1
             }
 
         # Avoid registering twice the same form
@@ -87,10 +87,14 @@ class FormRegistryManager:
         account = Account.objects._getAuthenticatedAccount()
         ret = []
         if publisher.can_publish:
-            for m in self._registry_.values():
-                for f in m:
-                    if f['allow_inline_creation']:
-                        ret.append(f)
+            flat_reg = []
+            for v in self._registry_.values():
+                for w in v:
+                    flat_reg.append(w)
+            flat_reg.sort(lambda x,y: cmp(x['order'], y['order']))
+            for f in flat_reg:
+                if f['allow_inline_creation']:
+                    ret.append(f)
                 
         # Else, no forms.
         return tuple(ret)

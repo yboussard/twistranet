@@ -126,6 +126,11 @@ def bootstrap():
         A.follow(admin)
         admin.follow(A)
         B.follow(admin)
+        
+    # Import COGIP sample
+    if settings.TWISTRANET_IMPORT_COGIP:
+        from twistranet.twistranet.fixtures.cogip import load_cogip
+        load_cogip()
 
     # Repair permissions
     repair()

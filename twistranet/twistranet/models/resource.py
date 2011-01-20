@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError, Permissi
 
 from twistranet.twistorage.storage import Twistorage
 from twistranet.twistranet.lib import languages, permissions
+from  twistranet.twistranet.lib.log import *
 import twistable
 
 class ResourceModelManager(twistable.TwistableManager):

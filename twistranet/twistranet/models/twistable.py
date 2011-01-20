@@ -417,7 +417,6 @@ class Twistable(_AbstractTwistable):
                     root = self.slug
                     num = 1
                 self.slug = "%s_%i" % (root, num, )
-        log.debug("Generated slug: %s (%i). Created = %s" % (self.slug, len(self.slug), created))
             
         # Perform a full_clean on the model just to be sure it validates correctly
         self.full_clean()
@@ -549,7 +548,7 @@ class Twistable(_AbstractTwistable):
         The return value is considered HTML-safe.
         """
         for attr in ('title', 'description', 'slug', 'id'):
-            v = getattr(self, attr, None)
+            v = unicode(getattr(self, attr, None))
             if v:
                 return mark_safe(v)
             
