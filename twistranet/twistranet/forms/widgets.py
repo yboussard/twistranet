@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from django import forms
 from django.db import models
@@ -106,8 +107,6 @@ class ResourceWidget(forms.MultiWidget):
         if self.allow_select:
             account = Twistable.objects._getAuthenticatedAccount()
             selectable_accounts = Resource.objects.selectable_accounts(account)
-            
-            
             t = loader.get_template('resource/resource_browser.html')
             scopes = []
             for account in selectable_accounts :
@@ -121,11 +120,18 @@ class ResourceWidget(forms.MultiWidget):
                 }
                 scope['images'] = []
                 scope['icons'] = []
-                images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
+                images = Resource.objects.filter(publisher=account)
                 if len(images) >= N_DISPLAYED_ITEMS:
                     raise NotImplementedError("Should implement image searching & so on")
-                for img in images :
-                    thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
+                    
+                # Pre-render each image
+                for img in images[:N_DISPLAYED_ITEMS]:
+                    # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
+                    try:
+                        thumb = default.backend.get_thumbnail(img.object.image, u'50x50')
+                    except IOError:
+                        log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+                        continue
                     is_selected = img.id == int(value[0] or 0)
                     image = {
                             "url":              img.get_absolute_url(),
