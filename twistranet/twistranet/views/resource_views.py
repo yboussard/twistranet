@@ -21,7 +21,7 @@ from django.template import Context, RequestContext, loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseNotModified
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
 from django.utils.http import http_date                 
 from django.conf import settings
 from django.views.static import was_modified_since
@@ -269,6 +269,10 @@ def resource_browser(request):
 UPLOAD_JS = """       
     var fillTitles = %(ul_fill_titles)s;
     var auto = %(ul_auto_upload)s;
+    var uploadparams = {};
+    if (typeof getActivePublisher!='undefined') {
+        uploadparams = { 'publisher_id' : getActivePublisher()};
+    }
     addUploadFields_%(ul_id)s = function(file, id) {
         var uploader = xhr_%(ul_id)s;
         TwistranetQuickUpload.addUploadFields(uploader, uploader._element, file, id, fillTitles);
@@ -289,6 +293,7 @@ UPLOAD_JS = """
         xhr_%(ul_id)s = new qq.FileUploader({
             element: jQuery('#%(ul_id)s')[0],
             action: '/resource_quickupload_file/',
+            params: uploadparams,
             autoUpload: auto,
             onAfterSelect: addUploadFields_%(ul_id)s,
             onComplete: onUploadComplete_%(ul_id)s,
@@ -357,6 +362,8 @@ def resource_quickupload(request):
 def resource_quickupload_file(request):
     """
     json view used by quikupload script
+    when uploading a file
+    return success/error + file infos (url/preview/title ...)
     """               
     msg = {}
     if request.environ.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
@@ -385,29 +392,82 @@ def resource_quickupload_file(request):
             msg = {u'error': u'sizeError'}
 
     if file_data and not msg :
+        publisher_id = request.GET.get('publisher_id', '')
         # i'm not sure here
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
         if not title :
             # try to split filenames when there's no title to avoid potential css surprises
             title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
         try :
-            new_file = Resource(resource_file=file_data, title = title )
+            params = {'resource_file' : file_data, 'title' : title }
+            if publisher_id :
+                params['publisher'] = Account.objects.get(id = publisher_id)
+            new_file = Resource(**params)
             new_file.save() 
             # XXX TODO : return an icon when file is not an image
             try :
-                thumb = default.backend.get_thumbnail( new_file.object.image, u'100x100' )
-                preview_url = thumb.url
+                preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
+                preview_url = preview.url
+                mini = default.backend.get_thumbnail( new_file.object.image, u'100x100' ) 
+                mini_url = mini.url
             except :
                 preview_url = ''
             msg = {'success': True,
-                   'value': new_file.id,
-                   'url' : new_file.get_absolute_url(), 
-                   'preview_url' : preview_url, 
-                   'preview_legend' : title, }
+                   'value':        new_file.id,
+                   'url' :         new_file.get_absolute_url(), 
+                   'preview_url' : preview_url,    
+                   'mini_url' :    mini_url, 
+                   'legend' :      title, 
+                   'scope':        publisher_id,}
         except:            
             msg = {u'error': u'serverError'}
     else:
         msg = {u'error': u'emptyError'}                
 
     return HttpResponse( json.dumps(msg),
+                         mimetype='text/plain')
+
+@require_access
+def resource_by_publisher_json(request, publisher_id):
+    """
+    return all resources for a publisher id
+    as json dict (for images dict contains all thumb urls) 
+    """
+    # minimal security check
+    account = Twistable.objects.getCurrentAccount(request)
+    selectable_accounts_ids = [account.id for account in Resource.objects.selectable_accounts(account)]
+    request_account = Account.objects.get(id = publisher_id)
+    if int(publisher_id) not in selectable_accounts_ids :
+        raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
+    
+    selection = request.GET.get('selection','')
+    # TODO : use haystack and batch
+    files = Resource.objects.filter(publisher=request_account)
+    results = []
+    for file in files :
+        try :
+            thumb = default.backend.get_thumbnail( file.object.image, u'50x50' )
+            mini = default.backend.get_thumbnail( file.object.image, u'100x100' )       
+            preview = default.backend.get_thumbnail( file.object.image, u'500x500' )
+            thumbnail_url = thumb.url        
+            mini_url = mini.url
+            preview_url = preview.url
+        except :
+            thumbnail_url = ''        
+            mini_url = ''
+            preview_url = ''
+        if not selection :
+            selection = 0
+        is_selected = file.id == (int(selection) or 0)
+        result = {
+                "url":              file.get_absolute_url(),
+                "thumbnail_url":    thumbnail_url,
+                "mini_url":         mini_url, 
+                "preview_url":      preview_url,
+                "id":               file.id,
+                "title":            file.title,
+                "selected":         is_selected and ' checked="checked"' or ''
+                }
+        results.append(result)
+    return HttpResponse( json.dumps(results),
                          mimetype='text/plain')

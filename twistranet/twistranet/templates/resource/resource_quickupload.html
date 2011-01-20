@@ -9,19 +9,21 @@
          class="main-uploader"></div>
     <input type="hidden"
            id="uploadify_label_file_title"
-           value="{% trans 'File Title' %}"
-           i18n:attributes="value Title" />
+           value="{% trans 'File Title' %}"  /> 
+    <input type="hidden"
+           id="uploadify_label_image_sizes"
+           value="{% trans 'Choose image size' %}" />
     <div class="uploadifybuttons">
       <input type="button" 
              id="uploadify-upload"
              class="context uploadifybutton"
-             value="{% trans 'Upload Files' %}"
-             tal:attributes="onclick string:sendDataAndUpload_${uploader_id}()" />
+             onClick = "sendDataAndUpload_tnuploader()"
+             value="{% trans 'Upload Files' %}" />
       <input type="button" 
              id="uploadify-clear-queue"
              class="context uploadifybutton"
              value="{% trans 'Clear Queue' %}"
-             tal:attributes="onclick string:clearQueue_${uploader_id}()" /> 
+             onClick = "clearQueue_tnuploader()" /> 
     </div>
     <!-- uploadify javascript -->
     <script type="text/javascript">

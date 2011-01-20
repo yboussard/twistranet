@@ -40,8 +40,9 @@
 
 .resource-back-button {
     cursor: pointer;
-    text-align: right;
     color: #AD1C20;
+    padding: 0 3px 5px;
+    font-weight: bold;
 }
 
 .renderer-preview {

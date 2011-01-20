@@ -6,9 +6,11 @@
 
 var TwistranetQuickUpload = {};
 var lastUploadUrl = '';
-var lastUploadPreviewUrl = '';  
-var lastUploadLegend = '';   
-var lastUploadValue = '';
+var lastUploadPreviewUrl = '';
+var lastUploadMiniUrl = '';
+var lastUploadLegend = '';
+var lastUploadValue = '';  
+var scopeValue = '';
     
 TwistranetQuickUpload.addUploadFields = function(uploader, domelement, file, id, fillTitles) {
     if (fillTitles)  {
@@ -58,13 +60,14 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
 TwistranetQuickUpload.onAllUploadsComplete = function(){
     resultContainer = jQuery('#tnuploadresult');
     newResultContainer = jQuery('#renderer-new');
+    // TODO : improve with showPreview function from tn_resource_widget.js
     if (newResultContainer.length) {           
         currentResultContainer = jQuery('#renderer-current');
         result= '\
 <a class="image-block image-block-mini"\
    href="'+ lastUploadUrl +'"\
    title="' + lastUploadLegend + '">\
-   <img src="' + lastUploadPreviewUrl + '"\
+   <img src="' + lastUploadMiniUrl + '"\
         alt="' + lastUploadLegend + '" />\
 </a>\
 ';
@@ -90,8 +93,12 @@ TwistranetQuickUpload.onAllUploadsComplete = function(){
     // fix selector value in a form
     target_selector = jQuery('#selector_target');
     if (target_selector.length) {
-        jQuery('#' + target_selector.val()).val(lastUploadValue);
+        selector.val(lastUploadValue);
+        new_selection = lastUploadValue;
+        // reload the publisher panel with last upload value if exists
+        if (scopeValue) reloadScope(scopeValue, lastUploadValue, true);
     }
+
 }
 TwistranetQuickUpload.clearQueue = function(uploader, domelement) {
     var handler = uploader._handler;
@@ -114,12 +121,15 @@ TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, file
             var newlist = jQuery('li', uploadList);
             if (! newlist.length) {
                 lastUploadUrl = responseJSON.url;
-                lastUploadPreviewUrl = responseJSON.preview_url;  
-                lastUploadLegend = responseJSON.preview_legend; 
+                lastUploadPreviewUrl = responseJSON.preview_url;   
+                lastUploadMiniUrl = responseJSON.mini_url;
+                lastUploadLegend = responseJSON.legend; 
                 lastUploadValue = responseJSON.value;
+                scopeValue = responseJSON.scope;
                 window.setTimeout( TwistranetQuickUpload.onAllUploadsComplete, 5);
             }       
         }, 50);
     }
     
 }
+

@@ -127,45 +127,33 @@ class ResourceWidget(forms.MultiWidget):
                     final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
                 output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             account = Twistable.objects._getAuthenticatedAccount()
+            # TODO : the default publisher for upload is current account, could be improved
+            default_publisher = account.id
             selectable_accounts = Resource.objects.selectable_accounts(account)
-            
             
             t = loader.get_template('resource/resource_browser.html')
             scopes = []
             for account in selectable_accounts :
                 img = account.forced_picture
                 icon = default.backend.get_thumbnail( img.image,  u'16x16' )
+                activeClass = account.id == default_publisher and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),
                     "icon_url":         icon.url,
                     "title":            account.title,
                     "id":               account.id, 
+                    "activeClass":      activeClass,
                 }
-                scope['images'] = []
                 scope['icons'] = []
                 images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
-                # TODO  raise NotImplementedError("Should implement image searching, batching & so on")
+                # TODO  Should implement image searching, batching & so on
                 for img in images :
-                    try :
-                        thumb = default.backend.get_thumbnail( img.object.image, u'50x50' )
-                    except :
-                        # file do not support thumbnails for any kind of reason
-                        continue
-                    is_selected = img.id == int(value[0] or 0)
-                    image = {
-                            "url":              img.get_absolute_url(),
-                            "thumbnail_url":    thumb.url,
-                            "id":               img.id,
-                            "title":            img.title,
-                            "selected":         is_selected and ' checked="checked"' or ''
-                            }
-                    scope['images'].append(image)
                     if len(scope['icons'])<=9 :               
                         icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
 
-            c = Context({ 'name': name, 'scopes' : scopes, })     
+            c = Context({ 'name': name, 'scopes' : scopes })
             
             if self.allow_upload :
                 output.append('<div class="tnQuickUpload"></div>')
