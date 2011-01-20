@@ -150,11 +150,8 @@ class ResourceWidget(forms.MultiWidget):
             output.append (t.render(c))
 
         # finalize and return the complete resource widget
-
         output.append("""</div>""") # (close the resource-widget div)
-
         return mark_safe(self.format_output(output))
-
 
 
 class PermissionsWidget(forms.Select):

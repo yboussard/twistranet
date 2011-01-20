@@ -25,7 +25,7 @@ class CommunityForm(BaseForm):
 class AdministrationForm(CommunityForm):
     """
     Global community edition form.
-    This holds the global-com' specific configuration options.
+    This holds the global-community specific configuration options.
     """
     class Meta:
         from twistranet.twistranet.models import GlobalCommunity

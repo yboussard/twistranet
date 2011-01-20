@@ -262,6 +262,7 @@ class CommunityManageMembers(CommunityView):
     name = "manage_members"
     template_variables = CommunityView.template_variables + [
         "selectable",
+        "manager_ids",
     ]
 
     def prepare_view(self, value):
@@ -269,8 +270,38 @@ class CommunityManageMembers(CommunityView):
         
         # Fetch members except myself
         auth = Twistable.objects.getCurrentAccount(self.request)
-        self.selectable = self.community.members.exclude(id = auth.id)
+        self.manager_ids = self.community.managers.exclude(id = auth.id).values_list('id', flat = True)
+        self.selectable = self.community.members.exclude(id = auth.id).order_by("title")
+
+        # Perform form actions
+        if self.request.method == 'POST': # If the form has been submitted...
+            self.account_ids = []
+            for k, v in self.request.POST.items():
+                if k.startswith("account_id_"):
+                    self.account_ids.append(k[len("account_id_"):])
             
+            # Select action kind
+            action_kind = self.request.POST.get('action_kind', None)
+            if action_kind == 'remove':
+                method = self.community.leave
+            elif action_kind == 'set_as_manager':
+                method = self.community.set_as_manager
+            elif action_kind == 'unset_as_manager':
+                method = self.community.unset_as_manager
+            else:
+                raise ValueError("Unknown or unset community management action kind: %s" % action_kind)
+                
+            # Execute on each selected account
+            for id in self.account_ids:
+                account = UserAccount.objects.get(id = int(id))
+                method(account)
+
+            # Redirect to the community page with a nice message
+            if self.account_ids:
+                messages.success(self.request, _("Users updated successfuly."))
+                raise MustRedirect(self.community.get_absolute_url())
+            else:
+                message.error(self.request, _("Please select a user to operate on."))
 
     def as_action(self):
         if not isinstance(getattr(self, "object", None), self.model_lookup):
@@ -345,17 +376,27 @@ class CommunityInvite(CommunityView):
             
         # XXX SUBOPTIMAL PART
         self.selectable = flt[:RESULTS_PER_PAGE]
-        member_ids = self.community.members.values_list('id', flat = True)
+        member_ids = self.community.members.values_list('id', flat = True).order_by("title")
         self.selectable = [ u for u in self.selectable if u.id not in member_ids ]
             
+        # Invite or join?
+        join_immediately = self.request.POST.get("join_immediately", False)
+        if join_immediately:
+            method = self.community.join
+        else:
+            method = self.community.invite
+
         # If we have some people to invite, just prepare invitations
         for id in self.account_ids:
             account = UserAccount.objects.get(id = int(id))
-            self.community.invite(account)
+            method(account)
             
         # Redirect to the community page with a nice message
         if self.account_ids:
-            messages.info(self.request, _("Invitations has been sent."))
+            if join_immediately:
+                messages.info(self.request, _("Users join the community."))
+            else:
+                messages.info(self.request, _("Invitations has been sent."))
             raise MustRedirect(self.community.get_absolute_url())
                     
     def as_action(self):

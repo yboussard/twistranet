@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<form action="" method="POST" class="edit-form">
+    {% csrf_token %}
+    <fieldset>
+        <div class="resultsInFormBlock">
+            <div id="networkGrid" class="tnGrid tngridcols-9x">
+                {% for account in selectable %}
+                    {% include "account/select.part.html" %}
+                {% empty %}
+                    <p>{% blocktrans %}No members to manage.{% endblocktrans %}</p>
+                {% endfor %}
+            </div>
+            <div class="clear"><!-- --></div>
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="id_title">{% blocktrans %}Action on selected members{% endblocktrans %}</label>
+            <select name="action_kind">
+                <option value="remove">{% blocktrans %}Remove from this community{% endblocktrans %}</option>
+                <option value="set_as_manager">{% blocktrans %}Promote as a Community Manager{% endblocktrans %}</option>
+                <option value="unset_as_manager">{% blocktrans %}Remove from Community Managers{% endblocktrans %}</option>
+            </select>
+            <div class="clear"><!-- --></div>
+        </div>
+
+        <div class="form-controls">
+            <input type="submit" value="{% blocktrans %}Validate{% endblocktrans %}" />
+            <div class="clear"><!-- --></div>
+        </div>
+
+    </fieldset>
+</form>
+
+{% endblock %}
+

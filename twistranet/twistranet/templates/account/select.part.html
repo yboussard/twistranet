@@ -1,7 +1,16 @@
 {# Generate a select box for an 'account' object #}
+{# You can use this in communities, and if the manager_ids is a sequence of mgr ids, #}
+{#    then a pretty badge will be added to community manager icons.     #}
 {% load i18n %}
 {% load wiki %}
 <div class="tnGridItem">
+    {% if community %}
+        {% if account.id in manager_ids %}
+            <a href="/">
+                <span class="community_manager_badge" title="{% blocktrans %}Community manager{% endblocktrans %}">*</span>
+            </a>
+        {% endif %}
+    {% endif %}
     {% include 'account/medium.thumbnail.html' %}
     <input type="checkbox" name="account_id_{{ account.id }}" value="{{ account.id }}">
 </div>

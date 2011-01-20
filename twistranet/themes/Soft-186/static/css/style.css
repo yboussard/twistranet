@@ -965,6 +965,29 @@ ul.network-actions li.action {
 	box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
+.community_manager_badge {
+	overflow:hidden;
+    float: left;
+	color: #000;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	background-color: #E0BD00;
+	background: -webkit-gradient(linear, 0 top, 0 bottom, from(#FFDA14), to(#E0BD00));
+	background: -moz-linear-gradient(#FFDA14, #E0BD00);
+	border: 1px #000 solid;
+	display: block;
+	height: 11px;
+	padding: 1px 4px 2px;
+	position: absolute;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+	box-shadow: 0 0 3px rgba(0,0,0,0.3);
+	z-index: 50;
+}
+
 /* A Firefoxnak megint baja van a padding-gel */
 
 @-moz-document url-prefix() {
