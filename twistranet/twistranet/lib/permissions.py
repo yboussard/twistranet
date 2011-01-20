@@ -205,22 +205,6 @@ community_templates = PermissionTemplate((
         can_join:           manager,
         can_leave:          manager,
     },
-    # {
-    #     "id":               "private",
-    #     "name":             "Private", 
-    #     "description":      """
-    #                         A private community, visible only to its members but ruled like a workgroup otherwise.
-    #                         """,
-    #     # can_create:         (administrator, ),
-    #     can_list:           network,
-    #     can_view:           network,
-    #     can_list_members:   network,
-    #     can_edit:           manager,
-    #     can_delete:         owner,
-    #     can_publish:        network,
-    #     can_join:           manager,
-    #     can_leave:          network,
-    # },
     {
         "id":               "interest",
         "name":             "Open community",
@@ -233,6 +217,22 @@ community_templates = PermissionTemplate((
         can_delete:         owner,
         can_publish:        public,
         can_join:           public,
+        can_leave:          network,
+    },
+    {
+        "id":               "private",
+        "name":             "Private", 
+        "description":      """
+                            A private community, visible only to its members but ruled like a workgroup otherwise.
+                            """,
+        # can_create:         (administrator, ),
+        can_list:           network,
+        can_view:           network,
+        can_list_members:   network,
+        can_edit:           manager,
+        can_delete:         owner,
+        can_publish:        network,
+        can_join:           manager,
         can_leave:          network,
     },
     # {

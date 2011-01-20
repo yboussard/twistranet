@@ -36,9 +36,10 @@ def slugify(value):
     Transform a string value into a 50 characters slug
     """
     if not isinstance(value, unicode):
+        # Double-check against invalid encodings
         value = unicode(value, errors = 'ignore')
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub(' +', '_', value))
+    value = unicode(re.sub('\s+', '_', value))
     value = unicode(re.sub('[.@]', '_', value))
     value = unicode(re.sub('[^\w\s_-]', '', value).strip().lower())
     
