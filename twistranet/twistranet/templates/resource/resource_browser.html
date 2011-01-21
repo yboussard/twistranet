@@ -12,8 +12,6 @@
                    class="image-block image-block-withicons">
                 {% for icon_url in scope.icons %}
                     <img src="{{icon_url}}" />
-                {% empty %}          
-                    <img src="{{scope.icon_url}}" />
                 {% endfor %}
                 </a>
                 <label>
@@ -29,36 +27,23 @@
         </div>
     </div>
 {% for scope in scopes %}
-    <div id="resourcepane-{{scope.id}}" class="resourcePane">
+    <div id="resourcepane-{{scope.id}}" class="resourcePane resourcePaneFiles{{scope.activeClass}}">
+    <input type="hidden"
+           class="scopeId"
+           name="scopeId"
+           value="{{scope.id}}"/>
     {% with scope.title as scope_title %}
-    {% if scope.images %}
+    {%     if scope.icons %}
         <div class="mediaresource-help">{% blocktrans %}Select a picture from account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
-    {% else %}                            
+    {%     else %}                            
         <div class="mediaresource-help">{% blocktrans %}No picture available in account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
-    {% endif %}
+    {%     endif %}
     {% endwith %}
         <div class="resource-back-button">{% blocktrans %}Go back{% endblocktrans %}</div>
         <div class="tnGrid tngridcols-6x">
-        {% for image in scope.images %}
-            <div class="tnGridItem">
-              <div class="thumbnail-account-part thumbnail-50-bottom">
-                <a href="{{image.url}}"
-                   title="{{image.title}}"
-                   class="image-block image-block-tile">
-                  <img src="{{image.thumbnail_url}}"
-                       alt="{{image.title}}" />
-                </a>
-                <label>
-                  <a href="{{image.url}}">{{image.title}}</a>
-                </label>
-              </div>
-              <input type="radio"
-                     name="grid-item-input"
-                     class="grid-item-input"
-                     value="{{image.id}}"
-                     {{image.selected}} />
-            </div>
-        {% endfor %}
+        {% comment %}
+          Resources are now loaded in ajax for many useful reasons : reload after upload / batch / search / performance ...
+        {% endcomment %}
         </div>
     </div>
 {% endfor %}

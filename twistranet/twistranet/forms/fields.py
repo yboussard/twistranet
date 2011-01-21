@@ -93,10 +93,12 @@ class ResourceFormField(forms.MultiValueField):
         self.filter = kwargs.pop("filter", None)
         self.allow_upload = kwargs.pop("allow_upload", True)
         self.allow_select = kwargs.pop("allow_select", True)
+        self.display_renderer = kwargs.pop("display_renderer", True)
         self.widget = kwargs.pop("widget", self.widget(
             model = self.model, filter = self.filter,
             allow_upload = self.allow_upload,
-            allow_select = self.allow_select,
+            allow_select = self.allow_select,    
+            display_renderer = self.display_renderer,
         ))
         self.required = kwargs.pop("required", True)
         

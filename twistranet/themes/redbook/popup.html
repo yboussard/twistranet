@@ -14,18 +14,36 @@
     <link rel="stylesheet" href="/static/css/forms.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/css/content.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/css/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/jquery-dd.css" type="text/css" media="screen" /> 
+    <link rel="stylesheet" href="/static/css/jquery-dd.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/css/fileuploader.css" type="text/css" media="screen" />
     <!--[if lte IE 7]><style type="text/css" media="all">@import url(/static/css/ie.css);</style><![endif]-->
     <script type="text/javascript" src="/static/js/jquery.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/includes/lib/include.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/includes/mad.jquery.js" charset="utf-8"></script> 
     <script type="text/javascript" src="/static/js/jquery-ui-1.8.5.custom.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/jquery.livesearch.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/jquery.dd.js" charset="utf-8"></script>  
+    <script type="text/javascript" src="/static/js/jquery.dd.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/fileuploader.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/tn_quickupload_helpers.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/tn.js" charset="utf-8"></script>
     {% if form %}{{ form.media }}{% endif %}
+    <style>
+      .resource-widget {
+        display: block;
+        width: 100%;
+        margin-left: 0;
+        min-width: 100%;
+      }
+      #wrapper {
+        width: 100%
+      }
+      #content {
+        width: 98% !important;
+        padding:0 1% !important
+      }
+    </style>
 </head>
-<body>
+<body class="noleftcol">
     <div id="page">
         <div id="wrapper">
             <div id="header">
@@ -41,14 +59,10 @@
             </div><!-- End header --> 
 
             <div id="wrap">
-                
-                <div id="container">
-                    <div id="content">
-                        {% block content %}
-                        {% endblock %}
-                    </div>
-                    <div class="clearfix"><!-- --></div>                    
-                </div><!-- end #container -->  
+                <div id="content">
+                    {% block content %}
+                    {% endblock %}
+                </div>
                 <div class="clearfix"><!-- --></div>
             </div><!-- end #wrap -->
 

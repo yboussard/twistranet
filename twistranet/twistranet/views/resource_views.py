@@ -1,26 +1,43 @@
 import time
 import mimetypes
 import os
+import traceback
 import posixpath
 import re
 import stat
 import urllib
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+try :
+    # python 2.6
+    import json
+except :
+    # python 2.4 with simplejson
+    import simplejson as json
 
 from django.template import Context, RequestContext, loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseNotModified
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.http import http_date
+from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
+from django.utils.http import http_date                 
+from django.conf import settings
+from django.views.static import was_modified_since
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.translation import ugettext as _
 
+from sorl.thumbnail import default
 from twistranet.twistranet.models import *
 from twistranet.twistranet.forms.resource_forms import ResourceForm, ResourceBrowserForm
 from twistranet.twistranet.lib.decorators import require_access
-
-from django.conf import settings
-from django.views.static import was_modified_since
+from twistranet.twistranet.lib.log import log
 from twistranet.twistorage.storage import Twistorage
 from twistranet.twistranet.lib import utils
+
+from django.conf import settings
 
 
 def serve(request, path, document_root = None, show_indexes = False, nocache = False):
@@ -241,3 +258,222 @@ def resource_browser(request):
         params
         )
     return HttpResponse(t.render(c))
+
+
+###############################
+# Resource Quick Upload views #
+###############################
+
+
+# JS String used inline by resource_quickupload_init template
+
+UPLOAD_JS = """       
+    var fillTitles = %(ul_fill_titles)s;
+    var auto = %(ul_auto_upload)s;
+    var uploadparams = {};
+    if (typeof getActivePublisher!='undefined') {
+        uploadparams = { 'publisher_id' : getActivePublisher()};
+    }
+    addUploadFields_%(ul_id)s = function(file, id) {
+        var uploader = xhr_%(ul_id)s;
+        TwistranetQuickUpload.addUploadFields(uploader, uploader._element, file, id, fillTitles);
+    }
+    sendDataAndUpload_%(ul_id)s = function() {
+        var uploader = xhr_%(ul_id)s;
+        TwistranetQuickUpload.sendDataAndUpload(uploader, uploader._element, '%(typeupload)s');
+    }    
+    clearQueue_%(ul_id)s = function() {
+        var uploader = xhr_%(ul_id)s;
+        TwistranetQuickUpload.clearQueue(uploader, uploader._element);    
+    }    
+    onUploadComplete_%(ul_id)s = function(id, fileName, responseJSON) {       
+        var uploader = xhr_%(ul_id)s;
+        TwistranetQuickUpload.onUploadComplete(uploader, uploader._element, id, fileName, responseJSON);
+    }
+    createUploader_%(ul_id)s= function(){    
+        xhr_%(ul_id)s = new qq.FileUploader({
+            element: jQuery('#%(ul_id)s')[0],
+            action: '/resource_quickupload_file/',
+            params: uploadparams,
+            autoUpload: auto,
+            onAfterSelect: addUploadFields_%(ul_id)s,
+            onComplete: onUploadComplete_%(ul_id)s,
+            allowedExtensions: %(ul_file_extensions_list)s,
+            sizeLimit: %(ul_xhr_size_limit)s,
+            simUploadLimit: %(ul_sim_upload_limit)s,
+            template: '<div class="qq-uploader">' +
+                      '<div class="qq-upload-drop-area"><span>%(ul_draganddrop_text)s</span></div>' +
+                      '<div class="qq-upload-button">%(ul_button_text)s</div>' +
+                      '<ul class="qq-upload-list"></ul>' + 
+                      '</div>',
+            fileTemplate: '<li>' +
+                    '<a class="qq-upload-cancel" href="#">&nbsp;</a>' +
+                    '<div class="qq-upload-infos"><span class="qq-upload-file"></span>' +
+                    '<span class="qq-upload-spinner"></span>' +
+                    '<span class="qq-upload-failed-text">%(ul_msg_failed)s</span></div>' +
+                    '<div class="qq-upload-size"></div>' +
+                '</li>',                      
+            messages: {
+                serverError: "%(ul_error_server)s",
+                typeError: "%(ul_error_bad_ext)s {file}. %(ul_error_onlyallowed)s {extensions}.",
+                sizeError: "%(ul_error_file_large)s {file}, %(ul_error_maxsize_is)s {sizeLimit}.",
+                emptyError: "%(ul_error_empty_file)s {file}, %(ul_error_try_again_wo)s"
+            }            
+        });           
+    }
+    jQuery(document).ready(createUploader_%(ul_id)s); 
+"""
+
+
+# This view is rendering html and is called in ajax
+# TODO : call it with a simple include
+@require_access
+def resource_quickupload(request):
+    qu_settings = dict(
+        typeupload             = 'File',
+        ul_id                  = 'tnuploader', # improve it to get multiple uploader in a same page, change it also in 'resource_quickupload.html'
+        ul_file_extensions_list = '[]', #could be ['jpg,'png','gif']
+        
+        ul_fill_titles         = settings.QUICKUPLOAD_FILL_TITLES and 'true' or 'false',
+        ul_auto_upload         = settings.QUICKUPLOAD_AUTO_UPLOAD and 'true' or 'false',
+        ul_xhr_size_limit      = settings.QUICKUPLOAD_SIZE_LIMIT and str(settings.QUICKUPLOAD_SIZE_LIMIT*1024) or '0',
+        ul_sim_upload_limit    = str(settings.QUICKUPLOAD_SIM_UPLOAD_LIMIT),
+        ul_button_text         = _(u'Browse'),
+        ul_draganddrop_text    = _(u'Drag and drop files to upload'),
+        ul_msg_all_sucess      = _( u'All files uploaded with success.'),
+        ul_msg_some_sucess     = _( u' files uploaded with success, '),
+        ul_msg_some_errors     = _( u" uploads return an error."),
+        ul_msg_failed          = _( u"Failed"),
+        ul_error_try_again_wo  = _( u"please select files again without it."),
+        ul_error_try_again     = _( u"please try again."),
+        ul_error_empty_file    = _( u"This file is empty :"),
+        ul_error_file_large    = _( u"This file is too large :"),
+        ul_error_maxsize_is    = _( u"maximum file size is :"),
+        ul_error_bad_ext       = _( u"This file has invalid extension :"),
+        ul_error_onlyallowed   = _( u"Only allowed :"),
+        ul_error_server        = _( u"Server error, please contact support and/or try again."),
+    )
+    qu_script = UPLOAD_JS % qu_settings
+    c = Context({ 'qu_script': qu_script, }) 
+    t = loader.get_template('resource/resource_quickupload.html')
+    return HttpResponse(t.render(c))
+
+
+@require_access
+def resource_quickupload_file(request):
+    """
+    json view used by quikupload script
+    when uploading a file
+    return success/error + file infos (url/preview/title ...)
+    """               
+    msg = {}
+    if request.environ.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        file_name = urllib.unquote(request.environ['HTTP_X_FILE_NAME'])
+        title = request.GET.get('title', '')
+        upload_with = "XHR"        
+        try :
+            # the solution for sync ajax file upload
+            file_data = SimpleUploadedFile(file_name, request.raw_post_data)
+        except :
+            log.debug("XHR Upload of %s has been aborted" %file_name)
+            # not really useful here since the upload block
+            # is removed by "cancel" action, but
+            # could be useful if someone change the js behavior
+            msg = {u'error': u'emptyError'}
+    else :
+        # MSIE old behavior (classic upload with iframe) >> TODO : tests
+        file_data = request.FILES.get("qqfile", None)
+        filename = getattr(file_data,'filename', '')
+        file_name = filename.split("\\")[-1]
+        title = request.POST.get('title', '')
+        upload_with = "CLASSIC FORM POST"
+        # we must test the file size in this case (because there is no size client test with msie file field)
+        if not utils._check_file_size(file_data) :
+            log.debug("The file %s is too big, quick iframe upload rejected" % file_name) 
+            msg = {u'error': u'sizeError'}
+
+    if file_data and not msg :
+        publisher_id = request.GET.get('publisher_id', '')
+        # i'm not sure here
+        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+        if not title :
+            # try to split filenames when there's no title to avoid potential css surprises
+            title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
+        try :
+            params = {'resource_file' : file_data, 'title' : title }
+            if publisher_id :
+                params['publisher'] = Account.objects.get(id = publisher_id)
+            new_file = Resource(**params)
+            new_file.save() 
+            # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
+            try :
+                preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
+                preview_url = preview.url
+                mini = default.backend.get_thumbnail( new_file.object.image, u'100x100' ) 
+                mini_url = mini.url
+            except :
+                log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+                preview_url = ''
+            msg = {'success': True,
+                   'value':        new_file.id,
+                   'url' :         new_file.get_absolute_url(), 
+                   'preview_url' : preview_url,    
+                   'mini_url' :    mini_url, 
+                   'legend' :      title, 
+                   'scope':        publisher_id,}
+        except:            
+            msg = {u'error': u'serverError'}
+    else:
+        msg = {u'error': u'emptyError'}                
+
+    return HttpResponse( json.dumps(msg),
+                         mimetype='text/plain')
+
+###############################
+# Resource Browser json views #
+###############################
+
+@require_access
+def resource_by_publisher_json(request, publisher_id):
+    """
+    return all resources for a publisher id
+    as json dict (for images dict contains all thumb urls) 
+    """
+    # minimal security check
+    account = Twistable.objects.getCurrentAccount(request)
+    selectable_accounts_ids = [account.id for account in Resource.objects.selectable_accounts(account)]
+    request_account = Account.objects.get(id = publisher_id)
+    if int(publisher_id) not in selectable_accounts_ids :
+        raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
+    
+    selection = request.GET.get('selection',0)
+    # TODO : use haystack and batch
+    files = Resource.objects.filter(publisher=request_account)
+    results = []
+    for file in files :
+        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
+        try :
+            thumb = default.backend.get_thumbnail( file.object.image, u'50x50' )
+            mini = default.backend.get_thumbnail( file.object.image, u'100x100' )       
+            preview = default.backend.get_thumbnail( file.object.image, u'500x500' )
+            thumbnail_url = thumb.url        
+            mini_url = mini.url
+            preview_url = preview.url
+        except IOError:
+            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+            thumbnail_url = ''        
+            mini_url = ''
+            preview_url = ''
+        is_selected = file.id == (int(selection) or 0)
+        result = {
+                "url":              file.get_absolute_url(),
+                "thumbnail_url":    thumbnail_url,
+                "mini_url":         mini_url, 
+                "preview_url":      preview_url,
+                "id":               file.id,
+                "title":            file.title,
+                "selected":         is_selected and ' checked="checked"' or ''
+                }
+        results.append(result)
+    return HttpResponse( json.dumps(results),
+                         mimetype='text/plain')

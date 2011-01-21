@@ -34,6 +34,8 @@ class MediaForm(forms.Form):
     url = forms.URLField()
 
 class ResourceBrowserForm(forms.Form):
-    """just a basic form to browse and upload resources"""
+    """just a basic form to browse and upload resources
+       used by wysiwyg editors
+    """
 
-    browsed_resource = ResourceFormField(label='', allow_select=True, allow_upload=True)
+    browsed_resource = ResourceFormField(label='', allow_select=True, allow_upload=True, display_renderer=False)

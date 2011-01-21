@@ -24,18 +24,21 @@ urlpatterns = patterns('',
     url(r'^pending_network/$',                      AsView(PendingNetworkView), name = PendingNetworkView.name),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    url(r'^resource/(\d+)$', 'twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX, 'twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
-    (r'^resource/new$',                         'twistranet.twistranet.views.create_resource'),
-    (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_slug_or_id'),
+    url(r'^resource/(\d+)$',                    'twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX,       'twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
+    (r'^resource/new$',                         'twistranet.twistranet.views.create_resource'),      
+    (r'^resource/(\w+)$',                       'twistranet.twistranet.views.resource_by_slug_or_id'),  
+    (r'^resource_by_publisher/json/(\d+)$',     'twistranet.twistranet.views.resource_by_publisher_json'),     # return json list of resources by publisher id
     (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
     (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty   
-    (r'^resource_browser/$',                    'twistranet.twistranet.views.resource_browser'),
+    (r'^resource_browser/$',                    'twistranet.twistranet.views.resource_browser'),       # resource browser used by wysiwyg editors
+    (r'^resource_quickupload/$',                'twistranet.twistranet.views.resource_quickupload'),   # resource quickupload ajax template
+    (r'^resource_quickupload_file/$',           'twistranet.twistranet.views.resource_quickupload_file'),   # resource quickupload json response
     
     # Thumbnail cache links
     url(r'\Wcache/([\w\./]+)$',                 'twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
     url(r'^cache/([\w\./]+)$',                  'twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
-    
+
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
     url(r'^media_resource/new$',                'twistranet.twistranet.views.create_media', name = "media_create", ),
     url(r'^media_resource/(\d+)/edit$',         'twistranet.twistranet.views.edit_media', name = "media_edit", ),    

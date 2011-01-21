@@ -1,0 +1,33 @@
+{% load i18n %}
+<div id="tnuploadresult">
+</div>
+<div id="resources-quickupload" class="quick-uploader">
+    <div class="mediaresource-help">{% blocktrans %}Select one or more files to upload from your local system:{% endblocktrans %}</div>
+    <!-- uploader comes here the css id (tnuploader) is important 
+         TODO : improve view to get different ids for multiple uploaders -->
+    <div id="tnuploader"
+         class="main-uploader"></div>
+    <input type="hidden"
+           id="uploadify_label_file_title"
+           value="{% trans 'File Title' %}"  /> 
+    <input type="hidden"
+           id="uploadify_label_image_sizes"
+           value="{% trans 'Choose image size' %}" />
+    <div class="uploadifybuttons">
+      <input type="button" 
+             id="uploadify-upload"
+             class="context uploadifybutton"
+             onClick = "sendDataAndUpload_tnuploader()"
+             value="{% trans 'Upload Files' %}" />
+      <input type="button" 
+             id="uploadify-clear-queue"
+             class="context uploadifybutton"
+             value="{% trans 'Clear Queue' %}"
+             onClick = "clearQueue_tnuploader()" /> 
+    </div>
+    <!-- uploadify javascript -->
+    <script type="text/javascript">
+      {{ qu_script|safe }}
+    </script>
+</div>
+<div class="clear"><!-- --></div>

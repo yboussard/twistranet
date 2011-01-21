@@ -109,6 +109,7 @@ LANGUAGES = (
 )
 
 TWISTRANET_THEME_NAME = "Soft-186"
+
 THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 TEMPLATE_DIRS = (
     THEME_DIR,
@@ -120,10 +121,11 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # TinyMCE configuration
+TINYMCE_FILEBROWSER = False
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,emotions,paste,searchreplace",
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups",
     'theme': "advanced",
     'theme_advanced_toolbar_location': "top",
     'theme_advanced_toolbar_align' : "left",
@@ -135,6 +137,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
     'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
     'theme_advanced_buttons3': "",
+    'file_browser_callback' : 'twistranet.tinymceBrowser'
 }
 
 # Sorl-thumbnail config
@@ -145,6 +148,11 @@ THUMBNAIL_COLORSPACE = None
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
 HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
+
+QUICKUPLOAD_AUTO_UPLOAD = True
+QUICKUPLOAD_FILL_TITLES = False 
+QUICKUPLOAD_SIZE_LIMIT = 0  
+QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
 
 
 INSTALLED_APPS = (

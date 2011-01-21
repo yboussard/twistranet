@@ -272,6 +272,24 @@ gridOnSelect = function(grid) {
     })
 }
 
+// TODO in future : remove cache: true
+// and improve ajax request with data 
+// for multiple uploaders in a same page 
+loadQuickUpload = function(obj) {
+    var uploadUrl = '/resource_quickupload/' ;
+    var tnUploader = jQuery(obj);
+    jQuery.ajax({
+        type: "GET",
+        url: uploadUrl,
+        dataType: 'html', 
+        contentType: 'text/html; charset=utf-8', 
+        cache: true,
+        data: '',
+        success: function(content){
+            tnUploader.html(content);
+        }
+    });
+}
 
 // main class
 var twistranet = {
@@ -287,6 +305,7 @@ var twistranet = {
         twistranet.prettyCombosLists(); 
         twistranet.tnGridActions();
         twistranet.formProtection();
+        twistranet.loadUploaders();
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -405,9 +424,46 @@ var twistranet = {
         }
     },
     tnGridActions: function(e) {
-     jQuery('.tnGrid').each(function(){
+        jQuery('.tnGrid').each(function(){
             gridOnSelect(this);
         });
+    },
+    loadUploaders: function(e) {
+        jQuery('.tnQuickUpload').each(function(){
+            loadQuickUpload(this);
+        });
+    },
+    tinymceBrowser: function(field_name, url, type, win) {
+        // alert("Field_Name: " + field_name + "nURL: " + url + "nType: " + type + "nWin: " + win); // debug/testing
+    
+        /* If you work with sessions in PHP and your client doesn't accept cookies you might need to carry
+           the session name and session ID in the request string (can look like this: "?PHPSESSID=88p0n70s9dsknra96qhuk6etm5").
+           These lines of code extract the necessary parameters and add them back to the filebrowser URL again. */
+    
+        var cmsURL = '/resource_browser/';    // script URL - use an absolute path!
+        if (cmsURL.indexOf("?") < 0) {
+            //add the type as the only query parameter
+            cmsURL = cmsURL + "?type=" + type;
+        }
+        else {
+            //add the type as an additional query parameter
+            // (PHP session ID is now included if there is one at all)
+            cmsURL = cmsURL + "&type=" + type;
+        }
+    
+        tinyMCE.activeEditor.windowManager.open({
+            file : cmsURL,
+            title : 'My File Browser',
+            width : 800,  // Your dimensions may differ - toy around with them!
+            height : 500,
+            resizable : "yes",
+            inline : "yes",  // This parameter only has an effect with inlinepopups plugin!
+            close_previous : "no"
+        }, {
+            window : win,
+            input : field_name
+        });
+        return false;
     }
 }
 
