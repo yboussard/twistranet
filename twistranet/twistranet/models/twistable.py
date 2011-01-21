@@ -141,39 +141,29 @@ class TwistableManager(models.Manager):
         frame = inspect.currentframe()
         try:
             while frame:
-                next_found = False
-                local_viewed = False
-                for mbr in inspect.getmembers(frame):
-                    if mbr[0] == 'f_locals':
-                        local_viewed = True
-                        _locals = mbr[1]
-    
-                        # Check for a request.user User object
-                        if _locals.has_key('request'):
-                            u = getattr(_locals['request'], 'user', None)
-                            if isinstance(u, User):
-                                # We use this instead of the get_profile() method to avoid an infinite recursion here.
-                                # We mimic the _profile_cache behavior of django/contrib/auth/models.py to avoid doing a lot of requests on the same object
-                                if not hasattr(u, '_account_cache'):
-                                    u._account_cache = UserAccount.objects.__booster__.get(user__id__exact = u.id)
-                                    u._account_cache.user = u
-                                return u._account_cache
+                frame_members = dict(inspect.getmembers(frame))
                 
-                        # Check for an __acount__ variable holding a generic Account object
-                        if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
-                            return _locals['__account__']
-                    
-                        # Locals inspected and next found => break here
-                        if next_found:
-                            break
-        
-                    if mbr[0] == 'f_back':
-                        # Inspect caller
-                        next_found = True
-                        frame = mbr[1]
-                        if local_viewed:
-                            break
-                            
+                # Inspect 'locals' variables to get the request or __account__
+                _locals = frame_members.get('f_locals', None)
+                if _locals:
+                    # Check for a request.user User object
+                    if _locals.has_key('request'):
+                        u = getattr(_locals['request'], 'user', None)
+                        if isinstance(u, User):
+                            # We use this instead of the get_profile() method to avoid an infinite recursion here.
+                            # We mimic the _profile_cache behavior of django/contrib/auth/models.py to avoid doing a lot of requests on the same object
+                            if not hasattr(u, '_account_cache'):
+                                u._account_cache = UserAccount.objects.__booster__.get(user__id__exact = u.id)
+                                u._account_cache.user = u
+                            return u._account_cache
+            
+                    # Check for an __acount__ variable holding a generic Account object
+                    if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
+                        return _locals['__account__']
+                
+                # Get back to the upper frame
+                frame = frame_members.get('f_back', None)
+                        
             # Didn't find anything. We must be anonymous.
             return AnonymousAccount()
 

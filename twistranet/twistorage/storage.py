@@ -129,7 +129,7 @@ class Twistorage(FileSystemStorage):
             except ValueError:
                 account = Account.objects.get(slug = account_str)
             if mode == 'r':
-                if not account.can_view:
+                if not account.can_list:
                     raise SuspiciousOperation("Attempted access to '%s' denied." % name)
             elif not account.can_edit:
                 raise SuspiciousOperation("Attempted access to '%s' denied." % name)

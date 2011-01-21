@@ -16,6 +16,10 @@ from django.core.files import File as DjangoFile
 HERE_COGIP = os.path.abspath(os.path.dirname(__file__))
 
 def load_cogip():
+    """
+    WARNING: THIS IS MEANT TO BE LOAD FROM AN EMPTY DATABASE!
+    We didn't bother testing it with a pre-populated one as it doesn't make that much sense.
+    """
     # Just to be sure, we log as system account
     __account__ = SystemAccount.get()
 
@@ -24,8 +28,7 @@ def load_cogip():
     c = csv.DictReader(f, delimiter = ';', fieldnames = ['firstname', 'lastname', 'sex', 'service', 'function', 'email', 'picture_file', 'network'])
     services = []
     for useraccount in c:
-        # Create the user if necessary (still have to do this by hand)
-        # import pdb ; pdb.set_trace()
+        # Create the user if necessary
         username = slugify("%s%s" % (useraccount['firstname'][0].decode('utf-8'), useraccount['lastname'].decode('utf-8'), ))
         username = username.lower()
         password = slugify(useraccount['lastname']).lower()
@@ -48,7 +51,7 @@ def load_cogip():
             force_update = True,
         ).apply()
         
-        # Create a community matching user's service or make him join the service
+        # Create a community matching user's service or make him join the service. And put it in a menu!
         service_slug = slugify(useraccount['service'])
         if not service_slug in services:
             services.append(service_slug)
@@ -56,7 +59,7 @@ def load_cogip():
                 Community,
                 slug = service_slug,
                 title = useraccount['service'],
-                permissions = "workgroup",
+                permissions = "blog",
                 logged_account = username,
                 force_update = True,
             ).apply()
@@ -70,6 +73,21 @@ def load_cogip():
             r.save()
             service.picture = r
             service.save()
+            
+            # Create the menu item
+            if not MenuItem.objects.filter(slug = "cogip_menu").exists():
+                cogip_menu = MenuItem.objects.create(
+                    slug = "cogip_menu",
+                    order = 5,
+                    title = "La COGIP",
+                    parent = Menu.objects.get(),
+                    link_url = "/",
+                )
+                cogip_menu.save()
+            else:
+                cogip_menu = MenuItem.objects.get(slug = "cogip_menu")
+            item = MenuItem.objects.create(parent = cogip_menu, target = service)
+            item.save()
         else:
             Community.objects.get(slug = service_slug).join(UserAccount.objects.get(slug = username))
 
@@ -88,15 +106,15 @@ def load_cogip():
             u.picture = Resource.objects.get(slug = picture_slug)
             u.save()
             
-        # Add friends in the network
+        # Add friends in the network (with pending request status)
         if useraccount['network']:
             for friend in [ s.strip() for s in useraccount['network'].split(',') ]:
                 log.debug("Put '%s' and '%s' in their network." % (username, friend))
                 current_account = UserAccount.objects.get(slug = username)
+                __account__ = UserAccount.objects.get(slug = username)
                 friend_account = UserAccount.objects.get(slug = friend)
-                __account__ = current_account
                 friend_account.add_to_my_network()
-                __account__ = friend
+                __account__ = UserAccount.objects.get(slug = friend)
                 current_account.add_to_my_network()
                 __account__ = SystemAccount.objects.get()
 
