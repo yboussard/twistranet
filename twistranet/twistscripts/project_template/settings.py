@@ -153,7 +153,6 @@ QUICKUPLOAD_FILL_TITLES = False
 QUICKUPLOAD_SIZE_LIMIT = 0  
 QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
 
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

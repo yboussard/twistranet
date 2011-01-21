@@ -10,6 +10,7 @@ RESERVED_KEYWORDS = [
     "cache",
     "configuration",
     "content",
+    "comment",
     "create",
     "delete",
     "download",

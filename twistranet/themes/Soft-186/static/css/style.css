@@ -95,9 +95,6 @@
 	.postmetadata .author         { background: url(../images/icons/icons-normal.png) 0 -16px no-repeat; }
 	.postmetadata .author:hover   { background: url(../images/icons/icons-hover.png) 0 -16px no-repeat;	}
 
-	.postmetadata .comment        { background: url(../images/icons/icons-normal.png) 0 -32px no-repeat; }
-	.postmetadata .comment:hover  { background: url(../images/icons/icons-hover.png) 0 -32px no-repeat;	}   
-
 	.postmetadata .target        { background: url(../images/icons/icons-normal.png) 0 -32px no-repeat; }
 	.postmetadata .target:hover  { background: url(../images/icons/icons-hover.png) 0 -32px no-repeat;	}
 

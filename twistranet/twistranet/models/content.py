@@ -22,7 +22,7 @@ class ContentManager(twistable.TwistableManager):
         """
         return self.filter(
             Q(publisher = account) | Q(owner = account)
-        ).distinct()
+        ).exclude(model_name = "Comment").distinct()
             
     
     def get_follow_filter(self, account = None):
@@ -95,7 +95,6 @@ class Content(_AbstractContent):
     type_detail_view = "content/view.html"
     
     is_content = True   # XXX TODO: What is this for, BTW??
-        
     default_picture_resource_slug = "default_menu_picture"
         
     class Meta:
@@ -104,7 +103,6 @@ class Content(_AbstractContent):
     #                                                               #
     #                   Content internal stuff                      #
     #                                                               #
-
     def save(self, *args, **kw):
         """
         Populate special content information before saving it.

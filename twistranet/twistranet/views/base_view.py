@@ -1,4 +1,5 @@
 import copy
+import re
 
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
@@ -61,10 +62,12 @@ class AsPublicView(object):
             
         except MustRedirect as redirect:
             # Here we redirect if necessary
-            log.debug("Redirecting.")
             if redirect.url is None:
-                redirect.url = request.path
-            return HttpResponseRedirect(redirect.url)
+                redirect_url = request.path
+            else:
+                redirect_url = re.sub("^[a-zA-Z]+:\/\/(.*)(?=\/)", "", redirect.url)
+            log.debug("Redirecting to %s" % redirect_url)
+            return HttpResponseRedirect(redirect_url)
             
 class AsView(AsPublicView):
     """
@@ -346,8 +349,7 @@ class BaseIndividualView(BaseView):
                 if self.object:
                     self.form = form_class(instance = self.object)      # An unbound form with an explicit instance
                 else:
-                    initial = getattr(self, "initial", None)
-                    log.debug("Initial: %s" % initial)
+                    initial = self.get_initial_values()
                     if initial:
                         self.form = form_class(initial = initial)
                     else:
@@ -356,6 +358,12 @@ class BaseIndividualView(BaseView):
         # Various data. Call parent LAST.
         setattr(self, model_name, self.object)
         super(BaseIndividualView, self).prepare_view()
+
+    def get_initial_values(self,):
+        """
+        Return initial values for the form data
+        """
+        return getattr(self, "initial", None)
 
     def as_action(self):
         """
@@ -464,17 +472,6 @@ class BaseWallView(BaseIndividualView):
         # Return the forms
         return forms
     
-    def get_recent_content_list(self):
-        """
-        Retrieve recent content list for the given account.
-        XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
-        This way we can just query objects with id > last_twistable_on_home
-        """
-        latest_ids = Content.objects.getActivityFeed(self.object)    
-        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
-        latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
-        return latest_list
-
     def prepare_view(self, value = None):
         """
         Fetch the individual object, plus its latest content.

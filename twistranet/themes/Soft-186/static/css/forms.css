@@ -278,3 +278,14 @@ select.permissions-widget {
 #form-protect-unload-message {
     display: none;
 }
+
+
+/* Inline Comment forms */
+
+.comment-form ul.inline-form textarea {
+    width: 425px;
+	padding: 5px;
+}
+
+
+
