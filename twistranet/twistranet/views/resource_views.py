@@ -448,7 +448,7 @@ def resource_by_publisher_json(request, publisher_id):
     
     selection = request.GET.get('selection',0)
     # TODO : use haystack and batch
-    files = Resource.objects.filter(publisher=request_account)
+    files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
     for file in files :
         # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
