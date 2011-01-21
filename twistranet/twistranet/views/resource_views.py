@@ -446,7 +446,7 @@ def resource_by_publisher_json(request, publisher_id):
     if int(publisher_id) not in selectable_accounts_ids :
         raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
     
-    selection = request.GET.get('selection',0)
+    selection = request.GET.get('selection','')  or 0
     # TODO : use haystack and batch
     files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
