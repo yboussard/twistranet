@@ -39,7 +39,7 @@
                             <ul>
                                 {% if user.is_authenticated %}
                                 <li>
-                                    <a href="/">{% blocktrans %}{{ user }}{% endblocktrans %}</a>
+                                    <a href="/">{{ current_account.title }}</a>
                                 </li>
                                 {% endif %}
                                 {% block useractions %}
@@ -131,7 +131,7 @@
             </div><!-- end #wrap -->
 
             <div id="bottom">
-                <div id="footer">{% blocktrans %}Powered By {% endblocktrans %}<a href="http://www.twistranet.com">TwistraNet</a></div>
+                <div id="footer">{% blocktrans %}Powered By <a href="http://www.twistranet.com">TwistraNet</a> from <a href="http://www.numericube.com">numeriCube</a>{% endblocktrans %}</div>
             </div>
 
         </div><!-- end #wrapper -->
