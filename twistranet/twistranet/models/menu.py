@@ -18,6 +18,7 @@ class MenuItem(Twistable):
     A menu can point either to a view, an internal or external URL or a Twistable object.
     In the latter case, the menu label is determine by the Twistable's title.
     """
+    # Not very efficient ordering property
     order = models.IntegerField(default = 0)
 
     # Target URL / Object / Permissions
