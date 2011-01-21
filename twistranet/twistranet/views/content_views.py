@@ -224,6 +224,9 @@ class AjaxCommentsList(ContentView):
                 self.form = CommentForm(
                     initial = {"redirect_to": urlquote(self.redirect_to)}
                 )
+        else:
+            # We can't publish anyway, so no form available
+            self.redirect_to = None
 
 
 
