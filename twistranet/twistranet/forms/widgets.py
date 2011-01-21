@@ -90,7 +90,7 @@ class ResourceWidget(forms.MultiWidget):
                 }
                 output.append(u"""
                   <a class="image-block image-block-mini"
-                     href="%(img_url)s"
+                     href="%(img_url)s">
                       <img src="%(thumbnail_url)s" 
                            id="resource-current" />
                    </a>
