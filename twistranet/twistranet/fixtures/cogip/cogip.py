@@ -141,9 +141,9 @@ def load_cogip():
             log.debug("Make %s join %s" % (member, com.slug))
             com.join(UserAccount.objects.get(slug = member))
 
-    # Create status updates
-    f = open(os.path.join(HERE_COGIP, "status.csv"), "rU")
-    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', ])
+    # Create content updates
+    f = open(os.path.join(HERE_COGIP, "content.csv"), "rU")
+    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', 'filename'])
     for content in contents:
         __account__ = UserAccount.objects.get(slug = content['owner'])
         if content['type'].lower() == "status":
@@ -154,10 +154,25 @@ def load_cogip():
             )
             status.save()
             log.debug("Adding status update: %s" % status)
+        elif content['type'].lower() == 'document':
+            source_fn = os.path.join(HERE_COGIP, content['filename'])
+            f = open(source_fn, 'rU')
+            article = Document.objects.create(
+                slug = slugify(content['filename']),
+                title = content['text'],
+                publisher = Account.objects.get(slug = content['publisher']),
+                permissions = content['permissions'],
+                text = f.read(),
+            )
         elif content['type'].lower() == "comment":
             comment = Comment.objects.create(in_reply_to = status, description = content['text'], )
         else:
             raise ValueError("Invalid content type: %s" % content['type'])
         __account__ = SystemAccount.get()
 
+    # Special stuff
+    cogip_menu = MenuItem.objects.get(slug = "cogip_menu")
+    cogip_menu.target = Document.objects.get(slug = "presentation_cogip_html")
+    cogip_menu.link_url = None
+    cogip_menu.save()
 
