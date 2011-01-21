@@ -1,6 +1,5 @@
 # Django settings for TwistraNet project.
 import os.path
-import sys
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -87,9 +86,9 @@ MIDDLEWARE_CLASSES = (
 INTERNAL_IPS = ("127.0.0.1", )
 
 AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    # 'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
+
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
 CACHE_BACKEND = "locmem:///"
@@ -164,24 +163,28 @@ INSTALLED_APPS = (
 
     # admin stuff
     'django.contrib.admin',
-    
+
     # 3rd party modules
     'debug_toolbar',
-    'haystack',
     'piston',
     'tinymce',
     'sorl.thumbnail',
-    
+
     # TwistraNet core stuff
     'twistranet.twistranet',
-    
+
     # TwistraNet extensions
+    'twistranet.content_types',
+    'twistranet.notifier',
     'twistranet.twistrans',
     'twistranet.twistorage',
+
+    # 3rd party modules - must be loaded AFTER TN
+    'haystack',
 )
 
 # Local settings.
 try:
     from local_settings import *
 except ImportError:
-    pass  
+    pass
