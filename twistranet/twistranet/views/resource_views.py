@@ -387,7 +387,7 @@ def resource_quickupload_file(request):
         file_name = filename.split("\\")[-1]
         title = request.POST.get('title', '')
         upload_with = "CLASSIC FORM POST"
-        # we must test the file size in this case (no client test with classic file field)
+        # we must test the file size in this case (because there is no size client test with msie file field)
         if not utils._check_file_size(file_data) :
             log.debug("The file %s is too big, quick iframe upload rejected" % file_name) 
             msg = {u'error': u'sizeError'}
@@ -429,6 +429,10 @@ def resource_quickupload_file(request):
     return HttpResponse( json.dumps(msg),
                          mimetype='text/plain')
 
+###############################
+# Resource Browser json views #
+###############################
+
 @require_access
 def resource_by_publisher_json(request, publisher_id):
     """
@@ -442,7 +446,7 @@ def resource_by_publisher_json(request, publisher_id):
     if int(publisher_id) not in selectable_accounts_ids :
         raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
     
-    selection = request.GET.get('selection','')
+    selection = request.GET.get('selection',0)
     # TODO : use haystack and batch
     files = Resource.objects.filter(publisher=request_account)
     results = []
@@ -460,8 +464,6 @@ def resource_by_publisher_json(request, publisher_id):
             thumbnail_url = ''        
             mini_url = ''
             preview_url = ''
-        if not selection :
-            selection = 0
         is_selected = file.id == (int(selection) or 0)
         result = {
                 "url":              file.get_absolute_url(),

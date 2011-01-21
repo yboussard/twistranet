@@ -24,6 +24,15 @@ showPreview = function(url, miniurl, legend) {
     }
 }
 
+hidePreview = function() {
+    newResultContainer = jQuery('#renderer-new');
+    if (newResultContainer.length) {
+        currentResultContainer = jQuery('#renderer-current');
+        jQuery('a', newResultContainer).remove();
+        if (currentResultContainer.length) currentResultContainer.animate({'opacity': '1'}, 500);
+    }
+}
+
 // load resources in json for a publisher (scope_id)
 loadScopeResources = function(scope_id, selection) {
     scopeContainer = jQuery('#resourcepane-'+scope_id);
@@ -74,7 +83,7 @@ loadScopeResources = function(scope_id, selection) {
 // TODO put a wait loading icon
 // TODO : global variable for reload (today reload = true when something has changed)
 reloadScope = function(scope_id, selection, reload) {
-    jQuery('.resourcePane').hide();                   
+    jQuery('.resourcePane').hide();
     jQuery('.resourcePane').removeClass('activePane');
     jQuery('#resourcepane-'+scope_id).addClass('activePane');
     if (reload) {
@@ -125,9 +134,9 @@ jQuery(
             jQuery('#resourcepane-main .tnGridItem').click(function(e){
                 var scope_id = jQuery('>input:hidden', this).val();
                 jQuery('.resourcePane').hide();
-                reload = false;
-                if (new_selection!=current_selection) reload = true;
-                else reloadScope(scope_id, new_selection, reload);
+                // TODO : change it ! the test is not perfect
+                if (new_selection!=current_selection) reloadScope(scope_id, new_selection, true);
+                else reloadScope(scope_id, new_selection, false);
             })
             
             // back to all accounts action
@@ -138,28 +147,33 @@ jQuery(
             // redefine the gridOnChange method
             // because we want to unselect all elements from all panels
             gridOnChange = function(grid) {
-                jQuery('.resourcePane .tnGridItem').each(function(){
-                    var item = jQuery(this);       
+                jQuery('.resourcePane .tnGridItem').each(function(){       
                     var checkbox = jQuery('>input:checkbox, >input:radio', this);
                     if (checkbox.length) {
                         if (checkbox.is(':checked')) {
                             jQuery(this).addClass('itemSelected');
-                            selector.val(checkbox.val());
-                            new_selection = checkbox.val();
-                            if (new_selection!=current_selection) {
-                                showPreview(jQuery('a', this).attr('href'), 
-                                            jQuery('.grid-item-miniurl', this).val(), 
-                                            jQuery('a', this).attr('title'));
-                            }
                         }
                         else {
                             jQuery(this).removeClass('itemSelected');
-                            selector.val();
                         }
                     }
                 });
+                if (! jQuery('.resourcePane .itemSelected').length) {
+                    hidePreview();
+                    new_selection = current_selection;
+                }
+                else {
+                    itemselected = jQuery('.resourcePane .itemSelected')[0];
+                    var checkbox = jQuery('>input:checkbox, >input:radio', itemselected);
+                    new_selection = checkbox.val();
+                    if (new_selection!=current_selection) {
+                        showPreview(jQuery('a', itemselected).attr('href'), 
+                                    jQuery('.grid-item-miniurl', itemselected).val(), 
+                                    jQuery('a', itemselected).attr('title'));
+                    }
+                }
+                selector.val(new_selection);
             }
-            // on selection retrieve image mini url for preview
             
         }
     }
