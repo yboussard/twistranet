@@ -29,24 +29,28 @@
 .qq-upload-drop-area-active {}
 
 .qq-upload-list {
-    display: table; 
+    display: block; 
     float: left; 
-    min-width:50%; 
     padding:0; 
     margin: 0;
     list-style: none outside none}
 
-.qq-upload-list li { 
-    display: table-cell;
+.qq-upload-list li {
+    display: block;
+    float: left;
+    font-size: 11px;
     list-style: none outside none;
     margin: 0;
-    padding:0 2px 0 5px;
-    font-size: 11px;
-    min-width: 100px;
+    overflow: hidden;
+    padding: 0 2px 0 5px;
+    width: 150px;
 }
 
-.qq-upload-file {}
-/* note : the '/++resource++quickupload_static' inside url is for Plone3 portal_css compliance */
+.qq-upload-file {
+    width: 100px;
+    overflow: hidden;
+}
+
 .qq-upload-spinner {display:none; background: url("/++resource++quickupload_static/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
 .qq-upload-size,.qq-upload-cancel {font-size:11px;}
 
@@ -100,7 +104,9 @@
 }
 
 .qq-upload-infos {
-
+   width: 120px;
+   height: 15px;
+   overflow: hidden;
 }
 
 .qq-upload-list li .server-error {

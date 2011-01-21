@@ -96,7 +96,7 @@ TwistranetQuickUpload.onAllUploadsComplete = function(){
         selector.val(lastUploadValue);
         new_selection = lastUploadValue;
         // reload the publisher panel with last upload value if exists
-        if (scopeValue) reloadScope(scopeValue, lastUploadValue, true);
+        if (scopeValue) reloadScope(scopeValue.toString(), lastUploadValue, true);
     }
 
 }
@@ -126,6 +126,7 @@ TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, file
                 lastUploadLegend = responseJSON.legend; 
                 lastUploadValue = responseJSON.value;
                 scopeValue = responseJSON.scope;
+                if(scopeValue && typeof Panels!='undefined') Panels[scopeValue.toString()] = 'unloaded';
                 window.setTimeout( TwistranetQuickUpload.onAllUploadsComplete, 5);
             }       
         }, 50);

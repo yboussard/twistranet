@@ -4,6 +4,7 @@ var default_publisher_id = '';
 var current_selection ='';
 var new_selection='';
 var selector = '';
+var Panels = {};
 
 showPreview = function(url, miniurl, legend) {
     newResultContainer = jQuery('#renderer-new');
@@ -77,11 +78,11 @@ loadScopeResources = function(scope_id, selection) {
           gridOnSelect(tnGrid[0]) ;
           widgetHeight();
           } );
+    Panels[scope_id] = 'loaded';
     
 }
 // function called after upload or any change (imagine possible things in future))
 // TODO put a wait loading icon
-// TODO : global variable for reload (today reload = true when something has changed)
 reloadScope = function(scope_id, selection, reload) {
     jQuery('.resourcePane').hide();
     jQuery('.resourcePane').removeClass('activePane');
@@ -134,8 +135,7 @@ jQuery(
             jQuery('#resourcepane-main .tnGridItem').click(function(e){
                 var scope_id = jQuery('>input:hidden', this).val();
                 jQuery('.resourcePane').hide();
-                // TODO : change it ! the test is not perfect
-                if (new_selection!=current_selection) reloadScope(scope_id, new_selection, true);
+                if (Panels[scope_id]=='unloaded') reloadScope(scope_id, new_selection, true);
                 else reloadScope(scope_id, new_selection, false);
             })
             
