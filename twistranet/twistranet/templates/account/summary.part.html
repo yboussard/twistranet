@@ -13,11 +13,13 @@
                 {% if account.has_pending_network_request %}
                     <li class="action">
                         <a class="tn-button tn-button-default"
-                           href="{% url add_to_my_network account.id %}">{% blocktrans %}Accept network request{% endblocktrans %}</a>
+                            title="{% blocktrans %}Accept in my network{% endblocktrans %}"
+                           href="{% url add_to_my_network account.id %}">{% blocktrans %}Accept{% endblocktrans %}</a>
                     </li>
                     <li class="action">
                         <a class="tn-button tn-button-discreet"
-                           href="">{% blocktrans %}Refuse network request{% endblocktrans %}</a>
+                            title="{% blocktrans %}Ignore request to add in my network{% endblocktrans %}"
+                           href="">{% blocktrans %}Ignore{% endblocktrans %}</a>
                     </li>                    
                 {% else %}
                     {% if account.can_add_to_my_network %}

@@ -88,15 +88,15 @@ def load_cogip():
             u.picture = Resource.objects.get(slug = picture_slug)
             u.save()
             
-        # Add friends in the network
+        # Add friends in the network (with pending request status)
         if useraccount['network']:
             for friend in [ s.strip() for s in useraccount['network'].split(',') ]:
                 log.debug("Put '%s' and '%s' in their network." % (username, friend))
                 current_account = UserAccount.objects.get(slug = username)
+                __account__ = UserAccount.objects.get(slug = username)
                 friend_account = UserAccount.objects.get(slug = friend)
-                __account__ = current_account
                 friend_account.add_to_my_network()
-                __account__ = friend
+                __account__ = UserAccount.objects.get(slug = friend)
                 current_account.add_to_my_network()
                 __account__ = SystemAccount.objects.get()
 
