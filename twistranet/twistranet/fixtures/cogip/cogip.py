@@ -109,13 +109,19 @@ def load_cogip():
         # Add friends in the network (with pending request status)
         if useraccount['network']:
             for friend in [ s.strip() for s in useraccount['network'].split(',') ]:
+                if friend.startswith('-'):
+                    approved = False
+                    friend = friend[1:]
+                else:
+                    approved = True
                 log.debug("Put '%s' and '%s' in their network." % (username, friend))
                 current_account = UserAccount.objects.get(slug = username)
                 __account__ = UserAccount.objects.get(slug = username)
                 friend_account = UserAccount.objects.get(slug = friend)
                 friend_account.add_to_my_network()
-                __account__ = UserAccount.objects.get(slug = friend)
-                current_account.add_to_my_network()
+                if approved:
+                    __account__ = UserAccount.objects.get(slug = friend)
+                    current_account.add_to_my_network()
                 __account__ = SystemAccount.objects.get()
 
     # Create communities and join ppl from there
