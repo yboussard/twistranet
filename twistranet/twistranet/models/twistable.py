@@ -388,7 +388,7 @@ class Twistable(_AbstractTwistable):
         else:
             created = True
                 
-        # Generate slug
+        # Generate slug (or not !)
         if not self.slug:
             if self.title:
                 self.slug = slugify(self.title)

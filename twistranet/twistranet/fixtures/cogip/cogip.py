@@ -143,15 +143,21 @@ def load_cogip():
 
     # Create status updates
     f = open(os.path.join(HERE_COGIP, "status.csv"), "rU")
-    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['owner', 'publisher', 'permissions', 'text', ])
+    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', ])
     for content in contents:
         __account__ = UserAccount.objects.get(slug = content['owner'])
-        status = StatusUpdate(
-            publisher = Account.objects.get(slug = content['publisher']),
-            permissions = content['permissions'],
-            description = content['text'],
-        )
-        status.save()
-        log.debug("Adding status update: %s" % status)
+        if content['type'].lower() == "status":
+            status = StatusUpdate(
+                publisher = Account.objects.get(slug = content['publisher']),
+                permissions = content['permissions'],
+                description = content['text'],
+            )
+            status.save()
+            log.debug("Adding status update: %s" % status)
+        elif content['type'].lower() == "comment":
+            comment = Comment.objects.create(in_reply_to = status, description = content['text'], )
+        else:
+            raise ValueError("Invalid content type: %s" % content['type'])
         __account__ = SystemAccount.get()
+
 
