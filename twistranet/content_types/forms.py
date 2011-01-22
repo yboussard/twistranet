@@ -1,10 +1,11 @@
+from django import forms
 from django.db import models
 from django.forms import widgets, ChoiceField
 
 from tinymce.widgets import TinyMCE
 
 from twistranet.twistranet.forms import form_registry
-from twistranet.twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm
+from twistranet.twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm, BaseEmptyForm
 from twistranet.twistranet.forms.widgets import  PermissionsWidget
 
 class StatusUpdateForm(BaseInlineForm):
@@ -56,6 +57,21 @@ class QuickDocumentForm(BaseRegularForm):
             'text':         TinyMCE(attrs = {'rows': 20, 'cols': 100}),
         }
 
+class CommentForm(BaseEmptyForm):
+    """
+    A simple comment form
+    """
+    allow_creation = False
+    allow_edition = False
+    redirect_to = forms.CharField(widget = widgets.HiddenInput())
+    
+    class Meta:
+        from twistranet.content_types.models import Comment
+        model = Comment
+        fields = ('description', )
+        widgets = {
+            'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
+        }
 
 class DocumentForm(BaseRegularForm):
     """

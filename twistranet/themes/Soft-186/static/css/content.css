@@ -168,3 +168,25 @@
   font-weight: bold;
   margin: 15px 0;
 }
+
+
+/* 
+    Comments Management
+*/
+
+.comment_ui {
+    display: inline;
+}
+
+.comment .publisher {
+    display: inline;
+}
+
+.comment {
+    padding:            5px 5px 5px 0;
+    margin:             5px 5px 5px 0;
+    background-color:   #f9f9f9;
+}
+
+
+

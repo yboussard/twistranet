@@ -85,6 +85,10 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ("127.0.0.1", )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
 CACHE_BACKEND = "locmem:///"
@@ -182,4 +186,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-

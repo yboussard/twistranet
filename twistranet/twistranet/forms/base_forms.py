@@ -5,9 +5,18 @@ from django.forms import widgets
 from twistranet.twistranet.forms.widgets import PermissionsWidget
 from twistranet.twistranet.lib.log import log
 
-class BaseForm(forms.ModelForm):
+class BaseEmptyForm(forms.ModelForm):
+    """
+    A base, dummy, empty form used as a base for all other TN forms.
+    """
     error_css_class = 'error'
     required_css_class = 'required'
+    
+
+class BaseForm(BaseEmptyForm):
+    """
+    A base TN form with the usual permission field
+    """
     
     def __init__(self, *args, **kw):
         """

@@ -1,0 +1,10 @@
+{% load thumbnail %}
+{% thumbnail  account.forced_picture.image "32x32" crop="center top" as thumb %}
+  <a title="{{account.title}}"
+     href="{{ account.get_absolute_url }}"
+     class="image-block image-block-icon image-block-alone">
+    <img title="{{account.title}}"
+         alt="{{account.title}}"
+         src="{{ thumb.url }}" />  
+  </a>
+{% endthumbnail %}

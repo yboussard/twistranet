@@ -10,6 +10,7 @@ RESERVED_KEYWORDS = [
     "cache",
     "configuration",
     "content",
+    "comment",
     "create",
     "delete",
     "download",
@@ -44,6 +45,7 @@ def slugify(value):
     value = unicode(re.sub('[^\w\s_-]', '', value).strip().lower())
     
     if not re.search(FULL_SLUG_REGEX, value):
-        raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))
+        value = "%s_" % value
+        # raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))
     return value[:50]
     

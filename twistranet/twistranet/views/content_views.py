@@ -1,4 +1,5 @@
 # Create your views here.
+import urllib
 from django.core.urlresolvers import reverse
 from django.shortcuts import *
 from django.contrib import messages
@@ -7,6 +8,7 @@ from django.utils.translation import ugettext as _
 from twistranet.twistranet.models import Content, Account
 from twistranet.twistranet.forms import form_registry
 from twistranet.twistranet.lib.log import *
+from twistranet.content_types.forms import *
 from twistranet.actions import *
 from base_view import *
 
@@ -173,6 +175,59 @@ class ContentDelete(BaseObjectActionView):
             self.request, 
             _("'%(name)s' has been deleted." % {'name': name})
         )
+
+
+class AjaxCommentsList(ContentView):
+    """
+    Special Ajax view for comments of a content
+    """
+    model_lookup = Content
+    name = "comment_list_ajax"
+    template = "content/comments.part.html"
+    template_variables = ContentView.template_variables + ['redirect_to', ]
+    
+    def as_action(self):
+        """This is not an action."""
+        return None
+            
+    def prepare_view(self, *args, **kw):
+        """
+        Fetch the original content and stuff.
+        Note that the form is add only, never edit.
+        """
+        super(AjaxCommentsList, self).prepare_view(*args, **kw)
+        
+        # Prepare object and publisher information
+        if not isinstance(self.object, Content):
+            return
+        publisher = self.object.publisher
+        if not isinstance(publisher, Account):
+            return
+
+        # If we can publish, let's go for the form.
+        if publisher.can_publish:
+            self.template_variables = self.template_variables + ["form", ]
+            if self.request.method == 'POST': # If the form has been submitted...
+                self.form = CommentForm(self.request.POST, self.request.FILES)
+                self.redirect_to = self.request.POST.get('redirect_to')
+                if self.form.is_valid(): # All validation rules should pass. We ignore form errors anyway
+                    # Save object and set publisher
+                    comment = self.form.save(commit = False)
+                    comment.publisher = publisher
+                    comment.in_reply_to = self.object
+                    comment.save()
+                    self.form.save_m2m()
+                raise MustRedirect(urllib.unquote(self.redirect_to))
+            else:
+                # Fetch the redirect_to variable from the caller and generate form
+                self.redirect_to = self.request.META.get('HTTP_REFERER')
+                self.form = CommentForm(
+                    initial = {"redirect_to": urlquote(self.redirect_to)}
+                )
+        else:
+            # We can't publish anyway, so no form available
+            self.redirect_to = None
+
 
 
 

@@ -61,6 +61,17 @@ class UserAccountView(BaseWallView):
                     </p>
                 """))
 
+    def get_recent_content_list(self):
+        """
+        Retrieve recent content list for the given account.
+        XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
+        This way we can just query objects with id > last_twistable_on_home
+        """
+        latest_ids = Content.objects.getActivityFeed(self.object)    
+        latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
+        return latest_list
+
     def get_title(self,):
         """
         We override get_title in a way that it could be removed easily in subclasses.
@@ -87,10 +98,12 @@ class HomepageView(UserAccountView):
         This way we can just query objects with id > last_twistable_on_home
         """
         auth = Account.objects._getAuthenticatedAccount()
-        latest_ids = Content.objects
+        latest_ids = None
         if not auth.is_anonymous:
             if Content.objects.filter(publisher = auth).exists():
-                latest_ids = Content.objects.followed
+                latest_ids = Content.objects.followed.exclude(model_name = "Comment")
+        if latest_ids is None:
+            latest_ids = Content.objects.exclude(model_name = "Comment")
         latest_ids = latest_ids.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
@@ -115,7 +128,7 @@ class PublicTimelineView(UserAccountView):
         """
         Just return all public / available content
         """
-        latest_ids = Content.objects.order_by("-id").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
+        latest_ids = Content.objects.order_by("-id").exclude(model_name = "Comment").values_list('id', flat = True)[:settings.TWISTRANET_CONTENT_PER_PAGE]
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
 

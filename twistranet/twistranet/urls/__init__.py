@@ -50,6 +50,9 @@ urlpatterns = patterns('',
     url(r'^content/(\d+)/new/(\w+)$',           AsView(ContentCreate), name = ContentCreate.name, ),
     url(r'^content/(\d+)/edit$',                AsView(ContentEdit), name = ContentEdit.name, ),
     url(r'^content/(\d+)/delete$',              AsView(ContentDelete), name = ContentDelete.name, ),
+    
+    # Comment links
+    url(r'^comment/(\d+)/list.xml$',            AsView(AjaxCommentsList), name = AjaxCommentsList.name, ),
 
     # Community pages. Remember that a community IS an account, so the account views will be available as well for 'em
     url(r'^community/(\d+)$',                   AsView(CommunityView, lookup = "id"), name = 'community_by_id'),
