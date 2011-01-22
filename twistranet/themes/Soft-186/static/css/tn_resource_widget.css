@@ -54,6 +54,27 @@
     visibility: hidden;
 }
 
+#renderer-new .image-block {
+    float: left !important
+}
+
+#renderer-new .sizes-selection {
+    float: left;
+}
+
+#renderer-new .sizes-selection label {
+    display: inline !important;
+    font-weight: lighter;;
+}
+
+#renderer-new .sizes-selection p {
+    margin: 0 !important;
+}       
+
+#renderer-new .sizes-selection h4 {
+    margin-bottom: 5px !important;
+}
+
 *html .renderer-preview {
     display: block;
     float: left;

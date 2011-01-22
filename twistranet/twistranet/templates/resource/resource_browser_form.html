@@ -1,7 +1,7 @@
 {% extends 'popup.html' %}
 {% load i18n %}
 {% block title %}{% blocktrans %}Resources browser{% endblocktrans %}{% endblock %}
-
 {% block content %}
-    {{ form.as_p }}
+    {{ form.as_p }} 
+    <input type="hidden" id="allow_browser_selection" name="allow_browser_selection" value="{{allow_browser_selection}}" />
 {% endblock %}

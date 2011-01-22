@@ -81,7 +81,7 @@ class ResourceWidget(forms.MultiWidget):
                     img = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                thumb = default.backend.get_thumbnail( img.object.image, u'100x100' )
+                thumb = default.backend.get_thumbnail( img.object.image, u'100x100', crop ='center top' )
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,
@@ -117,7 +117,7 @@ class ResourceWidget(forms.MultiWidget):
                 output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             output.append( """</div>""" ) # close resources-uploader div
 
-        # Display resources from all selectable accounts.
+        # Display resources from all selectable accounts and quickupload widget
         if self.allow_select:
             for i, widget in enumerate(self.widgets):
                 try:
@@ -136,7 +136,7 @@ class ResourceWidget(forms.MultiWidget):
             scopes = []
             for account in selectable_accounts :
                 img = account.forced_picture
-                icon = default.backend.get_thumbnail( img.image,  u'16x16' )
+                icon = default.backend.get_thumbnail( img.image,  u'16x16', crop ='center top' )
                 activeClass = account.id == default_publisher and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),

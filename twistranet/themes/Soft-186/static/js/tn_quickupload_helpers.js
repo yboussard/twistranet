@@ -11,6 +11,7 @@ var lastUploadMiniUrl = '';
 var lastUploadLegend = '';
 var lastUploadValue = '';  
 var scopeValue = '';
+var lastUploadType = '';
     
 TwistranetQuickUpload.addUploadFields = function(uploader, domelement, file, id, fillTitles) {
     if (fillTitles)  {
@@ -56,19 +57,20 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
         // if file is null for any reason jq block is no more here
         else missing++;
     }
-}    
-TwistranetQuickUpload.onAllUploadsComplete = function(){
-    resultContainer = jQuery('#tnuploadresult');
+}
+
+// same method as tn_resource_browser > showPreview
+// used when quickuploader is used outside of resource widget
+TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend, type) {
     newResultContainer = jQuery('#renderer-new');
-    // TODO : improve with showPreview function from tn_resource_widget.js
-    if (newResultContainer.length) {           
+    if (newResultContainer.length) {
         currentResultContainer = jQuery('#renderer-current');
         result= '\
 <a class="image-block image-block-mini"\
-   href="'+ lastUploadUrl +'"\
-   title="' + lastUploadLegend + '">\
-   <img src="' + lastUploadMiniUrl + '"\
-        alt="' + lastUploadLegend + '" />\
+   href="'+ url +'"\
+   title="' + legend + '">\
+   <img src="' + miniurl + '"\
+        alt="' + legend + '" />\
 </a>\
 ';
         jQuery('a', newResultContainer).remove();
@@ -76,27 +78,18 @@ TwistranetQuickUpload.onAllUploadsComplete = function(){
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
     }
-    
-    else if (resultContainer.length) {
-        result= '\
-<a class="image-block image-block-mini"\
-   href="'+ lastUploadUrl +'"\
-   title="' + lastUploadLegend + '">\
-   <img src="' + lastUploadPreviewUrl + '"\
-        alt="' + lastUploadLegend + '" />\
-</a>\
-<label>' + lastUploadLegend + '</label>\
-';
-        resultContainer.html(result);
-        resultContainer.show();
-    }
+}
+
+
+TwistranetQuickUpload.onAllUploadsComplete = function(){
+    showPreview (lastUploadUrl, lastUploadMiniUrl, lastUploadPreviewUrl, lastUploadLegend, lastUploadType);
     // fix selector value in a form
     target_selector = jQuery('#selector_target');
     if (target_selector.length) {
         selector.val(lastUploadValue);
         new_selection = lastUploadValue;
         // reload the publisher panel with last upload value if exists
-        if (scopeValue) reloadScope(scopeValue.toString(), lastUploadValue, true);
+        if (scopeValue && typeof reloadScope != 'undefined') reloadScope(scopeValue.toString(), lastUploadValue, true);
     }
 
 }
@@ -121,8 +114,9 @@ TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, file
             var newlist = jQuery('li', uploadList);
             if (! newlist.length) {
                 lastUploadUrl = responseJSON.url;
-                lastUploadPreviewUrl = responseJSON.preview_url;   
+                lastUploadPreviewUrl = responseJSON.preview_url;
                 lastUploadMiniUrl = responseJSON.mini_url;
+                lastUploadType = responseJSON.type;
                 lastUploadLegend = responseJSON.legend; 
                 lastUploadValue = responseJSON.value;
                 scopeValue = responseJSON.scope;

@@ -241,15 +241,17 @@ def create_resource(request):
 def resource_browser(request):
     """
     A view used to browse and upload resources
+    Used by wysiwyg editors
     Based on resource field
     """
     
-    form = ResourceBrowserForm()
     params = {}
     params["account"] = request.user.get_profile()
     params["actions"] = ''
     params["site_name"] = utils.get_site_name()
     params["baseline"] = utils.get_baseline()
+    params["allow_browser_selection"] = int(request.GET.get('allow_browser_selection', '') or 0 ) 
+    form = ResourceBrowserForm()
     params['form'] = form
     template = 'resource/resource_browser_form.html'
     t = loader.get_template(template)
@@ -396,6 +398,10 @@ def resource_quickupload_file(request):
         publisher_id = request.GET.get('publisher_id', '')
         # i'm not sure here
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
+            type = 'image'
+        else:
+            type = 'file'
         if not title :
             # try to split filenames when there's no title to avoid potential css surprises
             title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
@@ -405,22 +411,23 @@ def resource_quickupload_file(request):
                 params['publisher'] = Account.objects.get(id = publisher_id)
             new_file = Resource(**params)
             new_file.save() 
-            # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
-            try :
+
+            if type== 'image' :
                 preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
                 preview_url = preview.url
-                mini = default.backend.get_thumbnail( new_file.object.image, u'100x100' ) 
+                mini = default.backend.get_thumbnail( new_file.object.image, u'100x100', crop ='center top' ) 
                 mini_url = mini.url
-            except :
-                log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
-                preview_url = ''
+            else :
+                preview_url = mini_url = ''
+
             msg = {'success': True,
                    'value':        new_file.id,
-                   'url' :         new_file.get_absolute_url(), 
+                   'url' :         new_file.get_absolute_url(),
                    'preview_url' : preview_url,    
                    'mini_url' :    mini_url, 
                    'legend' :      title, 
-                   'scope':        publisher_id,}
+                   'scope':        publisher_id,
+                   'type' :        type,}
         except:            
             msg = {u'error': u'serverError'}
     else:
@@ -451,19 +458,24 @@ def resource_by_publisher_json(request, publisher_id):
     files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
     for file in files :
-        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
-        try :
-            thumb = default.backend.get_thumbnail( file.object.image, u'50x50' )
-            mini = default.backend.get_thumbnail( file.object.image, u'100x100' )       
-            preview = default.backend.get_thumbnail( file.object.image, u'500x500' )
+        img = file.object.image
+        file_name = img.name
+        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+        if content_type in ('image/jpeg', 'image/jpg', 'image/png', 'image/gif') :
+            type = 'image'
+        else:
+            type = 'file'
+        if type == 'image' :
+            thumb = default.backend.get_thumbnail( img, u'50x50', crop ='center top' )
+            mini = default.backend.get_thumbnail( img, u'100x100', crop ='center top' )
+            preview = default.backend.get_thumbnail( img, u'500x500' )
             thumbnail_url = thumb.url        
             mini_url = mini.url
-            preview_url = preview.url
-        except IOError:
-            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
-            thumbnail_url = ''        
-            mini_url = ''
-            preview_url = ''
+            preview_url = preview.url  
+        
+        else :
+            thumbnail_url = mini_url = preview_url = ''
+
         is_selected = file.id == (int(selection) or 0)
         result = {
                 "url":              file.get_absolute_url(),
@@ -472,8 +484,14 @@ def resource_by_publisher_json(request, publisher_id):
                 "preview_url":      preview_url,
                 "id":               file.id,
                 "title":            file.title,
-                "selected":         is_selected and ' checked="checked"' or ''
+                "selected":         is_selected and ' checked="checked"' or '',
+                "type":             type,
                 }
         results.append(result)
-    return HttpResponse( json.dumps(results),
+    data = {}
+    # TODO : change it for batch
+    data['page'] = 1
+    data['results'] = results
+    data['sizes'] = ((_('Thumbnail cropped'), '100*100'), (_('Medium size'), '500*500'), (_('Full size'), 'full') )
+    return HttpResponse( json.dumps(data),
                          mimetype='text/plain')
