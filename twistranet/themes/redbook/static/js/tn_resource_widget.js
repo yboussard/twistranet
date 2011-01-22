@@ -68,7 +68,7 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
                     e.preventDefault();
                     e.stopPropagation();
                     URL = jQuery('input:checked', this).val();
-                    FileBrowserDialogue.submit(URL);
+                    FileBrowserDialogue.submit(URL, legend);
                     return false;
                 });
             });
