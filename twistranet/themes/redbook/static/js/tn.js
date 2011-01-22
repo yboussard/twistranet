@@ -5,8 +5,6 @@
 
 // global vars
 
-// for tinymce popup only, remove it in future if editor is no more used
-include( '/static/js/tiny_mce/tiny_mce_popup.js' );
 
 var defaultDialogMessage = '';
 var curr_url = window.location.href;
@@ -492,7 +490,6 @@ var twistranet = {
         return false;
     },
     initWysiwygBrowser: function() {
-        // if tinymce
         if (typeof tinyMCEPopup != 'undefined') tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
         // put here the code for other editors (ckeditor ....)
     }

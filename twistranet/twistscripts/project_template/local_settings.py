@@ -22,6 +22,8 @@ TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't w
 
 SECRET_KEY = '%(SECRET_KEY)s'
 
+TWISTRANET_IMPORT_COGIP = False
+
 
 
 """ ### START -t OPTION
