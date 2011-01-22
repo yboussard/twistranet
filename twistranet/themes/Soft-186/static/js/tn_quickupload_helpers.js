@@ -73,7 +73,8 @@ TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend,
         alt="' + legend + '" />\
 </a>\
 ';
-        jQuery('a', newResultContainer).remove();
+        jQuery('a', newResultContainer).remove();      
+        jQuery('.sizes-selection', newResultContainer).remove();
         newResultContainer.append(result);
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);

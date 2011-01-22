@@ -5,6 +5,9 @@
 
 // global vars
 
+// for tinymce popup only, remove it in future if editor is no more used
+include( '/static/js/tiny_mce/tiny_mce_popup.js' );
+
 var defaultDialogMessage = '';
 var curr_url = window.location.href;
 // live searchbox disparition effect
@@ -291,10 +294,40 @@ loadQuickUpload = function(obj) {
     });
 }
 
+var FileBrowserDialogue = {
+    init : function () {
+        // Here goes your code for setting your custom things onLoad.
+    },
+    submit : function (URL) {
+        //var URL = document.my_form.my_field.value;
+        var win = tinyMCEPopup.getWindowArg("window");
+
+        // insert information now
+        win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
+
+        // are we an image browser
+        if (typeof(win.ImageDialog) != "undefined") {
+            // we are, so update image dimensions...
+            if (win.ImageDialog.getImageData)
+                win.ImageDialog.getImageData();
+
+            // ... and preview if necessary
+            if (win.ImageDialog.showPreviewImage)
+                win.ImageDialog.showPreviewImage(URL);
+        }
+
+        // close popup window
+        tinyMCEPopup.close();
+    }
+}
+
 // main class
 var twistranet = {
+    browser_width: 0,
+    browser_height: 0,
     __init__: function(e) {
         /* finalize styles */
+        twistranet.setBrowserProperties();
         twistranet.finalizestyles();
         twistranet.showContentActions();
         twistranet.initconfirmdialogs();
@@ -306,6 +339,13 @@ var twistranet = {
         twistranet.tnGridActions();
         twistranet.formProtection();
         twistranet.loadUploaders();
+        twistranet.initWysiwygBrowser();
+    },
+    setBrowserProperties : function(e) {
+        if (! twistranet.browser_width){
+            twistranet.browser_width = jQuery(window).width();
+            twistranet.browser_height = jQuery(window).height();
+        } 
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
@@ -434,15 +474,14 @@ var twistranet = {
         });
     },
     tinymceBrowser: function(field_name, url, type, win) {
-        // alert("Field_Name: " + field_name + "nURL: " + url + "nType: " + type + "nWin: " + win); // debug/testing
-    
         var cmsURL = '/resource_browser/?allow_browser_selection=1&type=' + type;    // script URL - use an absolute path!
-    
+        var browser_width = parseInt(twistranet.browser_width*70/100);     
+        var browser_height = parseInt(twistranet.browser_height*90/100);
         tinyMCE.activeEditor.windowManager.open({
             file : cmsURL,
             title : 'Twistranet Browser',
-            width : 700,  // Your dimensions may differ - toy around with them!
-            height : 400,
+            width : browser_width,  // Your dimensions may differ - toy around with them!
+            height : browser_height,
             resizable : "yes",
             inline : "yes",  // This parameter only has an effect with inlinepopups plugin!
             close_previous : "no"
@@ -451,6 +490,11 @@ var twistranet = {
             input : field_name
         });
         return false;
+    },
+    initWysiwygBrowser: function() {
+        // if tinymce
+        if (typeof tinyMCEPopup != 'undefined') tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
+        // put here the code for other editors (ckeditor ....)
     }
 }
 

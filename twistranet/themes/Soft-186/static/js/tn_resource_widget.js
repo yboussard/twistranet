@@ -24,7 +24,7 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
                 result += '\
     <div class="sizes-selection">\
       <h4>Choose Sizes for "' + legend + '"</h4>\
-      <form>\
+      <form id="browser-selection-form">\
         <p>\
           <input type="radio"\
                  checked="checked"\
@@ -56,10 +56,23 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
             }
         }
 
-        jQuery('a', newResultContainer).remove();
+        jQuery('>a', newResultContainer).remove();
+        jQuery('.sizes-selection', newResultContainer).remove();
         newResultContainer.append(result);
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
+        
+        if (allow_browser_selection) {
+            jQuery(document).ready(function(){
+                jQuery('#browser-selection-form').bind('submit', function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    URL = jQuery('input:checked', this).val();
+                    FileBrowserDialogue.submit(URL);
+                    return false;
+                });
+            });
+        }
     }
 }
 
@@ -162,29 +175,12 @@ getActivePublisher = function() {
     return jQuery('.activePane input.scopeId').val();
 }
 
-selectTiny = function () {
-    var URL = document.my_form.my_field.value;
-    var win = tinyMCEPopup.getWindowArg("window");
 
-    // insert information now
-    win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
 
-    // are we an image browser
-    if (typeof(win.ImageDialog) != "undefined")
-    {
-        // we are, so update image dimensions and preview if necessary
-        if (win.ImageDialog.getImageData) win.ImageDialog.getImageData();
-        if (win.ImageDialog.showPreviewImage) win.ImageDialog.showPreviewImage(URL);
-    }
-
-    // close popup window
-    tinyMCEPopup.close();
-}
 
 // TODO in V1: beurk jquery style like, make it more pythonic
 jQuery(
     function(){
-        alert(tinyMCE.getWindowArg("window"));
         reswidget = jQuery('.resource-widget');
         theform = reswidget.parents('form');
         target_selector = jQuery('#selector_target', reswidget);
@@ -251,7 +247,6 @@ jQuery(
                 }
                 selector.val(new_selection);
             }
-
         }
     }
 )
