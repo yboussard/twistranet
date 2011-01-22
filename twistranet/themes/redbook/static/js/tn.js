@@ -296,7 +296,7 @@ var FileBrowserDialogue = {
     init : function () {
         // Here goes your code for setting your custom things onLoad.
     },
-    submit : function (URL, title) {
+    submit : function (URL,title) {
         //var URL = document.my_form.my_field.value;
         var win = tinyMCEPopup.getWindowArg("window");
 
@@ -305,16 +305,16 @@ var FileBrowserDialogue = {
 
         // are we an image browser
         if (typeof(win.ImageDialog) != "undefined") {
-            // we are, so update image dimensions...
+            // we are, so update image dimensions and title...
             if (win.ImageDialog.getImageData)
-                win.ImageDialog.getImageData();  
+                win.ImageDialog.getImageData();
                 win.document.getElementById('title').value = title;
                 win.document.getElementById('alt').value = title;
-
             // ... and preview if necessary
             if (win.ImageDialog.showPreviewImage)
                 win.ImageDialog.showPreviewImage(URL);
         }
+        else win.document.getElementById('linktitle').value = title;
 
         // close popup window
         tinyMCEPopup.close();

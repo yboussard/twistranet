@@ -314,6 +314,7 @@ var FileBrowserDialogue = {
             if (win.ImageDialog.showPreviewImage)
                 win.ImageDialog.showPreviewImage(URL);
         }
+        else win.document.getElementById('linktitle').value = title;
 
         // close popup window
         tinyMCEPopup.close();

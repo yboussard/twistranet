@@ -54,6 +54,27 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
     </div>\
     ';
             }
+            // for simple file
+            else {
+                result += '\
+    <div class="sizes-selection">\
+      <h4>' + legend + '</h4>\
+      <form id="browser-selection-form">\
+        <p>\
+          <input type="radio"\
+                 checked="checked"\
+                 id="selection-full"\
+                 name="selection"\
+                 value="' + url + '" />\
+          <label for="selection-full">Link the file</label>\
+        </p>\
+        <div class="form-controls">\
+          <input type="submit" value="OK" />\
+        </div>\
+      </form>\
+    </div>\
+    ';
+            }
         }
 
         jQuery('>a', newResultContainer).remove();

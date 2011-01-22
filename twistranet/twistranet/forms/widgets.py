@@ -1,6 +1,6 @@
 import os
 import traceback
-
+import mimetypes
 from django import forms
 from django.db import models
 from django.forms.util import flatatt
@@ -150,11 +150,11 @@ class ResourceWidget(forms.MultiWidget):
                 # TODO  Should implement image searching, batching & so on
                 for img in images :
                     if len(scope['icons'])<=9 :
-                        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
-                        try :               
+                        file_name = img.object.image.name
+                        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+                        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
                             icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
-                        except IOError:
-                            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+                        else :
                             continue
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
