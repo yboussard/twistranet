@@ -266,7 +266,7 @@ jQuery(
                                     jQuery('.grid-item-type', itemselected).val());
                     }
                 }
-                selector.val(new_selection);
+                selector.val(new_selection).trigger('change');
             }
         }
     }
