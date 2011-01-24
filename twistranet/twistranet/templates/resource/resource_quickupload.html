@@ -27,7 +27,21 @@
     </div>
     <!-- uploadify javascript -->
     <script type="text/javascript">
-      {{ qu_script|safe }}
+        jQuery(
+            function(){
+                if (typeof showPreview == 'undefined') {
+                    showPreview = TwistranetQuickUpload.uploadPreview;
+                }
+                resultContainer = jQuery('#tnuploadresult');
+                previewContainer = jQuery('#renderer-new');
+                if (! previewContainer.length) {
+                    resultContainer.append('<div id="renderer-new"></div>');
+                    resultContainer.show();
+                } 
+            }
+        );
+        
+        {{ qu_script|safe }}
     </script>
 </div>
 <div class="clear"><!-- --></div>

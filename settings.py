@@ -123,7 +123,7 @@ TINYMCE_FILEBROWSER = False
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,emotions,paste,searchreplace,inlinepopups",
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
     'theme': "advanced",
     'theme_advanced_toolbar_location': "top",
     'theme_advanced_toolbar_align' : "left",

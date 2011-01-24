@@ -1,6 +1,6 @@
 import os
 import traceback
-
+import mimetypes
 from django import forms
 from django.db import models
 from django.forms.util import flatatt
@@ -81,7 +81,7 @@ class ResourceWidget(forms.MultiWidget):
                     img = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                thumb = default.backend.get_thumbnail( img.object.image, u'100x100' )
+                thumb = default.backend.get_thumbnail( img.object.image, u'100x100', crop ='center top' )
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,
@@ -117,7 +117,7 @@ class ResourceWidget(forms.MultiWidget):
                 output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             output.append( """</div>""" ) # close resources-uploader div
 
-        # Display resources from all selectable accounts.
+        # Display resources from all selectable accounts and quickupload widget
         if self.allow_select:
             for i, widget in enumerate(self.widgets):
                 try:
@@ -136,7 +136,7 @@ class ResourceWidget(forms.MultiWidget):
             scopes = []
             for account in selectable_accounts :
                 img = account.forced_picture
-                icon = default.backend.get_thumbnail( img.image,  u'16x16' )
+                icon = default.backend.get_thumbnail( img.image,  u'16x16', crop ='center top' )
                 activeClass = account.id == default_publisher and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),
@@ -150,11 +150,11 @@ class ResourceWidget(forms.MultiWidget):
                 # TODO  Should implement image searching, batching & so on
                 for img in images :
                     if len(scope['icons'])<=9 :
-                        # XXX SUBOPTIMAL TRY/EXCEPT to filter on image types. We should use mime types instead!
-                        try :               
+                        file_name = img.object.image.name
+                        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+                        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
                             icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
-                        except IOError:
-                            log.warning("Exception while trying to render resource browser widget: %s" % (traceback.format_exc()))
+                        else :
                             continue
                         scope['icons'].append(icon.url)
                 scopes.append(scope)

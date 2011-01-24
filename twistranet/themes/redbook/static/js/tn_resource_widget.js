@@ -1,12 +1,13 @@
-// resource widget helper    
+// resource widget helper
 
 var default_publisher_id = '';
 var current_selection ='';
 var new_selection='';
 var selector = '';
 var Panels = {};
+var allow_browser_selection=0;
 
-showPreview = function(url, miniurl, legend) {
+showPreview = function(url, miniurl, previewurl, legend, type) {
     newResultContainer = jQuery('#renderer-new');
     if (newResultContainer.length) {
         currentResultContainer = jQuery('#renderer-current');
@@ -18,10 +19,81 @@ showPreview = function(url, miniurl, legend) {
         alt="' + legend + '" />\
 </a>\
 ';
-        jQuery('a', newResultContainer).remove();
+        if (allow_browser_selection) {
+            if (type=='image') {
+                result += '\
+    <div class="sizes-selection">\
+      <h4>Choose Sizes for "' + legend + '"</h4>\
+      <form id="browser-selection-form">\
+        <p>\
+          <input type="radio"\
+                 checked="checked"\
+                 id="selection-full"\
+                 name="selection"\
+                 value="' + url + '" />\
+          <label for="selection-full">Full size</label>\
+        </p>\
+        <p>\
+          <input type="radio"\
+                 id="selection-preview"\
+                 name="selection"\
+                 value="' + previewurl + '" />\
+          <label for="selection-preview">Medium size (500*500 max)</label>\
+        </p>\
+        <p>\
+          <input type="radio"\
+                 id="selection-mini"\
+                 name="selection"\
+                 value="' + miniurl + '" />\
+          <label for="selection-mini">Thumbnail cropped (100*100)</label>\
+        </p>\
+        <div class="form-controls">\
+          <input type="submit" value="OK" />\
+        </div>\
+      </form>\
+    </div>\
+    ';
+            }
+            // for simple file
+            else {
+                result += '\
+    <div class="sizes-selection">\
+      <h4>' + legend + '</h4>\
+      <form id="browser-selection-form">\
+        <p>\
+          <input type="radio"\
+                 checked="checked"\
+                 id="selection-full"\
+                 name="selection"\
+                 value="' + url + '" />\
+          <label for="selection-full">Link the file</label>\
+        </p>\
+        <div class="form-controls">\
+          <input type="submit" value="OK" />\
+        </div>\
+      </form>\
+    </div>\
+    ';
+            }
+        }
+
+        jQuery('>a', newResultContainer).remove();
+        jQuery('.sizes-selection', newResultContainer).remove();
         newResultContainer.append(result);
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
+        
+        if (allow_browser_selection) {
+            jQuery(document).ready(function(){
+                jQuery('#browser-selection-form').bind('submit', function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    URL = jQuery('input:checked', this).val();
+                    FileBrowserDialogue.submit(URL, legend);
+                    return false;
+                });
+            });
+        }
     }
 }
 
@@ -40,9 +112,19 @@ loadScopeResources = function(scope_id, selection) {
     scopeUrl = '/resource_by_publisher/json/';
     var tnGrid = jQuery('.tnGrid', scopeContainer);
     tnGrid.empty();
-    jQuery.get(scopeUrl+scope_id+'?selection=' + selection, 
+    jQuery.get(scopeUrl+scope_id+'?selection=' + selection,
           function(data) {
-              results = eval( "(" + data + ")" );
+              dataobject = eval( "(" + data + ")" );
+              results = dataobject.results;
+              nbresults = results.length;
+              if (!nbresults) {
+                  jQuery('.mediaresource-scopetitle', scopeContainer).hide();
+                  jQuery('.mediaresource-noresults', scopeContainer).show();
+              }
+              else {
+                  jQuery('.mediaresource-scopetitle', scopeContainer).show();
+                  jQuery('.mediaresource-noresults', scopeContainer).hide();
+              }
               jQuery(results).each(function() {
                   html = '\
 <div class="tnGridItem">\
@@ -70,6 +152,10 @@ loadScopeResources = function(scope_id, selection) {
          name="grid-item-miniurl"\
          class="grid-item-miniurl"\
          value="' + this.mini_url + '" />\
+  <input type="hidden"\
+         name="grid-item-type"\
+         class="grid-item-type"\
+         value="' + this.type + '" />\
 </div>\
 ';
                   tnGrid.append(html);
@@ -79,7 +165,7 @@ loadScopeResources = function(scope_id, selection) {
           widgetHeight();
           } );
     Panels[scope_id] = 'loaded';
-    
+
 }
 // function called after upload or any change (imagine possible things in future))
 // TODO put a wait loading icon
@@ -94,7 +180,7 @@ reloadScope = function(scope_id, selection, reload) {
     jQuery('#resourcepane-'+scope_id).fadeIn(1000);
 }
 
-// calculate the good height 
+// calculate the good height
 //it's important when displaying widget in a form to avoid bad moving effects
 widgetHeight = function() {
     var selector_height = 0;
@@ -110,13 +196,18 @@ getActivePublisher = function() {
     return jQuery('.activePane input.scopeId').val();
 }
 
-// TODO : beurk jquery style like, make it pythonic
+
+
+
+// TODO in V1: beurk jquery style like, make it more pythonic
 jQuery(
     function(){
         reswidget = jQuery('.resource-widget');
         theform = reswidget.parents('form');
         target_selector = jQuery('#selector_target', reswidget);
-        if (target_selector.length) {      
+        allow_browser_selection_field = jQuery('#allow_browser_selection');
+        if (allow_browser_selection_field.length) allow_browser_selection = parseInt(allow_browser_selection_field.val());
+        if (target_selector.length) {
             selector = jQuery('#' + target_selector.val());
             current_selection = selector.val();
             new_selection = selector.val();
@@ -124,6 +215,7 @@ jQuery(
             // remove input fields used by ajax requests only
             theform.bind('submit', function(){
                  target_selector.remove();
+                 allow_browser_selection_field.remove();
                  jQuery('.tnGrid input', reswidget).remove();
             })
             // preload resources in background
@@ -138,16 +230,16 @@ jQuery(
                 if (Panels[scope_id]=='unloaded') reloadScope(scope_id, new_selection, true);
                 else reloadScope(scope_id, new_selection, false);
             })
-            
+
             // back to all accounts action
             jQuery('.resource-back-button').click(function(e){
                 jQuery('.resourcePane').hide();
                 jQuery('#resourcepane-main').fadeIn(500);
             })
-            // redefine the gridOnChange method
+            // redefine the gridOnChange method (used everywhere on twistranet)
             // because we want to unselect all elements from all panels
             gridOnChange = function(grid) {
-                jQuery('.resourcePane .tnGridItem').each(function(){       
+                jQuery('.resourcePane .tnGridItem').each(function(){
                     var checkbox = jQuery('>input:checkbox, >input:radio', this);
                     if (checkbox.length) {
                         if (checkbox.is(':checked')) {
@@ -167,14 +259,15 @@ jQuery(
                     var checkbox = jQuery('>input:checkbox, >input:radio', itemselected);
                     new_selection = checkbox.val();
                     if (new_selection!=current_selection) {
-                        showPreview(jQuery('a', itemselected).attr('href'), 
-                                    jQuery('.grid-item-miniurl', itemselected).val(), 
-                                    jQuery('a', itemselected).attr('title'));
+                        showPreview(jQuery('a', itemselected).attr('href'),
+                                    jQuery('.grid-item-miniurl', itemselected).val(),
+                                    jQuery('.grid-item-previewurl', itemselected).val(),
+                                    jQuery('a', itemselected).attr('title'),
+                                    jQuery('.grid-item-type', itemselected).val());
                     }
                 }
                 selector.val(new_selection);
             }
-            
         }
     }
 )

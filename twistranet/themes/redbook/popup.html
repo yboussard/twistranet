@@ -25,9 +25,15 @@
     <script type="text/javascript" src="/static/js/jquery.dd.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/fileuploader.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/tn_quickupload_helpers.js" charset="utf-8"></script>
+    <!-- XXX TODO : put this script in resource widget javascript helpers has nothing todo here -->
+    <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce_popup.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/tn.js" charset="utf-8"></script>
     {% if form %}{{ form.media }}{% endif %}
     <style>
+      html {
+        background: none !important;
+        background-image: none !important;
+      }
       .resource-widget {
         display: block;
         width: 100%;
@@ -41,23 +47,18 @@
         width: 98% !important;
         padding:0 1% !important
       }
+      body {
+        background-color: #F7F7F7 !important;
+        background-image: none !important;
+      }
+      #content {
+        background-color: transparent !important;
+      }
     </style>
 </head>
 <body class="noleftcol">
     <div id="page">
         <div id="wrapper">
-            <div id="header">
-                <div id="head">
-                    <a class="logotext"
-                       href="{% url twistranet_home %}">
-                        <div class="logo-title">{{ site_name|safe }}</div>
-                        <div class="logo-slogan">{{ baseline|safe }}</div>
-                    </a>
-                </div>
-                
-            
-            </div><!-- End header --> 
-
             <div id="wrap">
                 <div id="content">
                     {% block content %}
