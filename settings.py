@@ -1,7 +1,7 @@
 # Django settings for TwistraNet project.
 import os.path
 
-HERE = os.path.abspath(os.path.dirname(__file__))
+HERE = os.path.dirname(__file__)
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS':      False,
@@ -12,6 +12,19 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+
+# Defined database engines.
+# You can always overload yours in your local_settings.py file.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': "%s/var/tn.db" % (HERE, ),      # Or path to database file if using sqlite3.
+        'USER': '',                             # Not used with sqlite3.
+        'PASSWORD': '',                         # Not used with sqlite3.
+        'HOST': '',                             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -89,7 +102,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_PROFILE_MODULE = "twistranet.UserAccount"
+AUTH_PROFILE_MODULE = "django_twistranet.twistranet.UserAccount"
 
 CACHE_BACKEND = "locmem:///"
 

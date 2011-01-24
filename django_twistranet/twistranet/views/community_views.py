@@ -16,7 +16,7 @@ from django_twistranet.twistranet.lib.decorators import require_access
 from django_twistranet.actions import *
 
 from django_twistranet.twistranet.models import *
-from base_view import BaseView, MustRedirect, BaseObjectActionView
+from django_twistranet.core.views import *
 from account_views import UserAccountView, AccountListingView
 
 from  django_twistranet.twistranet.lib.log import log

@@ -13,7 +13,7 @@ from django.conf import settings
 from django_twistranet.twistranet.models import *
 from django_twistranet.twistranet.forms import account_forms
 from django_twistranet.actions import *
-from base_view import *
+from django_twistranet.core.views import *
 
 class UserAccountView(BaseWallView):
     """

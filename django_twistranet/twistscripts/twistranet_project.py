@@ -37,7 +37,7 @@ def create_project():
             "Please try another name." % project_name)
 
     # Build the project up copying over the twistranet project_template 
-    twist_package = __import__('twistranet')
+    twist_package = __import__('django_twistranet')
     twist_package_path = os.path.dirname(os.path.abspath(twist_package.__file__))
     shutil.copytree(os.path.join(twist_package_path, "twistscripts", "project_template"), project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
     
