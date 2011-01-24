@@ -15,7 +15,7 @@ from django.utils._os import safe_join
 
 from django.core.files.storage import FileSystemStorage
 
-import settings
+from django.conf import settings
 
 class Twistorage(FileSystemStorage):
     """

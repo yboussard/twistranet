@@ -6,11 +6,10 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from haystack.views import SearchView
 from django.http import HttpResponse, HttpResponseRedirect
-from django_twistranet.twistranet.lib.decorators import require_access
-from base_view import BaseView, MustRedirect
 from haystack.forms import ModelSearchForm
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
+from django_twistranet.core.views import BaseView, MustRedirect
 from django_twistranet.twistranet.lib.utils import truncate
 
 try :
@@ -21,7 +20,7 @@ except :
     import simplejson as json
 
 RESULTS_PER_PAGE = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
-LIVE_SEARCH_RESULTS_NUMBER = 7
+LIVE_SEARCH_RESULTS_NUMBER = settings.LIVE_SEARCH_RESULTS_NUMBER
 LIVE_SEARCH_THUMBS_SIZE = u'50x50'
 
 

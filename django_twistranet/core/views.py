@@ -17,7 +17,7 @@ from django_twistranet.twistranet.forms import form_registry
 from django_twistranet.twistranet.lib.log import *
 from django_twistranet.twistranet.lib import utils
 
-from twistranet.actions import *
+from django_twistranet.actions import *
 
 class MustRedirect(Exception):
     """

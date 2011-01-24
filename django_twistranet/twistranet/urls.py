@@ -1,11 +1,7 @@
 from django.conf.urls.defaults import *
 import os.path
-from django_twistranet.views import *
+from django_twistranet.twistranet.views import *
 from django_twistranet.twistranet.lib.slugify import SLUG_REGEX
-
-# Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
 
 urlpatterns = patterns('',
     # The wall page for generic accounts
@@ -24,25 +20,25 @@ urlpatterns = patterns('',
     url(r'^pending_network/$',                      AsView(PendingNetworkView), name = PendingNetworkView.name),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    url(r'^resource/(\d+)$',                    'django_twistranet.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX,       'django_twistranet.views.resource_by_slug', name='resource_by_slug'),
-    (r'^resource/new$',                         'django_twistranet.views.create_resource'),      
-    (r'^resource/(\w+)$',                       'django_twistranet.views.resource_by_slug_or_id'),  
-    (r'^resource_by_publisher/json/(\d+)$',     'django_twistranet.views.resource_by_publisher_json'),     # return json list of resources by publisher id
-    (r'^account/(\d+)/resource/(\w+)$',         'django_twistranet.views.resource_by_account'),    # Fetch by account pty
-    (r'^content/(\d+)/resource/(\w+)$',         'django_twistranet.views.resource_by_content'),    # Fetch by content pty   
-    (r'^resource_browser/$',                    'django_twistranet.views.resource_browser'),       # resource browser used by wysiwyg editors
-    (r'^resource_quickupload/$',                'django_twistranet.views.resource_quickupload'),   # resource quickupload ajax template
-    (r'^resource_quickupload_file/$',           'django_twistranet.views.resource_quickupload_file'),   # resource quickupload json response
+    url(r'^resource/(\d+)$',                    'django_twistranet.twistranet.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX,       'django_twistranet.twistranet.views.resource_by_slug', name='resource_by_slug'),
+    (r'^resource/new$',                         'django_twistranet.twistranet.views.create_resource'),      
+    (r'^resource/(\w+)$',                       'django_twistranet.twistranet.views.resource_by_slug_or_id'),  
+    (r'^resource_by_publisher/json/(\d+)$',     'django_twistranet.twistranet.views.resource_by_publisher_json'),     # return json list of resources by publisher id
+    (r'^account/(\d+)/resource/(\w+)$',         'django_twistranet.twistranet.views.resource_by_account'),    # Fetch by account pty
+    (r'^content/(\d+)/resource/(\w+)$',         'django_twistranet.twistranet.views.resource_by_content'),    # Fetch by content pty   
+    (r'^resource_browser/$',                    'django_twistranet.twistranet.views.resource_browser'),       # resource browser used by wysiwyg editors
+    (r'^resource_quickupload/$',                'django_twistranet.twistranet.views.resource_quickupload'),   # resource quickupload ajax template
+    (r'^resource_quickupload_file/$',           'django_twistranet.twistranet.views.resource_quickupload_file'),   # resource quickupload json response
     
     # Thumbnail cache links
-    url(r'\Wcache/([\w\./]+)$',                 'django_twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
-    url(r'^cache/([\w\./]+)$',                  'django_twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'\Wcache/([\w\./]+)$',                 'django_twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'^cache/([\w\./]+)$',                  'django_twistranet.twistranet.views.resource_cache'),         # Fetch a thumb cache by its key
 
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
-    url(r'^media_resource/new$',                'django_twistranet.views.create_media', name = "media_create", ),
-    url(r'^media_resource/(\d+)/edit$',         'django_twistranet.views.edit_media', name = "media_edit", ),    
-    url(r'^media_library/(\d+)$',               'django_twistranet.views.view_media_library', name = "media_library_view", ),
+    url(r'^media_resource/new$',                'django_twistranet.twistranet.views.create_media', name = "media_create", ),
+    url(r'^media_resource/(\d+)/edit$',         'django_twistranet.twistranet.views.edit_media', name = "media_edit", ),    
+    url(r'^media_library/(\d+)$',               'django_twistranet.twistranet.views.view_media_library', name = "media_library_view", ),
     
     # Content links
     url(r'^content/(\d+)/$',                    AsView(ContentView, lookup = 'id'), name = 'content_by_id'),
@@ -70,22 +66,12 @@ urlpatterns = patterns('',
     url(r'^community/new$',                     AsView(CommunityCreate), name = CommunityCreate.name, ),
     url(r'^community/(\d+)/delete$',            AsView(CommunityDelete), name = CommunityDelete.name, ),
 
-    # Additional inclusions for extensions, etc
-    (r'^search/',                               include('django_twistranet.urls.search')),
-    (r'^static/',                               include('django_twistranet.urls.static')),
-    (r'^download/',                             include('django_twistranet.twistorage.urls')),
-
     # Login / Logout / Register stuff
     url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
     url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),  
     
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
     # Administration pages.
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
-    (r'^admin/', include(admin.site.urls)),
 )
 
 

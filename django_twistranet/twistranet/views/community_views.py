@@ -13,7 +13,7 @@ from django.db.models import Q
 
 from django_twistranet.twistranet.forms import community_forms
 from django_twistranet.twistranet.lib.decorators import require_access
-from twistranet.actions import *
+from django_twistranet.actions import *
 
 from django_twistranet.twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView

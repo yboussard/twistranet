@@ -51,6 +51,9 @@ def bootstrap():
     try:
         # Let's log in.
         __account__ = SystemAccount.objects.__booster__.get()
+    except SystemAccount.DoesNotExist:
+        log.info("No SystemAccount available. That means this instance has never been bootstraped, so let's do it now.")
+        raise RuntimeError("Please sync your databases with 'manage.py syncdb' before bootstraping.")
     except:
         # Default fixture probably not installed yet. Don't do anything yet.
         log.info("DatabaseError while bootstraping. Your tables are probably not created yet.")
@@ -113,15 +116,16 @@ def bootstrap():
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
-        from django_twistranet.fixtures.sample import FIXTURES as SAMPLE_DATA_FIXTURES
-        for obj in SAMPLE_DATA_FIXTURES:
+        from django_twistranet.fixtures import sample
+        sample.create_users()
+        for obj in sample.get_fixtures():
             obj.apply()
         
         # Add relations bwn sample users
         # A <=> admin
         # B  => admin
-        A = UserAccount.objects.get(slug = "A")
-        B = UserAccount.objects.get(slug = "B")
+        A = UserAccount.objects.get(slug = "a")
+        B = UserAccount.objects.get(slug = "b")
         admin = UserAccount.objects.get(slug = "admin")
         A.follow(admin)
         admin.follow(A)

@@ -9,7 +9,7 @@ from django_twistranet.twistranet.models import Content, Account
 from django_twistranet.twistranet.forms import form_registry
 from django_twistranet.twistranet.lib.log import *
 from django_twistranet.content_types.forms import *
-from twistranet.actions import *
+from django_twistranet.actions import *
 from base_view import *
 
 class ContentView(BaseIndividualView):

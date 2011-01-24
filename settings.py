@@ -108,10 +108,10 @@ LANGUAGES = (
 )
 
 TWISTRANET_THEME_NAME = "Soft-186"
-THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
+THEME_DIR =  "%s/django_twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 TEMPLATE_DIRS = (
     THEME_DIR,
-    "%s/django_twistranet/templates" % (HERE, ),
+    "%s/django_twistranet/twistranet/templates" % (HERE, ),
 )
 
 # Contrib.auth module settings
