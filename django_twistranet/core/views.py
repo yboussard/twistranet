@@ -130,9 +130,10 @@ class BaseView(object):
         if request:
             self.request = request
             self.path = request and request.path
+            self.auth = Twistable.objects.getCurrentAccount(request)
             
         if other_view:
-            for param in self.template_variables:
+            for param in self.template_variables + ['request', 'auth', ]:
                 if isinstance(param, tuple):
                     continue        # Ignore function calls for the sake of simplicity
                 if param in ("breadcrumb", ):
@@ -259,7 +260,7 @@ class BaseView(object):
             
         # Generate actions and other params
         params["actions"] = self.get_actions()
-        params["current_account"] = Twistable.objects.getCurrentAccount(self.request)
+        params["current_account"] = self.auth
         params["site_name"] = utils.get_site_name()
         params["baseline"] = utils.get_baseline()
         
@@ -315,7 +316,6 @@ class BaseIndividualView(BaseView):
         'value' is the value used to fetch the object.
         """
         # Prepare specific parameters
-        self.auth = Account.objects._getAuthenticatedAccount()
         if value:
             q_param = { self.lookup: value }
             if self.model_lookup is None:

@@ -64,9 +64,6 @@ class FormRegistryManager:
         if creation and edition:
             raise ValueError("You must specify either creation or edition")
         
-        from django_twistranet.twistranet.models import Account, Community
-
-        account = Account.objects._getAuthenticatedAccount()
         flat_registry = []
         for r in self._registry_.values():
             flat_registry.extend(r)
@@ -81,10 +78,7 @@ class FormRegistryManager:
         This method returns the appropriate content forms for a user seeing an account page.
         This returns a list of Form classes
         """
-        from django_twistranet.twistranet.models import Account, Community
-        
         # Only return forms for publisher accounts I'm authorized to write on
-        account = Account.objects._getAuthenticatedAccount()
         ret = []
         if publisher.can_publish:
             flat_reg = []

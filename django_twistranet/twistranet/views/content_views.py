@@ -111,12 +111,11 @@ class ContentCreate(ContentEdit):
         We can create content either on a community or on our own account.
         """
         # Try to guess where are we going to publish on.
-        auth = Account.objects._getAuthenticatedAccount()
         publisher = None
         if not hasattr(self, "object"):
-            publisher = auth
-        elif self.object.id == auth.id:
-            publisher = auth
+            publisher = self.auth
+        elif self.object.id == self.auth.id:
+            publisher = self.auth
         elif issubclass(self.object.model_class, Community):
             publisher = self.object
         elif issubclass(self.object.model_class, Content):
@@ -125,8 +124,8 @@ class ContentCreate(ContentEdit):
             log.debug("Content pub: %s" % content_pub)
             if issubclass(content_pub.model_class, Community):
                 publisher = content_pub
-            elif content_pub.id == auth.id:
-                publisher = auth
+            elif content_pub.id == self.auth.id:
+                publisher = self.auth
                 
         # Ok, we've found what are we going to publish to. Let's check if we have the rights to do so.
         if not publisher or not publisher.can_publish:

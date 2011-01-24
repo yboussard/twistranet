@@ -48,8 +48,8 @@ class UserAccountView(BaseWallView):
         
         # Add a message for ppl who have no content
         auth = Twistable.objects.getCurrentAccount(self.request)
-        if self.account and auth and self.account.id == auth.id:
-            if not Content.objects.filter(publisher = auth).exists():
+        if self.account and self.auth and self.account.id == self.auth.id:
+            if not Content.objects.filter(publisher = self.auth).exists():
                 messages.info(self.request, _("""<p>
                     It seems that you do not have created content yet. Maybe it's time to do so!
                     </p>
@@ -97,7 +97,7 @@ class HomepageView(UserAccountView):
         XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
         This way we can just query objects with id > last_twistable_on_home
         """
-        auth = Account.objects._getAuthenticatedAccount()
+        auth = self.auth
         latest_ids = None
         if not auth.is_anonymous:
             if Content.objects.filter(publisher = auth).exists():
@@ -113,9 +113,8 @@ class HomepageView(UserAccountView):
         We just have the account set as curently-auth account.
         """
         # Get the actual view instance. Not optimal, but, well, works.
-        auth = Account.objects._getAuthenticatedAccount()
-        if not auth.is_anonymous:
-            prep_id = auth.id
+        if not self.auth.is_anonymous:
+            prep_id = self.auth.id
         else:
             prep_id = None
         super(HomepageView, self).prepare_view(prep_id)
@@ -159,7 +158,7 @@ class AccountNetworkView(AccountListingView, UserAccountView):
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
 
     def get_title(self,):
-        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+        if self.account.id == self.auth.id:
             return _("My network")
         return _("%(name)s's network" % {'name': self.account.title} )
 
@@ -177,7 +176,7 @@ class AccountCommunitiesView(AccountListingView, UserAccountView):
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
 
     def get_title(self,):
-        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+        if self.account.id == self.auth.id:
             return _("My communities")
         return _("%(name)s's communities" % {'name': self.account.title} )
 
@@ -197,7 +196,7 @@ class AccountAdminCommunitiesView(AccountListingView, UserAccountView):
     # XXX TODO
     
     def get_title(self,):
-        if self.account.id == Account.objects._getAuthenticatedAccount().id:
+        if self.account.id == self.auth.id:
             return _("My communities")
         return _("%(name)s's communities" % {'name': self.account.title} )
 
@@ -220,8 +219,7 @@ class PendingNetworkView(AccountListingView, UserAccountView):
     def as_action(self,):
         """Only return the action if there's pending nwk requests
         """
-        auth = UserAccount.objects._getAuthenticatedAccount()
-        req = auth.get_pending_network_requests()
+        req = self.auth.get_pending_network_requests()
         if not req:
             return
         action = BaseView.as_action(self)
@@ -229,9 +227,8 @@ class PendingNetworkView(AccountListingView, UserAccountView):
         return action
             
     def prepare_view(self, *args, **kw):
-        auth = Account.objects._getAuthenticatedAccount()
         super(PendingNetworkView, self).prepare_view()
-        UserAccountView.prepare_view(self, auth.id)
+        UserAccountView.prepare_view(self, self.auth.id)
         self.accounts = self.account.get_pending_network_requests()
 
 
@@ -368,7 +365,7 @@ class UserAccountEdit(UserAccountView):
         """
         if not self.object:
             return _("Create a user account")
-        elif self.object.id == UserAccount.objects._getAuthenticatedAccount().id:
+        elif self.object.id == self.auth.id:
             return _("Edit my account")
         return _("Edit %(name)s" % {'name' : self.object.title })
 

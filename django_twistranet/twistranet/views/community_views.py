@@ -137,8 +137,7 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
     def as_action(self,):
         """Only return the action if there's pending nwk requests
         """
-        auth = UserAccount.objects._getAuthenticatedAccount()
-        req = auth.get_pending_network_requests(returned_model = Community)
+        req = self.auth.get_pending_network_requests(returned_model = Community)
         if not req:
             return
         action = BaseView.as_action(self)
@@ -146,9 +145,8 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
         return action
             
     def prepare_view(self, *args, **kw):
-        auth = Account.objects._getAuthenticatedAccount()
         super(CommunityInvitations, self).prepare_view()
-        UserAccountView.prepare_view(self, auth.id)
+        UserAccountView.prepare_view(self, self.auth.id)
         self.communities = self.account.get_pending_network_requests(returned_model = Community)
     
 
@@ -165,10 +163,9 @@ class MyCommunitiesView(BaseView):
     category = ACCOUNT_ACTIONS
     
     def as_action(self,):
-        auth = Account.objects._getAuthenticatedAccount()
         if not Account.objects.filter(
-            targeted_network__target__id = auth.id,
-            requesting_network__client__id = auth.id,
+            targeted_network__target__id = self.auth.id,
+            requesting_network__client__id = self.auth.id,
             requesting_network__is_manager = True,
             ).exists():
             return None
@@ -176,10 +173,9 @@ class MyCommunitiesView(BaseView):
 
     def prepare_view(self, ):
         super(MyCommunitiesView, self).prepare_view()
-        auth = Account.objects._getAuthenticatedAccount()
         self.communities = Community.objects.filter(
-            targeted_network__target__id = auth.id,
-            requesting_network__client__id = auth.id,
+            targeted_network__target__id = self.auth.id,
+            requesting_network__client__id = self.auth.id,
             requesting_network__is_manager = True,
         )[:settings.TWISTRANET_COMMUNITIES_PER_PAGE]
     
@@ -269,9 +265,8 @@ class CommunityManageMembers(CommunityView):
         super(CommunityManageMembers, self).prepare_view(value)
         
         # Fetch members except myself
-        auth = Twistable.objects.getCurrentAccount(self.request)
-        self.manager_ids = self.community.managers.exclude(id = auth.id).values_list('id', flat = True)
-        self.selectable = self.community.members.exclude(id = auth.id).order_by("title")
+        self.manager_ids = self.community.managers.exclude(id = self.auth.id).values_list('id', flat = True)
+        self.selectable = self.community.members.exclude(id = self.auth.id).order_by("title")
 
         # Perform form actions
         if self.request.method == 'POST': # If the form has been submitted...
