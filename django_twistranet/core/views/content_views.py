@@ -5,10 +5,10 @@ from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from twistranet.twistranet.models import Content, Account
-from twistranet.twistranet.forms import form_registry
-from twistranet.twistranet.lib.log import *
-from twistranet.content_types.forms import *
+from django_twistranet.models import Content, Account
+from django_twistranet.forms import form_registry
+from django_twistranet.lib.log import *
+from django_twistranet.content_types.forms import *
 from twistranet.actions import *
 from base_view import *
 

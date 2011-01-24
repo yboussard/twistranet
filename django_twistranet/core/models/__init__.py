@@ -16,6 +16,6 @@ from network import Network
 from menu import Menu, MenuItem
 
 # import permission_set
-from twistranet.twistranet.lib import permissions, roles
+from django_twistranet.lib import permissions, roles
 
 

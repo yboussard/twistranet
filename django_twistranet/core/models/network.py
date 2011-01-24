@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from twistranet.twistranet.models import Content
-from twistranet.twistranet.models import Account
+from django_twistranet.models import Content
+from django_twistranet.models import Account
 
 
 class NetworkManager(object):

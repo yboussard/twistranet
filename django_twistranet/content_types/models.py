@@ -3,10 +3,10 @@
 Default content types for twistranet
 """
 from django.db import models
-from twistranet.twistranet.lib import permissions   
-from twistranet.twistranet.lib.utils import formatbytes
-from twistranet.twistranet.models.content import Content
-from twistranet.twistranet.models import fields
+from django_twistranet.lib import permissions   
+from django_twistranet.lib.utils import formatbytes
+from django_twistranet.models.content import Content
+from django_twistranet.models import fields
 
 
 class StatusUpdate(Content):

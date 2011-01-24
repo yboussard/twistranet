@@ -68,7 +68,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    "twistranet.twistranet.lib.context_processors.security_context",
+    "django_twistranet.lib.context_processors.security_context",
     )
 
 
@@ -112,7 +112,7 @@ TWISTRANET_THEME_NAME = "Soft-186"
 THEME_DIR =  "%s/twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
 TEMPLATE_DIRS = (
     THEME_DIR,
-    "%s/twistranet/twistranet/templates" % (HERE, ),
+    "%s/django_twistranet/templates" % (HERE, ),
 )
 
 # Contrib.auth module settings
@@ -145,8 +145,8 @@ THUMBNAIL_FORMAT = "PNG"
 THUMBNAIL_COLORSPACE = None
 
 # Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
+HAYSTACK_SITECONF = 'django_twistranet.search_sites'
+HAYSTACK_SEARCH_ENGINE = "django_twistranet.lib.haystack_simplehack"
 
 QUICKUPLOAD_AUTO_UPLOAD = True
 QUICKUPLOAD_FILL_TITLES = False 
@@ -170,13 +170,13 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
 
     # TwistraNet core stuff
-    'twistranet.twistranet',
+    'django_twistranet',
 
     # TwistraNet extensions
-    'twistranet.content_types',
-    'twistranet.notifier',
+    'django_twistranet.content_types',
+    'django_twistranet.notifier',
     'twistranet.twistrans',
-    'twistranet.twistorage',
+    'django_twistranet.twistorage',
 
     # 3rd party modules - must be loaded AFTER TN
     'haystack',

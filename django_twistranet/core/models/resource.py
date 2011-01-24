@@ -4,9 +4,9 @@ from django.db import models
 from django.db.models import Q, FileField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
 
-from twistranet.twistorage.storage import Twistorage
-from twistranet.twistranet.lib import languages, permissions
-from  twistranet.twistranet.lib.log import *
+from django_twistranet.twistorage.storage import Twistorage
+from django_twistranet.lib import languages, permissions
+from  django_twistranet.lib.log import *
 import twistable
 
 class ResourceModelManager(twistable.TwistableManager):

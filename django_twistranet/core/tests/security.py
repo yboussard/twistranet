@@ -2,12 +2,12 @@
 This is a basic wall test.
 """
 from django.test import TestCase
-from twistranet.twistranet.models import *
-from twistranet.content_types import *
-from twistranet.twistranet.lib import permissions, roles
+from django_twistranet.models import *
+from django_twistranet.content_types import *
+from django_twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from twistranet.twistranet.lib import dbsetup
+from django_twistranet.lib import dbsetup
 from twistranet import notifier
 
 class SecurityTest(TestCase):

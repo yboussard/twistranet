@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
-from twistranet.twistranet.views.search_views import TwistraNetSearchView, TwistraNetJSONSearchView 
-from twistranet.twistranet.views import *
+from django_twistranet.views.search_views import TwistraNetSearchView, TwistraNetJSONSearchView 
+from django_twistranet.views import *
 
 
 urlpatterns = patterns('haystack.views',                                 

@@ -10,7 +10,7 @@ def _get_site_name_or_baseline(return_baseline = False):
     site_name = d.get("site_name", None)
     baseline = d.get("baseline", None)
     if site_name is None or baseline is None:
-        from twistranet.twistranet.models import *
+        from django_twistranet.models import *
         try:
             __account__ = SystemAccount.get()
             glob = GlobalCommunity.get()

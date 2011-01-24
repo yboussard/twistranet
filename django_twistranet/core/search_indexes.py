@@ -1,8 +1,8 @@
 import datetime
 from haystack.indexes import *
 from haystack import site
-from twistranet.twistranet.models import *
-from twistranet.content_types.models import *
+from django_twistranet.models import *
+from django_twistranet.content_types.models import *
 
 
 class StatusUpdateIndex(SearchIndex):

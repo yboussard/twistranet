@@ -1,6 +1,6 @@
 from django.db.models.query import QuerySet
-from twistranet.twistranet.models import Twistable
-from  twistranet.twistranet.lib.log import log
+from django_twistranet.models import Twistable
+from  django_twistranet.lib.log import log
 
 class Fixture(object):
     """
@@ -20,7 +20,7 @@ class Fixture(object):
         """
         Create / update model. Use the 'slug' attribute to define unicity of the content.
         """
-        from twistranet.twistranet.models import Account
+        from django_twistranet.models import Account
         slug = self.dict.get('slug', None)
         obj = None
         log.debug("Trying to import %s" % slug)

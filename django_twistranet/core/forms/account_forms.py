@@ -3,10 +3,10 @@ from django.db import models
 from django.forms import widgets
 from django.forms import fields
 
-from twistranet.twistranet.lib import permissions
-from twistranet.twistranet.forms.widgets import ResourceWidget
-from twistranet.twistranet.models import UserAccount
-from twistranet.twistranet.forms.base_forms import BaseForm
+from django_twistranet.lib import permissions
+from django_twistranet.forms.widgets import ResourceWidget
+from django_twistranet.models import UserAccount
+from django_twistranet.forms.base_forms import BaseForm
 
 class UserAccountForm(BaseForm):
     """

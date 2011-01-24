@@ -5,11 +5,11 @@ Sample building script for the COGIP example.
 import csv
 import os
 
-from twistranet.twistranet.models import *
-from twistranet.content_types.models import *
-from twistranet.twistranet.lib.python_fixture import Fixture
-from twistranet.twistranet.lib.slugify import slugify
-from twistranet.twistranet.lib.log import *
+from django_twistranet.models import *
+from django_twistranet.content_types.models import *
+from django_twistranet.lib.python_fixture import Fixture
+from django_twistranet.lib.slugify import slugify
+from django_twistranet.lib.log import *
 from django.contrib.auth.models import User
 from django.core.files import File as DjangoFile
 

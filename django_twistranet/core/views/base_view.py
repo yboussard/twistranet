@@ -12,10 +12,10 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
-from twistranet.twistranet.models import *
-from twistranet.twistranet.forms import form_registry
-from twistranet.twistranet.lib.log import *
-from twistranet.twistranet.lib import utils
+from django_twistranet.models import *
+from django_twistranet.forms import form_registry
+from django_twistranet.lib.log import *
+from django_twistranet.lib import utils
 
 from twistranet.actions import *
 
@@ -74,7 +74,7 @@ class AsView(AsPublicView):
     Same as AsPublicView but for a (possibly) restricted view.
     """
     def has_access(self,):
-        from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
+        from django_twistranet.models import GlobalCommunity, AnonymousAccount
         mgr = GlobalCommunity.objects
         return mgr.exists()
             

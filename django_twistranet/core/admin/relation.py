@@ -1,4 +1,4 @@
-from twistranet.twistranet.models import Relation
+from django_twistranet.models import Relation
 from django.contrib import admin       
 
 class InitiatorInline(admin.StackedInline):

@@ -8,8 +8,8 @@ from django.db import models
 from django.core.validators import EMPTY_VALUES, RegexValidator
 from django.utils.translation import ugettext as _
 
-from  twistranet.twistranet.lib.log import log
-from twistranet.twistranet.lib.slugify import FULL_SLUG_REGEX
+from  django_twistranet.lib.log import log
+from django_twistranet.lib.slugify import FULL_SLUG_REGEX
 
 class TwistableSlugField(models.SlugField):
     """
@@ -35,7 +35,7 @@ class PermissionField(models.CharField):
         
     
     def formfield(self, **kwargs):
-        from twistranet.twistranet.forms import fields
+        from django_twistranet.forms import fields
         defaults = {
             'form_class': fields.PermissionFormField,
             'choices': (),
@@ -79,7 +79,7 @@ class ResourceField(models.ForeignKey):
         Return the newly created resource object.
         """
         # Determine the new resource's publisher according to its type
-        from twistranet.twistranet.models import Account, Resource, Content
+        from django_twistranet.models import Account, Resource, Content
         if isinstance(instance, Account):
             publisher = instance
         elif isinstance(instance, Content):
@@ -104,7 +104,7 @@ class ResourceField(models.ForeignKey):
         If we're given a file, we upload it and set data accordingly.
         If we're given both, we suppose the file must be uploaded.
         """
-        from twistranet.twistranet.models import Resource
+        from django_twistranet.models import Resource
         resource = None
         
         # Process either upload file or resource id
@@ -130,7 +130,7 @@ class ResourceField(models.ForeignKey):
         super(ResourceField, self).save_form_data(instance, resource)
 
     def formfield(self, **kwargs):
-        from twistranet.twistranet.forms import fields
+        from django_twistranet.forms import fields
         defaults = {
             'form_class': fields.ResourceFormField,
             'allow_upload': self.allow_upload,

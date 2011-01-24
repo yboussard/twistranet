@@ -1,4 +1,4 @@
-from twistranet.twistranet.conf import defaults
+from django_twistranet.conf import defaults
 from django.conf import settings
 
 for setting in dir(defaults):

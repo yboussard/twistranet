@@ -30,12 +30,12 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.translation import ugettext as _
 
 from sorl.thumbnail import default
-from twistranet.twistranet.models import *
-from twistranet.twistranet.forms.resource_forms import ResourceForm, ResourceBrowserForm
-from twistranet.twistranet.lib.decorators import require_access
-from twistranet.twistranet.lib.log import log
-from twistranet.twistorage.storage import Twistorage
-from twistranet.twistranet.lib import utils
+from django_twistranet.models import *
+from django_twistranet.forms.resource_forms import ResourceForm, ResourceBrowserForm
+from django_twistranet.lib.decorators import require_access
+from django_twistranet.lib.log import log
+from django_twistranet.twistorage.storage import Twistorage
+from django_twistranet.lib import utils
 
 from django.conf import settings
 
@@ -211,7 +211,7 @@ def edit_resource(request, resource_id = None):
             form = ResourceForm(request.POST, request.FILES)
 
         if form.is_valid():
-            return HttpResponseRedirect(reverse('twistranet.twistranet.views.resource_by_id', args = (resource.id,)))
+            return HttpResponseRedirect(reverse('django_twistranet.views.resource_by_id', args = (resource.id,)))
     else:
         if resource:
             form = ResourceForm(instance = resource.object)

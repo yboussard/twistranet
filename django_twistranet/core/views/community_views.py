@@ -11,15 +11,15 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.db.models import Q
 
-from twistranet.twistranet.forms import community_forms
-from twistranet.twistranet.lib.decorators import require_access
+from django_twistranet.forms import community_forms
+from django_twistranet.lib.decorators import require_access
 from twistranet.actions import *
 
-from twistranet.twistranet.models import *
+from django_twistranet.models import *
 from base_view import BaseView, MustRedirect, BaseObjectActionView
 from account_views import UserAccountView, AccountListingView
 
-from  twistranet.twistranet.lib.log import log
+from  django_twistranet.lib.log import log
 
 RESULTS_PER_PAGE = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
 

@@ -1,5 +1,5 @@
 
-twistranet.twistorage
+django_twistranet.twistorage
 ----------------------
 
 (c)2010-2011 NumeriCube

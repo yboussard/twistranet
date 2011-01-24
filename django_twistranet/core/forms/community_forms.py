@@ -3,17 +3,17 @@ from django.db import models
 from django.forms import widgets
 from django.forms import fields
 
-from twistranet.twistranet.forms.base_forms import BaseForm
-from twistranet.twistranet.lib import permissions
-from twistranet.twistranet.forms.widgets import ResourceWidget, PermissionsWidget
-from  twistranet.twistranet.lib.log import log
+from django_twistranet.forms.base_forms import BaseForm
+from django_twistranet.lib import permissions
+from django_twistranet.forms.widgets import ResourceWidget, PermissionsWidget
+from  django_twistranet.lib.log import log
 
 class CommunityForm(BaseForm):
     """
     Community edition.
     """
     class Meta:
-        from twistranet.twistranet.models import Community
+        from django_twistranet.models import Community
         model = Community
         fields = ('title', 'description', 'picture', 'permissions', )
 
@@ -28,7 +28,7 @@ class AdministrationForm(CommunityForm):
     This holds the global-community specific configuration options.
     """
     class Meta:
-        from twistranet.twistranet.models import GlobalCommunity
+        from django_twistranet.models import GlobalCommunity
         model = GlobalCommunity
         fields = ("site_name", "baseline", "permissions", )
         

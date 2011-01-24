@@ -3,9 +3,9 @@
 Test basic menu features.
 """
 from django.test import TestCase
-from twistranet.twistranet.models import *
-from twistranet.content_types import *
-from twistranet.twistranet.lib import dbsetup
+from django_twistranet.models import *
+from django_twistranet.content_types import *
+from django_twistranet.lib import dbsetup
 
 class MenuTest(TestCase):
     """

@@ -2,9 +2,9 @@
 """
 Some sample data in there.
 """
-from twistranet.twistranet.models import *
-from twistranet.content_types.models import *
-from twistranet.twistranet.lib.python_fixture import Fixture
+from django_twistranet.models import *
+from django_twistranet.content_types.models import *
+from django_twistranet.lib.python_fixture import Fixture
 from django.contrib.auth.models import User
 
 FIXTURES = [

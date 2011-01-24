@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
-from twistranet.twistranet.models import *
-from twistranet.twistranet.forms.resource_forms import MediaForm
-from twistranet.twistranet.lib.decorators import require_access
+from django_twistranet.models import *
+from django_twistranet.forms.resource_forms import MediaForm
+from django_twistranet.lib.decorators import require_access
 
 @require_access
 def edit_media(request, resource_id = None):
@@ -43,7 +43,7 @@ def edit_media(request, resource_id = None):
         if form.is_valid(): # All validation rules pass
             print "validation rules applied"
             media = account.media_resource_manager.uploadResource(request.FILES['file'])
-            return HttpResponseRedirect(reverse('twistranet.twistranet.views.view_media_library', args = (account.id,)))
+            return HttpResponseRedirect(reverse('django_twistranet.views.view_media_library', args = (account.id,)))
     else:
         if media:
             raise NotImplementedError

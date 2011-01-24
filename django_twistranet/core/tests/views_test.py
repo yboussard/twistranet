@@ -5,8 +5,8 @@ You can use this to test actual procedures performances as well.
 We also test # of queries
 """
 from django.test import TestCase
-from twistranet.twistranet.models import *
-from twistranet.twistranet.lib import dbsetup
+from django_twistranet.models import *
+from django_twistranet.lib import dbsetup
 from django.test.client import Client
 from django.db import connections, DEFAULT_DB_ALIAS
 from django.conf import settings
@@ -36,7 +36,7 @@ class ViewsTest(TestCase):
         settings.DEBUG = True
         
         # Massive  content creation
-        # from twistranet.twistranet.fixtures import heavy_load
+        # from django_twistranet.fixtures import heavy_load
         
         # Start counting queries (XXX Don't know why q. count doesn't work well)
         # self.q_offset = len(connection.queries)

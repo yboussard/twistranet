@@ -11,7 +11,7 @@ from django.utils.translation import ugettext as _
 from sorl.thumbnail import default
 from django.template import loader, Context
 
-from twistranet.twistranet.lib.log import log
+from django_twistranet.lib.log import log
 
 N_DISPLAYED_ITEMS = 30         # Number of images to display in the inline field
 
@@ -57,7 +57,7 @@ class ResourceWidget(forms.MultiWidget):
         - The file upload field
         - The resource browser.
         """
-        from twistranet.twistranet.models import Resource, Twistable  
+        from django_twistranet.models import Resource, Twistable  
 
         # Beginning of the super-render() code
         if self.is_localized:

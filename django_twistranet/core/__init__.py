@@ -4,17 +4,17 @@ __version__ = '.'.join(map(str, VERSION))
 
 
 # Import / Load config & logger
-from twistranet.twistranet.conf import defaults
-from twistranet.twistranet.lib.log import log
+from django_twistranet.conf import defaults
+from django_twistranet.lib.log import log
 
 # Then import models
-from twistranet.twistranet.models import *
+from django_twistranet.models import *
 
 # Import forms because they're not automatically imported
-from twistranet.twistranet.forms import community_forms, resource_forms
+from django_twistranet.forms import community_forms, resource_forms
 
 # Do the mandatory database checkup and initial buiding
-from twistranet.twistranet.lib import dbsetup
+from django_twistranet.lib import dbsetup
 # dbsetup.bootstrap()                      # XXX: TODO: Only call it explicitly if you need to.
 dbsetup.check_consistancy()
 
@@ -26,7 +26,7 @@ def authenticate(**credentials):
     """
     If the given credentials are valid, return a User object.
     """
-    from twistranet.twistranet.models import account
+    from django_twistranet.models import account
     __account__ = account.SystemAccount.get()           # This is what we just add.
     for backend in auth.get_backends():
         try:

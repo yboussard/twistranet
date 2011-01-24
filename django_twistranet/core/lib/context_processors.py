@@ -6,7 +6,7 @@ def security_context(request):
     Retrieve the logged account and populate the variable (don't do anything with anon account by now).
     Also get the content form available.
     """
-    from twistranet.twistranet.models import GlobalCommunity, Account
+    from django_twistranet.models import GlobalCommunity, Account
     ret = dict()
     
     # Try to get the global community. If we can't, that probably means we need a login here.

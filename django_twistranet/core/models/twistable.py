@@ -21,10 +21,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.safestring import mark_safe
 
-from  twistranet.twistranet.lib.log import log
-from twistranet.twistranet.lib import roles, permissions
-from twistranet.twistranet.lib.slugify import slugify
-from twistranet.twistranet.signals import twistable_post_save
+from  django_twistranet.lib.log import log
+from django_twistranet.lib import roles, permissions
+from django_twistranet.lib.slugify import slugify
+from django_twistranet.signals import twistable_post_save
 from fields import ResourceField, PermissionField, TwistableSlugField
 
 class TwistableManager(models.Manager):
@@ -260,7 +260,7 @@ class Twistable(_AbstractTwistable):
         """
         Return the kind of object it is (as a lower-cased string).
         """
-        from twistranet.twistranet.models import Content, Account, Community, Resource
+        from django_twistranet.models import Content, Account, Community, Resource
         mc = self.model_class
         if issubclass(mc, Content):
             return 'content'

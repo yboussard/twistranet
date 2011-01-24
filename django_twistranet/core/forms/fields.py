@@ -7,7 +7,7 @@ from django import forms
 from django.db import models
 from django.core.validators import EMPTY_VALUES
 from django.utils.translation import ugettext as _
-from  twistranet.twistranet.lib.log import log
+from  django_twistranet.lib.log import log
 import widgets
 
 class PermissionFormField(forms.ChoiceField):
@@ -88,7 +88,7 @@ class ResourceFormField(forms.MultiValueField):
 
     def __init__(self, *args, **kwargs):
         # Initial values
-        from twistranet.twistranet.models import Resource
+        from django_twistranet.models import Resource
         self.model = kwargs.pop("model", Resource)
         self.filter = kwargs.pop("filter", None)
         self.allow_upload = kwargs.pop("allow_upload", True)

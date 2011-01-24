@@ -11,7 +11,7 @@ def require_access(function=None, ):
         We simply check if GlobalCommunity is visible.
         If not, then that means we certainly need a login here.
         """
-        from twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
+        from django_twistranet.models import GlobalCommunity, AnonymousAccount
         return GlobalCommunity.objects.exists()
         # mgr = GlobalCommunity.objects
         # return not isinstance(mgr._getAuthenticatedAccount(), AnonymousAccount)

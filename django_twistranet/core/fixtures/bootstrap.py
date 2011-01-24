@@ -4,8 +4,8 @@ We use a python file to ensure proper DB alimentation. Django fixtures are not e
 
 Objects in those fixtures will get created but NEVER updated.
 """
-from twistranet.twistranet.models import *
-from twistranet.twistranet.lib.python_fixture import Fixture
+from django_twistranet.models import *
+from django_twistranet.lib.python_fixture import Fixture
 
 FIXTURES = [
     Fixture(

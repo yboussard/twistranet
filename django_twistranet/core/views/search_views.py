@@ -6,12 +6,12 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from haystack.views import SearchView
 from django.http import HttpResponse, HttpResponseRedirect
-from twistranet.twistranet.lib.decorators import require_access
+from django_twistranet.lib.decorators import require_access
 from base_view import BaseView, MustRedirect
 from haystack.forms import ModelSearchForm
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
-from twistranet.twistranet.lib.utils import truncate
+from django_twistranet.lib.utils import truncate
 
 try :
     #python 2.6

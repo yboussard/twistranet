@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
-from twistranet.twistranet.models import Resource
+from django_twistranet.models import Resource
 from fields import ResourceFormField
 from base_forms import BaseForm
 

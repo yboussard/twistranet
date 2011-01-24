@@ -1,4 +1,4 @@
-This is the twistranet core app.
+This is the twistranet app.
 
 NEVER EDIT ANYTHING UNDER THIS DIRECTORY unless you're planning to distribute what you do.
 

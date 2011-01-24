@@ -63,6 +63,6 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 # Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'twistranet.twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "twistranet.twistranet.lib.haystack_simplehack"
+HAYSTACK_SITECONF = 'django_twistranet.search_sites'
+HAYSTACK_SEARCH_ENGINE = "django_twistranet.lib.haystack_simplehack"
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20

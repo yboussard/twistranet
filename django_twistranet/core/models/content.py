@@ -6,7 +6,7 @@ from django.utils import html, translation
 import twistable
 from account import Account
 from resource import Resource
-from twistranet.twistranet.lib import roles, permissions
+from django_twistranet.lib import roles, permissions
 
 class ContentManager(twistable.TwistableManager):
     """

@@ -2,13 +2,13 @@
 This is a set of account permissions tests
 """
 from django.test import TestCase
-from twistranet.twistranet.models import *
-from twistranet.content_types import *
-from twistranet.twistranet.lib import permissions, roles
+from django_twistranet.models import *
+from django_twistranet.content_types import *
+from django_twistranet.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 
-from twistranet.twistranet.lib import dbsetup
+from django_twistranet.lib import dbsetup
 
 class ContentTest(TestCase):
     """

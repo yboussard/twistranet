@@ -4,16 +4,16 @@ from django.forms import widgets, ChoiceField
 
 from tinymce.widgets import TinyMCE
 
-from twistranet.twistranet.forms import form_registry
-from twistranet.twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm, BaseEmptyForm
-from twistranet.twistranet.forms.widgets import  PermissionsWidget
+from django_twistranet.forms import form_registry
+from django_twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm, BaseEmptyForm
+from django_twistranet.forms.widgets import  PermissionsWidget
 
 class StatusUpdateForm(BaseInlineForm):
     """
     The famous status update.
     """
     class Meta(BaseInlineForm.Meta):
-        from twistranet.content_types.models import StatusUpdate
+        from django_twistranet.content_types.models import StatusUpdate
         model = StatusUpdate
         fields = ('description', ) + BaseInlineForm.Meta.fields
         widgets = {
@@ -26,7 +26,7 @@ class InlineFileForm(BaseInlineForm):
     Quick file upload form
     """
     class Meta(BaseInlineForm.Meta):
-        from twistranet.content_types.models import File
+        from django_twistranet.content_types.models import File
         model = File
         fields = ('file', ) + BaseInlineForm.Meta.fields
         
@@ -35,7 +35,7 @@ class InlineTaskForm(BaseInlineForm):
     Quick task form
     """
     class Meta(BaseInlineForm.Meta):
-        from twistranet.content_types.models import Task
+        from django_twistranet.content_types.models import Task
         model = Task
         fields = ('due_date', ) + BaseInlineForm.Meta.fields
 
@@ -49,7 +49,7 @@ class QuickDocumentForm(BaseRegularForm):
     allow_edition = False
     
     class Meta(BaseRegularForm.Meta):
-        from twistranet.content_types.models import Document
+        from django_twistranet.content_types.models import Document
         model = Document
         fields = ('title', 'description', 'resources', ) + BaseRegularForm.Meta.fields
         widgets = {
@@ -66,7 +66,7 @@ class CommentForm(BaseEmptyForm):
     redirect_to = forms.CharField(widget = widgets.HiddenInput())
     
     class Meta:
-        from twistranet.content_types.models import Comment
+        from django_twistranet.content_types.models import Comment
         model = Comment
         fields = ('description', )
         widgets = {
@@ -81,7 +81,7 @@ class DocumentForm(BaseRegularForm):
     allow_edition = True
 
     class Meta(BaseRegularForm.Meta):
-        from twistranet.content_types.models import Document
+        from django_twistranet.content_types.models import Document
         model = Document
         fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
         widgets = {
@@ -97,7 +97,7 @@ class FileForm(BaseRegularForm):
     allow_edition = True
 
     class Meta(BaseRegularForm.Meta):
-        from twistranet.content_types.models import File
+        from django_twistranet.content_types.models import File
         model = File
         fields = ('title', 'description', 'file', 'permissions', )
         widgets = {

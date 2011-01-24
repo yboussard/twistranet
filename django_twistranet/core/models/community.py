@@ -4,14 +4,14 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import NoReverseMatch
 
-from twistranet.twistranet.lib import permissions
-from twistranet.twistranet.signals import join_community, invite_community, request_join_community
+from django_twistranet.lib import permissions
+from django_twistranet.signals import join_community, invite_community, request_join_community
 
 from account import Account, SystemAccount
 from twistable import Twistable
 from network import Network
 
-from  twistranet.twistranet.lib.log import log
+from  django_twistranet.lib.log import log
 
 class Community(Account):
     """

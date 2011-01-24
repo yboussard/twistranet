@@ -3,8 +3,8 @@ This is the content used as a notification.
 """
 from django.db import models
 
-from twistranet.twistranet.models import Account, Content
-from twistranet.twistranet.lib import permissions
+from django_twistranet.models import Account, Content
+from django_twistranet.lib import permissions
 
 class Notification(Content):
     """

@@ -2,8 +2,8 @@
 """
 Some sample data in there.
 """
-from twistranet.twistranet import *
-from twistranet.twistranet.lib.python_fixture import Fixture
+from django_twistranet import *
+from django_twistranet.lib.python_fixture import Fixture
 from django.contrib.auth.models import User
 import random
 

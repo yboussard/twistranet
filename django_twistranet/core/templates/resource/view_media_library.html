@@ -8,7 +8,7 @@
         <ul>
             {% for media in media_list %}
                 <li>
-                    <a href="{% url twistranet.twistranet.views.resource_by_id media.id %}">{{ media.original_filename }}</a>
+                    <a href="{% url django_twistranet.views.resource_by_id media.id %}">{{ media.original_filename }}</a>
                 </li>
             {% endfor %}
         </ul>

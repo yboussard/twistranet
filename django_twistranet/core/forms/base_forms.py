@@ -2,8 +2,8 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
-from twistranet.twistranet.forms.widgets import PermissionsWidget
-from twistranet.twistranet.lib.log import log
+from django_twistranet.forms.widgets import PermissionsWidget
+from django_twistranet.lib.log import log
 
 class BaseEmptyForm(forms.ModelForm):
     """
@@ -26,8 +26,8 @@ class BaseForm(BaseEmptyForm):
         XXX TODO: Move part of this code in the model
         """
         super(BaseForm, self).__init__(*args, **kw)
-        from twistranet.twistranet.models.community import Community
-        from twistranet.twistranet.models.account import UserAccount
+        from django_twistranet.models.community import Community
+        from django_twistranet.models.account import UserAccount
 
         # Check if has permissions field
         if self.fields.has_key('permissions'):

@@ -7,9 +7,9 @@ from django.conf import settings
 
 import twistable
 from resource import Resource
-from twistranet.twistranet.lib import permissions, roles, languages, slugify
-from twistranet.twistranet.signals import request_add_to_network, accept_in_network
-from  twistranet.twistranet.lib.log import log
+from django_twistranet.lib import permissions, roles, languages, slugify
+from django_twistranet.signals import request_add_to_network, accept_in_network
+from  django_twistranet.lib.log import log
 
 from fields import ResourceField
 
@@ -303,7 +303,7 @@ class UserAccount(Account):
         We don't bother checking the security here, the parent will do it.
         If this is a creation, ensure we join the GlobalCommunity as well.
         """
-        from twistranet.twistranet.models import community
+        from django_twistranet.models import community
         if not self.slug:
             self.slug = self.user.username
         creation = not self.id
@@ -326,7 +326,7 @@ class UserAccount(Account):
         return SystemAccount.get()
         
     def getDefaultPublisher(self,):
-        from twistranet.twistranet.models import GlobalCommunity
+        from django_twistranet.models import GlobalCommunity
         return GlobalCommunity.objects.get()
 
     #                                                                                       #
@@ -344,7 +344,7 @@ class UserAccount(Account):
         """
         Ask currently auth account to follow this one.
         """
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
 
         # If relation already exists, we silently pass
         auth = Account.objects._getAuthenticatedAccount()
@@ -377,7 +377,7 @@ class UserAccount(Account):
         Silently pass is the relation didn't exist.
         Note that removing from the network breaks the TWO symetrical relations!
         """
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
 
         # If relation already exists, we silently pass
         auth = Account.objects._getAuthenticatedAccount()
@@ -392,7 +392,7 @@ class UserAccount(Account):
         True if currently auth user can add the given one to its network.
         False if already in my network ;)
         """
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
         if not self.can_list:
             return False
         auth = Account.objects._getAuthenticatedAccount()
@@ -407,7 +407,7 @@ class UserAccount(Account):
         """
         True if current object is in auth's user nwk (or at least has a nwk confirmation pending)
         """
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
         auth = Account.objects._getAuthenticatedAccount()
         if auth.is_anonymous:
             return False
@@ -453,7 +453,7 @@ class UserAccount(Account):
         """
         if not returned_model:
             returned_model = UserAccount
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
         requested_ids = Network.objects.filter(target = self).values_list("client__id", flat = True)
         accepted_ids = Network.objects.filter(client = self).values_list("target__id", flat = True)
         
@@ -474,7 +474,7 @@ class UserAccount(Account):
         Ask current user to follow the other one
         """
         # XXX TODO: Check security
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
         me_to_you = Network.objects.filter(client = self, target = account)
         if me_to_you.exists():
             return
@@ -486,7 +486,7 @@ class UserAccount(Account):
         """
         XXX TODO: Check security
         """
-        from twistranet.twistranet.models.network import Network
+        from django_twistranet.models.network import Network
         Network.objects.filter(client = self, target = account).delete()        
         
     @property

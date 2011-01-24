@@ -10,8 +10,8 @@ from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
-from twistranet.twistranet.models import *
-from twistranet.twistranet.forms import account_forms
+from django_twistranet.models import *
+from django_twistranet.forms import account_forms
 from twistranet.actions import *
 from base_view import *
 
