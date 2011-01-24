@@ -450,11 +450,16 @@ var twistranet = {
             });
             jQuery(oform).submit(function(){
                 form_has_changes = false;
+                if (typeof tinyMCE != 'undefined') tinyMCE.activeEditor.isNotDirty;
             });   
             jQuery('input[type=reset]',oform).click(function(){
                 form_has_changes = false;
+                if (typeof tinyMCE != 'undefined') tinyMCE.activeEditor.isNotDirty;
             });
             jQuery(window).bind('beforeunload', function(e){
+                if (typeof tinyMCE != 'undefined') {
+                    if (tinyMCE.activeEditor.isDirty()) form_has_changes = true;
+                }
                 if (form_has_changes) {
                     // use the standard navigator beforeunload method
                     msg = jQuery('#form-protect-unload-message').html();
