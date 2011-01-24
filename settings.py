@@ -169,7 +169,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     
     # TwistraNet core stuff
-    'django_twistranet',
+    'django_twistranet.twistranet',
     
     # TwistraNet extensions
     'django_twistranet.content_types',
