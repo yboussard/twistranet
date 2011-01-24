@@ -11,8 +11,7 @@ def create_project():
     Copies the contents of the project_template directory to a new directory
     specified as an argument to the command line.
     """
-
-    parser = OptionParser(usage="usage: %prog [options] project_name")
+    parser = OptionParser(usage="usage: %prog [options] project_name|.")
     parser.add_option("-t", "--templates", dest="copy_templates", default=False,
         action="store_true", help="Copy templates and themes to the new project")
     (options, args) = parser.parse_args()
@@ -30,6 +29,8 @@ def create_project():
         __import__(project_name)
     except ImportError:
         pass
+    except ValueError:
+        pass # It's ok to install in the same directory ;)
     else:
         parser.error("'%s' conflicts with the name of an existing "
             "Python module and cannot be used as a project name. "
