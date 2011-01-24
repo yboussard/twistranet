@@ -1,14 +1,13 @@
 import os
 from setuptools import setup, find_packages
+from twistranet import VERSION, __version__
 
-version = '0.9.0-alpha'
-
-setup(name='Twistranet',
-      version=version,
-      description="Twistranet - The social CMS",
-      long_description=open("README.txt").read(),
+setup(name = 'Twistranet',
+      version = __version__,
+      description = "Twistranet - The social CMS",
+      long_description = open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[
+      classifiers = [
         "Framework :: Django",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
@@ -19,16 +18,16 @@ setup(name='Twistranet',
                                             "Application Frameworks",
         "Topic :: Software Development :: Libraries :: Python Modules",        
         ],
-      keywords='Twistranet Django Social CMS',
-      author='Numericube',
-      author_email='support@numericube.com',
-      url='http://numericube.com',
-      license='GPL',
-      packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['twistranet'],
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=[
+      keywords = 'Twistranet Enterprise Social Network',
+      author = 'numeriCube',
+      author_email = 'twistranet@numericube.com',
+      url = 'http://numericube.com',
+      license = 'GPL',
+      packages = find_packages(exclude=['ez_setup']),
+      namespace_packages = ['twistranet'],
+      include_package_data = True,
+      zip_safe = False,
+      install_requires = [
           'Django', 
           'django-debug-toolbar',
           'django-piston',  
@@ -37,7 +36,7 @@ setup(name='Twistranet',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
+      entry_points = """
       # -*- Entry points: -*-
       [console_scripts]
       twistranet_project=twistranet.twistscripts.twistranet_project:create_project
