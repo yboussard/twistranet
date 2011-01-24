@@ -16,7 +16,7 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
 
-from  django_twistranet.lib.log import log
+from  django_twistranet.twistranet.lib.log import log
 
 SUBJECT_REGEX = re.compile(r"^[\s]*Subject:[ \t]?([^\n$]*)\n", re.IGNORECASE | re.DOTALL)
 EMPTY_LINE_REGEX = re.compile(r"\n\n+", re.DOTALL)
@@ -65,8 +65,8 @@ class NotificationHandler(NotifierHandler):
         """
         We add the Notification object on behalf of SystemAccount.
         """
-        from django_twistranet.models import Twistable
-        from django_twistranet.models import SystemAccount
+        from django_twistranet.twistranet.models import Twistable
+        from django_twistranet.twistranet.models import SystemAccount
         from django_twistranet.notifier.models import Notification
 
         # Prepare the message dict.
@@ -122,7 +122,7 @@ class MailHandler(NotifierHandler):
         """
         # Fake-Login with SystemAccount so that everybody can be notified,
         # even users this current user can't list.
-        from django_twistranet.models import SystemAccount, Account, UserAccount, Community
+        from django_twistranet.twistranet.models import SystemAccount, Account, UserAccount, Community
         __account__ = SystemAccount.get()
         from_email = settings.SERVER_EMAIL
         host = settings.EMAIL_HOST

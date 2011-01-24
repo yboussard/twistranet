@@ -1,7 +1,7 @@
 import datetime
 from haystack.indexes import *
 from haystack import site
-from django_twistranet.models import *
+from django_twistranet.twistranet.models import *
 from django_twistranet.content_types.models import *
 
 

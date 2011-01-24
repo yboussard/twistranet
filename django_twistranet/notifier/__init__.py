@@ -9,7 +9,7 @@ to be taken (accept in a network or community, ...).
 """
 from django.utils.translation import ugettext as _
 
-from django_twistranet.signals import *
+from django_twistranet.twistranet.signals import *
 import handlers
 
 

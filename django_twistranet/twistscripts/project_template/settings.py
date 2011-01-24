@@ -68,7 +68,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    "django_twistranet.lib.context_processors.security_context",
+    "django_twistranet.twistranet.lib.context_processors.security_context",
     )
 
 
@@ -146,7 +146,7 @@ THUMBNAIL_COLORSPACE = None
 
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'django_twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "django_twistranet.lib.haystack_simplehack"
+HAYSTACK_SEARCH_ENGINE = "django_twistranet.twistranet.lib.haystack_simplehack"
 
 QUICKUPLOAD_AUTO_UPLOAD = True
 QUICKUPLOAD_FILL_TITLES = False 

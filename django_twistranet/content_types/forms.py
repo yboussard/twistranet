@@ -4,9 +4,9 @@ from django.forms import widgets, ChoiceField
 
 from tinymce.widgets import TinyMCE
 
-from django_twistranet.forms import form_registry
-from django_twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm, BaseEmptyForm
-from django_twistranet.forms.widgets import  PermissionsWidget
+from django_twistranet.twistranet.forms import form_registry
+from django_twistranet.twistranet.forms.base_forms import BaseInlineForm, BaseRegularForm, BaseEmptyForm
+from django_twistranet.twistranet.forms.widgets import  PermissionsWidget
 
 class StatusUpdateForm(BaseInlineForm):
     """

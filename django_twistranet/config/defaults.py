@@ -10,7 +10,7 @@ import logging
 # XXXXXXXXXXXX
 
 # Twistranet Theme.
-TWISTRANET_THEME_NAME = "redbook"
+TWISTRANET_THEME_NAME = "Soft-186"
 
 # Default twistranet sending email
 SERVER_EMAIL = "twistranet <twistranet@numericube.com>"
@@ -30,7 +30,7 @@ TWISTRANET_LOG_LEVEL = logging.WARNING
 
 TN_ROOT = os.path.abspath(os.path.join(
     os.path.dirname(__file__),
-    "../..",
+    "..",
 ))
 THEME_DIR =  "%s/themes/%s" % (TN_ROOT , TWISTRANET_THEME_NAME, )
 
@@ -64,5 +64,5 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # Search engine (Haystack) configuration
 HAYSTACK_SITECONF = 'django_twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "django_twistranet.lib.haystack_simplehack"
+HAYSTACK_SEARCH_ENGINE = "django_twistranet.twistranet.lib.haystack_simplehack"
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20

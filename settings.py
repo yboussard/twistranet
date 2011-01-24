@@ -38,7 +38,7 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(HERE, 'data', 'media')
+MEDIA_ROOT = os.path.join(HERE, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -68,7 +68,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    "django_twistranet.lib.context_processors.security_context",
+    "django_twistranet.twistranet.lib.context_processors.security_context",
     )
 
 
@@ -144,8 +144,8 @@ THUMBNAIL_FORMAT = "PNG"
 THUMBNAIL_COLORSPACE = None
 
 # Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'django_twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "django_twistranet.lib.haystack_simplehack"
+HAYSTACK_SITECONF = 'django_twistranet.search.search_sites'
+HAYSTACK_SEARCH_ENGINE = "django_twistranet.search.haystack_simplehack"
 
 QUICKUPLOAD_AUTO_UPLOAD = True
 QUICKUPLOAD_FILL_TITLES = False 
