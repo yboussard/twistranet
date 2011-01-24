@@ -1,6 +1,6 @@
 import os
 from setuptools import setup, find_packages
-from twistranet import VERSION, __version__
+from django_twistranet import VERSION, __version__
 
 setup(name = 'Twistranet',
       version = __version__,
@@ -24,7 +24,7 @@ setup(name = 'Twistranet',
       url = 'http://numericube.com',
       license = 'GPL',
       packages = find_packages(exclude=['ez_setup']),
-      namespace_packages = ['twistranet'],
+      namespace_packages = ['django_twistranet'],
       include_package_data = True,
       zip_safe = False,
       install_requires = [

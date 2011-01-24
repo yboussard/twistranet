@@ -96,7 +96,7 @@ CACHE_BACKEND = "locmem:///"
 ROOT_URLCONF = 'urls'
 
 #                                                       #
-#   XXX     TWISTRANET-SPECIFIC CONFIGURATION       XXX #
+#            TWISTRANET-SPECIFIC CONFIGURATION          #
 #                                                       #
 # List of defined languages for TwistraNet.
 # See http://docs.djangoproject.com/en/dev/ref/settings/ for an explanation of what this lambda does here.
