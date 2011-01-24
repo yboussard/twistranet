@@ -281,6 +281,7 @@ class BaseIndividualView(BaseView):
     model_lookup = None
     form_class = None               # If set, will be used to generate a form for the view
     redirect = None
+    referer_url = None
 
     def __init__(self, request = None, other_view = None, lookup = "id"):
         """
@@ -329,7 +330,8 @@ class BaseIndividualView(BaseView):
         form_class = self.get_form_class()
         if form_class:
             setattr(self, model_name, self.object)
-            self.template_variables = self.template_variables + ["form", ]
+            self.referer_url = self.get_referer_url
+            self.template_variables = self.template_variables + ["form", "referer_url"]
             if self.request.method == 'POST': # If the form has been submitted...
                 self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
                 publisher_id = self.request.POST.get('publisher_id', None)
@@ -389,6 +391,27 @@ class BaseIndividualView(BaseView):
         if not isinstance(self.object, self.model_lookup):
             return False
         return True
+          
+
+    @property
+    def get_referer_url(self,):
+        """
+        Return referer url
+        If referer_url == current_url or not referer_url, 
+        return publisher wall url or home page
+        """
+        referer_url = self.request.META.get('HTTP_REFERER', '')
+        current_url = self.request.build_absolute_uri(self.request.get_full_path())
+        if not (referer_url) or referer_url == current_url :
+            if hasattr(self, 'publisher'):
+                publisher = self.publisher
+                if publisher :
+                    referer_path =  reverse('account_by_id', args = (publisher.id,))
+            else :
+                from account_views import HomepageView
+                referer_path = reverse(HomepageView.name)
+            referer_url = self.request.build_absolute_uri(referer_path)
+        return referer_url
         
 
 class BaseObjectActionView(BaseIndividualView):

@@ -259,6 +259,7 @@ jQuery(
                     var checkbox = jQuery('>input:checkbox, >input:radio', itemselected);
                     new_selection = checkbox.val();
                     if (new_selection!=current_selection) {
+                        selector.trigger('change');
                         showPreview(jQuery('a', itemselected).attr('href'),
                                     jQuery('.grid-item-miniurl', itemselected).val(),
                                     jQuery('.grid-item-previewurl', itemselected).val(),
@@ -266,7 +267,7 @@ jQuery(
                                     jQuery('.grid-item-type', itemselected).val());
                     }
                 }
-                selector.val(new_selection).trigger('change');
+                selector.val(new_selection);
             }
         }
     }

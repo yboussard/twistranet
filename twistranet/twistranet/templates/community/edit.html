@@ -28,7 +28,8 @@
         {% csrf_token %}
         <div class="form-controls">
           <input type="submit" value="{% trans 'Save' %}" /> 
-          <input type="reset" value="{% trans 'Undo' %}" />
+          <button type="button" class="reset">{% trans 'Undo' %}</button>
+          <input type="hidden" id="referer_url" value="{{referer_url}}" name="referer_url" />
         </div>
         </fieldset>
     </form>    

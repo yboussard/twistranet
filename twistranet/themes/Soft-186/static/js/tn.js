@@ -337,6 +337,7 @@ var twistranet = {
         twistranet.enableLiveSearch();
         twistranet.prettyCombosLists(); 
         twistranet.tnGridActions();
+        twistranet.formUndo(); 
         twistranet.formProtection();
         twistranet.loadUploaders();
         twistranet.initWysiwygBrowser();
@@ -441,6 +442,11 @@ var twistranet = {
      if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
          jQuery("form.enableAutoFocus :input:visible:first").focus();
     },
+    formUndo: function(e) {
+        jQuery('.edit-form .form-controls button.reset').click( function(){
+            if (jQuery('#referer_url').length) location.href = jQuery('#referer_url').val();
+        })
+    },
     formProtection: function(e) {
         var form_has_changes = false;
         oform = jQuery('.enableUnloadProtect');
@@ -449,10 +455,6 @@ var twistranet = {
                 form_has_changes = true;
             });
             jQuery(oform).submit(function(){
-                form_has_changes = false;
-                if (typeof tinyMCE != 'undefined') tinyMCE.activeEditor.isNotDirty;
-            });   
-            jQuery('input[type=reset]',oform).click(function(){
                 form_has_changes = false;
                 if (typeof tinyMCE != 'undefined') tinyMCE.activeEditor.isNotDirty;
             });
