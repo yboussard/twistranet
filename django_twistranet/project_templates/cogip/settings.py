@@ -1,4 +1,5 @@
 # Django settings for TwistraNet project.
+# NEVER WRITE THIS FILE DIRECTLY, but copy/paste your settings in the local_settings.py file.
 import os.path
 
 HERE = os.path.dirname(__file__)
@@ -39,6 +40,7 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+# Only 1 is supported by twistranet anyway
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -51,7 +53,8 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(HERE, 'media')
+MEDIA_ROOT = os.path.join(HERE, 'www', 'media')
+TWISTRANET_ACCOUNT_MEDIA_PATH = MEDIA_ROOT
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -79,7 +82,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
-#    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     "django_twistranet.twistranet.lib.context_processors.security_context",
     )
@@ -102,7 +104,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_PROFILE_MODULE = "django_twistranet.twistranet.UserAccount"
+AUTH_PROFILE_MODULE = "django_twistranet.UserAccount"
 
 CACHE_BACKEND = "locmem:///"
 
@@ -134,7 +136,7 @@ LOGIN_REDIRECT_URL = '/'
 # TinyMCE configuration
 TINYMCE_FILEBROWSER = False
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
     'theme': "advanced",

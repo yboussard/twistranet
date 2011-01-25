@@ -7,31 +7,73 @@ This is the TwistraNet project!
 About
 =====
 
-TwistraNet is a social CMS. That is, it is a full-featured CMS with a social focus.
+TwistraNet is a Social Network tailored for the enterprise. It is also a nice CMS (Content Management System) with a social focus.
 
 
 Requirements
 ============
 
 TwistraNet is written in PYTHON. 
-It requires the Django Framework (as of writing, Django 1.2.1 is mandatory)
+It requires the Django Framework (as of writing, Django >= 1.2 is mandatory)
 
 
 Installation
 ============
 
-- Download and install Django from http://www.djangoproject.com/download/
-- Run ./manage.py syncdb (answer 'no' to admin user creation, they're not used as of this version)
-- Run ./manage.py twistranet_bootstrap
-- Run ./manage.py runserver 0.0.0.0
-- Point your browser to http://localhost:8000/ => You're done
+Installation is in fact a 2 steps process. You must install twistranet's core features as a python library,
+then you have to create a project (which is an instance of a twistranet site).
 
-There are a few users already set: "A", "B" and "admin". All three have 'azerty1234' password.
+To install twistranet's core features:
+
+- Download and install Python >= 2.4 (with setuptools)
+
+- Download twistranet from github.com/numericube/twistranet: git clone 
+
+- Execute (as a superuser) ./setup.py install clean ; this will normally install all dependencies.
+
+To create a new project:
+
+- In the directory you want your website files created, type "python twistranet_project [<template>] <project_path>",
+    where <project_path> is the name of your site (it will be created by the process) ;
+    <template> is the name of the project template to deploy. Currently admitted values are:
+        
+    - 'default' (which is... the default value), an empty project based on sqlite;
+    
+    - 'cogip', a sample french-language project of a fictious company called COGIP.
+
+- Review the settings.py file
+
+
+Running without installing
+==========================
+
+You can run twistranet without installing it (but you still need to install its dependencies).
+
+This is useful if you want to work with a development version without installing it.
+
+For example, if you want to run twistranet from the 'my_project' directory inside the twistranet source directory, do the following:
+
+  - Download twistranet ;
+  
+  - Go into the twistranet directory (there should be a ./twistranet_project.py file in there) ;
+
+  - Execute:
+
+    - python ./twistranet_project.py my_project
+
+    - cd my_project
+
+    - ./manage.py bootstrap --pythonpath ../django_twistranet
+
+    - ./manage.py runserver --pythonpath ../django_twistranet
+
+That's it :)
+
 
 Design considerations
 =====================
 
-Most things with TwistraNet are derivated from Content objects.
+Most things with TwistraNet are derivated from Twistable objects.
 Stuff which can produce content are Account objects. Thus, user profiles (but not only) are derivated account objects.
 
 This inheritance stuff is there in case we one day move data into a cassandra-like DB.

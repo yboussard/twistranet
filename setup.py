@@ -4,13 +4,14 @@ from django_twistranet import VERSION, __version__
 
 setup(name = 'Twistranet',
       version = __version__,
-      description = "Twistranet - The social CMS",
+      description = "Twistranet - An Enterprise Social Network",
       long_description = open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers = [
         "Framework :: Django",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Development Status :: 4 - Beta",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Internet :: WWW/HTTP :: WSGI",
@@ -23,7 +24,7 @@ setup(name = 'Twistranet',
       author_email = 'twistranet@numericube.com',
       url = 'http://numericube.com',
       license = 'GPL',
-      packages = find_packages(exclude=['ez_setup']),
+      packages = ['django_twistranet'], #find_packages(exclude=['ez_setup']),
       namespace_packages = ['django_twistranet'],
       include_package_data = True,
       zip_safe = False,
@@ -39,6 +40,6 @@ setup(name = 'Twistranet',
       entry_points = """
       # -*- Entry points: -*-
       [console_scripts]
-      twistranet_project=twistranet.twistscripts.twistranet_project:create_project
+      twistranet_project=django_twistranet.core.twistranet_project:twistranet_project
       """,
       )
