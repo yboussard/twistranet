@@ -6,17 +6,20 @@ See doc/DESIGN.txt for caveats about database
 """
 import traceback
 import os
+import shutil
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 from django.db.utils import DatabaseError
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.utils.importlib import import_module
 
+import django_twistranet
 from django_twistranet.twistranet.models import *
 from django_twistranet.twistranet.lib import permissions
 from django_twistranet.twistranet.lib.slugify import slugify
-from  django_twistranet.twistranet.lib.log import *
+from django_twistranet.twistranet.lib.log import *
 
 from django.conf import settings
 
@@ -60,6 +63,28 @@ def bootstrap():
         traceback.print_exc()
         return
         
+    # Copy theme-defined static files into the static directory.
+    # We start by importing the theme app
+    theme_app = import_module(settings.TWISTRANET_THEME_APP)
+    theme_app_dir = os.path.split(theme_app.__file__)[0]
+    dest_root = os.path.abspath(settings.TWISTRANET_STATIC_PATH)
+    source_root = os.path.abspath(os.path.join(theme_app_dir, 'static'))
+    if not os.path.isdir(dest_root):
+        os.makedirs(dest_root)
+    for root, dirs, files in os.walk(source_root):
+        relative_root = root[len(source_root) + 1:]
+        for d in dirs:
+            dest_dir = os.path.join(dest_root, relative_root, d)
+            if not os.path.isdir(dest_dir):
+                os.mkdir(dest_dir)
+        for fname in files:
+            dest_file = os.path.join(dest_root, relative_root, fname)
+            if not os.path.isfile(dest_file):
+                shutil.copy(
+                    os.path.join(source_root, root, fname),
+                    dest_file,
+                )
+        
     # Now create the bootstrap / default / help fixture objects.
     # Import your fixture there, if you don't do so they may not be importable.
     from django_twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
@@ -86,8 +111,15 @@ def bootstrap():
     admin.save()
 
     # Create default resources by associating them to the SystemAccount and publishing them on GlobalCommunity.
-    log.debug("Default res. dir: %s" % settings.TWISTRANET_DEFAULT_RESOURCES_DIR)
-    for root, dirs, files in os.walk(settings.TWISTRANET_DEFAULT_RESOURCES_DIR):
+    default_resources_dir = os.path.abspath(
+        os.path.join(
+            os.path.split(django_twistranet.__file__)[0],
+            'fixtures',
+            'resources',
+        )
+    )
+    log.debug("Default res. dir: %s" % default_resources_dir)
+    for root, dirs, files in os.walk(default_resources_dir):
         for fname in files:
             slug = os.path.splitext(os.path.split(fname)[1])[0]
             objects = Resource.objects.filter(slug = slug)

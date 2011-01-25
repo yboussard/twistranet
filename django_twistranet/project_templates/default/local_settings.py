@@ -10,7 +10,7 @@ HERE = os.path.dirname(__file__)
 
 logger = logging.getLogger('django_auth_ldap')
 logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.NOTICE)
+logger.setLevel(logging.WARNING)
 
 # local settings
 if os.environ.has_key("TWISTRANET_DEBUG"):

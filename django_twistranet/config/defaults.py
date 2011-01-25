@@ -11,9 +11,6 @@ from django.conf import settings
 # The following section is the most likely to be changed.
 # XXXXXXXXXXXX
 
-# Twistranet default theme.
-TWISTRANET_THEME_NAME = "Soft-186"
-
 # Default twistranet sending email
 SERVER_EMAIL = "twistranet <twistranet@numericube.com>"
 
@@ -38,25 +35,11 @@ TWISTRANET_LOG_LEVEL = logging.WARNING
 # End of the conveniently-changeable section.
 # XXXXXXXXXXXX
 
-TN_ROOT = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "..",
-))
-THEME_DIR =  "%s/themes/%s" % (TN_ROOT , TWISTRANET_THEME_NAME, )
-
-TEMPLATE_DIRS = (
-    THEME_DIR,
-    "%s/templates" % (TN_ROOT , ),
-)
-TWISTRANET_DEFAULT_RESOURCES_DIR = "%s/fixtures/resources" % (TN_ROOT , )
-
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # TinyMCE configuration
-TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = "%s/static/tiny_mce" % THEME_DIR
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,emotions,paste,searchreplace",
     'theme': "advanced",

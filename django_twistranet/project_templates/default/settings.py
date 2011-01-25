@@ -55,6 +55,7 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(HERE, 'www', 'media')
 TWISTRANET_ACCOUNT_MEDIA_PATH = MEDIA_ROOT
+TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -122,12 +123,7 @@ LANGUAGES = (
     ('fr', gettext('French')),
 )
 
-TWISTRANET_THEME_NAME = "Soft-186"
-THEME_DIR =  "%s/django_twistranet/themes/%s" % (HERE, TWISTRANET_THEME_NAME, )
-TEMPLATE_DIRS = (
-    THEME_DIR,
-    "%s/django_twistranet/twistranet/templates" % (HERE, ),
-)
+TWISTRANET_THEME_APP = "django_twistranet.themes.twistheme"
 
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
@@ -185,6 +181,9 @@ INSTALLED_APPS = (
     
     # TwistraNet core stuff
     'django_twistranet.twistranet',
+    
+    # Twistranet theme
+    TWISTRANET_THEME_APP,
     
     # TwistraNet extensions
     'django_twistranet.content_types',
