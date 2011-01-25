@@ -29,8 +29,9 @@ def get_fixtures():
             title = "Administrator",
     		description = "A twistranet manager",
             permissions = "public",
-            user = User.objects.get(id = 1),
+            user = User.objects.get(username = 'admin'),
             picture = Resource.objects.filter(slug = "default_admin_picture"),
+            force_update = True,
         ),
 
         Fixture(
@@ -39,8 +40,9 @@ def get_fixtures():
             title = "Albert Durand",
     		description = "I'm a senior accountant. How may I help you?",
             permissions = "public",
-            user = User.objects.get(id = 2),
+            user = User.objects.get(username = 'A'),
             picture = Resource.objects.filter(slug = "default_a_picture"),
+            force_update = True,
         ),
     
         Fixture(
@@ -49,8 +51,9 @@ def get_fixtures():
             title = "Beatrice Giraud De La Fontaine",
     		description = "I work in the sales department.",
             permissions = "private",
-            user = User.objects.get(id = 3),
+            user = User.objects.get(username = 'B'),
             picture = Resource.objects.filter(slug = "default_b_picture"),
+            force_update = True,
         ),
     
         Fixture(
@@ -59,8 +62,9 @@ def get_fixtures():
             title = "Chris Williams",
     		description = "I'm a private kind of person. Don't be surprised if I don't say too much about myself!",
             permissions = "private",
-            user = User.objects.get(id = 4),
+            user = User.objects.get(username = 'C'),
             picture = Resource.objects.filter(slug = "default_c_picture"),
+            force_update = True,
         ),
     
         Fixture(

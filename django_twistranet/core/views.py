@@ -41,7 +41,7 @@ class AsPublicView(object):
         self.args = args
         self.kw = kw
         
-    def has_access(self):
+    def has_access(self, request):
         return True         # Can always access a public view
         
     def __call__(self, request, *args, **kw):
