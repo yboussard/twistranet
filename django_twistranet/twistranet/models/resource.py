@@ -13,7 +13,6 @@ class ResourceModelManager(twistable.TwistableManager):
     """
     We just add a few method to fetch resource-specific objects.
     """
-    
     def selectable_accounts(self, account):
         """
         We just return current account (if not anon.) PLUS all the communities I rule.
@@ -23,9 +22,9 @@ class ResourceModelManager(twistable.TwistableManager):
         """
         if account.is_anonymous:
             return []
-        com = [account]
-        com.extend(account.communities.all())
-        return com
+        accounts = [account]
+        accounts.extend(account.communities.all())
+        return accounts
 
 def twistorage_upload_to(instance, filename):
     """

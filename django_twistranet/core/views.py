@@ -50,7 +50,7 @@ class AsPublicView(object):
         """
         try:
             # Check if we have access to TN, if not we redirect to the login page.
-            if not self.has_access():
+            if not self.has_access(request):
                 path = urlquote(request.get_full_path())
                 raise MustRedirect('%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path, ))
 
@@ -73,10 +73,9 @@ class AsView(AsPublicView):
     """
     Same as AsPublicView but for a (possibly) restricted view.
     """
-    def has_access(self,):
+    def has_access(self, request):
         from django_twistranet.twistranet.models import GlobalCommunity, AnonymousAccount
-        mgr = GlobalCommunity.objects
-        return mgr.exists()
+        return GlobalCommunity.objects.get_query_set(request = request).exists()
             
 class BaseView(object):
     """
@@ -336,7 +335,7 @@ class BaseIndividualView(BaseView):
                 self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
                 publisher_id = self.request.POST.get('publisher_id', None)
                 if publisher_id:
-                    publisher = Account.objects.get(id = publisher_id)    # Will raise if unauthorized
+                    publisher = Account.objects.get_query_set(request = self.request).get(id = publisher_id)    # Will raise if unauthorized
                 else:
                     publisher = None
                 if self.form.is_valid(): # All validation rules pass
@@ -484,7 +483,7 @@ class BaseWallView(BaseIndividualView):
                 if form.is_valid():                             # All validation rules pass
                     # Process the data in form.cleaned_data
                     c = form.save(commit = False)
-                    c.publisher = Account.objects.get(id = self.request.POST.get('publisher_id'))    # Will raise if unauthorized
+                    c.publisher = Account.objects.get_query_set(request = self.request).get(id = self.request.POST.get('publisher_id'))    # Will raise if unauthorized
                     c.save()
                     form.save_m2m()
                     # forms.append(form_class(initial = initial)) => Silly stuff anyway?

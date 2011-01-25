@@ -34,53 +34,53 @@ class TwistableManager(models.Manager):
     # Disabled for performance reasons.
     # use_for_related_fields = True
 
-    def get_query_set(self):
+    def get_query_set(self, __account__ = None, request = None, ):
         """
         Return a queryset of 100%-authorized objects. All (should) have the can_list perm to True.
         This is in fact a kind of 'has_permission(can_list)' method!
         
-        This method WILL return duplicates. Use this if you don't want to check unicity of a content.
+        This method IS very slow. But you can speed things up if you pass either 'request' or '__account__' along the lines.
+        Be aware, however, that in this case you loose the 'safety belt' provided by the security model.
         """
         # Check for anonymous query
         import community, account, community
-        auth = self._getAuthenticatedAccount()
+        __account__ = self._getAuthenticatedAccount(__account__, request)
         base_query_set = super(TwistableManager, self).get_query_set()
             
         # System account: return all objects without asking any question. And with all permissions set.
-        if auth.id == account.SystemAccount.SYSTEMACCOUNT_ID:
+        if __account__.id == account.SystemAccount.SYSTEMACCOUNT_ID:
             return base_query_set
             
         # XXX TODO: Make a special query for admin members? Or at least mgrs of the global community?
         # XXX Make this more efficient?
         # XXX Or, better, check if current user is manager of the owner ?
-        if auth.id > 0:
-            managed_accounts = [auth.id, ]
+        if __account__.id > 0:
+            managed_accounts = [__account__.id, ]
         else:
             managed_accounts = []
         
         # XXX This try/except is there so that things don't get stucked during boostrap
         try:
-            if auth.is_admin:
+            if __account__.is_admin:
                 return base_query_set.filter(
                     _p_can_list__lte = roles.manager,
                 )
         except DatabaseError:
             log.warning("DB error while checking AdminCommunity. This is NORMAL during syncdb or bootstrap.")
-            # traceback.print_exc()
             return base_query_set
 
         # Regular check. Works for anonymous as well...
-        # network_ids = auth.network_ids
-        if not auth.is_anonymous:
+        # network_ids = __account__.network_ids
+        if not __account__.is_anonymous:
             qs = base_query_set.filter(
                 Q(
-                    owner__id = auth.id,
+                    owner__id = __account__.id,
                     _p_can_list = roles.owner,
                 ) | Q(
-                    _access_network__targeted_network__target = auth,
+                    _access_network__targeted_network__target = __account__,
                     _p_can_list = roles.network,
                 ) | Q(
-                    _access_network__targeted_network__target = auth,
+                    _access_network__targeted_network__target = __account__,
                     _p_can_list = roles.public,
                 ) | Q(
                     # Anonymous stuff
@@ -127,7 +127,7 @@ class TwistableManager(models.Manager):
         # Didn't find anything. We must be anonymous.
         return AnonymousAccount()
                 
-    def _getAuthenticatedAccount(self):
+    def _getAuthenticatedAccount(self, __account__ = None, request = None):
         """
         Dig the stack to find the authenticated account object.
         Return either a (possibly generic) account object or None.
@@ -135,9 +135,17 @@ class TwistableManager(models.Manager):
         Views with a "request" parameter magically works with that.
         If you want to use a system account, declare a '__account__' variable in your caller function.
         """
-        # We dig into the stack frame to find the request object.
         from account import Account, AnonymousAccount, UserAccount
 
+        # If we have the __account__ object, then it's quite obvious here...
+        if isinstance(__account__, Account):
+            return __account__
+            
+        # If we have the request object, then we just can use getCurrentAccount() instead
+        if request:
+            return self.getCurrentAccount(request)
+
+        # We dig into the stack frame to find the request object.
         frame = inspect.currentframe()
         try:
             while frame:
@@ -146,6 +154,10 @@ class TwistableManager(models.Manager):
                 # Inspect 'locals' variables to get the request or __account__
                 _locals = frame_members.get('f_locals', None)
                 if _locals:
+                    # Check for an __acount__ variable holding a generic Account object. It always has precedence over 'request'
+                    if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
+                        return _locals['__account__']
+                
                     # Check for a request.user User object
                     if _locals.has_key('request'):
                         u = getattr(_locals['request'], 'user', None)
@@ -157,10 +169,6 @@ class TwistableManager(models.Manager):
                                 u._account_cache.user = u
                             return u._account_cache
             
-                    # Check for an __acount__ variable holding a generic Account object
-                    if _locals.has_key('__account__') and isinstance(_locals['__account__'], Account):
-                        return _locals['__account__']
-                
                 # Get back to the upper frame
                 frame = frame_members.get('f_back', None)
                         
