@@ -60,10 +60,27 @@ def twistranet_project():
     # Build the project up copying over the twistranet project_template
     twist_package = __import__('django_twistranet')
     twist_package_path = os.path.dirname(os.path.abspath(twist_package.__file__))
-    template_dir = os.path.join(twist_package_path, "project_templates", project_template)
+    template_dir = os.path.join(twist_package_path, "project_templates", "default")
     if not os.path.isdir(template_dir):
         parser.error("Template '%s' is invalid." % project_template)
     shutil.copytree(template_dir, project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
+    
+    # If project_template <> default, we copy the project_template-specific files as well
+    if project_template != "default":
+        source_root = os.path.join(twist_package_path, "project_templates", project_template)
+        dest_root = project_path
+        for root, dirs, files in os.walk(source_root):
+            relative_root = root[len(source_root) + 1:]
+            for d in dirs:
+                dest_dir = os.path.join(dest_root, relative_root, d)
+                if not os.path.isdir(dest_dir):
+                    os.mkdir(dest_dir)
+            for fname in files:
+                dest_file = os.path.join(dest_root, relative_root, fname)
+                shutil.copy(
+                    os.path.join(source_root, root, fname),
+                    dest_file,
+                )        
     
     # Generate variables replaced in the project files
     replacement = {
