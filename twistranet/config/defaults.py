@@ -31,10 +31,6 @@ TWISTRANET_LOG_LEVEL = logging.WARNING
 # End of the conveniently-changeable section.
 # XXXXXXXXXXXX
 
-# Contrib.auth module settings
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-
 # TinyMCE configuration
 TINYMCE_FILEBROWSER = False
 TINYMCE_DEFAULT_CONFIG = {

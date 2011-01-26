@@ -100,14 +100,15 @@ def twistranet_project():
         
     # As we use a standard sqlite configuration, we can boostrap quite safely just now.
     # First we append project_path to sys.path, then we start the server.
-    # from django.core.management import call_command
-    # from django import conf
-    # sys.path.insert(1, project_path)    # Here is how we're gonna find the 'settings' module from here.
-    # os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
-    # print project_path
-    # import settings
-    # dir(settings)
-    # call_command('twistranet_bootstrap')
+    from django.core.management import call_command
+    from django import conf
+    sys.path.insert(1, project_path)        # Here is how we're gonna find the 'settings' module from here.
+    os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
+    os.environ["TWISTRANET_DEBUG"] = "1"    # Force debug mode
+    print project_path
+    import settings
+    dir(settings)
+    call_command('twistranet_bootstrap')
 
 if __name__ == "__main__":
     twistranet_project()

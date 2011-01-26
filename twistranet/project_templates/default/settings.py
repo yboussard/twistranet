@@ -128,6 +128,10 @@ TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 
+# Contrib.auth module settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
 # Basic apps installation. You may add your own modules here.
 _INSTALLED_APPS = (
     'django.contrib.auth',
