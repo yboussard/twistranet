@@ -23,5 +23,7 @@ if os.environ.has_key("TWISTRANET_DEBUG"):
 TWISTRANET_IMPORT_SAMPLE_DATA = True            # Make this False if you don't want sample data when bootstraping
 TWISTRANET_IMPORT_COGIP = False                 # Make this False if you don't want sample data when bootstraping
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '*pzu469z6h)3mpkff#x&cdcj)6*918f6nfp7f@x2@049p2ydhz'
+# This is made unique by the create_project script.
+# Don't edit!
+SECRET_KEY = "xxx"
+

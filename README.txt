@@ -20,6 +20,33 @@ It requires the Django Framework (as of writing, Django >= 1.2 is mandatory)
 Installation
 ============
 
+Installation - short version
+-----------------------------
+
+- Download and untar (or unzip) twistranet from http://github.com/numericube/twistranet
+
+- cd twistranet-x.x.x
+
+- (sudo) python ./setup.py install clean
+
+twistranet is now installed. You can have many sites with just one twistranet installation, so you need to explicitly deploy and bootstrap your new site.
+
+- (sudo) twistranet_project <path_to_my_new_site>
+
+- cd <path_to_my_new_site>
+
+- python ./manage.py twistranet_bootstrap
+
+Your twistranet project is now ready to run with default options
+
+- python ./manage.py runserver 0.0.0.0:8000
+
+twistranet is now running. Point your browser at http://<yourserver>:8000    
+
+
+Installation - the Big Picture
+------------------------------
+
 Installation is in fact a 2 steps process. You must install twistranet's core features as a python library,
 then you have to create a project (which is an instance of a twistranet site).
 
@@ -27,7 +54,7 @@ To install twistranet's core features:
 
 - Download and install Python >= 2.4 (with setuptools)
 
-- Download twistranet from github.com/numericube/twistranet: git clone 
+- Download twistranet from github.com/numericube/twistranet
 
 - Execute (as a superuser) ./setup.py install clean ; this will normally install all dependencies.
 
@@ -41,11 +68,24 @@ To create a new project:
     
     - 'cogip', a sample french-language project of a fictious company called COGIP.
 
-- Review the settings.py file
+- Go to your <project_path>
+
+- Review the settings.py file and local_settings.py, change to whatever suits your needs.
+
+  Among other things, carefully choose your DATABASE scheme, your LDAP/AD settings and the 'admin' password
+  that has been generated for you.
+
+- Execute "./manage.py bootstrap" to build the database
+
+Running Twistranet :
+
+- Execute ./manage.py runserver 0.0.0.0 to start playing with twistranet.
+
+- Point your browser at http://localhost:8000
 
 
 Running without installing
-==========================
+--------------------------
 
 You can run twistranet without installing it (but you still need to install its dependencies).
 

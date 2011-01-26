@@ -12,8 +12,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cmd = syncdb.Command()
         cmd.execute()
-        from django_twistranet.twistranet.lib import dbsetup
-        dbsetup.bootstrap()
-        dbsetup.repair()
-        print "Finished bootstraping. You can play with TwistraNet now."
-
+        from django_twistranet.core import bootstrap
+        bootstrap.bootstrap()

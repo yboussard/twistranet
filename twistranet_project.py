@@ -1,6 +1,7 @@
 from __future__ import with_statement
 import os
 import re
+import sys
 from optparse import OptionParser
 import shutil
 from uuid import uuid4, uuid1
@@ -95,6 +96,10 @@ def twistranet_project():
         for regex, repl in replacement.items():
             data = re.sub(regex, repl, data)
         f.write(data)
+        
+    # # As we use a standard sqlite configuration, we can boostrap quite safely just now.
+    # os.chdir(project_path)
+    # os.system("%s ./manage.py twistranet_bootstrap" % sys.executable)
 
 if __name__ == "__main__":
     twistranet_project()

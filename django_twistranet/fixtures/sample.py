@@ -9,9 +9,9 @@ from django.contrib.auth.models import User
 
 def create_users():
     """
-    Create the 4 dummy users
+    Create the 3 dummy users.
     """
-    for username in ('admin', 'A', 'B', 'C', ):
+    for username in ('A', 'B', 'C', ):
         if User.objects.filter(username = username).exists():
             continue
         u = User.objects.create(
@@ -23,16 +23,16 @@ def create_users():
     
 def get_fixtures():
     return [
-        Fixture(
-            UserAccount,
-            slug = "admin",
-            title = "Administrator",
-    		description = "A twistranet manager",
-            permissions = "public",
-            user = User.objects.get(username = 'admin'),
-            picture = Resource.objects.filter(slug = "default_admin_picture"),
-            force_update = True,
-        ),
+            #         Fixture(
+            #             UserAccount,
+            #             slug = "admin",
+            #             title = "Administrator",
+            # description = "A twistranet manager",
+            #             permissions = "public",
+            #             user = User.objects.get(username = 'admin'),
+            #             picture = Resource.objects.filter(slug = "default_admin_picture"),
+            #             force_update = True,
+            #         ),
 
         Fixture(
             UserAccount,
@@ -67,22 +67,22 @@ def get_fixtures():
             force_update = True,
         ),
     
-        Fixture(
-            StatusUpdate,
-            logged_account = "admin",
-            slug = "status1",
-            description = "Hi everybody! Welcome to twistranet. Hope you'll enjoy working with this platform. If you need any help, feel free to contact me!",
-            permissions = "public",
-        ),
-    
-        Fixture(
-            StatusUpdate,
-            logged_account = "admin",
-            slug = "status2",
-            description = "Did everybody try to fill their personal profile?",
-            permissions = "network",
-        ),
-    
+        # Fixture(
+        #     StatusUpdate,
+        #     logged_account = "admin",
+        #     slug = "status1",
+        #     description = "Hi everybody! Welcome to twistranet. Hope you'll enjoy working with this platform. If you need any help, feel free to contact me!",
+        #     permissions = "public",
+        # ),
+        #     
+        # Fixture(
+        #     StatusUpdate,
+        #     logged_account = "admin",
+        #     slug = "status2",
+        #     description = "Did everybody try to fill their personal profile?",
+        #     permissions = "network",
+        # ),
+
         Fixture(
             StatusUpdate,
             logged_account = "b",

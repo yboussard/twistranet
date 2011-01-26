@@ -7,6 +7,8 @@ See doc/DESIGN.txt for caveats about database
 import traceback
 import os
 import shutil
+import random
+import string
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
@@ -63,6 +65,7 @@ def bootstrap():
         traceback.print_exc()
         return
         
+    
     # Copy theme-defined static files into the static directory.
     # We start by importing the theme app
     theme_app = import_module(settings.TWISTRANET_THEME_APP)
@@ -103,12 +106,12 @@ def bootstrap():
 
     # Special treatment for bootstrap: Set the GlobalCommunity owner = AdminCommunity
     glob = GlobalCommunity.objects.get()
-    admin = AdminCommunity.objects.get()
-    glob.owner = admin
+    admin_cty = AdminCommunity.objects.get()
+    glob.owner = admin_cty
     glob.publisher = glob
     glob.save()
-    admin.publisher = glob
-    admin.save()
+    admin_cty.publisher = glob
+    admin_cty.save()
 
     # Create default resources by associating them to the SystemAccount and publishing them on GlobalCommunity.
     default_resources_dir = os.path.abspath(
@@ -142,9 +145,22 @@ def bootstrap():
     __account__.picture = Resource.objects.get(slug = "default_tn_picture")
     __account__.save()
 
-    # for obj in BOOTSTRAP_FR_FIXTURES:       obj.apply()
+    # Install HELP fixture.
     for obj in HELP_EN_FIXTURES:            obj.apply()
-    # for obj in HELP_FR_FIXTURES:            obj.apply()
+        
+    # Have we got an admin account? If not, we generate one now.
+    django_admins = UserAccount.objects.filter(user__is_superuser = True)
+    admin_password = None
+    if not django_admins.exists():
+        admin_password = ""
+        for i in range(6):
+            admin_password = "%s%s" % (admin_password, random.choice(string.lowercase + string.digits))
+        u = User.objects.create(
+            username = "admin",
+            is_superuser = True,
+        )
+        u.set_password(admin_password)
+        u.save()
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:
@@ -156,20 +172,26 @@ def bootstrap():
         # Add relations bwn sample users
         # A <=> admin
         # B  => admin
-        A = UserAccount.objects.get(slug = "a")
-        B = UserAccount.objects.get(slug = "b")
-        admin = UserAccount.objects.get(slug = "admin")
-        A.follow(admin)
-        admin.follow(A)
-        B.follow(admin)
+        # A = UserAccount.objects.get(slug = "a")
+        # B = UserAccount.objects.get(slug = "b")
+        # admin = UserAccount.objects.get(slug = "admin")
+        # A.follow(admin)
+        # admin.follow(A)
+        # B.follow(admin)
         
-    # Import COGIP sample
+    # Import COGIP sample (if requested)
     if settings.TWISTRANET_IMPORT_COGIP:
         from django_twistranet.fixtures.cogip import load_cogip
         load_cogip()
 
     # Repair permissions
     repair()
+    
+    # Display admin password
+    if admin_password is not None:
+        print "\n\n" \
+            "  You can now run your server with 'manage.py runserver'.\n" \
+            "  Your initial administrator login/password are 'admin / %s'" % admin_password
     
 
 def check_consistancy():
