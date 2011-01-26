@@ -12,7 +12,6 @@ from django.conf import settings
 # XXXXXXXXXXXX
 
 # Some path information
-TWISTRANET_MEDIA_ROOT = getattr(settings, "TWISTRANET_MEDIA_ROOT", settings.MEDIA_ROOT)
 TWISTRANET_MEDIA_URL = getattr(settings, "TWISTRANET_MEDIA_URL", settings.MEDIA_URL)
 
 # Number of friends or communities displayed in a box
@@ -38,8 +37,6 @@ LOGIN_REDIRECT_URL = '/'
 
 # TinyMCE configuration
 TINYMCE_FILEBROWSER = False
-TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
     'theme': "advanced",

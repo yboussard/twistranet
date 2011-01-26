@@ -58,8 +58,8 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(HERE, 'www', 'media')
-TWISTRANET_ACCOUNT_MEDIA_PATH = MEDIA_ROOT
+MEDIA_ROOT = os.path.join(HERE, 'www', )
+TWISTRANET_MEDIA_ROOT = os.path.join(HERE, 'var', 'upload')
 TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -121,7 +121,12 @@ ROOT_URLCONF = 'urls'
 #            TWISTRANET-SPECIFIC CONFIGURATION          #
 #                                                       #
 
+# Theme app
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
+
+# Some project-dependant settings
+TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 
 # Basic apps installation. You may add your own modules here.
 _INSTALLED_APPS = (
