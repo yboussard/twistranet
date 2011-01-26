@@ -5,6 +5,7 @@ import sys
 from optparse import OptionParser
 import shutil
 from uuid import uuid4, uuid1
+import os
 
 IGNORE_PATTERNS = ('.pyc','.git','.svn')
 
@@ -97,9 +98,16 @@ def twistranet_project():
             data = re.sub(regex, repl, data)
         f.write(data)
         
-    # # As we use a standard sqlite configuration, we can boostrap quite safely just now.
-    # os.chdir(project_path)
-    # os.system("%s ./manage.py twistranet_bootstrap" % sys.executable)
+    # As we use a standard sqlite configuration, we can boostrap quite safely just now.
+    # First we append project_path to sys.path, then we start the server.
+    # from django.core.management import call_command
+    # from django import conf
+    # sys.path.insert(1, project_path)    # Here is how we're gonna find the 'settings' module from here.
+    # os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
+    # print project_path
+    # import settings
+    # dir(settings)
+    # call_command('twistranet_bootstrap')
 
 if __name__ == "__main__":
     twistranet_project()

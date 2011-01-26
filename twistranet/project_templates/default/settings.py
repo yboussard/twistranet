@@ -1,18 +1,23 @@
 # Django settings for TwistraNet project.
 # NEVER WRITE THIS FILE DIRECTLY, but copy/paste your settings in the local_settings.py file.
 import os.path
-
 HERE = os.path.dirname(__file__)
 
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS':      False,
-}
+# debug settings
+import logging
+TWISTRANET_LOG_LEVEL = logging.WARNING
+if os.environ.has_key("TWISTRANET_DEBUG"):
+    DEBUG = True
+    TEMPLATE_DEBUG = True
+    TEMPLATE_STRING_IF_INVALID = "<invalid>"
+    TWISTRANET_LOG_LEVEL = logging.DEBUG
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS':      False,
+    }
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    DEBUG = False
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
-
-MANAGERS = ADMINS
 
 # Defined database engines.
 # You can always overload yours in your local_settings.py file.
@@ -78,17 +83,17 @@ TEMPLATE_LOADERS = (
 )
 
 # See http://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATE_CONTEXT_PROCESSORS
-TEMPLATE_CONTEXT_PROCESSORS = (
+_TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
+    DEBUG and 'django.core.context_processors.debug' or None,
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    "twistranet.twistapp.lib.context_processors.security_context",
-    )
+    'twistranet.twistapp.lib.context_processors.security_context',
+)
+TEMPLATE_CONTEXT_PROCESSORS = [ a for a in _TEMPLATE_CONTEXT_PROCESSORS if a ]
 
-
-MIDDLEWARE_CLASSES = (
+_MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -96,8 +101,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    DEBUG and 'debug_toolbar.middleware.DebugToolbarMiddleware' or None,
 )
+MIDDLEWARE_CLASSES = [ a for a in _MIDDLEWARE_CLASSES if a ]
 
 INTERNAL_IPS = ("127.0.0.1", )
 
@@ -114,56 +120,11 @@ ROOT_URLCONF = 'urls'
 #                                                       #
 #            TWISTRANET-SPECIFIC CONFIGURATION          #
 #                                                       #
-# List of defined languages for TwistraNet.
-# See http://docs.djangoproject.com/en/dev/ref/settings/ for an explanation of what this lambda does here.
-gettext = lambda s: s
-LANGUAGES = (
-    ('de', gettext('German')),
-    ('en', gettext('English')),
-    ('fr', gettext('French')),
-)
 
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 
-# Contrib.auth module settings
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-
-# TinyMCE configuration
-TINYMCE_FILEBROWSER = False
-TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
-TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
-    'theme': "advanced",
-    'theme_advanced_toolbar_location': "top",
-    'theme_advanced_toolbar_align' : "left",
-    'auto_focus': True,
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-    'theme_advanced_blockformats': "p,div,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp",
-    'width': "490px",
-    'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
-    'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
-    'theme_advanced_buttons3': "",
-    'file_browser_callback' : 'twistranet.tinymceBrowser'
-}
-
-# Sorl-thumbnail config
-THUMBNAIL_PREFIX = "cache/"
-THUMBNAIL_FORMAT = "PNG"
-THUMBNAIL_COLORSPACE = None
-
-# Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'twistranet.search.search_sites'
-HAYSTACK_SEARCH_ENGINE = "twistranet.search.haystack_simplehack"
-
-QUICKUPLOAD_AUTO_UPLOAD = True
-QUICKUPLOAD_FILL_TITLES = False 
-QUICKUPLOAD_SIZE_LIMIT = 0  
-QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
-
-INSTALLED_APPS = (
+# Basic apps installation. You may add your own modules here.
+_INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -174,7 +135,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     
     # 3rd party modules
-    'debug_toolbar',
+    DEBUG and 'debug_toolbar' or None,
     'piston',
     'tinymce',
     'sorl.thumbnail',
@@ -193,8 +154,15 @@ INSTALLED_APPS = (
     # 3rd party modules - must be loaded AFTER TN
     'haystack',
 )
+INSTALLED_APPS = [a for a in _INSTALLED_APPS if a]
 
-# Local settings.
+# Local and bootstrap settings.
+TWISTRANET_IMPORT_SAMPLE_DATA = False
+TWISTRANET_IMPORT_COGIP = False
+try:
+    from bootstrap_settings import *
+except ImportError:
+    pass
 try:
     from local_settings import *
 except ImportError:

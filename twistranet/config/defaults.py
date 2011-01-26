@@ -11,9 +11,6 @@ from django.conf import settings
 # The following section is the most likely to be changed.
 # XXXXXXXXXXXX
 
-# Default twistranet sending email
-SERVER_EMAIL = "twistranet <twistranet@numericube.com>"
-
 # Some path information
 TWISTRANET_MEDIA_ROOT = getattr(settings, "TWISTRANET_MEDIA_ROOT", settings.MEDIA_ROOT)
 TWISTRANET_MEDIA_URL = getattr(settings, "TWISTRANET_MEDIA_URL", settings.MEDIA_URL)
@@ -40,8 +37,11 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # TinyMCE configuration
+TINYMCE_FILEBROWSER = False
+TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,emotions,paste,searchreplace",
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
     'theme': "advanced",
     'theme_advanced_toolbar_location': "top",
     'theme_advanced_toolbar_align' : "left",
@@ -53,9 +53,21 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
     'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
     'theme_advanced_buttons3': "",
+    'file_browser_callback' : 'twistranet.tinymceBrowser'
 }
 
+# Sorl-thumbnail config
+THUMBNAIL_PREFIX = "cache/"
+THUMBNAIL_FORMAT = "PNG"
+THUMBNAIL_COLORSPACE = None
+
+# Quickupload configuration
+QUICKUPLOAD_AUTO_UPLOAD = True
+QUICKUPLOAD_FILL_TITLES = False 
+QUICKUPLOAD_SIZE_LIMIT = 0  
+QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
+
 # Search engine (Haystack) configuration
-HAYSTACK_SITECONF = 'twistranet.search_sites'
-HAYSTACK_SEARCH_ENGINE = "twistranet.twistapp.lib.haystack_simplehack"
+HAYSTACK_SITECONF = 'twistranet.search.search_sites'
+HAYSTACK_SEARCH_ENGINE = "twistranet.search.haystack_simplehack"
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
