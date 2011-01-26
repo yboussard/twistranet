@@ -1,0 +1,32 @@
+[
+    {
+        "model":    "twistapp.Twistable",
+        "pk":       1,
+        "fields":   {
+            "app_label":    "twistapp",
+            "model_name":   "SystemAccount",
+            "title":        "System Account",
+            "slug":         "system",
+            "description":  "TwistraNet system account",
+            "picture":      -1,
+            "_p_can_list":  1,
+            "_p_can_view":  1,
+            "owner":        1,
+            "created_by":   1
+        }
+    },
+    
+    {
+        "model":    "twistapp.Account",
+        "pk":       1,
+        "fields":   {
+            "permissions":  "public"
+        }
+    },
+    {
+        "model":    "twistapp.SystemAccount",
+        "pk":       1,
+        "fields":   {
+        }
+    }
+]

@@ -13,7 +13,7 @@ def twistranet_project():
     Copies the contents of the project_template directory to a new directory
     specified as an argument to the command line.
     """
-    import django_twistranet
+    import twistranet
     parser = OptionParser(
         usage = "usage: %prog [options] [<template>] <project_path>\n"
             "  where project_name is the name of the directory that will be created for your site,\n"
@@ -59,7 +59,7 @@ def twistranet_project():
             "Please try another name." % project_name)
 
     # Build the project up copying over the twistranet project_template
-    twist_package = __import__('django_twistranet')
+    twist_package = __import__('twistranet')
     twist_package_path = os.path.dirname(os.path.abspath(twist_package.__file__))
     template_dir = os.path.join(twist_package_path, "project_templates", "default")
     if not os.path.isdir(template_dir):

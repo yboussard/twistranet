@@ -103,9 +103,9 @@ For example, if you want to run twistranet from the 'my_project' directory insid
 
     - cd my_project
 
-    - ./manage.py bootstrap --pythonpath ../django_twistranet
+    - ./manage.py bootstrap --pythonpath ../twistranet
 
-    - ./manage.py runserver --pythonpath ../django_twistranet
+    - ./manage.py runserver --pythonpath ../twistranet
 
 That's it :)
 

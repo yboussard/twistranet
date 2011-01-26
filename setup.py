@@ -1,10 +1,10 @@
 import os
 from setuptools import setup, find_packages
-from django_twistranet import VERSION, __version__
+from twistranet import VERSION, __version__
 
-setup(name = 'Twistranet',
+setup(name = 'django-twistranet',
       version = __version__,
-      description = "Twistranet - An Enterprise Social Network",
+      description = "twistranet - An Enterprise Social Network",
       long_description = open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers = [
@@ -24,8 +24,7 @@ setup(name = 'Twistranet',
       author_email = 'twistranet@numericube.com',
       url = 'http://numericube.com',
       license = 'GPL',
-      packages = ['django_twistranet'], #find_packages(exclude=['ez_setup']),
-      namespace_packages = ['django_twistranet'],
+      packages = ['twistranet'], #find_packages(exclude=['ez_setup']),
       include_package_data = True,
       zip_safe = False,
       install_requires = [
@@ -40,6 +39,6 @@ setup(name = 'Twistranet',
       entry_points = """
       # -*- Entry points: -*-
       [console_scripts]
-      twistranet_project=django_twistranet.core.twistranet_project:twistranet_project
+      twistranet_project=twistranet.core.twistranet_project:twistranet_project
       """,
       )
