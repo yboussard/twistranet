@@ -36,6 +36,7 @@ from twistranet.twistapp.lib.decorators import require_access
 from twistranet.twistapp.lib.log import log
 from twistranet.twistorage.storage import Twistorage
 from twistranet.twistapp.lib import utils
+from twistranet.core.views import *
 
 from django.conf import settings
 
@@ -236,29 +237,27 @@ def create_resource(request):
     return edit_resource(request)
 
 
-@require_access
-def resource_browser(request):
+class ResourceBrowser(BaseView):
     """
     A view used to browse and upload resources
     Used by wysiwyg editors
     Based on resource field
     """
-    
-    params = {}
-    params["account"] = request.user.get_profile()
-    params["actions"] = ''
-    params["site_name"] = utils.get_site_name()
-    params["baseline"] = utils.get_baseline()
-    params["allow_browser_selection"] = int(request.GET.get('allow_browser_selection', '') or 0 ) 
-    form = ResourceBrowserForm()
-    params['form'] = form
+    name = "resource_browser"
+    template_variables = BaseView.template_variables + [
+        "account",
+        "actions",
+        "allow_browser_selection",
+        "form",
+    ]
     template = 'resource/resource_browser_form.html'
-    t = loader.get_template(template)
-    c = RequestContext(
-        request,
-        params
-        )
-    return HttpResponse(t.render(c))
+    title = "Resource browser"
+    
+    def prepare_view(self,):
+        self.account = self.auth
+        self.actions = None
+        self.allow_browser_selection = int(self.request.GET.get('allow_browser_selection', 0) or 0)
+        self.form = ResourceBrowserForm()
 
 
 ###############################

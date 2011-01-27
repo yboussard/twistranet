@@ -85,6 +85,12 @@ Running Twistranet :
 
 - Point your browser at http://localhost:8000
 
+Debug mode
+----------
+
+To start twistranet in DEBUG mode, just declare a TWISTRANET_DEBUG environment variable
+before starting "runserver".
+
 
 Running without installing
 --------------------------
