@@ -33,16 +33,13 @@ twistranet is now installed. You can have many sites with just one twistranet in
 
 - (sudo) twistranet_project <path_to_my_new_site>
 
+Your server should now be fully working and running on http://localhost:8000 !
+
+If you want to start it again:
+
 - cd <path_to_my_new_site>
 
-- python ./manage.py twistranet_bootstrap
-
-Your twistranet project is now ready to run with default options
-
 - python ./manage.py runserver 0.0.0.0:8000
-
-twistranet is now running. Point your browser at http://<yourserver>:8000    
-
 
 Installation - the Big Picture
 ------------------------------
@@ -60,13 +57,18 @@ To install twistranet's core features:
 
 To create a new project:
 
-- In the directory you want your website files created, type "python twistranet_project [<template>] <project_path>",
+- In the directory you want your website files created, type "python twistranet_project -n [<template>] <project_path>",
     where <project_path> is the name of your site (it will be created by the process) ;
     <template> is the name of the project template to deploy. Currently admitted values are:
         
     - 'default' (which is... the default value), an empty project based on sqlite;
     
     - 'cogip', a sample french-language project of a fictious company called COGIP.
+    
+The '-n' (or '--no-bootstrap') is an option to tell the twistranet_project script not to bootstrap it
+immediately (the bootstraping process is the initial database feed).
+
+You can do it by hand once (and only once!) with the following commands:
 
 - Go to your <project_path>
 
@@ -82,6 +84,12 @@ Running Twistranet :
 - Execute ./manage.py runserver 0.0.0.0 to start playing with twistranet.
 
 - Point your browser at http://localhost:8000
+
+Debug mode
+----------
+
+To start twistranet in DEBUG mode, just declare a TWISTRANET_DEBUG environment variable
+before starting "runserver".
 
 
 Running without installing

@@ -30,14 +30,6 @@ class InlineFileForm(BaseInlineForm):
         model = File
         fields = ('file', ) + BaseInlineForm.Meta.fields
         
-class InlineTaskForm(BaseInlineForm):
-    """
-    Quick task form
-    """
-    class Meta(BaseInlineForm.Meta):
-        from twistranet.content_types.models import Task
-        model = Task
-        fields = ('due_date', ) + BaseInlineForm.Meta.fields
 
 class QuickDocumentForm(BaseRegularForm):
     """
@@ -109,6 +101,4 @@ form_registry.register(QuickDocumentForm)
 form_registry.register(DocumentForm)
 form_registry.register(InlineFileForm)
 form_registry.register(FileForm)
-form_registry.register(InlineTaskForm)
-
 

@@ -15,13 +15,14 @@ from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from twistranet.twistapp.lib import slugify
 from twistranet.twistapp.models import Account, Content, Resource
-
 from  twistranet.twistapp.lib.log import log
 
 register = template.Library()
 
-url_regex = re.compile( r"(?P<Protocol>(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?)(?P<UsernamePassword>(?:\w+:\w+@)?)(?P<Subdomains>(?:(?:[-\w]+\.)+)(?P<TopLevelDomains>(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2})))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?"
-)
+URL_REGEX = r"(?P<Protocol>(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?)(?P<UsernamePassword>(?:\w+:\w+@)?)(?P<Subdomains>(?:(?:[-\w]+\.)+)(?P<TopLevelDomains>(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2})))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?"
+
+url_regex = re.compile(URL_REGEX)
+non_a_tag = re.compile(r"""[^"']%s[^"']""" % URL_REGEX)
 account_slug_regex = re.compile(r"@(?P<Alias>%s)" % slugify.SLUG_REGEX)
 account_id_regex = re.compile(r"@(?P<Alias>\d+)")
 content_slug_regex = re.compile(r"\[\s*(?P<Alias>%s)\s*\]" % slugify.SLUG_REGEX)
@@ -100,7 +101,8 @@ def escape_wiki(text, lookup = False, autoescape=None):
         text = conditional_escape(text)
         
     # Replace xxx:// strings by <a href> tags
-    text = url_regex.sub('<a target="_blank" href="\g<0>">\g<Subdomains></a>', text)
+    # XXX DISABLED because that doesn't work with already well-formed a href tags!
+    # text = non_a_tag.sub('<a target="_blank" href="\g<0>">\g<Subdomains></a>', text)
     
     # Replace the global matches
     for regex, fast_reverse, func, model_class, lookup_field in matches:
