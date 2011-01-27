@@ -266,7 +266,7 @@ class ResourceBrowser(BaseView):
 ###############################
 
 
-# JS String used inline by resource_quickupload_init template
+# JS String used inline by resource_quickupload template
 
 UPLOAD_JS = """       
     var fillTitles = %(ul_fill_titles)s;
@@ -327,7 +327,7 @@ UPLOAD_JS = """
 """
 
 
-# This view is rendering html and is called in ajax
+# This view is rendering html with inline javascript and is called in ajax
 # TODO : call it with a simple include
 @require_access
 def resource_quickupload(request):
@@ -429,6 +429,7 @@ def resource_quickupload_file(request):
                    'legend' :      title, 
                    'scope':        publisher_id,
                    'type' :        type,}
+        # TODO : improve error messages with Unauthorized error
         except:            
             msg = {u'error': u'serverError'}      
     else:
