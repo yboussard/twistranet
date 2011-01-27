@@ -28,8 +28,11 @@ qq.FileUploader = function(o){
         // size limit in bytes, 0 - no limit
         // this option isn't supported in all browsers
         sizeLimit: 0,
-        // method executed after selection and before upload
+        // method executed after selection and before upload (when autoupload = False only)
+        // for each file
         onAfterSelect: function(id, fileName){},
+        // always executed before each file submit  (eg useful if you need to add some logic before submit)
+        onBeforeSubmit: function(){},
         // if autoUpload is set to false nothing is done
         // after selection excepted onAfterSelect method
         autoUpload: true,
@@ -595,7 +598,8 @@ qq.UploadHandlerForm = function(o){
         // should be on the same domain to get response
         action: '/upload',
         // fires for each file, when iframe finishes loading
-        onComplete: function(id, fileName, response){}
+        onComplete: function(id, fileName, response){},
+        onBeforeSubmit: function(){}
     };
     qq.extend(this._options, o);
        
@@ -654,8 +658,8 @@ qq.UploadHandlerForm.prototype = {
                 qq.remove(iframe);
             }, 1);
         });
-        
-        form.submit();        
+        self._options.onBeforeSubmit();
+        form.submit();
         qq.remove(form);        
         
         return id;
@@ -751,9 +755,10 @@ qq.UploadHandlerForm.prototype = {
         // Because in this case file won't be attached to request
         var form = qq.toElement('<form method="post" enctype="multipart/form-data"></form>');
 
-        var queryString = '?' + qq.obj2url(params);
-
-        form.setAttribute('action', this._options.action + queryString);
+        //var queryString = '?' + qq.obj2url(params);
+        var formfields = qq.obj2form(params);
+        form.innerHTML = formfields;
+        form.setAttribute('action', this._options.action);
         form.setAttribute('target', iframe.name);
         form.style.display = 'none';
         document.body.appendChild(form);
@@ -771,7 +776,8 @@ qq.UploadHandlerXhr = function(o){
         // should be on the same domain
         action: '/upload',
         onProgress: function(id, fileName, loaded, total){},
-        onComplete: function(id, fileName, response){}
+        onComplete: function(id, fileName, response){},
+        onBeforeSubmit: function(){}
     };
     qq.extend(this._options, o);
 
@@ -853,7 +859,7 @@ qq.UploadHandlerXhr.prototype = {
 
         // build query string
         var queryString = '?qqfile=' + encodeURIComponent(name) + '&' + qq.obj2url(params);
-
+        self._options.onBeforeSubmit();
         xhr.open("POST", this._options.action + queryString, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
@@ -1098,4 +1104,52 @@ qq.obj2url = function(obj, temp){
     }
     
     return uristrings.join('&').replace(/%20/g, '+');
+};
+
+qq.obj2form = function(obj, temp){
+    var formfields = [],
+    add = function(nextObj, i){
+        
+        var nextTemp = temp 
+          ? (/\[\]$/.test(temp)) /* prevent double-encoding */
+              ? temp
+              : temp+'['+i+']'
+          : i;
+          
+      formfields.push(typeof nextObj === 'object' 
+          ? qq.obj2form(nextObj, nextTemp)
+          : (Object.prototype.toString.call(nextObj) === '[object Function]')
+              ? [encodeURIComponent(nextTemp) , encodeURIComponent(nextObj())]
+              : [ encodeURIComponent(nextTemp), encodeURIComponent(nextObj)]
+              );
+    };
+        
+    if (Object.prototype.toString.call(obj) === '[object Array]'){ 
+        // we wont use a for-in-loop on an array (performance)
+        for (var i = 0, len = obj.length; i < len; ++i){
+            add(obj[i], i);
+        }
+        
+    } else if ((obj !== undefined) && 
+               (obj !== null) && 
+               (typeof obj === "object")){
+                   
+        // for anything else but a scalar, we will use for-in-loop
+        for (var i in obj){
+            add(obj[i], i);
+        }
+    } else {
+        formfields.push([encodeURIComponent(temp) , encodeURIComponent(obj)]);
+    }
+    
+    template_field = function (name, value) {
+        return '<input type="hidden" name="' + name +'" value="' + value + '" />';
+    }
+    
+    add2form ='';
+    
+    for (var i = 0; i <formfields.length; i++) {
+        add2form += template_field(formfields[i][0],formfields[i][1]) + '\n';
+    }
+    return add2form;
 };

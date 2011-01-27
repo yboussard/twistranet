@@ -41,9 +41,11 @@ TwistranetQuickUpload.showButtons = function(uploader, domelement) {
     return false;
 }
 
+
 TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupload) {
     var handler = uploader._handler;
     var files = handler._files;
+    var params = uploader._options.params;
     var missing = 0;
     for ( var id = 0; id < files.length; id++ ) {
         if (files[id]) {
@@ -52,7 +54,9 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
             if (fillTitles)  {
                 file_title = jQuery('.file_title_field', fileContainer).val();
             }
-            uploader._queueUpload(id, {'title': file_title, 'typeupload' : typeupload});
+            params['title'] = file_title;
+            params['typeupload'] = typeupload;
+            uploader._queueUpload(id, params);
         }
         // if file is null for any reason jq block is no more here
         else missing++;
