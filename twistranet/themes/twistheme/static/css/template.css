@@ -60,6 +60,8 @@ body {
 				padding: 4px 5px !important;
 				color: #686868;
 				width: 145px;
+				float: none !important;
+				margin: 0 !important;
 			}
 			.inactive_search {
         color: #999 !important;
@@ -134,9 +136,9 @@ body {
             	-webkit-border-radius: 5px;
             	-moz-border-radius: 5px;
             	border-radius: 5px;
-            	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
-            	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
-            	box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            	-webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+            	-moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+            	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 			}
 			.noleftcol #contextbar {
         display: none;
