@@ -59,16 +59,6 @@ class Document(Content):
 
     text = models.TextField()
 
-class Task(Content):
-    """
-    This is the base element of a a GTD-inspired task manager.
-    """
-    class Meta:
-        app_label = 'twistapp'
-    
-    text = models.TextField()
-    due_date = models.DateTimeField()
-
 
 class File(Content):
     """
