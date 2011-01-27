@@ -20,6 +20,9 @@ def twistranet_project():
             "  where project_name is the name of the directory that will be created for your site,\n"
             "  <path> is the (optional) path where you want to install it.\n"
     )
+    parser.add_option("-n", "--no-bootstrap",
+                      action="store_false", dest="bootstrap", default=True,
+                      help="Don't bootstrap project immediately. Use this if you want to review your settings before bootstraping.")
     (options, args) = parser.parse_args()
 
     # Check template and path args
@@ -100,15 +103,18 @@ def twistranet_project():
         
     # As we use a standard sqlite configuration, we can boostrap quite safely just now.
     # First we append project_path to sys.path, then we start the server.
-    from django.core.management import call_command
-    from django import conf
-    sys.path.insert(1, project_path)        # Here is how we're gonna find the 'settings' module from here.
-    os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
-    os.environ["TWISTRANET_DEBUG"] = "1"    # Force debug mode
-    print project_path
-    import settings
-    dir(settings)
-    call_command('twistranet_bootstrap')
+    if options.bootstrap:
+        from django.core.management import call_command
+        from django import conf
+        sys.path.insert(1, project_path)        # Here is how we're gonna find the 'settings' module from here.
+        os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
+        os.environ["TWISTRANET_NOMAIL"] = "1"   # Disable emails
+        import settings
+        call_command('twistranet_bootstrap')
+        
+        # Now we can start the server!
+        os.environ["TWISTRANET_NOMAIL"] = ""    # Re-enable emails
+        call_command("runserver", "0.0.0.0:8000", use_reloader = False,  )
 
 if __name__ == "__main__":
     twistranet_project()

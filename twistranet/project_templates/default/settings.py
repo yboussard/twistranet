@@ -18,6 +18,10 @@ if os.environ.has_key("TWISTRANET_DEBUG"):
 else:
     DEBUG = False
 
+# Use TWISTRANET_NOMAIL environ variable to completely disable email sending.
+# This is useful when boostraping TN
+if os.environ.has_key("TWISTRANET_NOMAIL"):
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 # Defined database engines.
 # You can always overload yours in your local_settings.py file.
