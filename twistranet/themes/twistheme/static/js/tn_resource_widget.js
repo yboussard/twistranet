@@ -162,7 +162,7 @@ loadScopeResources = function(scope_id, selection) {
               });
           gridStyle(tnGrid[0]);
           gridOnSelect(tnGrid[0]) ;
-          widgetHeight();
+          //widgetHeight();
           } );
     Panels[scope_id] = 'loaded';
 
