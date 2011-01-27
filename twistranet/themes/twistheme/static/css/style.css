@@ -24,12 +24,13 @@
     background: url(../images/logo-tn.png) 0px 5px no-repeat;
     font-size: 14px;
     margin-left: 0;
-	padding: 5px 0 5px 65px;
-	display: block;
-	height: 45px;
-	cursor: pointer;
-	color: #686868;
-	letter-spacing: 0.1em;
+    padding: 5px 0 5px 65px;
+    display: block;
+    height: 45px;
+    cursor: pointer;
+    color: #686868;
+    letter-spacing: 0.1em;
+    float: left;
   }
   #head a.logotext div {
 /*    display: inline;*/
