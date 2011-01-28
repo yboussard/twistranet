@@ -133,12 +133,10 @@ class MailHandler(NotifierHandler):
         # Append domain to kwargs
         d = kwargs.copy()
         domain = Site.objects.get_current().domain
-        protocol = "http"                   # XXX This may be wrong with https!!!
-        url_prefix = "%s://%s" % (protocol, domain, )
+        if not domain.lower().startswith("http"):
+            domain = "http://%s" % domain
         d.update({
-            "domain":       domain,
-            "protocol":     protocol,
-            "url_prefix":   url_prefix,
+            "domain":   domain,
         })
         
         # Load both templates and render them with kwargs context
