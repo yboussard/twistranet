@@ -52,11 +52,10 @@ class CommunityView(UserAccountView):
         else:
             return super(CommunityView, self).get_title()
         
-    def prepare_view(self, *args, **kw):
+    def set_community_vars(self) :
         """
-        Prepare community view
+        set community template vars 
         """
-        super(UserAccountView, self).prepare_view(*args, **kw)
         self.account = self.object
         self.n_members = self.community and self.community.members.count() or 0
         self.is_member = self.community and self.community.is_member or False
@@ -66,6 +65,13 @@ class CommunityView(UserAccountView):
         self.n_communities = []
         self.n_network_members = []
 
+        
+    def prepare_view(self, *args, **kw):
+        """
+        Prepare community view
+        """
+        super(UserAccountView, self).prepare_view(*args, **kw)
+        self.set_community_vars()
         # Check if there is content, display a pretty message if there's not
         if not len(self.latest_content_list):
             msg = _("""
@@ -75,6 +81,8 @@ class CommunityView(UserAccountView):
         - What are you working on right now?<br />
         - What would you like to find on this community page?</p>""")
             messages.info(self.request, msg)
+
+
 
 
 #                                                                               #
@@ -213,7 +221,15 @@ class CommunityEdit(CommunityView):
             return _("Create a community")
         return _("Edit community")
         
-        
+
+    def prepare_view(self, *args, **kw):
+        """
+        Prepare community view
+        """
+        super(UserAccountView, self).prepare_view(*args, **kw)
+        self.set_community_vars()
+
+
 class ConfigurationEdit(CommunityEdit):
     name = "twistranet_config"
     form_class = community_forms.AdministrationForm
