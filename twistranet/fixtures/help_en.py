@@ -16,7 +16,7 @@ FIXTURES = [
         description_en = "twistranet is a social network "
             "tailored for enterprise needs. Learn how to use it within 10 minutes.",
         description_fr = "twistranet est un Réseau Social d'Entreprise. <br />"
-            "Apprenez à l'utiliser en 10 minutes@nbsp;!",
+            "Apprenez à l'utiliser en 10 minutes&nbsp;!",
         text_en = """<h2>Getting started</h2>
 <p>
 If you can read that document, that probably means you're already connected to twistranet!
