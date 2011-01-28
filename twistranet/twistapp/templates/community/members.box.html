@@ -1,16 +1,10 @@
 {% load i18n %}
 {% if community.managers %}
 <li id="community-managers-box" class="tn-box managers-box">
-    <h3>{% blocktrans %}Community Managers{% endblocktrans %}</h3>
-    <div class="tn-box-content-header">
-      <div class="right-inbox">
-        <a href="{% url community_managers community.id %}">
-          {% blocktrans %}See all{% endblocktrans %}
-        </a>
-      </div>
-      <div class="left-inbox">{% blocktrans %}{{n_managers}} managers{% endblocktrans %}</div>     
-      <div class="clear"><!-- --></div>   
-    </div>      
+    <h3>
+      <span>{% blocktrans %}Community Managers{% endblocktrans %}</span>
+      <span><a href="{% url community_managers community.id %}" class="nb-link">({{n_managers}})</a></span>
+    </h3>
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         {% for account in managers %}
@@ -19,20 +13,20 @@
       </ul>
       <div class="clearfix"><!-- --></div>
     </div>
+    <div class="tn-box-footer">
+      <a href="{% url community_managers community.id %}"
+         class="more">
+        {% blocktrans %}See all{% endblocktrans %}
+      </a>
+    </div>
 </li>
 {% endif %}
 
 <li id="community-members-box" class="tn-box members-box">
-    <h3>{% blocktrans %}Members{% endblocktrans %}</h3>
-    <div class="tn-box-content-header">
-      <div class="right-inbox">
-        <a href="{% url community_members community.id %}">
-          {% blocktrans %}See all{% endblocktrans %}
-        </a>
-      </div>
-      <div class="left-inbox">{% blocktrans %}{{n_members}} members{% endblocktrans %}</div>     
-      <div class="clear"><!-- --></div>   
-    </div>    
+    <h3>
+      <span>{% blocktrans %}Members{% endblocktrans %}</span>
+      <span><a href="{% url community_members community.id %}" class="nb-link">({{n_members}})</a></span>
+    </h3>
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         {% for account in members %}
@@ -40,5 +34,11 @@
         {% endfor %}
       </ul>
       <div class="clearfix"><!-- --></div>
+    </div>
+    <div class="tn-box-footer">
+      <a href="{% url community_members community.id %}"
+         class="more">
+        {% blocktrans %}See all{% endblocktrans %}
+      </a>
     </div>
 </li>

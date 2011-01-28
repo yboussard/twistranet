@@ -2,11 +2,10 @@
 
 .post {
     margin-top: 0.5em;
-    padding: 5px 0px 5px 0px;
+    padding: 5px;
     background-color: none;
     clear: both;
     border-bottom: 1px solid #f7f7f7;
-    /*cursor: pointer;*/
 }
 
 .post.last {

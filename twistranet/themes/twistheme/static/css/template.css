@@ -3,7 +3,7 @@
 
 body {
 	margin: 0;
-	background: #f9f9f9 url(../images/body-bg.png) top center repeat-x;
+	background: #f9f9f9 url(../images/body-bg.png) 0 -26px repeat-x;
 }
 
 #page {
@@ -14,17 +14,12 @@ body {
 	padding: 0;
 	}
 	#header {
-	      margin-top: 25px;
 		  position: relative;
 		  height: 113px;
 	  }
 		#head {
 		  }
   		#usermenu {
-            width: 935px;
-            position: absolute;
-            top: -25px;
-            text-align: right;
   		}
   		#menubar {
   			width: 575px;
@@ -44,14 +39,14 @@ body {
   			}
 		#searchform {
 			position: absolute;
-			top: 67px; 
+			top: 62px; 
 			right: 0px;
-			width: 182px;
+			width: 186px;
 			height: 22px;
 			background-color: white;
-            -moz-border-radius: 12px;
-            -webkit-border-radius: 12px;
-            border-radius: 12px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+       border-radius: 5px;
 			z-index: 500;
 			}
 			#search-box {
@@ -62,9 +57,11 @@ body {
 			#search-text {
 				background: transparent none no-repeat 0 0;
 				border: none;
-				margin: 2px 0 0;
-				color: black;
+				padding: 4px 5px !important;
+				color: #686868;
 				width: 145px;
+				float: none !important;
+				margin: 0 !important;
 			}
 			.inactive_search {
         color: #999 !important;
@@ -73,22 +70,24 @@ body {
       #search-button:active {
         border: none;
         background: transparent !important;
-        padding: 3px 8px;
+        padding: 3px 0 4px 2px !important;
         margin: 0;
+        color: #999999 !important;
       }
       #search-live-results {
         position: absolute;
-        top: 57px;
+        top: 31px;
         right: 0;
         background-color: white;
         width: 288px;
         display: none;
         padding: 5px;
-        border: 1px solid #e00023;
+        border: 1px solid #ccc;
         z-index: 100;
       }
 	#wrap {
 		height: 100%; /* Fix IE7 */
+		margin-top: 5px;
 		}
 		#breadcrumb {
             position: absolute;
@@ -99,7 +98,7 @@ body {
 			border-width: 0 1px 0 0;
 			border-style: none solid;
 			margin-left: 200px;
-			padding: 5px 10px 2px;
+			padding: 6px 10px 5px;
 			height: 13px;
             background: transparent url(../images/breadcrumb-bg.png) top center repeat-x;;
 			color: #999;
@@ -128,18 +127,19 @@ body {
             width: 776px;		
 			}
 			#contextbar {
-				width: 181px;
+				background-color: #f7f7f7;
+        width: 181px;
 				float: left;	
 				margin: 0px 5px 12px 0px;
 				padding: 12px 0 0 0;
-				border: solid 1px #ccc;
+				border: solid 1px #ddd;
 				word-wrap: break-word;
             	-webkit-border-radius: 5px;
             	-moz-border-radius: 5px;
             	border-radius: 5px;
-            	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
-            	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
-            	box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            	-webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+            	-moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+            	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 			}
 			.noleftcol #contextbar {
         display: none;

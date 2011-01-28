@@ -24,12 +24,13 @@
     background: url(../images/logo-tn.png) 0px 5px no-repeat;
     font-size: 14px;
     margin-left: 0;
-	padding: 5px 0 5px 65px;
-	display: block;
-	height: 45px;
-	cursor: pointer;
-	color: #686868;
-	letter-spacing: 0.1em;
+    padding: 7px 0 5px 65px;
+    display: block;
+    height: 45px;
+    cursor: pointer;
+    color: #686868;
+    letter-spacing: 0.1em;
+    float: left;
   }
   #head a.logotext div {
 /*    display: inline;*/
@@ -601,40 +602,45 @@ ul.tn-box-container ul li {
 
 .tn-box h3 {
   font-weight: bold;
-  background-color:#f9f9f9;
   color: #686868;
-  border-top: 1px solid #CCC;
-  padding:2px 5px 2px 25px;
+  border-top: 1px solid #DDD;
+  padding:5px 5px 0 25px;
   font-size: 11px;
   margin-top: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
+}
+
+.tn-box h3 a {
+  color: #0093E0 !important;
 }
 
 .tn-box-content {
   background-color: transparent;
   padding: 10px 10px 5px;
   clear: both; 
+}
+
+.tn-box-footer {
+  text-align: right;
+  padding: 5px 10px 5px;
+  color: #0093E0;
   margin-bottom: 10px;
+}
+
+.tn-box-footer a,
+a.more {
+  color: #0093E0;
 }
 
 #globalbar .tn-box-content {
   padding: 5px 0;
 }
 
-.tn-box-content-header {
-  background-color: #f9f9f9;
-  padding: 4px 5px;
-  /*border-bottom: 1px solid #CCC;*/
-  clear: both;
-  color: #333;
-}
 .right-inbox {
   display: block;
   float: right;
 }
-.right-inbox a {
-    color: #0093E0;
-}
+
 .left-inbox {
   display: block;
   float: left;

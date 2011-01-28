@@ -10,4 +10,8 @@ IE6 && IE7 fixes
   top: -10px;
 }
 
-
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend span {
+  float: left;
+  display: block;
+}

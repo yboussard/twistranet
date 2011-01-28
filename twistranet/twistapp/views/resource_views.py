@@ -27,6 +27,7 @@ from django.utils.http import http_date
 from django.conf import settings
 from django.views.static import was_modified_since
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.context_processors import csrf
 from django.utils.translation import ugettext as _
 
 from sorl.thumbnail import default
@@ -265,15 +266,16 @@ class ResourceBrowser(BaseView):
 ###############################
 
 
-# JS String used inline by resource_quickupload_init template
+# JS String used inline by resource_quickupload template
 
 UPLOAD_JS = """       
     var fillTitles = %(ul_fill_titles)s;
     var auto = %(ul_auto_upload)s;
     var uploadparams = {};
     if (typeof getActivePublisher!='undefined') {
-        uploadparams = { 'publisher_id' : getActivePublisher()};
+        uploadparams['publisher_id']= getActivePublisher();
     }
+    uploadparams['csrfmiddlewaretoken'] = '%(ul_csrf_token)s' ;
     addUploadFields_%(ul_id)s = function(file, id) {
         var uploader = xhr_%(ul_id)s;
         TwistranetQuickUpload.addUploadFields(uploader, uploader._element, file, id, fillTitles);
@@ -285,11 +287,11 @@ UPLOAD_JS = """
     clearQueue_%(ul_id)s = function() {
         var uploader = xhr_%(ul_id)s;
         TwistranetQuickUpload.clearQueue(uploader, uploader._element);    
-    }    
+    }
     onUploadComplete_%(ul_id)s = function(id, fileName, responseJSON) {       
         var uploader = xhr_%(ul_id)s;
         TwistranetQuickUpload.onUploadComplete(uploader, uploader._element, id, fileName, responseJSON);
-    }
+    } 
     createUploader_%(ul_id)s= function(){    
         xhr_%(ul_id)s = new qq.FileUploader({
             element: jQuery('#%(ul_id)s')[0],
@@ -325,7 +327,7 @@ UPLOAD_JS = """
 """
 
 
-# This view is rendering html and is called in ajax
+# This view is rendering html with inline javascript and is called in ajax
 # TODO : call it with a simple include
 @require_access
 def resource_quickupload(request):
@@ -344,6 +346,7 @@ def resource_quickupload(request):
         ul_msg_some_sucess     = _( u' files uploaded with success, '),
         ul_msg_some_errors     = _( u" uploads return an error."),
         ul_msg_failed          = _( u"Failed"),
+        ul_csrf_token          = csrf(request)['csrf_token'],
         ul_error_try_again_wo  = _( u"please select files again without it."),
         ul_error_try_again     = _( u"please try again."),
         ul_error_empty_file    = _( u"This file is empty :"),
@@ -383,7 +386,7 @@ def resource_quickupload_file(request):
     else :
         # MSIE old behavior (classic upload with iframe) >> TODO : tests
         file_data = request.FILES.get("qqfile", None)
-        filename = getattr(file_data,'filename', '')
+        filename = getattr(file_data,'name', '')
         file_name = filename.split("\\")[-1]
         title = request.POST.get('title', '')
         upload_with = "CLASSIC FORM POST"
@@ -393,7 +396,7 @@ def resource_quickupload_file(request):
             msg = {u'error': u'sizeError'}
 
     if file_data and not msg :
-        publisher_id = request.GET.get('publisher_id', '')
+        publisher_id = request.GET.get('publisher_id', request.POST.get('publisher_id', ''))
         # i'm not sure here
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
         if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
@@ -408,7 +411,7 @@ def resource_quickupload_file(request):
             if publisher_id :
                 params['publisher'] = Account.objects.get(id = publisher_id)
             new_file = Resource(**params)
-            new_file.save() 
+            new_file.save()
 
             if type== 'image' :
                 preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
@@ -426,13 +429,14 @@ def resource_quickupload_file(request):
                    'legend' :      title, 
                    'scope':        publisher_id,
                    'type' :        type,}
+        # TODO : improve error messages with Unauthorized error
         except:            
-            msg = {u'error': u'serverError'}
+            msg = {u'error': u'serverError'}      
     else:
-        msg = {u'error': u'emptyError'}                
+        msg = {u'error': u'emptyError'}
 
     return HttpResponse( json.dumps(msg),
-                         mimetype='text/plain')
+                         mimetype='text/html')
 
 ###############################
 # Resource Browser json views #
