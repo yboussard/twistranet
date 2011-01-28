@@ -1,14 +1,15 @@
 
-This is the TwistraNet project!
+This is the twistranet project!
 
-(c)2010 NumeriCube
+(c)2011 NumeriCube
 
 
 About
 =====
 
-TwistraNet is an Enterprise Social Software. It's a Social Network you can use to help people collaborate. And it is also a nice CMS (Content Management System) with a social focus.
+twistranet is an Enterprise Social Software. It's a Social Network you can use to help people collaborate. And it is also a nice CMS (Content Management System) with a social focus.
 
+twistranet is published under the termes of the GNU Affero General Public License v3.
 
 Requirements
 ============
