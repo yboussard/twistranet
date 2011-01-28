@@ -152,6 +152,7 @@ _INSTALLED_APPS = (
     'piston',
     'tinymce',
     'sorl.thumbnail',
+    'modeltranslation',
     
     # TwistraNet core stuff
     'twistranet.twistapp',

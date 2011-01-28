@@ -64,3 +64,6 @@ QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
 HAYSTACK_SITECONF = 'twistranet.search.search_sites'
 HAYSTACK_SEARCH_ENGINE = "twistranet.search.haystack_simplehack"
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
+
+# Model Translation registry module name
+TRANSLATION_REGISTRY = "twistranet.translation"
