@@ -24,7 +24,12 @@ class ResourceModelManager(twistable.TwistableManager):
             return []
         accounts = [account]
         accounts.extend(account.communities.all())
-        return accounts
+        
+        act_accounts = []
+        for a in accounts:
+            if self.filter(publisher__id = a.id):
+                act_accounts.append(a)
+        return act_accounts
 
 def twistorage_upload_to(instance, filename):
     """
