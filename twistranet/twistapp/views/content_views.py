@@ -162,7 +162,11 @@ class ContentDelete(BaseObjectActionView):
         if not self.object.can_delete:
             return
         action = super(ContentDelete, self).as_action()
-        action.confirm = _("Do you really want to delete '%(name)s'?<br />This action cannot be undone.") % {"name": self.object.title}
+        title = self.object.title
+        if title:
+            action.confirm = _("Do you really want to delete '%(name)s'?<br />This action cannot be undone.") % {"name": self.object.title}
+        else:
+            action.confirm = _("Do you really want to delete this?")
         return action
 
     def prepare_view(self, *args, **kw):
