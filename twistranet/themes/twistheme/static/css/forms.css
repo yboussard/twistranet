@@ -302,10 +302,13 @@ select.permissions-widget {
 
 
 /* Inline Comment forms */
+.comment-form {
+  padding: 0 5px 0 0;
+}
 
 .comment-form ul.inline-form textarea {
-    width: 425px;
-	padding: 5px;
+    width: 461px;
+    padding: 5px;
 }
 
 
