@@ -5,11 +5,6 @@
 fieldset {
 	padding: 0 5px 5px;
 	margin: 0 0 15px;
-	border: 1px solid #ccc;
-	background-color: #f9f9f9;
-    border-radius: 4px;
-    -moz-border-radius: 4px;  
-    -mozwebkit-border-radius: 4px;
 }
 
 .formBlock {
@@ -77,29 +72,79 @@ ul.errorlist li {
 
 .fieldset-inline-form {
   margin-top: 10px;
+  padding-right: 0;
 }
 
 .fieldset-inline-form legend {
-	text-transform: capitalize;
-	margin: -3px 0 -3px 0;
-	padding: 1px 1px 2px;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	font-weight: normal;
+  text-transform: capitalize;
+  margin: -3px 0 -3px 0;
+  padding: 0;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  font-weight: normal;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+.fieldset-inline-form legend :first-child {
+    border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+}
+
+.fieldset-inline-form legend :last-child {
+    border-radius: 0 5px 5px 0;
+    -moz-border-radius: 0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+    padding-right: 12px !important;
+}
+
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend span {
+  padding: 1px 7px;
+  display: inline-block;
 }
 
 .fieldset-inline-form legend a,
 .fieldset-inline-form legend a:link,
 .fieldset-inline-form legend a:hover,
-.fieldset-inline-form legend a:visited,
-.fieldset-inline-form legend span {
-  padding: 0 7px; 
+.fieldset-inline-form legend a:visited {
   color: #0093e0;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .fieldset-inline-form legend span {
-  font-weight: bold;
+  background-color: white;
+}
+
+/* Form handles for inline content */
+
+#formhandle-StatusUpdate  { 
+    background-image: url(../images/icons/statusupdate.png);
+    background-position: 6px 3px;
+    background-repeat: no-repeat;
+    padding-left: 25px;
+}
+
+/*#formhandle-Document  { 
+    background: url(../images/icons/document.png) 0 0 no-repeat;
+    margin-left: 6px;
+    padding-left: 15px;
+}
+*/
+#formhandle-File  {
+    background-image: url(../images/icons/upload.png);
+    background-position: 6px 3px;
+    background-repeat: no-repeat;
+    padding-left: 25px;
+}
+
+#formhandle-Task  {
+    background-image: url(../images/icons/task.png);
+    background-position: 6px 3px;
+    background-repeat: no-repeat;
+    padding-left: 25px;
 }
 
 
@@ -128,8 +173,8 @@ ul.inline-form li label {
 }
 
 ul.inline-form textarea {
-    width: 525px;
-	padding: 5px;
+    width: 530px;
+    padding: 5px;
 }
 
 ul.inline-form select {
@@ -145,6 +190,9 @@ ul.inline-form select {
    padding: 5px 0 10px;
    margin: 10px 0 0 0;
    clear: both;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
 }
 
 .edit-form legend {
@@ -233,33 +281,6 @@ ul.inline-form select {
 .tnGridItem input[type="checkbox"],
 .tnGridItem input[type="radio"] {
     display: none;
-}
-
-
-/* Form handles for inline content */
-
-#formhandle-StatusUpdate  { 
-    background: url(../images/icons/statusupdate.png) 0 0 no-repeat;
-    margin-left: 6px;
-    padding-left: 17px;
-}
-
-/*#formhandle-Document  { 
-    background: url(../images/icons/document.png) 0 0 no-repeat;
-    margin-left: 6px;
-    padding-left: 15px;
-}
-*/
-#formhandle-File  {
-    background: url(../images/icons/upload.png) 0 0 no-repeat;
-    margin-left: 6px;
-    padding-left: 15px;
-}
-
-#formhandle-Task  {
-    background: url(../images/icons/task.png) 0 0 no-repeat;
-    margin-left: 6px;
-    padding-left: 15px;
 }
 
 
