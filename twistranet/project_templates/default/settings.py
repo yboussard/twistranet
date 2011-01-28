@@ -157,6 +157,7 @@ _INSTALLED_APPS = (
     
     # TwistraNet core stuff
     'twistranet.twistapp',
+    'twistranet.search',
     
     # Twistranet theme
     TWISTRANET_THEME_APP,
