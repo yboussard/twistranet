@@ -172,7 +172,7 @@ body {
           background: #278FB8 url(../images/icons/debug.png) 10px 10px no-repeat;
       }
       #tn-message ul li.info {
-          background: #B4D5FE url(../images/icons/info.png) 10px 10px no-repeat;
+          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.success {
           background: #A9CC23 url(../images/icons/success.png) 10px 10px no-repeat;
