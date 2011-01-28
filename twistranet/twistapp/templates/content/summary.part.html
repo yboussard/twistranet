@@ -25,15 +25,15 @@
                     <div class="summary-content">
                         <div class="headline-content">
                             <a href="{{ content.get_absolute_url }}">
-                                {{ content.title_or_description }}
+                                {{ content.title_or_description|wiki }}
                             </a>
                         </div>
                 {% else %}
-                    {{ content.title_or_description }}
+                    {{ content.title_or_description|wiki }}
                 {% endif %}
             </span>
             {% if content.detail_view %}
-                    {{ content.description|wiki }}
+                    {{ content.description|safe|wiki }}
                 </div>
             {% endif %}
         </div>

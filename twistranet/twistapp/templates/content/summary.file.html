@@ -32,7 +32,7 @@
                                 {% include 'content/medium.thumbnail.html' %}
                             </div>
                             <div class="content-description">
-                            {{ content.description|wiki }}
+                            {{ content.description|safe|wiki }}
                             </div>
                             <div class="clear"></div>
                         </div>          

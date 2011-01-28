@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="content-summary">
-        {{ content.description|fullwiki }}
+        {{ content.description|safe|fullwiki }}
     </div>
     
     <div class="content-text">
