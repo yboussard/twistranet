@@ -127,11 +127,12 @@ body {
             width: 776px;		
 			}
 			#contextbar {
-				width: 181px;
+				background-color: #f7f7f7;
+        width: 181px;
 				float: left;	
 				margin: 0px 5px 12px 0px;
 				padding: 12px 0 0 0;
-				border: solid 1px #ccc;
+				border: solid 1px #ddd;
 				word-wrap: break-word;
             	-webkit-border-radius: 5px;
             	-moz-border-radius: 5px;

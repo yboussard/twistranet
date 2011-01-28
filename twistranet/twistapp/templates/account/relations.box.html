@@ -1,20 +1,14 @@
 {% load i18n %}
 {% if account.communities_for_display %}
 <li class="tn-box relations-box">
-    {% ifequal account.id current_account.id %}
-        <h3 class="community-actions">{% blocktrans %}My Communities{% endblocktrans %}</h3>
-    {% else %}
-        <h3 class="community-actions">{% blocktrans %}His/Her Communities{% endblocktrans %}</h3>    
-    {%endifequal%}         
-    <div class="tn-box-content-header">
-      <div class="right-inbox">
-        <a href="{% url account_communities account.id %}">
-          {% blocktrans %}See all{% endblocktrans %}
-        </a>
-      </div>
-      <div class="left-inbox">{% blocktrans %}{{n_communities}} communities{% endblocktrans %}</div>     
-      <div class="clear"><!-- --></div>   
-    </div>
+    <h3 class="community-actions">
+      {% ifequal account.id current_account.id %}
+        <span>{% blocktrans %}My Communities{% endblocktrans %}</span>
+      {% else %}
+        <span>{% blocktrans %}His/Her Communities{% endblocktrans %}</span>    
+      {%endifequal%}
+      <span><a href="{% url account_communities account.id %}" class="nb-link">({{n_communities}})</a></span>
+    </h3>         
     <div class="tn-box-content">  
       <ul class="thumbnails-inner">
         <li>
@@ -25,25 +19,25 @@
       </ul>
       <div class="clearfix"><!-- --></div>
     </div>
+    <div class="tn-box-footer">
+      <a href="{% url account_communities account.id %}"
+         class="more">
+        {% blocktrans %}See all{% endblocktrans %}
+      </a>
+    </div>
 </li>
 {% endif %}
 
 {% if account.network_for_display %}
 <li class="tn-box relations-box">
-    {%ifequal account.id current_account.id %}
-        <h3 class="network-actions">{% blocktrans %}My Network{% endblocktrans %}</h3>
-    {%else%}
-        <h3 class="network-actions">{% blocktrans %}His/Her Network{% endblocktrans %}</h3>
-    {%endifequal%}        
-    <div class="tn-box-content-header">
-      <div class="right-inbox">
-        <a href="{% url account_network account.id %}">
-          {% blocktrans %}See all{% endblocktrans %}
-        </a>
-      </div>
-      <div class="left-inbox">{% blocktrans %}{{n_network_members}} members{% endblocktrans %}</div>     
-      <div class="clear"><!-- --></div>   
-    </div>
+    <h3 class="network-actions">
+      {%ifequal account.id current_account.id %}
+        <span>{% blocktrans %}My Network{% endblocktrans %}</span>
+      {%else%}
+        <span>{% blocktrans %}His/Her Network{% endblocktrans %}</span>
+      {%endifequal%}
+      <span><a href="{% url account_network account.id %}" class="nb-link">({{n_network_members}})</a></span>
+    </h3>
     <div class="tn-box-content">
       <ul class="thumbnails-inner">
         <li>
@@ -53,6 +47,12 @@
         </li>
       </ul>
       <div class="clearfix"><!-- --></div>
+    </div>
+    <div class="tn-box-footer">
+      <a href="{% url account_network account.id %}"
+         class="more">
+        {% blocktrans %}See all{% endblocktrans %}
+      </a>
     </div>
 </li>
 {% endif %}
