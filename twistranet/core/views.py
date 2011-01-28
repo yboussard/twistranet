@@ -407,7 +407,7 @@ class BaseIndividualView(BaseView):
                 if publisher :
                     referer_path =  reverse('account_by_id', args = (publisher.id,))
             else :
-                from account_views import HomepageView
+                from twistranet.twistapp.views.account_views import HomepageView
                 referer_path = reverse(HomepageView.name)
             referer_url = self.request.build_absolute_uri(referer_path)
         return referer_url

@@ -33,6 +33,7 @@ setup(name = 'django-twistranet',
           'django-piston',  
           'django-haystack',
           'django-tinymce',
+          'django-modeltranslation',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],

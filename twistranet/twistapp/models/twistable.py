@@ -217,8 +217,6 @@ class Twistable(_AbstractTwistable):
     # This is a way to de-reference the underlying model rapidly
     app_label = models.CharField(max_length = 64, db_index = True)
     model_name = models.CharField(max_length = 64, db_index = True)
-    # Pointer to the underlying account, to allow the filter to work with all derived objects.
-    # is_community = models.BooleanField(default = False, db_index = True, )
     
     # Text representation of this content
     # Usually a twistable is represented that way:
@@ -227,8 +225,8 @@ class Twistable(_AbstractTwistable):
         
     # Basic metadata shared by all Twist objects.
     # Title is mandatory!
-    title = models.CharField(max_length = 255, blank = True)
-    description = models.TextField(max_length = 1024, blank = True)
+    title = models.CharField(max_length = 255, blank = True, default = '')
+    description = models.TextField(max_length = 1024, blank = True, default = '')
     created_at = models.DateTimeField(auto_now_add = True, null = True, db_index = False)
     modified_at = models.DateTimeField(auto_now = True, null = True, db_index = True)
     created_by = models.ForeignKey("Account", related_name = "created_twistables", db_index = True, ) 
@@ -415,7 +413,7 @@ class Twistable(_AbstractTwistable):
                     root = self.slug
                     num = 1
                 self.slug = "%s_%i" % (root, num, )
-            
+        
         # Perform a full_clean on the model just to be sure it validates correctly
         self.full_clean()
             
@@ -481,8 +479,8 @@ class Twistable(_AbstractTwistable):
         else:
             raise ValueError("Unexpected can_list role found: %d on object %s" % (obj._p_can_list, obj))
 
-        # Update this object itself
-        super(Twistable, self).save()
+        # Update this object itself without calling the save() method again
+        Twistable.objects.__booster__.filter(id = self.id).update(_access_network = self._access_network)
 
         # Update dependant objects if current object's network changed for public role
         Twistable.objects.__booster__.filter(
