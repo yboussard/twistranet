@@ -3,7 +3,7 @@
 
 body {
 	margin: 0;
-	background: #f9f9f9 url(../images/body-bg.png) 0 -26px repeat-x;
+	background: #fff url(../images/body-bg.png) 0 0 repeat-x;
 }
 
 #page {
@@ -100,7 +100,7 @@ body {
 			margin-left: 200px;
 			padding: 6px 10px 5px;
 			height: 13px;
-            background: transparent url(../images/breadcrumb-bg.png) top center repeat-x;;
+            background: transparent;
 			color: #999;
 			overflow: hidden;
 		  }
