@@ -93,7 +93,6 @@ class Content(_AbstractContent):
     # Same for detail_view. Set to 'None' if no detail view (so no links on summary views)
     type_summary_view = "content/summary.part.html"
     type_detail_view = "content/view.html"
-    
     default_picture_resource_slug = "default_menu_picture"
         
     class Meta:

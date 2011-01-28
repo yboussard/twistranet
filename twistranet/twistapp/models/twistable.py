@@ -260,7 +260,7 @@ class Twistable(_AbstractTwistable):
     _p_can_join = models.IntegerField(default = 16, db_index = True)
     _p_can_leave = models.IntegerField(default = 16, db_index = True)
     _p_can_create = models.IntegerField(default = 16, db_index = True)
-
+    
     @property
     def kind(self) :
         """
