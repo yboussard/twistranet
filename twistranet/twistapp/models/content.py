@@ -94,7 +94,6 @@ class Content(_AbstractContent):
     type_summary_view = "content/summary.part.html"
     type_detail_view = "content/view.html"
     
-    is_content = True   # XXX TODO: What is this for, BTW??
     default_picture_resource_slug = "default_menu_picture"
         
     class Meta:
