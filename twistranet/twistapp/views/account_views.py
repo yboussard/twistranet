@@ -47,19 +47,19 @@ class UserAccountView(BaseWallView):
         self.n_network_members = self.account and self.account.network.count() or False
         
         # Add a message for ppl who have no content
-        auth = Twistable.objects.getCurrentAccount(self.request)
-        if self.account and self.auth and self.account.id == self.auth.id:
-            if not Content.objects.filter(publisher = self.auth).exists():
-                messages.info(self.request, _("""<p>
-                    It seems that you do not have created content yet. Maybe it's time to do so!
-                    </p>
-                    <p>
-                    Creating content in twistranet is easy. For example, just tell what you're working on in the form below and click the "Send" button.
-                    </p>
-                    <p>
-                    Want to learn about what you can do in twistranet? Just take a look here: [help]
-                    </p>
-                """))
+        if self.template == UserAccountView.template:
+            if self.account and self.auth and self.account.id == self.auth.id:
+                if not Content.objects.filter(publisher = self.auth).exists():
+                    messages.info(self.request, _("""<p>
+                        It seems that you do not have created content yet. Maybe it's time to do so!
+                        </p>
+                        <p>
+                        Creating content in twistranet is easy. For example, just tell what you're working on in the form below and click the "Send" button.
+                        </p>
+                        <p>
+                        Want to learn about what you can do in twistranet? Just take a look here: [help]
+                        </p>
+                    """))
 
     def get_recent_content_list(self):
         """
@@ -97,10 +97,9 @@ class HomepageView(UserAccountView):
         XXX TODO: Optimize this by adding a (first_twistable_on_home, last_twistable_on_home) values pair on the Account object.
         This way we can just query objects with id > last_twistable_on_home
         """
-        auth = self.auth
         latest_ids = None
-        if not auth.is_anonymous:
-            if Content.objects.filter(publisher = auth).exists():
+        if not self.auth.is_anonymous:
+            if Content.objects.filter(publisher = self.auth).exists():
                 latest_ids = Content.objects.followed.exclude(model_name = "Comment")
         if latest_ids is None:
             latest_ids = Content.objects.exclude(model_name = "Comment")
