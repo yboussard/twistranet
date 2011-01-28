@@ -76,13 +76,13 @@ body {
       }
       #search-live-results {
         position: absolute;
-        top: 57px;
+        top: 31px;
         right: 0;
         background-color: white;
         width: 288px;
         display: none;
         padding: 5px;
-        border: 1px solid #e00023;
+        border: 1px solid #ccc;
         z-index: 100;
       }
 	#wrap {
