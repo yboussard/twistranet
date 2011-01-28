@@ -169,19 +169,19 @@ body {
       }
       
       #tn-message ul li.debug {
-          background: #278FB8 url(../images/icons/debug.png) 10px 10px no-repeat;
+          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.info {
           background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.success {
-          background: #A9CC23 url(../images/icons/success.png) 10px 10px no-repeat;
+          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.warning {
-          background: #F6777D url(../images/icons/warning.png) 10px 10px no-repeat;
+          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.error {
-          background: #DF2429 url(../images/icons/error.png) 10px 10px no-repeat;
+          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       
       
