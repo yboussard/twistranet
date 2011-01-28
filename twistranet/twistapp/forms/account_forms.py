@@ -12,10 +12,6 @@ class UserAccountForm(BaseForm):
     """
     User account edition.
     """    
-    error_css_class = 'error'
-    required_css_class = 'required'
-
-
     class Meta:
         model = UserAccount
         fields = ('title', 'description', 'picture', )
@@ -24,12 +20,10 @@ class UserAccountForm(BaseForm):
             "picture":          ResourceWidget(),
         }
 
-
 class UserAccountCreationForm(UserAccountForm):
     """
     User account creation.
     """    
-
     class Meta:
         model = UserAccount
         fields = ('user', 'title', 'description', 'picture', 'permissions', )

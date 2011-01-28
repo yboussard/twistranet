@@ -361,10 +361,10 @@ class BaseIndividualView(BaseView):
                 else:
                     messages.warning(self.request, _("Please correct the indicated errors."))
             else:
+                initial = self.get_initial_values()
                 if self.object:
-                    self.form = form_class(instance = self.object)      # An unbound form with an explicit instance
+                    self.form = form_class(instance = self.object, initial = initial)      # An unbound form with an explicit instance
                 else:
-                    initial = self.get_initial_values()
                     if initial:
                         self.form = form_class(initial = initial)
                     else:
@@ -376,7 +376,7 @@ class BaseIndividualView(BaseView):
 
     def get_initial_values(self,):
         """
-        Return initial values for the form data
+        Return additional (and possibly facultative) initial values for the form data
         """
         return getattr(self, "initial", None)
 
