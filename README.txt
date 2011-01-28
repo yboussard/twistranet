@@ -7,7 +7,7 @@ This is the TwistraNet project!
 About
 =====
 
-TwistraNet is a Social Network tailored for the enterprise. It is also a nice CMS (Content Management System) with a social focus.
+TwistraNet is an Enterprise Social Software. It's a Social Network you can use to help people collaborate. And it is also a nice CMS (Content Management System) with a social focus.
 
 
 Requirements
