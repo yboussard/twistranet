@@ -175,13 +175,13 @@ body {
           background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.success {
-          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
+          background: #eeeeee url(../images/message-success-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.warning {
-          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
+          background: #eeeeee url(../images/message-warning-bg.png) 0 0 no-repeat;
       }
       #tn-message ul li.error {
-          background: #eeeeee url(../images/message-info-bg.png) 0 0 no-repeat;
+          background: #eeeeee url(../images/message-warning-bg.png) 0 0 no-repeat;
       }
       
       
