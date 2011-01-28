@@ -15,11 +15,15 @@
     {% endif %}
         <fieldset>
         {% for field in form %}
-            <div class="fieldWrapper">
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-                <div class="clear"><!-- --></div>
-            </div>
+            {% if not field.is_hidden %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}  
+                    <div class="clear"><!-- --></div>
+                </div>
+            {% else %}                                                          
+                {{ field }}
+            {% endif %}
         {% endfor %}
         {% csrf_token %}
         <div class="form-controls">
