@@ -1,8 +1,6 @@
 import time
 import mimetypes
 import os
-import traceback
-import posixpath
 import re
 import stat
 import urllib
@@ -61,7 +59,7 @@ def serve(request, path, document_root = None, show_indexes = False, nocache = F
     """
 
     # Clean up given path to only allow serving files below document_root.
-    path = posixpath.normpath(urllib.unquote(path))
+    path = os.path.normpath(urllib.unquote(path))
     path = path.lstrip('/')
     newpath = ''
     for part in path.split('/'):
@@ -388,7 +386,7 @@ def resource_quickupload_file(request):
             # is removed by "cancel" action, but
             # could be useful if someone change the js behavior
             msg = {u'error': u'emptyError'}
-    else :
+    else:
         # MSIE old behavior (classic upload with iframe) >> TODO : tests
         file_data = request.FILES.get("qqfile", None)
         filename = getattr(file_data,'name', '')
@@ -400,7 +398,7 @@ def resource_quickupload_file(request):
             log.debug("The file %s is too big, quick iframe upload rejected" % file_name) 
             msg = {u'error': u'sizeError'}
 
-    if file_data and not msg :
+    if file_data and not msg:
         publisher_id = request.GET.get('publisher_id', request.POST.get('publisher_id', ''))
         # i'm not sure here
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
@@ -408,12 +406,16 @@ def resource_quickupload_file(request):
             type = 'image'
         else:
             type = 'file'
-        if not title :
+        if not title:
             # try to split filenames when there's no title to avoid potential css surprises
             title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
-        try :
+        try:
             params = {'resource_file' : file_data, 'title' : title }
-            if publisher_id :
+            try:
+                publisher_id = int(publisher_id)
+            except (TypeError, ValueError):
+                pass
+            else:
                 params['publisher'] = Account.objects.get(id = publisher_id)
             new_file = Resource(**params)
             new_file.save()
@@ -435,8 +437,9 @@ def resource_quickupload_file(request):
                    'scope':        publisher_id,
                    'type' :        type,}
         # TODO : improve error messages with Unauthorized error
-        except:            
-            msg = {u'error': u'serverError'}      
+        except:
+            log.exception("Unexpected error while trying to uplaod a file.")
+            msg = {u'error': _(u'Unexpected error, please use the "Browse" button.')}
     else:
         msg = {u'error': u'emptyError'}
 
