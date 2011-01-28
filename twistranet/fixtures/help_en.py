@@ -33,7 +33,7 @@ If you're not logged-in, <a href="/login">login now</a>.
             [bubble_64]
         </th>
         <th width="33%">
-            <p><a href="/content/new/Document">Publish content</a></p>
+            <p>Publish content</p>
             [document_64]
         </th>
    </tr>
@@ -53,7 +53,7 @@ If you're not logged-in, <a href="/login">login now</a>.
         <td>
             <p><strong>Have a report, a memo, a template to share??</strong></p>
             <p>
-            Don't spam your co-workers, use a <a href="/content/new/Document">Document</a>.
+            Don't spam your co-workers, use a <strong>Document</strong>.
             Your network will know you've got something to say,
             and your other co-workers will be able to find it
             easily.
