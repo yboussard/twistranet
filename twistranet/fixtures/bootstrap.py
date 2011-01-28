@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 The minimal bootstrap for TN to work.
 We use a python file to ensure proper DB alimentation. Django fixtures are not enough to ensure DB consistancy.
@@ -11,15 +12,26 @@ FIXTURES = [
     Fixture(
         GlobalCommunity,
         slug = "all_twistranet",
-        title = "All Twistranauts",
-        description = "You can find all twistranauts in here. This community is a good place to start looking for people or for critical information about twistranet.",
+        title_en = "All Twistranauts",
+        title_fr = "Tous les twistranautes",
+        description_en = "You can find all twistranauts in here. "
+            "This community is a good place to start looking for people "
+            "or for critical information about twistranet.",
+        description_fr = "Vous pouvez retrouver tous les twistranautes ici. "
+            "Cette communauté est un bon endroit pour commencer à chercher des collègues, "
+            "ou pour trouver des informations importantes sur twistranet.",
+        site_name = 'twistranet',
+        baseline_en = "Enjoy working in team.",
+        baseline_fr = "Le plaisir de travailler en équipe.",
         permissions = "intranet",
     ),
     Fixture(
         AdminCommunity,
         slug = "administrators",
-        title = "Administrators",
-        description = "TwistraNet admin team",
+        title_en = "Administrators",
+        title_fr = "Administrateur",
+        description_en = "twistranet admin team",
+        description_fr = "L'équipe d'administration de twistranet",
         permissions = "workgroup",
         publisher = GlobalCommunity.objects.filter(),
     ),
@@ -28,7 +40,8 @@ FIXTURES = [
     Fixture(
         Menu,
         slug = "menu_main",
-        title = "Main Menu",
+        title_en = "Main Menu",
+        title_fr = "Menu principal",
         publisher = GlobalCommunity.objects.filter(),
     ),
 
@@ -37,7 +50,8 @@ FIXTURES = [
         parent = Menu.objects.filter(slug = "menu_main"),
         order = 0,
         view_path = "twistranet_home",
-        title = "Home",
+        title_en = "Home",
+        title_fr = "Accueil",
         slug = "menuitem_home",
         publisher = GlobalCommunity.objects.filter(),
     ),
@@ -47,7 +61,8 @@ FIXTURES = [
         parent = Menu.objects.filter(slug = "menu_main"),
         order = 10,
         view_path = 'communities',
-        title = "Communities",
+        title_en = "Communities",
+        title_fr = "Communautés",
         slug = "menuitem_communities",
         publisher = GlobalCommunity.objects.filter(),
     ),
@@ -57,7 +72,8 @@ FIXTURES = [
         parent = MenuItem.objects.filter(slug = "menuitem_communities"),
         order = 0,
         view_path = 'communities',
-        title = "View all communities",
+        title_en = "All communities",
+        title_fr = "Toutes les communautés",
         slug = "menuitem_all_communities",
         publisher = GlobalCommunity.objects.filter(),
     ),

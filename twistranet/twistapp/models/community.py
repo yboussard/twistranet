@@ -298,12 +298,10 @@ class GlobalCommunity(Community):
     site_name = models.CharField(
         max_length = 64,
         help_text = "Enter this site's name. It will be displayed prominently on all pages. No HTML please.",
-        default = "TwistraNet",
         )
     baseline = models.CharField(
         max_length = 64,
         help_text = "Enter the site's baseline. It will be displayed in the upper bar of the site. No HTML please.",
-        default = "Enjoy working in team.",
         )
 
     @classmethod

@@ -3,40 +3,62 @@ This module enables model translation for all twistranet base classes.
 """
 from modeltranslation.translator import translator, TranslationOptions
 from twistranet.twistapp import Twistable, Account, Content, Community, \
-    GlobalCommunity, AdminCommunity, SystemAccount, UserAccount
+    GlobalCommunity, AdminCommunity, SystemAccount, UserAccount, Resource
+from twistranet.content_types import Document, StatusUpdate, Comment
 
-# TO stands for TranslationOptions
+# (oh, by the way, 'TO' stands for TranslationOptions)
 
+# Classic twist objects
 class _TwistableTO(TranslationOptions):
     fields = ('title', 'description',)
+translator.register(Twistable, _TwistableTO)
 
-class _CommunityTO(TranslationOptions):
-    fields = ('title', 'description',)
-
+# Accounts and derived objects
 class _AccountTO(TranslationOptions):
-    fields = ('title', 'description',)
+    fields = _TwistableTO.fields
+translator.register(Account, _AccountTO)
 
-class _ContentTO(TranslationOptions):
-    fields = ('title', 'description',)
-    
-class _GlobalCommunityTO(TranslationOptions):
-    fields = ('title', 'description',)
-
-class _AdminCommunityTO(TranslationOptions):
-    fields = ('title', 'description',)
-    
 class _SystemAccountTO(TranslationOptions):
-    fields = ('title', 'description',)
+    fields = _AccountTO.fields
+translator.register(SystemAccount, _SystemAccountTO)
 
 class _UserAccountTO(TranslationOptions):
-    fields = ('title', 'description',)
-
-translator.register(Twistable, _TwistableTO)
-translator.register(Community, _CommunityTO)
-translator.register(Account, _AccountTO)
-translator.register(Content, _ContentTO)
-translator.register(GlobalCommunity, _GlobalCommunityTO)
-translator.register(AdminCommunity, _AdminCommunityTO)
-translator.register(SystemAccount, _SystemAccountTO)
+    fields = _AccountTO.fields
 translator.register(UserAccount, _UserAccountTO)
+
+class _CommunityTO(TranslationOptions):
+    fields = _AccountTO.fields
+translator.register(Community, _CommunityTO)
+
+class _GlobalCommunityTO(TranslationOptions):
+    fields = _CommunityTO.fields + ('site_name', 'baseline', )
+translator.register(GlobalCommunity, _GlobalCommunityTO)
+
+class _AdminCommunityTO(TranslationOptions):
+    fields = _CommunityTO.fields
+translator.register(AdminCommunity, _AdminCommunityTO)
+    
+# Content and like
+class _ResourceTO(TranslationOptions):
+    fields = _TwistableTO.fields
+translator.register(Resource, _ResourceTO)
+
+class _ContentTO(TranslationOptions):
+    fields = _TwistableTO.fields
+translator.register(Content, _ContentTO)
+
+
+# Content types
+class _DocumentTO(TranslationOptions):
+    fields = _ContentTO.fields + ('text', )
+translator.register(Document, _DocumentTO)
+
+class _StatusUpdateTO(TranslationOptions):
+    fields = _ContentTO.fields
+translator.register(StatusUpdate, _StatusUpdateTO)
+
+class _CommentTO(TranslationOptions):
+    fields = _ContentTO.fields
+translator.register(Comment, _CommentTO)
+
 
