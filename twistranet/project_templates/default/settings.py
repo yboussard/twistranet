@@ -93,7 +93,6 @@ _TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    'twistranet.twistapp.lib.context_processors.security_context',
 )
 TEMPLATE_CONTEXT_PROCESSORS = [ a for a in _TEMPLATE_CONTEXT_PROCESSORS if a ]
 

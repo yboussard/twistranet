@@ -89,9 +89,14 @@ def serve(request, path, document_root = None, show_indexes = False, nocache = F
     mimetype = mimetypes.guess_type(fullpath)[0] or 'application/octet-stream'
     # XXX TODO: Handle this correctly!!! Disabled to avoid using file mod. time instead of obj mod. time
     if not nocache:
-        if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
-                                  statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
+        if not was_modified_since(
+            request.META.get(
+                'HTTP_IF_MODIFIED_SINCE'),
+                    statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]
+        ):
             return HttpResponseNotModified(mimetype=mimetype)
+            
+    # XXX This is subsubsuboptimal!
     contents = open(fullpath, 'rb').read()
     response = HttpResponse(contents, mimetype=mimetype)
     response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
