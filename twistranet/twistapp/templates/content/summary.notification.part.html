@@ -7,7 +7,7 @@
             {% include 'actions/content_summary.part.html' %}
         </div>
         <span class="headline">
-            {{ content.title_or_description|wiki }}
+            {{ content.object.message|safe }}
         </span>
         <span class="postmetadata">
           <ul>

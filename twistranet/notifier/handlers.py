@@ -47,7 +47,7 @@ class NotificationHandler(NotifierHandler):
     It is somewhat internationalized.
 
     You can customize the displayed description upon class creation: the message
-    will be _'ed with %(xxx)s values filled from a dictionary.
+    will be _'ed with %(xxx)s values filled from the parameters dictionnary.
     """
     def __init__(self, owner_arg, publisher_arg, message, permissions = "public"):
         """
@@ -74,7 +74,7 @@ class NotificationHandler(NotifierHandler):
         message_dict = {}
         for param, value in kwargs.items():
             if isinstance(value, Twistable):
-                message_dict[param] = value.html_link
+                message_dict[param] = value.id
 
         # We force __account__ to fake user login.
         system = SystemAccount.get()
@@ -85,7 +85,8 @@ class NotificationHandler(NotifierHandler):
             publisher = publisher,
             owner = owner,
             title = "",
-            description = self.message % message_dict,
+            description = self.message,
+            parameters = message_dict,
             permissions = self.permissions,
         )
         n.save()
