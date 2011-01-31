@@ -5,7 +5,7 @@ from twistranet import VERSION, __version__
 setup(name = 'django-twistranet',
       version = __version__,
       description = "twistranet - An Enterprise Social Network",
-      long_description = open("README.txt").read(),
+      long_description = open("README.rst").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers = [
         "Environment :: Web Environment",
@@ -36,7 +36,7 @@ setup(name = 'django-twistranet',
           'django-piston',  
           'django-haystack',
           'django-tinymce',
-          'django-modeltranslation',
+          #'django-modeltranslation',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
