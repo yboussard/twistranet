@@ -177,6 +177,10 @@ ul.inline-form textarea {
     padding: 5px;
 }
 
+.noleftcol ul.inline-form textarea {
+    width: 712px;
+}
+
 ul.inline-form select {
   background-color: #efefef;
 }

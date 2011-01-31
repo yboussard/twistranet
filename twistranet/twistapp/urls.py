@@ -3,6 +3,9 @@ import os.path
 from twistranet.twistapp.views import *
 from twistranet.twistapp.lib.slugify import SLUG_REGEX
 
+handler404 = AsView(Error404View)
+handler500 = AsView(Error500View)
+
 urlpatterns = patterns('',
     # The wall page for generic accounts
     url(r'^$',                                      AsView(HomepageView), name = HomepageView.name),

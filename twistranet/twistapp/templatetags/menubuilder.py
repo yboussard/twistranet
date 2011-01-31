@@ -23,7 +23,13 @@ class MenuObject(template.Node):
         self.menu_name = menu_name  
    
     def render(self, context):  
-        current_path = template.resolve_variable('path', context)  
+        try:
+            current_path = template.resolve_variable('path', context)
+        # in case of 404 or 500 handler
+        except template.VariableDoesNotExist:
+            current_path = '/'
+        except Exception, e:
+            raise e
         context['menuitems'] = get_items(self.menu_name, current_path)  
         return ''  
      

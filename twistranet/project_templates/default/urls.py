@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-
+from twistranet.twistapp.urls import handler404, handler500
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
