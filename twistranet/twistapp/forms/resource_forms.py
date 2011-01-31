@@ -13,14 +13,8 @@ class ResourceForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    # publisher_id = forms.IntegerField(required = True, widget = widgets.HiddenInput)
-
     class Meta:
         model = Resource
-        # fields = ('text', 'permissions', 'language', )
-        # widgets = {
-        #     'text':     widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
-        # }
 
 class MediaForm(forms.Form):
     """
@@ -37,5 +31,4 @@ class ResourceBrowserForm(forms.Form):
     """just a basic form to browse and upload resources
        used by wysiwyg editors
     """                                      
-    
     browsed_resource = ResourceFormField(label='', allow_select=True, allow_upload=True, display_renderer=False)

@@ -5,10 +5,12 @@ from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
 from django.utils.safestring import mark_safe
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib import messages
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
@@ -222,7 +224,11 @@ class BaseView(object):
         # XXX TODO: Menu management
             
         # Content: we preceed by the publisher
-        elif hasattr(self, "object") and isinstance(self.object, Twistable) and issubclass(self.object.model_class, Content):
+        elif hasattr(self, "object") and \
+            self.object and \
+            isinstance(self.object, Twistable) and \
+            self.object.model_class and \
+            issubclass(self.object.model_class, Content):
             pub = (self.object.publisher.title, self.object.publisher.get_absolute_url())
             return (home, pub, here)
             
@@ -339,18 +345,26 @@ class BaseIndividualView(BaseView):
                 else:
                     publisher = None
                 if self.form.is_valid(): # All validation rules pass
-                    # Save object and set publisher
+                    # Save object and set publisher.
+                    # We MAY have ValidationError here (eg: community without a title).
+                    # if so, we provide a nice error message instead of 500ing
                     self.object = self.form.save(commit = False)
                     if publisher:
                         self.object.publisher = publisher
-                    self.object.save()
-                    self.form.save_m2m()
-                    raise MustRedirect(self.object.get_absolute_url())
-            else:
-                if self.object:
-                    self.form = form_class(instance = self.object)      # An unbound form with an explicit instance
+                    try:
+                        self.object.save()
+                    except ValidationError as detail:
+                        messages.warning(self.request, _(detail.messages[0]))
+                    else:
+                        self.form.save_m2m()
+                        raise MustRedirect(self.object.get_absolute_url())
                 else:
-                    initial = self.get_initial_values()
+                    messages.warning(self.request, _("Please correct the indicated errors."))
+            else:
+                initial = self.get_initial_values()
+                if self.object:
+                    self.form = form_class(instance = self.object, initial = initial)      # An unbound form with an explicit instance
+                else:
                     if initial:
                         self.form = form_class(initial = initial)
                     else:
@@ -362,7 +376,7 @@ class BaseIndividualView(BaseView):
 
     def get_initial_values(self,):
         """
-        Return initial values for the form data
+        Return additional (and possibly facultative) initial values for the form data
         """
         return getattr(self, "initial", None)
 

@@ -4,6 +4,7 @@ from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage
+from django.contrib.sites.models import Site, RequestSite
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
@@ -81,8 +82,6 @@ class CommunityView(UserAccountView):
         - What are you working on right now?<br />
         - What would you like to find on this community page?</p>""")
             messages.info(self.request, msg)
-
-
 
 
 #                                                                               #
@@ -236,6 +235,32 @@ class ConfigurationEdit(CommunityEdit):
     title = "Configuration"
     category = GLOBAL_ACTIONS
     
+    def get_initial_values(self,):
+        """
+        Return initial values for configuration.
+        The only subtlety here is that we fetch the 'domain' from 
+        django's Site framework.
+        """
+        current_site = Site.objects.get_current()
+        if current_site.domain == "example.com" or True:
+            # Display a more intelligent default domain
+            domain = RequestSite(self.request).domain
+            if 'HTTPS' in self.request.META['SERVER_PROTOCOL']:
+                protocol = "https://"
+            else:
+                protocol = "http://"
+            domain = "%s%s" % (protocol, domain)
+        else:
+            domain = current_site.domain
+            if not domain.lower().startswith('http'):
+                domain = "http://%s" % domain
+        
+        if not domain.endswith('/'):
+            domain = "%s/" % domain
+        return {
+            "domain":   domain
+        }
+        
     def as_action(self,):
         """
         Check that I'm an admin
@@ -247,7 +272,17 @@ class ConfigurationEdit(CommunityEdit):
         
     def prepare_view(self):
         glob_id = GlobalCommunity.get().id
-        super(ConfigurationEdit, self).prepare_view(glob_id)
+        try:
+            super(ConfigurationEdit, self).prepare_view(glob_id)
+        except MustRedirect as redirect:
+            # If the form has not been submitted...
+            # ...and is valid, we have to save the domain as well
+            if self.request.method == 'POST' and self.form.is_valid():
+                current_site = Site.objects.get_current()
+                current_site.domain = self.form.cleaned_data['domain']
+                current_site.save()
+                Site.objects.clear_cache()
+            raise
 
 
 class CommunityCreate(CommunityEdit):

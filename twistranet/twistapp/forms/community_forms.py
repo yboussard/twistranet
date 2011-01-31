@@ -27,8 +27,18 @@ class AdministrationForm(CommunityForm):
     Global community edition form.
     This holds the global-community specific configuration options.
     """
+    domain = forms.URLField(
+        label = "Base URL of your site",
+        required = True,
+        )
+    
     class Meta:
         from twistranet.twistapp.models import GlobalCommunity
         model = GlobalCommunity
-        fields = ("site_name", "baseline", "permissions", )
+        fields = (
+            "site_name", 
+            "baseline", 
+            "permissions",
+            "domain",
+        )
         

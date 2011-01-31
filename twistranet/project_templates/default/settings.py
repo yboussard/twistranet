@@ -116,8 +116,6 @@ AUTHENTICATION_BACKENDS = (
 
 AUTH_PROFILE_MODULE = "twistranet.UserAccount"
 
-CACHE_BACKEND = "locmem:///"
-
 ROOT_URLCONF = 'urls'
 
 #                                                       #
@@ -134,6 +132,10 @@ TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# Cache tuning
+CACHE_BACKEND = "locmem:///"
+TWISTRANET_CACHE_USER = 60*5            # User-centric data stored for xx second
 
 # Basic apps installation. You may add your own modules here.
 _INSTALLED_APPS = (
@@ -155,6 +157,7 @@ _INSTALLED_APPS = (
     
     # TwistraNet core stuff
     'twistranet.twistapp',
+    'twistranet.search',
     
     # Twistranet theme
     TWISTRANET_THEME_APP,

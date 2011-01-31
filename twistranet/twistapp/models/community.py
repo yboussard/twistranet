@@ -3,6 +3,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import NoReverseMatch
+from django.core.cache import cache
+from django.conf import settings
 
 from twistranet.twistapp.lib import permissions
 from twistranet.twistapp.signals import join_community, invite_community, request_join_community
@@ -23,12 +25,9 @@ class Community(Account):
     default_picture_resource_slug = "default_community_picture"
     
     # Members & security management
-    # members = models.ManyToManyField(Account, through = "CommunityMembership", related_name = "membership")
-    # XXX user_source = (OPTIONAL)
     permission_templates = permissions.community_templates
 
     # View overriding support
-    # XXX TODO: Find a way to optimize this without having to query the underlying object
     summary_view = "community/summary.part.html"
     is_community = True
     
