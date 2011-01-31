@@ -59,8 +59,7 @@ def serve(request, path, document_root = None, show_indexes = False, nocache = F
     """
 
     # Clean up given path to only allow serving files below document_root.
-    path = os.path.normpath(urllib.unquote(path))
-    path = path.lstrip('/')
+    path = urllib.unquote(path).lstrip('/')
     newpath = ''
     for part in path.split('/'):
         if not part:
