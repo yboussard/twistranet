@@ -63,8 +63,9 @@ class AsPublicView(object):
             instance_view.prepare_view(*args, **kw)
             return instance_view.render_view()
             
-        except MustRedirect(redirect):
+        except MustRedirect:
             # Here we redirect if necessary
+            redirect = sys.exc_info()[1]
             if redirect.url is None:
                 redirect_url = request.path
             else:
