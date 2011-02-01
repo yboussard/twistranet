@@ -39,7 +39,6 @@ setup(name = 'django-twistranet',
           'django-tinymce',
           'django-modeltranslation',
           'sorl-thumbnail',
-          'PIL',
           # -*- Extra requirements: -*-
       ],
       entry_points = """

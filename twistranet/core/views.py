@@ -1,5 +1,6 @@
 import copy
 import re
+import sys
 
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
@@ -62,7 +63,7 @@ class AsPublicView(object):
             instance_view.prepare_view(*args, **kw)
             return instance_view.render_view()
             
-        except MustRedirect as redirect:
+        except MustRedirect(redirect):
             # Here we redirect if necessary
             if redirect.url is None:
                 redirect_url = request.path
@@ -353,7 +354,7 @@ class BaseIndividualView(BaseView):
                         self.object.publisher = publisher
                     try:
                         self.object.save()
-                    except ValidationError as detail:
+                    except ValidationError(detail):
                         messages.warning(self.request, _(detail.messages[0]))
                     else:
                         self.form.save_m2m()

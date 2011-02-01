@@ -274,7 +274,7 @@ class ConfigurationEdit(CommunityEdit):
         glob_id = GlobalCommunity.get().id
         try:
             super(ConfigurationEdit, self).prepare_view(glob_id)
-        except MustRedirect as redirect:
+        except MustRedirect(redirect):
             # If the form has not been submitted...
             # ...and is valid, we have to save the domain as well
             if self.request.method == 'POST' and self.form.is_valid():

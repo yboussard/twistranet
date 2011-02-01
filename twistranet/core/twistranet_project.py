@@ -72,7 +72,6 @@ def twistranet_project():
         shutil.copytree(template_dir, project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
     except AttributeError:
         print "shutil.copytree is likely not to have the 'ignore' attribute available.\n"
-            "This happens with python < 2.6."
         shutil.copytree(template_dir, project_path)
     
     # If project_template <> default, we copy the project_template-specific files as well
