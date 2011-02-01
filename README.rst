@@ -150,7 +150,13 @@ Seems that it is a python-2.5 related problem.
 I've lost my admin password!
 ----------------------------
 
+It's easy to set a new one.
 
+- Stop your server
+
+- Run ./manage.py changepassword admin (and change your password)
+
+- Start your server again
 
 
 
