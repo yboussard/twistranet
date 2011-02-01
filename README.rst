@@ -22,7 +22,7 @@ Other requirements:
 
 - python-setuptools
 
-- python-imaging
+- python-imaging (aka PIL)
 
 Installation
 ============
@@ -30,15 +30,19 @@ Installation
 Installation - short version
 -----------------------------
 
+- Install requirements (Python, SetupTools and PIL)
+
 - Download and untar (or unzip) twistranet from https://github.com/numericube/twistranet/tarball/master
 
-- cd twistranet-x.x.x
+- In the unzipped directory, just execute:
 
-- (sudo) python ./setup.py install clean
+  - (sudo) python ./setup.py install clean
 
 twistranet is now installed. You can have many sites with just one twistranet installation, so you need to explicitly deploy and bootstrap your new site.
 
-- (sudo) twistranet_project <path_to_my_new_site>
+  - (sudo) twistranet_project <path_to_my_new_site>
+
+Don't forget to write down your generated admin password!!
 
 Your server should now be fully working and running on http://localhost:8000 !
 
@@ -133,6 +137,19 @@ No image / thumbnail on my fresh twistranet instance!
 This is probably a problem with python-imaging installation. Just install PIL for your OS.
 
 Under debian, the easiest is to do "apt-get install python-imaging".
+
+error: Could not find required distribution Django
+---------------------------------------------------
+
+If you've got this message, that means the autoinstall procedure of twistranet can't install django automatically.
+Just install django (see www.django-project.org) either from sources or from a package from your OS,
+and run "python setup.py install" again.
+
+Seems that it is a python-2.5 related problem.
+
+I've lost my admin password!
+----------------------------
+
 
 
 

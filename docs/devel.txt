@@ -28,13 +28,13 @@ Under  windows, the command is :
 
 Fork Twistranet from github (with your login or public adress git://github.com/numericube/twistranet.git)
 
-    (twistranet-devel) $ git clone https://yourlogin@github.com/numericube/twistranet.git ./Twistranet
+    (twistranet-devel) $ git clone https://yourlogin@github.com/numericube/twistranet.git ./numericube-twistranet
 
 .. note:: don't call the cloned folder 'twistranet' in all lowercase if you want to start Django directly from this folder
 
 >> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnails, tinymce ...)
 
-    (twistranet-devel) $ pip install -e ./Twistranet
+    (twistranet-devel) $ pip install -e ./numericube-twistranet
 
 .. note:: the './' is important here, it can be replaced by any "path to" expression
 

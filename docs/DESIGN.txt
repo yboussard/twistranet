@@ -17,7 +17,6 @@ If you want your additional models to work, you have to:
 - import them from models.__init__
 - add a Meta attribute "app_label = 'twistranet'" in your model class
 
-
 Hot topics
 ==========
 
