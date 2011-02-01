@@ -55,7 +55,8 @@ class AsPublicView(object):
             # Check if we have access to TN, if not we redirect to the login page.
             if not self.has_access(request):
                 path = urlquote(request.get_full_path())
-                raise MustRedirect('%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path, ))
+                login_url = reverse('login')
+                raise MustRedirect('%s?%s=%s' % (login_url, REDIRECT_FIELD_NAME, path, ))
 
             # Instanciate the actual view class with global view arguments
             # and call its view() method with request-specific arguments
