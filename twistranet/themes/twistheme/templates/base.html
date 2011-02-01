@@ -47,7 +47,7 @@
                                 {% endblock %}
                                 {% if user.is_authenticated %}
                                 <li class="last">
-                                    <a href="/logout">{% blocktrans %}Log out{% endblocktrans %}</a>
+                                    <a href="{% url logout %}">{% blocktrans %}Log out{% endblocktrans %}</a>
                                 </li>
                                 {% else %}
                                 <li class="last"><a href="/login">{% blocktrans %}Log in{% endblocktrans %}</a></li>
