@@ -5,3 +5,4 @@ django-haystack
 django-tinymce
 django-modeltranslation
 sorl-thumbnail
+PIL

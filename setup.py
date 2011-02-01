@@ -39,11 +39,12 @@ setup(name = 'django-twistranet',
           'django-tinymce',
           'django-modeltranslation',
           'sorl-thumbnail',
+          'PIL',
           # -*- Extra requirements: -*-
       ],
       entry_points = """
       # -*- Entry points: -*-
-      # [console_scripts]
-      # twistranet_project=twistranet.core.twistranet_project:twistranet_project
+      [console_scripts]
+      twistranet_project=twistranet.core.twistranet_project:twistranet_project
       """,
       )

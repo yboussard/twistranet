@@ -10,6 +10,7 @@ if os.environ.has_key("TWISTRANET_DEBUG"):
     DEBUG = True
     TEMPLATE_DEBUG = True
     TEMPLATE_STRING_IF_INVALID = "<invalid>"
+    THUMBNAIL_DEBUG = True      # sorl-thumbnail debug mode
     TWISTRANET_LOG_LEVEL = logging.DEBUG
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS':      False,
