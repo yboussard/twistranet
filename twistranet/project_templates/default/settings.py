@@ -70,7 +70,7 @@ TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -127,7 +127,7 @@ ROOT_URLCONF = 'urls'
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 
 # Some project-dependant settings
-TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
+#TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 
 # Contrib.auth module settings
