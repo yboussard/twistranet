@@ -9,11 +9,6 @@
   danielfajardo - http: //wwww.danielfajardo.com
 ---------------------------------------------------------------- */
 
-include( '/static/js/includes/lib/scrollTo.js' );
-include( '/static/js/includes/lib/browserdetect.js' );
-include( '/static/js/includes/lib/hoverIntent.js' );
-include( '/static/js/includes/lib/superfish.js' );
-
 jQuery(document).ready(function(){
 
 	// User Menu
