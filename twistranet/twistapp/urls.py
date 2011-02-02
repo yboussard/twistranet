@@ -75,6 +75,9 @@ urlpatterns = patterns('',
     
     # Administration pages.
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
+
+    # Search engine
+    (r'\bsearch/',                               include('twistranet.search.urls')),
 )
 
 
