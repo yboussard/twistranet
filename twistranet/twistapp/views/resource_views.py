@@ -297,7 +297,7 @@ UPLOAD_JS = """
     createUploader_%(ul_id)s= function(){    
         xhr_%(ul_id)s = new qq.FileUploader({
             element: jQuery('#%(ul_id)s')[0],
-            action: '/resource_quickupload_file/',
+            action: 'resource_quickupload_file/',
             params: uploadparams,
             autoUpload: auto,
             onAfterSelect: addUploadFields_%(ul_id)s,

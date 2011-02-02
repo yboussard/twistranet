@@ -21,9 +21,9 @@ class ResourceWidget(forms.MultiWidget):
 
     class Media:
         css = {
-            'all': ('/static/css/tn_resource_widget.css', ),
+            'all': ('static/css/tn_resource_widget.css', ),
         }
-        js = ('/static/js/tn_resource_widget.js', )
+        js = ('static/js/tn_resource_widget.js', )
 
     def __init__(self, initial = None, **kwargs):
         widgets = []
