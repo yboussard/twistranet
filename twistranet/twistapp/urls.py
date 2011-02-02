@@ -27,16 +27,16 @@ urlpatterns = patterns('',
     url(r'^resource/(%s)/$' % SLUG_REGEX,       'twistranet.twistapp.views.resource_by_slug', name='resource_by_slug'),
     # (r'^resource/new$',                         'twistranet.twistapp.views.create_resource'),      
     # (r'^resource/(\w+)$',                       'twistranet.twistapp.views.resource_by_slug_or_id'),  
-    (r'^resource_by_publisher/json/(\d+)$',     'twistranet.twistapp.views.resource_by_publisher_json'),     # return json list of resources by publisher id
+    (r'\bresource_by_publisher/json/(\d+)$',     'twistranet.twistapp.views.resource_by_publisher_json'),     # return json list of resources by publisher id
     # (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistapp.views.resource_by_account'),    # Fetch by account pty
     # (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistapp.views.resource_by_content'),    # Fetch by content pty   
-    url(r'^resource_browser/$',                     AsView(ResourceBrowser), name = ResourceBrowser.name),       # resource browser used by wysiwyg editors
-    (r'^resource_quickupload/$',                'twistranet.twistapp.views.resource_quickupload'),   # resource quickupload ajax template
-    (r'^resource_quickupload_file/$',           'twistranet.twistapp.views.resource_quickupload_file'),   # resource quickupload json response
+    (r'\bresource_quickupload_file/$',           'twistranet.twistapp.views.resource_quickupload_file'),   # resource quickupload json response
+    (r'\bresource_quickupload/$',                'twistranet.twistapp.views.resource_quickupload'),   # resource quickupload ajax template
+    url(r'\bresource_browser/$',                AsView(ResourceBrowser), name = ResourceBrowser.name),       # resource browser used by wysiwyg editors
     
     # Thumbnail cache links
-    url(r'\Wcache/([\w\./]+)$',                 'twistranet.twistapp.views.resource_cache'),         # Fetch a thumb cache by its key
-    url(r'^cache/([\w\./]+)$',                  'twistranet.twistapp.views.resource_cache'),         # Fetch a thumb cache by its key
+    url(r'\bcache/([\w\./]+)$',                 'twistranet.twistapp.views.resource_cache'),         # Fetch a thumb cache by its key
+#    url(r'^cache/([\w\./]+)$',                  'twistranet.twistapp.views.resource_cache'),         # Fetch a thumb cache by its key
 
     # Media links. Used for media creation and edition only. Access is still made via the 'resource' links
     url(r'^media_resource/new$',                'twistranet.twistapp.views.create_media', name = "media_create", ),

@@ -37,8 +37,8 @@ LDAP_ENABLED = False
 LDAP_SERVER = "xx.xx.xx.xx"
 
 # LDAP configuration / credentials
-AUTH_LDAP_USER_BASE = "ou=Users,dc=my-company,dc=dom"
-AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=dom"
+AUTH_LDAP_USER_BASE = "ou=Users,dc=my-company,dc=com"
+AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=com"
 AUTH_LDAP_BIND_PASSWORD = "admin-password"
 
 #                                           #
