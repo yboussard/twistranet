@@ -3,6 +3,24 @@
 import os.path
 HERE = os.path.dirname(__file__)
 
+# Tiny config
+TINYMCE_FILEBROWSER = False
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
+    'theme': "advanced",
+    'theme_advanced_toolbar_location': "top",
+    'theme_advanced_toolbar_align' : "left",
+    'auto_focus': True,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    'theme_advanced_blockformats': "p,div,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp",
+    'width': "490px",
+    'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
+    'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
+    'theme_advanced_buttons3': "",
+    'file_browser_callback' : 'twistranet.tinymceBrowser'
+}
+
 # debug settings
 import logging
 TWISTRANET_LOG_LEVEL = logging.WARNING
@@ -70,7 +88,7 @@ TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -127,12 +145,8 @@ ROOT_URLCONF = 'urls'
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 
 # Some project-dependant settings
-#TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
+#TINYMCE_JS_URL = "static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
-
-# Contrib.auth module settings
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
 
 # Cache tuning
 CACHE_BACKEND = "locmem:///"
@@ -172,6 +186,10 @@ _INSTALLED_APPS = (
     'haystack',
 )
 INSTALLED_APPS = [a for a in _INSTALLED_APPS if a]
+
+# Contrib.auth module settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # Local and bootstrap settings.
 TWISTRANET_IMPORT_SAMPLE_DATA = False
