@@ -14,15 +14,17 @@ def twistranet_project():
     Copies the contents of the project_template directory to a new directory
     specified as an argument to the command line.
     """
-    import twistranet
+    # That is just to check that we can import the TN package.
+    # If something goes wrong here, just add a --pythonpath option.     
     parser = OptionParser(
         usage = "usage: %prog [options] [<template>] <project_path>\n"
             "  where project_name is the name of the directory that will be created for your site,\n"
             "  <path> is the (optional) path where you want to install it.\n"
     )
     parser.add_option("-n", "--no-bootstrap",
-                      action="store_false", dest="bootstrap", default=True,
-                      help="Don't bootstrap project immediately. Use this if you want to review your settings before bootstraping.")
+        action="store_false", dest="bootstrap", default=True,
+        help="Don't bootstrap project immediately. Use this if you want to review your settings before bootstraping.",
+    )
     (options, args) = parser.parse_args()
 
     # Check template and path args
@@ -34,7 +36,10 @@ def twistranet_project():
     elif len(args) == 2:
         project_path = args[1]
         project_template = args[0]
-        
+    
+    # Check if we can import TN.
+    import twistranet
+    
     # We decompose the given path to split installdir and project_name
     project_path = os.path.abspath(project_path)
     if os.path.lexists(project_path):
@@ -110,7 +115,8 @@ def twistranet_project():
     if options.bootstrap:
         from django.core.management import call_command
         from django import conf
-        sys.path.insert(1, project_path)        # Here is how we're gonna find the 'settings' module from here.
+        sys.path.insert(0, project_path)        # Here is how we're gonna find the 'settings' module from here.
+        # XXX NOT VERY DJANGOISH TO USE JUST 'settings' HERE !
         os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
         os.environ["TWISTRANET_NOMAIL"] = "1"   # Disable emails
         import settings

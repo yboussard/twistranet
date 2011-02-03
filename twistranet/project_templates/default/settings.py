@@ -159,7 +159,7 @@ TWISTRANET_CACHE_USER = 60*5            # User-centric data stored for xx second
 # XXXXXXXXXXXX
 
 # Some path information
-TWISTRANET_MEDIA_URL = getattr(settings, "TWISTRANET_MEDIA_URL", settings.MEDIA_URL)
+TWISTRANET_MEDIA_URL = MEDIA_URL
 
 # Number of friends or communities displayed in a box
 TWISTRANET_NETWORK_IN_BOXES = 6

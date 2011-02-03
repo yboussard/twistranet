@@ -1,6 +1,26 @@
 """
 Edit this file instead of editing settings.py.
 """
+import os.path
+HERE = os.path.dirname(__file__)
+
+#                                           #
+#               Database settings           #
+#                                           #
+
+# Default is to use twistranet with the suboptimal sqlite engine.
+# But you can change that to use mysql instead!
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': "%s/var/tn.db" % (HERE, ),      # Or path to database file if using sqlite3.
+        'USER': '',                             # Not used with sqlite3.
+        'PASSWORD': '',                         # Not used with sqlite3.
+        'HOST': '',                             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
 
 #                                           #
 #               Email settings              #
@@ -23,6 +43,21 @@ ADMINS = (
 )
 
 #                                           #
+#               Hosting settings            #
+#                                           #
+
+# Normally, twistranet is hosted under the '/' directory of your server.
+# However you can change that by setting the following variables.
+
+MEDIA_URL = ''
+TWISTRANET_MEDIA_URL = ''
+TWISTRANET_MEDIA_ROOT = os.path.join(HERE, 'var', 'upload')
+TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
+TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
+MEDIA_ROOT = os.path.join(HERE, 'www', )
+
+
+#                                           #
 #             LDAP / AD settings            #
 #                                           #
 
@@ -33,13 +68,14 @@ ADMINS = (
 # below if you want to work with a non-AD LDAP schema.
 LDAP_ENABLED = False
 
-# Your LDAP server IP or name and port. Default = 389
-LDAP_SERVER = "xx.xx.xx.xx"
+if LDAP_ENABLED:
+    # Your LDAP server IP or name and port. Default = 389
+    LDAP_SERVER = "xx.xx.xx.xx"
 
-# LDAP configuration / credentials
-AUTH_LDAP_USER_BASE = "ou=Users,dc=my-company,dc=com"
-AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=com"
-AUTH_LDAP_BIND_PASSWORD = "admin-password"
+    # LDAP configuration / credentials
+    AUTH_LDAP_USER_BASE = "ou=Users,dc=my-company,dc=com"
+    AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=com"
+    AUTH_LDAP_BIND_PASSWORD = "admin-password"
 
 #                                           #
 #             I18N/L10N settings            #

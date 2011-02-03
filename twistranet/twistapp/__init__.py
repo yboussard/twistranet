@@ -2,7 +2,6 @@ from twistranet import __author__, VERSION
 __version__ = '.'.join(map(str, VERSION))
 
 # Import / Load config & logger
-from twistranet.config import defaults
 from twistranet.twistapp.lib.log import log
 
 # Then import models
