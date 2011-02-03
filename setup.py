@@ -34,11 +34,10 @@ setup(name = 'numericube-twistranet',
       install_requires = [
           'Django', 
           'django-debug-toolbar',
-          'django-piston',  
+          'django-piston',
           'django-haystack',
           'django-tinymce',
           'django-modeltranslation',
-          'simplejson',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
