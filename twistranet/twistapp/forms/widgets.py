@@ -3,6 +3,7 @@ import traceback
 import mimetypes
 from django import forms
 from django.db import models
+from django.conf import settings
 from django.forms.util import flatatt
 from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.html import escape, conditional_escape
@@ -21,9 +22,9 @@ class ResourceWidget(forms.MultiWidget):
 
     class Media:
         css = {
-            'all': ('static/css/tn_resource_widget.css', ),
+            'all': ('%s/static/css/tn_resource_widget.css' % settings.MEDIA_URL, ),
         }
-        js = ('static/js/tn_resource_widget.js', )
+        js = ('%s/static/js/tn_resource_widget.js' % settings.MEDIA_URL, )
 
     def __init__(self, initial = None, **kwargs):
         widgets = []
