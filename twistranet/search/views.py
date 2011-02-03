@@ -28,7 +28,7 @@ class TwistraNetSearchView(BaseView):
     """
     We overload this and try to mix a little bit of the things we do with base_views...
     """
-    template = 'search/search.html'
+    template = 'search.html'
     template_variables = BaseView.template_variables + [
         "form",
         "page",
@@ -147,7 +147,7 @@ class TwistraNetJSONSearchView(BaseView):
                     from sorl.thumbnail import default
                     # generate the thumb or just get it
                     try :
-                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE )
+                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, options = {'crop': True} )
                         o['thumb'] = thumb.url 
                     except :
                         o['thumb'] = picture.get_absolute_url()

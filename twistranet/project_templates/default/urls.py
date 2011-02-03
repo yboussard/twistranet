@@ -11,8 +11,10 @@ urlpatterns = patterns('',
 
     # Additional inclusions for extensions, etc
     (r'^search/',                               include('twistranet.search.urls')),
-#    (r'^static/',                               include('twistranet.twistorage.urls')),
     (r'^download/',                             include('twistranet.twistorage.urls')),
+
+    # The following line should be used only if your site is not behind Apache.
+    (r'^static/',                               include('twistranet.twistorage.urls')),
 
     # 3rd party modules
     (r'^admin/',                                include(admin.site.urls)),

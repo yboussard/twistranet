@@ -38,7 +38,6 @@ setup(name = 'numericube-twistranet',
           'django-haystack',
           'django-tinymce',
           'django-modeltranslation',
-          'simplejson',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
