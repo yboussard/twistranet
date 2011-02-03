@@ -109,10 +109,10 @@ hidePreview = function() {
 // load resources in json for a publisher (scope_id)
 loadScopeResources = function(scope_id, selection) {
     scopeContainer = jQuery('#resourcepane-'+scope_id);
-    scopeUrl = 'resource_by_publisher/json/';
+    scopeUrl = home_url + 'resource_by_publisher/json/';
     var tnGrid = jQuery('.tnGrid', scopeContainer);
     tnGrid.empty();
-    jQuery.get(scopeUrl+scope_id+'?selection=' + selection,
+    jQuery.get(scopeUrl + scope_id + '?selection=' + selection,
           function(data) {
               dataobject = eval( "(" + data + ")" );
               results = dataobject.results;

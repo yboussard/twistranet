@@ -114,7 +114,7 @@ return template;
 
 // Live search ajax
 liveSearch = function(searchTerm) {
-    livesearchurl = '/search/json' ;
+    livesearchurl = home_url + 'search/json' ;
     var liveResults = jQuery('#search-live-results');
     var nores_text = jQuery('#no-results-text').val();
     if (searchTerm) {
@@ -277,7 +277,7 @@ gridOnSelect = function(grid) {
 // and improve ajax request with data 
 // for multiple uploaders in a same page 
 loadQuickUpload = function(obj) {
-    var uploadUrl = 'resource_quickupload/' ;
+    var uploadUrl = home_url + 'resource_quickupload/' ;
     var tnUploader = jQuery(obj);
     jQuery.ajax({
         type: "GET",

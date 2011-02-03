@@ -76,7 +76,7 @@ urlpatterns = patterns('',
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
 
     # Search engine
-    (r'\bsearch/',                               include('twistranet.search.urls')),
+    (r'^search/',                               include('twistranet.search.urls')),
 
     # Javascript dynamic stuff
     url(r'^tn_vars.js$',                          'twistranet.twistapp.views.js_vars', name = "twistranet_js_vars",),

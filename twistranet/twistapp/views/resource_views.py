@@ -18,6 +18,7 @@ except :
 
 from django.template import Context, RequestContext, loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseNotModified
+from django.core.urlresolvers import reverse
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
@@ -297,7 +298,7 @@ UPLOAD_JS = """
     createUploader_%(ul_id)s= function(){    
         xhr_%(ul_id)s = new qq.FileUploader({
             element: jQuery('#%(ul_id)s')[0],
-            action: 'resource_quickupload_file/',
+            action: '%(home_url)sresource_quickupload_file/',
             params: uploadparams,
             autoUpload: auto,
             onAfterSelect: addUploadFields_%(ul_id)s,
@@ -335,9 +336,9 @@ UPLOAD_JS = """
 def resource_quickupload(request):
     qu_settings = dict(
         typeupload             = 'File',
+        home_url               =  reverse("twistranet_home"),
         ul_id                  = 'tnuploader', # improve it to get multiple uploader in a same page, change it also in 'resource_quickupload.html'
         ul_file_extensions_list = '[]', #could be ['jpg,'png','gif']
-        
         ul_fill_titles         = settings.QUICKUPLOAD_FILL_TITLES and 'true' or 'false',
         ul_auto_upload         = settings.QUICKUPLOAD_AUTO_UPLOAD and 'true' or 'false',
         ul_xhr_size_limit      = settings.QUICKUPLOAD_SIZE_LIMIT and str(settings.QUICKUPLOAD_SIZE_LIMIT*1024) or '0',
