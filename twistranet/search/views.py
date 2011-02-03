@@ -147,7 +147,7 @@ class TwistraNetJSONSearchView(BaseView):
                     from sorl.thumbnail import default
                     # generate the thumb or just get it
                     try :
-                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, options = {'crop': True} )
+                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE)
                         o['thumb'] = thumb.url 
                     except :
                         o['thumb'] = picture.get_absolute_url()
