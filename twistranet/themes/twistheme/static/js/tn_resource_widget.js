@@ -259,12 +259,16 @@ jQuery(
                     var checkbox = jQuery('>input:checkbox, >input:radio', itemselected);
                     new_selection = checkbox.val();
                     if (new_selection!=current_selection) {
+                        // event triggered on hidden field for unload protection
                         selector.trigger('change');
                         showPreview(jQuery('a', itemselected).attr('href'),
                                     jQuery('.grid-item-miniurl', itemselected).val(),
                                     jQuery('.grid-item-previewurl', itemselected).val(),
                                     jQuery('a', itemselected).attr('title'),
                                     jQuery('.grid-item-type', itemselected).val());
+                    }
+                    else {
+                        hidePreview();
                     }
                 }
                 selector.val(new_selection);
