@@ -1,8 +1,9 @@
 
 This is the twistranet project!
 
-(c)2011 NumeriCube
+(c)2011 NumeriCube (http://www.numericube.com)
 
+Official website: http://www.twistranet.com / French version on http://www.twistranet.fr
 
 About
 =====
@@ -14,9 +15,14 @@ twistranet is published under the termes of the GNU Affero General Public Licens
 Requirements
 ============
 
-TwistraNet is written in PYTHON. 
+TwistraNet is written in PYTHON (> 2.4)
 It requires the Django Framework (as of writing, Django >= 1.2 is mandatory)
 
+Other requirements:
+
+- python-setuptools
+
+- python-imaging (aka PIL)
 
 Installation
 ============
@@ -24,15 +30,19 @@ Installation
 Installation - short version
 -----------------------------
 
-- Download and untar (or unzip) twistranet from http://github.com/numericube/twistranet
+- Install requirements (Python, SetupTools and PIL)
 
-- cd twistranet-x.x.x
+- Download and untar (or unzip) twistranet from https://github.com/numericube/twistranet/tarball/master
 
-- (sudo) python ./setup.py install clean
+- In the unzipped directory, just execute:
+
+  - (sudo) python ./setup.py install clean
 
 twistranet is now installed. You can have many sites with just one twistranet installation, so you need to explicitly deploy and bootstrap your new site.
 
-- (sudo) twistranet_project <path_to_my_new_site>
+  - (sudo) twistranet_project <path_to_my_new_site>
+
+Don't forget to write down your generated admin password!!
 
 Your server should now be fully working and running on http://localhost:8000 !
 
@@ -118,67 +128,35 @@ For example, if you want to run twistranet from the 'my_project' directory insid
 
 That's it :)
 
+Troubleshooting
+=================
 
-Design considerations
-=====================
+No image / thumbnail on my fresh twistranet instance!
+------------------------------------------------------
 
-Most things with TwistraNet are derivated from Twistable objects.
-Stuff which can produce content are Account objects. Thus, user profiles (but not only) are derivated account objects.
+This is probably a problem with python-imaging installation. Just install PIL for your OS.
 
-This inheritance stuff is there in case we one day move data into a cassandra-like DB.
+Under debian, the easiest is to do "apt-get install python-imaging".
 
-Caveats
--------
+error: Could not find required distribution Django
+---------------------------------------------------
 
-The directory structure is nonstandard for a regular django project. This is ok for everything but models.
-If you want your additional models to work, you have to:
-- import them from models.__init__
-- add a Meta attribute "app_label = 'twistranet'" in your model class
+If you've got this message, that means the autoinstall procedure of twistranet can't install django automatically.
+Just install django (see www.django-project.org) either from sources or from a package from your OS,
+and run "python setup.py install" again.
 
+Seems that it is a python-2.5 related problem.
 
-Hot topics
-==========
+I've lost my admin password!
+----------------------------
 
-SSO
-----
+It's easy to set a new one.
 
-See http://docs.djangoproject.com/en/dev/howto/auth-remote-user/ to find what we've got to do on this topic.
+- Stop your server
 
+- Run ./manage.py changepassword admin (and change your password)
 
-LDAP / ActiveDirectory
------------------------
+- Start your server again
 
-Twistranet works fairly well with LDAP. If you want to authenticate against LDAP, first install django-ldap-auth module,
-then update your settings.py with the following information (this if for default AD install, your mileage may vary):
-
-AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
-AUTH_LDAP_SERVER_URI = "ldap://xx.xx.xx.xx:389"
-AUTH_LDAP_BIND_DN = "CN=admin,DC=my-company,DC=dom"
-AUTH_LDAP_BIND_PASSWORD = "admin-password"
-AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=Users,dc=my-company,dc=dom", ldap.SCOPE_SUBTREE, "(SAMAccountName=%(user)s)")
-
-AUTH_LDAP_USER_ATTR_MAP = {
-    "first_name":   "givenName", 
-    "last_name":    "sn",
-    "email":        "mail",
-}
-
-AUTH_LDAP_PROFILE_ATTR_MAP = {
-    "title":        "cn",
-    "slug":         "uid",
-}
-AUTH_LDAP_ALWAYS_UPDATE_USER = True
-
-
-With this configuration, user data will automatically get populated from AD upon login.
-
-Acknoledgements
-================
-
-The Menu system is derived from http://code.google.com/p/django-menu/
 
 

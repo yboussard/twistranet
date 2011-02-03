@@ -9,25 +9,29 @@
     <title>{{ site_name }} - {% block title %}Popup Title{% endblock %}</title>
 
     <meta name="generator" content="TwistraNet" />
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/login.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/forms.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/content.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/jquery-dd.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/css/fileuploader.css" type="text/css" media="screen" />
-    <!--[if lte IE 7]><style type="text/css" media="all">@import url(/static/css/ie.css);</style><![endif]-->
-    <script type="text/javascript" src="/static/js/jquery.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/includes/lib/include.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/includes/mad.jquery.js" charset="utf-8"></script> 
-    <script type="text/javascript" src="/static/js/jquery-ui-1.8.5.custom.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/jquery.livesearch.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/jquery.dd.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/fileuploader.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/tn_quickupload_helpers.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/forms.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/content.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/jquery-dd.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% url twistranet_home %}static/css/fileuploader.css" type="text/css" media="screen" />
+    <!--[if lte IE 7]><style type="text/css" media="all">@import url({% url twistranet_home %}static/css/ie.css);</style><![endif]-->
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/jquery.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/lib/include.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/lib/scrollTo.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/lib/browserdetect.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/lib/hoverIntent.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/lib/superfish.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/includes/mad.jquery.js" charset="utf-8"></script> 
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/jquery-ui-1.8.5.custom.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/jquery.livesearch.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/jquery.dd.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/fileuploader.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/tn_quickupload_helpers.js" charset="utf-8"></script>
     <!-- XXX TODO : put this script in resource widget javascript helpers has nothing todo here -->
-    <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce_popup.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/static/js/tn.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/tiny_mce/tiny_mce_popup.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% url twistranet_home %}static/js/tn.js" charset="utf-8"></script>
     {% if form %}{{ form.media }}{% endif %}
     <style>
       html {

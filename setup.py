@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 from twistranet import VERSION, __version__
 
-setup(name = 'django-twistranet',
+setup(name = 'numericube-twistranet',
       version = __version__,
       description = "twistranet - An Enterprise Social Network",
       long_description = open("README.rst").read(),
@@ -38,12 +38,13 @@ setup(name = 'django-twistranet',
           'django-haystack',
           'django-tinymce',
           'django-modeltranslation',
+          'simplejson',
           'sorl-thumbnail',
           # -*- Extra requirements: -*-
       ],
       entry_points = """
       # -*- Entry points: -*-
-      # [console_scripts]
-      # twistranet_project=twistranet.core.twistranet_project:twistranet_project
+      [console_scripts]
+      twistranet_project=twistranet.core.twistranet_project:twistranet_project
       """,
       )

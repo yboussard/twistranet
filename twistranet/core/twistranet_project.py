@@ -68,7 +68,11 @@ def twistranet_project():
     template_dir = os.path.join(twist_package_path, "project_templates", "default")
     if not os.path.isdir(template_dir):
         parser.error("Template '%s' is invalid." % project_template)
-    shutil.copytree(template_dir, project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
+    try:
+        shutil.copytree(template_dir, project_path, ignore=shutil.ignore_patterns(*IGNORE_PATTERNS))
+    except AttributeError:
+        print "shutil.copytree is likely not to have the 'ignore' attribute available.\n"
+        shutil.copytree(template_dir, project_path)
     
     # If project_template <> default, we copy the project_template-specific files as well
     if project_template != "default":

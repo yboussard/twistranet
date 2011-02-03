@@ -114,7 +114,7 @@ return template;
 
 // Live search ajax
 liveSearch = function(searchTerm) {
-    livesearchurl = '/search/json' ;
+    livesearchurl = 'search/json' ;
     var liveResults = jQuery('#search-live-results');
     var nores_text = jQuery('#no-results-text').val();
     if (searchTerm) {

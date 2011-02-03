@@ -3,6 +3,24 @@
 import os.path
 HERE = os.path.dirname(__file__)
 
+# Tiny config
+TINYMCE_FILEBROWSER = False
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
+    'theme': "advanced",
+    'theme_advanced_toolbar_location': "top",
+    'theme_advanced_toolbar_align' : "left",
+    'auto_focus': True,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    'theme_advanced_blockformats': "p,div,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp",
+    'width': "490px",
+    'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
+    'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
+    'theme_advanced_buttons3': "",
+    'file_browser_callback' : 'twistranet.tinymceBrowser'
+}
+
 # debug settings
 import logging
 TWISTRANET_LOG_LEVEL = logging.WARNING
@@ -10,6 +28,7 @@ if os.environ.has_key("TWISTRANET_DEBUG"):
     DEBUG = True
     TEMPLATE_DEBUG = True
     TEMPLATE_STRING_IF_INVALID = "<invalid>"
+    THUMBNAIL_DEBUG = True      # sorl-thumbnail debug mode
     TWISTRANET_LOG_LEVEL = logging.DEBUG
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS':      False,
@@ -126,16 +145,72 @@ ROOT_URLCONF = 'urls'
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 
 # Some project-dependant settings
-TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
+#TINYMCE_JS_URL = "static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
-
-# Contrib.auth module settings
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
 
 # Cache tuning
 CACHE_BACKEND = "locmem:///"
 TWISTRANET_CACHE_USER = 60*5            # User-centric data stored for xx second
+
+# Twistranet default settings.
+
+# XXXXXXXXXXXX
+# The following section is the most likely to be changed.
+# XXXXXXXXXXXX
+
+# Some path information
+TWISTRANET_MEDIA_URL = getattr(settings, "TWISTRANET_MEDIA_URL", settings.MEDIA_URL)
+
+# Number of friends or communities displayed in a box
+TWISTRANET_NETWORK_IN_BOXES = 6
+TWISTRANET_FRIENDS_IN_BOXES = 9
+TWISTRANET_CONTENT_PER_PAGE = 25
+TWISTRANET_COMMUNITIES_PER_PAGE = 25
+TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
+
+# Live Search behaviour
+LIVE_SEARCH_RESULTS_NUMBER = 7
+
+# Log settings
+TWISTRANET_LOG_LEVEL = logging.WARNING
+
+# TinyMCE configuration
+TINYMCE_FILEBROWSER = False
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,emotions,paste,searchreplace,inlinepopups,advimage",
+    'theme': "advanced",
+    'theme_advanced_toolbar_location': "top",
+    'theme_advanced_toolbar_align' : "left",
+    'auto_focus': True,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    'theme_advanced_blockformats': "p,div,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp",
+    'width': "490px",
+    'theme_advanced_buttons1': "newdocument,|,cut,copy,paste,|,removeformat,|,undo,redo,|,link,unlink,|,charmap,emotions,|,image,|,code",
+    'theme_advanced_buttons2': "formatselect,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,outdent,indent",
+    'theme_advanced_buttons3': "",
+    'file_browser_callback' : 'twistranet.tinymceBrowser'
+}
+
+# Sorl-thumbnail config
+THUMBNAIL_PREFIX = "cache/"
+THUMBNAIL_FORMAT = "PNG"
+THUMBNAIL_COLORSPACE = None
+
+# Quickupload configuration
+QUICKUPLOAD_AUTO_UPLOAD = True
+QUICKUPLOAD_FILL_TITLES = False 
+QUICKUPLOAD_SIZE_LIMIT = 0  
+QUICKUPLOAD_SIM_UPLOAD_LIMIT = 1
+
+# Search engine (Haystack) configuration
+HAYSTACK_SITECONF = 'twistranet.search.search_sites'
+HAYSTACK_SEARCH_ENGINE = "twistranet.search.haystack_simplehack"
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
+
+# Model Translation registry module name
+TRANSLATION_REGISTRY = "twistranet.translation"
+
 
 # Basic apps installation. You may add your own modules here.
 _INSTALLED_APPS = (
@@ -171,6 +246,10 @@ _INSTALLED_APPS = (
     'haystack',
 )
 INSTALLED_APPS = [a for a in _INSTALLED_APPS if a]
+
+# Contrib.auth module settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # Local and bootstrap settings.
 TWISTRANET_IMPORT_SAMPLE_DATA = False

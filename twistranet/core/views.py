@@ -1,5 +1,6 @@
 import copy
 import re
+import sys
 
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect
@@ -54,7 +55,8 @@ class AsPublicView(object):
             # Check if we have access to TN, if not we redirect to the login page.
             if not self.has_access(request):
                 path = urlquote(request.get_full_path())
-                raise MustRedirect('%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path, ))
+                login_url = reverse('login')
+                raise MustRedirect('%s?%s=%s' % (login_url, REDIRECT_FIELD_NAME, path, ))
 
             # Instanciate the actual view class with global view arguments
             # and call its view() method with request-specific arguments
@@ -62,8 +64,9 @@ class AsPublicView(object):
             instance_view.prepare_view(*args, **kw)
             return instance_view.render_view()
             
-        except MustRedirect as redirect:
+        except MustRedirect:
             # Here we redirect if necessary
+            redirect = sys.exc_info()[1]
             if redirect.url is None:
                 redirect_url = request.path
             else:
@@ -353,7 +356,7 @@ class BaseIndividualView(BaseView):
                         self.object.publisher = publisher
                     try:
                         self.object.save()
-                    except ValidationError as detail:
+                    except ValidationError(detail):
                         messages.warning(self.request, _(detail.messages[0]))
                     else:
                         self.form.save_m2m()
