@@ -5,6 +5,7 @@ from community_views import *
 from content_views import *
 from resource_views import *
 from media_views import *
+from common_views import *
 
 # Reference actions.
 # Note that actions may be pushed into database one day.

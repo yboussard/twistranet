@@ -27,11 +27,11 @@ urlpatterns = patterns('',
     url(r'^resource/(%s)/$' % SLUG_REGEX,       'twistranet.twistapp.views.resource_by_slug', name='resource_by_slug'),
     # (r'^resource/new$',                         'twistranet.twistapp.views.create_resource'),      
     # (r'^resource/(\w+)$',                       'twistranet.twistapp.views.resource_by_slug_or_id'),  
-    (r'\bresource_by_publisher/json/(\d+)$',     'twistranet.twistapp.views.resource_by_publisher_json'),     # return json list of resources by publisher id
+    (r'\bresource_by_publisher/json/(\d+)$',    'twistranet.twistapp.views.resource_by_publisher_json'),     # return json list of resources by publisher id
     # (r'^account/(\d+)/resource/(\w+)$',         'twistranet.twistapp.views.resource_by_account'),    # Fetch by account pty
     # (r'^content/(\d+)/resource/(\w+)$',         'twistranet.twistapp.views.resource_by_content'),    # Fetch by content pty   
-    (r'\bresource_quickupload_file/$',           'twistranet.twistapp.views.resource_quickupload_file'),   # resource quickupload json response
-    (r'\bresource_quickupload/$',                'twistranet.twistapp.views.resource_quickupload'),   # resource quickupload ajax template
+    (r'\bresource_quickupload_file/$',          'twistranet.twistapp.views.resource_quickupload_file'),   # resource quickupload json response
+    (r'\bresource_quickupload/$',               'twistranet.twistapp.views.resource_quickupload'),   # resource quickupload ajax template
     url(r'\bresource_browser/$',                AsView(ResourceBrowser), name = ResourceBrowser.name),       # resource browser used by wysiwyg editors
     
     # Thumbnail cache links
@@ -71,13 +71,17 @@ urlpatterns = patterns('',
 
     # Login / Logout / Register stuff
     url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
-    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),  
-    
+    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),
+
+    # Javascript dynamic stuff
+    url(r'^tn_vars.js$',                          'twistranet.twistapp.views.js_vars', name = "twistranet_js_vars",),
+
     # Administration pages.
-    url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
+    url(r'^configuration/$',                    AsView(ConfigurationEdit), name = ConfigurationEdit.name),
 
     # Search engine
     (r'\bsearch/',                               include('twistranet.search.urls')),
+
 )
 
 
