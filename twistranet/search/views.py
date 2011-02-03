@@ -107,8 +107,6 @@ class TwistraNetJSONSearchView(BaseView):
         data = self.basic_search(self.request)
         return HttpResponse( json.dumps(data),
                              mimetype='text/plain')
-
-
     
     def basic_search(self, request, load_all=True, form_class=ModelSearchForm, searchqueryset=None, ):
         """
@@ -147,7 +145,7 @@ class TwistraNetJSONSearchView(BaseView):
                     from sorl.thumbnail import default
                     # generate the thumb or just get it
                     try :
-                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE)
+                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, options = {'crop': "center top"}, )
                         o['thumb'] = thumb.url 
                     except :
                         o['thumb'] = picture.get_absolute_url()
