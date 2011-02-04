@@ -64,29 +64,7 @@ def bootstrap():
         log.info("DatabaseError while bootstraping. Your tables are probably not created yet.")
         traceback.print_exc()
         return
-        
-    
-    # Copy theme-defined static files into the static directory.
-    # We start by importing the theme app
-    theme_app = import_module(settings.TWISTRANET_THEME_APP)
-    theme_app_dir = os.path.split(theme_app.__file__)[0]
-    dest_root = os.path.abspath(settings.TWISTRANET_STATIC_PATH)
-    source_root = os.path.abspath(os.path.join(theme_app_dir, 'static'))
-    if not os.path.isdir(dest_root):
-        os.makedirs(dest_root)
-    for root, dirs, files in os.walk(source_root):
-        relative_root = root[len(source_root) + 1:]
-        for d in dirs:
-            dest_dir = os.path.join(dest_root, relative_root, d)
-            if not os.path.isdir(dest_dir):
-                os.mkdir(dest_dir)
-        for fname in files:
-            dest_file = os.path.join(dest_root, relative_root, fname)
-            if not os.path.isfile(dest_file):
-                shutil.copy(
-                    os.path.join(source_root, root, fname),
-                    dest_file,
-                )
+
         
     # Now create the bootstrap / default / help fixture objects.
     # Import your fixture there, if you don't do so they may not be importable.

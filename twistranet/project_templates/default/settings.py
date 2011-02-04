@@ -1,6 +1,7 @@
 # Django settings for TwistraNet project.
 # NEVER WRITE THIS FILE DIRECTLY, but copy/paste your settings in the local_settings.py file.
 import os.path
+from django.utils.importlib import import_module
 HERE = os.path.dirname(__file__)
 
 # Tiny config
@@ -83,7 +84,6 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(HERE, 'www', )
 TWISTRANET_MEDIA_ROOT = os.path.join(HERE, 'var', 'upload')
-TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -141,9 +141,11 @@ ROOT_URLCONF = 'urls'
 #                                                       #
 #            TWISTRANET-SPECIFIC CONFIGURATION          #
 #                                                       #
-
 # Theme app
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
+theme_app = import_module(TWISTRANET_THEME_APP)
+theme_app_dir = os.path.split(theme_app.__file__)[0]
+TWISTRANET_STATIC_PATH = os.path.abspath(os.path.join(theme_app_dir, 'static'))
 
 # Some project-dependant settings
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
