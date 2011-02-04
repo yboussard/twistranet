@@ -27,12 +27,12 @@ def install_theme():
         "TWISTRANET_STATIC_PATH = .*\n": "TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')\n", 
     }
     settings_path = os.path.join(project_path, "settings.py")
-    with open(settings_path, "r") as f:
-        data = f.read()
-    with open(settings_path, "w") as f:
-        for regex, repl in replacement.items():
-            data = re.sub(regex, repl, data)
-        f.write(data)
+    f = open(settings_path, "r")
+    data = f.read()
+    f = open(settings_path, "w")
+    for regex, repl in replacement.items():
+        data = re.sub(regex, repl, data)
+    f.write(data)
 
 
     # Copy theme-defined static files into the static directory.
