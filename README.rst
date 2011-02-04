@@ -24,6 +24,8 @@ Other requirements:
 
 - python-imaging (aka PIL)
 
+- python-ldap, only if you want to authenticated against LDAP/Active Directory.
+
 Installation
 ============
 
