@@ -50,9 +50,9 @@ class FormRegistryManager:
         if creation and edition:
             raise ValueError("You must specify either creation or edition")
         if creation:
-            return [ f for f in self._registry_[name] if f['allow_fullpage_creation'] ]
+            return [ f for f in self._registry_.get(name, {}) if f['allow_fullpage_creation'] ]
         if edition:
-            return [ f for f in self._registry_[name] if f['allow_fullpage_edition'] ]
+            return [ f for f in self._registry_.get(name, {}) if f['allow_fullpage_edition'] ]
             
     def getFullpageForms(self, creation = False, edition = False):
         """

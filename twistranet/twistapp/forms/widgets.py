@@ -21,11 +21,14 @@ class ResourceWidget(forms.MultiWidget):
     query_set = None
 
     def _media(self):
+        base_url = settings.MEDIA_URL
+        while base_url.endswith('/'):
+            base_url = base_url[:-1]
         return forms.Media(
             css = {
-                'all': ('%s/static/css/tn_resource_widget.css' % settings.MEDIA_URL, ),
+                'all': ('%s/static/css/tn_resource_widget.css' % base_url, ),
             },
-            js = ('%s/static/js/tn_resource_widget.js' % settings.MEDIA_URL, )
+            js = ('%s/static/js/tn_resource_widget.js' % base_url, )
         )
     media = property(_media)
 

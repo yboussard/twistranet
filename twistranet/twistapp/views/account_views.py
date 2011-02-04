@@ -1,6 +1,6 @@
 # Create your views here.
 from django.template import Context, RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
 from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -130,6 +130,12 @@ class PublicTimelineView(UserAccountView):
         latest_list = Content.objects.__booster__.filter(id__in = tuple(latest_ids)).select_related(*self.select_related_summary_fields).order_by("-created_at")
         return latest_list
 
+
+#                                                                                   #
+#                                   Error pages                                     #
+#                                                                                   #
+
+
 class ErrorBaseView(PublicTimelineView):
     name = "error"
     title =  _("Error")
@@ -149,6 +155,7 @@ class ErrorBaseView(PublicTimelineView):
 class Error404View(ErrorBaseView):
     name = "error404"
     title =  _("Page not found (Error 404)")
+    response_handler_method = HttpResponseNotFound
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> doesn't exist on this site!
 </p>
@@ -162,6 +169,7 @@ class Error404View(ErrorBaseView):
 class Error500View(ErrorBaseView):
     name = "error500"
     title = _("Server error")
+    response_handler_method = HttpResponseServerError
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> raises an error!
 </p>
