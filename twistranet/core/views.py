@@ -244,6 +244,8 @@ class BaseView(object):
         Prepare all parameters before rendering the template.
         """
         pass
+        
+    response_handler_method = HttpResponse
 
     def render_view(self, ):
         """
@@ -275,7 +277,7 @@ class BaseView(object):
         # Render template
         t = get_template(self.template)
         c = RequestContext(self.request, params)
-        return HttpResponse(t.render(c))
+        return self.response_handler_method(t.render(c))
                 
 
 class BaseIndividualView(BaseView):
