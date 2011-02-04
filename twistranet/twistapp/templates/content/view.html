@@ -10,4 +10,36 @@
     <div class="content-text">
         {{ content.text|safe|fullwiki  }}     
     </div>
+    <div class="clearfix"><!-- --></div>
+    <div class="view-metadata">
+      <div class="post">
+        <div class="entry">
+          <div class="postmetadata">
+            <ul>
+              <li class="action">
+              {% with content.comments.count as comment_count %}
+                  <div class="comment_ui" id="view{{ content.id }}">
+                      <a class="view_comments" id="{{ content.id }}" href="">
+                          {% if comment_count %}
+                              {% blocktrans count comment_count as counter %}
+                                  View comment
+                              {% plural %}
+                                  View {{counter}} comments
+                              {% endblocktrans %}
+                          {% else %}
+                              {% if content.publisher.can_publish %}
+                                  {% blocktrans %}Reply{% endblocktrans %}
+                              {% endif %}
+                          {% endif %}
+                      </a>
+                  </div>
+              {% endwith %}
+              </li>
+            </ul>
+          </div>
+          <div id="view_comments{{ content.id }}" class="view-comments"></div>
+        </div>
+      </div>
+    </div>
+
 {% endblock %}
