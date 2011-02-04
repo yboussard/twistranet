@@ -481,7 +481,7 @@ var twistranet = {
         });
     },
     tinymceBrowser: function(field_name, url, type, win) {
-        var cmsURL = 'resource_browser/?allow_browser_selection=1&type=' + type;    // script URL - use an absolute path!
+        var cmsURL = home_url + 'resource_browser/?allow_browser_selection=1&type=' + type;    // script URL - use an absolute path!
         var browser_width = parseInt(twistranet.browser_width*70/100);     
         var browser_height = parseInt(twistranet.browser_height*90/100);
         tinyMCE.activeEditor.windowManager.open({
