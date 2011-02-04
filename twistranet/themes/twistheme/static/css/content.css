@@ -110,6 +110,15 @@
   visibility: visible;
 }
 
+.activepost .comment .content-actions {
+  visibility: hidden;
+}
+
+.post .activecomment .content-actions,
+.activepost .activecomment .content-actions {
+  visibility: visible !important;
+}
+
 .content-actions ul {
   margin: 0;
   padding: 0;
