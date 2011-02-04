@@ -20,11 +20,14 @@ N_DISPLAYED_ITEMS = 30         # Number of images to display in the inline field
 class ResourceWidget(forms.MultiWidget):
     query_set = None
 
-    class Media:
-        css = {
-            'all': ('%s/static/css/tn_resource_widget.css' % settings.MEDIA_URL, ),
-        }
-        js = ('%s/static/js/tn_resource_widget.js' % settings.MEDIA_URL, )
+    def _media(self):
+        return forms.Media(
+            css = {
+                'all': ('%s/static/css/tn_resource_widget.css' % settings.MEDIA_URL, ),
+            },
+            js = ('%s/static/js/tn_resource_widget.js' % settings.MEDIA_URL, )
+        )
+    media = property(_media)
 
     def __init__(self, initial = None, **kwargs):
         widgets = []

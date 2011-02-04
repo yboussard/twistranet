@@ -48,13 +48,7 @@ ADMINS = (
 
 # Normally, twistranet is hosted under the '/' directory of your server.
 # However you can change that by setting the following variables.
-
 BASE_URL = ''
-MEDIA_URL = ''
-TWISTRANET_MEDIA_ROOT = os.path.join(HERE, 'var', 'upload')
-TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
-TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
-MEDIA_ROOT = os.path.join(HERE, 'www', )
 
 
 #                                           #

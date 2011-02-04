@@ -123,6 +123,7 @@ _MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'twistranet.core.middleware.RuntimePathsMiddleware',
     DEBUG and 'debug_toolbar.middleware.DebugToolbarMiddleware' or None,
 )
 MIDDLEWARE_CLASSES = [ a for a in _MIDDLEWARE_CLASSES if a ]
@@ -145,7 +146,7 @@ ROOT_URLCONF = 'urls'
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
 
 # Some project-dependant settings
-#TINYMCE_JS_URL = "static/js/tiny_mce/tiny_mce.js"
+TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = "%s/static/tiny_mce" % HERE
 
 # Cache tuning
@@ -247,6 +248,18 @@ INSTALLED_APPS = [a for a in _INSTALLED_APPS if a]
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# Settings that should get altered with BASE_URL configuration.
+# This is used in RuntimePathsMiddleware to ensure all TN settings
+# are set with the correct URL.
+BASE_URL_DEPDENDANT = (
+    "MEDIA_URL",
+    "ADMIN_MEDIA_PREFIX",
+    "LOGIN_URL",
+    "LOGOUT_URL",
+    "LOGIN_REDIRECT_URL",
+    "TINYMCE_JS_URL",
+)
 
 # Local and bootstrap settings.
 TWISTRANET_IMPORT_SAMPLE_DATA = False
