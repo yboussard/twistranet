@@ -134,7 +134,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_PROFILE_MODULE = "twistranet.UserAccount"
+AUTH_PROFILE_MODULE = "twistapp.UserAccount"
 
 ROOT_URLCONF = 'urls'
 
