@@ -9,8 +9,8 @@ def absolute_url(self):
     return thumbnail absolute_url
     """
     base_url = settings.BASE_URL
-    return '%s%s' %(base_url, self.storage.url(self.name))
+    return '%s--%s' %(base_url, self.storage.url(self.name))
 
 log.info("Patched sorl.thumbnail.image.ImageFile.url to get absolute url")
 ImageFile.old_url = ImageFile.url
-ImageFile.url = absolute_url
+#ImageFile.url = absolute_url
