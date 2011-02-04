@@ -515,7 +515,7 @@ class CommunityDelete(BaseObjectActionView):
     """
     model_lookup = Community
     name = "community_delete"
-    confirm = _("Do you really want to delete this community?")
+    confirm = "Do you really want to delete this community?"
     title = "Delete community"
  
     def as_action(self):

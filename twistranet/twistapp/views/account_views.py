@@ -87,9 +87,7 @@ class HomepageView(UserAccountView):
     Special treatment for homepage.
     """
     name = "twistranet_home"
-    
-    def get_title(self,):
-        return _("Timeline")  
+    title = "Timeline"
         
     def get_recent_content_list(self):
         """
@@ -138,7 +136,7 @@ class PublicTimelineView(UserAccountView):
 
 class ErrorBaseView(PublicTimelineView):
     name = "error"
-    title =  _("Error")
+    title =  "Error"
     error_description = _("<p>Error on page <strong>%(requested_url)s</strong></p>")
 
     def prepare_view(self, *args, **kw):
@@ -154,7 +152,7 @@ class ErrorBaseView(PublicTimelineView):
 
 class Error404View(ErrorBaseView):
     name = "error404"
-    title =  _("Page not found (Error 404)")
+    title =  "Sorry, page not found"
     response_handler_method = HttpResponseNotFound
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> doesn't exist on this site!
@@ -168,7 +166,7 @@ class Error404View(ErrorBaseView):
 
 class Error500View(ErrorBaseView):
     name = "error500"
-    title = _("Server error")
+    title = "Server error"
     response_handler_method = HttpResponseServerError
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> raises an error!
@@ -284,6 +282,43 @@ class PendingNetworkView(AccountListingView, UserAccountView):
 #                                                                               #
 #                                   ACTION VIEWS                                #
 #                                                                               #
+
+
+class AccountDelete(BaseObjectActionView):
+    """
+    Delete a community from the base
+    """
+    model_lookup = UserAccount
+    name = "account_delete"
+    confirm = "Do you really want to delete this account?<br />All content for this user WILL BE DELETED."
+    title = "Delete account"
+ 
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if not self.object.can_delete:
+            return None
+        # Can't delete myself ;)
+        if self.object.id == Twistable.objects.getCurrentAccount(self.request).id:
+            return None
+        return super(AccountDelete, self).as_action()
+
+    def prepare_view(self, *args, **kw):
+        super(AccountDelete, self).prepare_view(*args, **kw)
+        if not self.object.can_delete:
+            raise ValueError("You're not allowed to delete this account")
+        name = self.useraccount.title
+        underlying_user = self.useraccount.user
+        __account__ = SystemAccount.get()
+        # self.useraccount.delete()
+        underlying_user.delete()
+        del __account__
+        messages.info(
+            self.request, 
+            _("'%(name)s' account has been deleted.") % {'name': name},
+        )
+        raise MustRedirect(reverse("twistranet_home"))
+    
 
 class AddToNetworkView(BaseObjectActionView):
     """

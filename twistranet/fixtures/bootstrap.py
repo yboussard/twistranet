@@ -29,7 +29,7 @@ FIXTURES = [
         AdminCommunity,
         slug = "administrators",
         title_en = "Administrators",
-        title_fr = "Administrateur",
+        title_fr = "Administrateurs",
         description_en = "twistranet admin team",
         description_fr = "L'équipe d'administration de twistranet",
         permissions = "workgroup",
