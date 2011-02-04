@@ -272,7 +272,6 @@ class SystemAccount(Account):
         """Return main (and only) system account. Will raise if several are set."""
         return SystemAccount.objects.get()
         
-        
 class UserAccount(Account):
     """
     Generic User account.
@@ -518,6 +517,7 @@ class AnonymousAccount(UserAccount):
 
     class Meta:
         app_label = 'twistapp'
+        abstract = True
         managed = False
 
     def save(self, *args, **kw):

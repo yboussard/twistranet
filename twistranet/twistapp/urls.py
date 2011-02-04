@@ -4,7 +4,7 @@ from twistranet.twistapp.views import *
 from twistranet.twistapp.lib.slugify import SLUG_REGEX
 
 handler404 = AsView(Error404View)
-handler500 = AsView(Error500View)
+# handler500 = AsView(Error500View)
 
 urlpatterns = patterns('',
     # The wall page for generic accounts
@@ -16,8 +16,9 @@ urlpatterns = patterns('',
     url(r'^account/(%s)/$' % SLUG_REGEX,            AsView(UserAccountView, lookup = 'slug'), name = 'account_by_slug'),
     url(r'^account/(\d+)/communities/$',            AsView(AccountCommunitiesView), name='account_communities'),
     url(r'^account/(\d+)/network/$',                AsView(AccountNetworkView), name='account_network'),
-    url(r'^account/(\d+)/edit$',                    AsView(UserAccountEdit), name = "user_account_edit"),              
-    url(r'^account/new$',                           AsView(UserAccountCreate), name = "user_account_create", ),
+    url(r'^account/(\d+)/edit$',                    AsView(UserAccountEdit), name = "user_account_edit"),
+    url(r'^account/new$',                           AsView(UserAccountCreate), name = "user_account_create"),
+    url(r'^account/(\d+)/delete$',                  AsView(AccountDelete), name = AccountDelete.name),
     url(r'^account/(\d+)/add_to_network/$',         AsView(AddToNetworkView), name = AddToNetworkView.name),
     url(r'^account/(\d+)/remove_from_network/$',    AsView(RemoveFromNetworkView), name = RemoveFromNetworkView.name),
     url(r'^pending_network/$',                      AsView(PendingNetworkView), name = PendingNetworkView.name),

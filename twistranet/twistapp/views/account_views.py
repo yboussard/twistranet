@@ -285,6 +285,43 @@ class PendingNetworkView(AccountListingView, UserAccountView):
 #                                   ACTION VIEWS                                #
 #                                                                               #
 
+
+class AccountDelete(BaseObjectActionView):
+    """
+    Delete a community from the base
+    """
+    model_lookup = UserAccount
+    name = "account_delete"
+    confirm = "Do you really want to delete this account?<br />All content for this user WILL BE DELETED."
+    title = "Delete account"
+ 
+    def as_action(self):
+        if not isinstance(getattr(self, "object", None), self.model_lookup):
+            return None
+        if not self.object.can_delete:
+            return None
+        # Can't delete myself ;)
+        if self.object.id == Twistable.objects.getCurrentAccount(self.request).id:
+            return None
+        return super(AccountDelete, self).as_action()
+
+    def prepare_view(self, *args, **kw):
+        super(AccountDelete, self).prepare_view(*args, **kw)
+        if not self.object.can_delete:
+            raise ValueError("You're not allowed to delete this account")
+        name = self.useraccount.title
+        underlying_user = self.useraccount.user
+        __account__ = SystemAccount.get()
+        # self.useraccount.delete()
+        underlying_user.delete()
+        del __account__
+        messages.info(
+            self.request, 
+            _("'%(name)s' account has been deleted.") % {'name': name},
+        )
+        raise MustRedirect(reverse("twistranet_home"))
+    
+
 class AddToNetworkView(BaseObjectActionView):
     """
     Add sbdy to my network, with or without authorization

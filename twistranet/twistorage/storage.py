@@ -113,7 +113,7 @@ class Twistorage(FileSystemStorage):
         Try to read name from the repository.
         Mode is 'w' if write access is required, 'r' if only read access is necessary
         """
-        from twistranet.twistapp.models import Account
+        from twistranet.twistapp.models import Account, SystemAccount
         try:
             # Fetch account id, join with self.location.
             # This avoids having files in the 'root' section of TN.
@@ -126,7 +126,7 @@ class Twistorage(FileSystemStorage):
             try:
                 account_id = int(account_str)
                 account = Account.objects.get(id = account_id)
-            except ValueError:
+            except Account.DoesNotExist:
                 account = Account.objects.get(slug = account_str)
             if mode == 'r':
                 if not account.can_list:
@@ -134,8 +134,11 @@ class Twistorage(FileSystemStorage):
             elif not account.can_edit:
                 raise SuspiciousOperation("Attempted access to '%s' denied." % name)
             
-        except ValueError:
-            raise SuspiciousOperation("Attempted access to '%s' denied." % name)
+        except Account.DoesNotExist:
+            # We're very sweet with admin accounts ;)
+            auth = Account.objects._getAuthenticatedAccount()
+            if not isinstance(auth, SystemAccount):
+                raise SuspiciousOperation("Attempted access to '%s' denied." % name)
             
         # Things are ok and check now. Return the actual path.
         return os.path.normpath(path)

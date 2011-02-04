@@ -145,6 +145,7 @@ account_templates = PermissionTemplate((
         can_list:           public,
         can_publish:        network,
         can_edit:           owner,
+        can_delete:         manager,
     },
     {
         "id":               "intranet",
@@ -154,6 +155,7 @@ account_templates = PermissionTemplate((
         can_list:           network,
         can_publish:        network,
         can_edit:           owner,
+        can_delete:         manager,
     },
     {
         "id":               "private",
@@ -163,6 +165,7 @@ account_templates = PermissionTemplate((
         can_list:           public,
         can_publish:        network,
         can_edit:           owner,
+        can_delete:         manager,
     },
     # {
     #     "id":               "private",
