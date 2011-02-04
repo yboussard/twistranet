@@ -55,7 +55,7 @@ class CommentForm(BaseEmptyForm):
     """
     allow_creation = False
     allow_edition = False
-    redirect_to = forms.CharField(widget = widgets.HiddenInput())
+    redirect_to = forms.CharField(widget = widgets.HiddenInput(), required= False)
     
     class Meta:
         from twistranet.content_types.models import Comment
