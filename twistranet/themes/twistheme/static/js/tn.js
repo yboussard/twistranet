@@ -330,6 +330,7 @@ var twistranet = {
         twistranet.setBrowserProperties();
         twistranet.finalizestyles();
         twistranet.showContentActions();
+        twistranet.showCommentsActions();
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
         twistranet.formsautofocus();
@@ -406,6 +407,17 @@ var twistranet = {
         });
         jQuery('.post').bind('mouseleave', function(){
           jQuery(this).removeClass('activepost');
+        });                                          
+    },
+    showCommentsActions: function(e){
+        /* show content actions on post mouseover */
+        jQuery('.comment').bind('mouseenter', function(){
+          jQuery(this).addClass('activecomment');
+          jQuery(this).parents('.post').removeClass('activepost');
+        });
+        jQuery('.comment').bind('mouseleave', function(){
+          jQuery(this).removeClass('activecomment'); 
+          jQuery(this).parents('.post').addClass('activepost');
         });                                          
     },
     initconfirmdialogs: function(e){

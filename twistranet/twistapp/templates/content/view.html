@@ -10,4 +10,21 @@
     <div class="content-text">
         {{ content.text|safe|fullwiki  }}     
     </div>
+    <div class="clearfix"><!-- --></div>
+    <div class="view-metadata">
+      <div class="post">
+        <div class="entry">
+          <div class="postmetadata">
+            <ul>
+              <li class="action">
+                {% include 'content/summary.comments.part.html' %}
+              </li>
+            </ul>
+          </div>
+          <div id="view_comments{{ content.id }}" class="view-comments"></div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"><!-- --></div>
+
 {% endblock %}

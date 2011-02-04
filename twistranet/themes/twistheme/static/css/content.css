@@ -13,10 +13,11 @@
 }
 
 .activepost {
-  background-color: #F2F2F2;
+  background-color: #F9F9F9;
   -moz-border-radius: 5px; 
   -webkit-border-radius: 5px;
   border-radius: 5px;
+  border-bottom-color: #F9F9F9 !important;
 }
 
 
@@ -109,6 +110,15 @@
   visibility: visible;
 }
 
+.activepost .comment .content-actions {
+  visibility: hidden;
+}
+
+.post .activecomment .content-actions,
+.activepost .activecomment .content-actions {
+  visibility: visible !important;
+}
+
 .content-actions ul {
   margin: 0;
   padding: 0;
@@ -187,5 +197,19 @@
     background-color:   #f9f9f9;
 }
 
+.view-comments {
+  width: 500px;
+  margin-top: 10px;
+}
 
+.view-comments textarea {
+  width: 483px !important;
+}
 
+.view-comments .comment {
+  width: 486px !important;
+}
+
+.view-metadata .activepost {
+  background-color: transparent;
+}

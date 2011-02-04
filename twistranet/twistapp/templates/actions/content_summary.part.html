@@ -5,7 +5,7 @@
             <a href="{% url delete_content content.id %}" 
                class="icon-delete confirmbefore"
                title="{% trans 'Delete content' %}">
-              <span>&nbsp;</span>
+              <span></span>
               <!-- because the link has class 'confirmbefore' we can use a specific confirm message -->
               {% with content.title as title%}
                 <span class="confirm-message">{% blocktrans %}Do you really want to delete '{{ title }}'?{% endblocktrans %}</span>
