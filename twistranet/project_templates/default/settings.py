@@ -158,9 +158,6 @@ TWISTRANET_CACHE_USER = 60*5            # User-centric data stored for xx second
 # The following section is the most likely to be changed.
 # XXXXXXXXXXXX
 
-# Some path information
-TWISTRANET_MEDIA_URL = MEDIA_URL
-
 # Number of friends or communities displayed in a box
 TWISTRANET_NETWORK_IN_BOXES = 6
 TWISTRANET_FRIENDS_IN_BOXES = 9
