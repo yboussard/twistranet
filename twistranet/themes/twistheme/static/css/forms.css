@@ -73,6 +73,7 @@ ul.errorlist li {
 .fieldset-inline-form {
   margin-top: 10px;
   padding-right: 0;
+  clear: both;
 }
 
 .fieldset-inline-form legend {
