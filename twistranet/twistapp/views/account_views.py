@@ -87,9 +87,7 @@ class HomepageView(UserAccountView):
     Special treatment for homepage.
     """
     name = "twistranet_home"
-    
-    def get_title(self,):
-        return _("Timeline")  
+    title = "Timeline"
         
     def get_recent_content_list(self):
         """
@@ -138,7 +136,7 @@ class PublicTimelineView(UserAccountView):
 
 class ErrorBaseView(PublicTimelineView):
     name = "error"
-    title =  _("Error")
+    title =  "Error"
     error_description = _("<p>Error on page <strong>%(requested_url)s</strong></p>")
 
     def prepare_view(self, *args, **kw):
@@ -154,7 +152,7 @@ class ErrorBaseView(PublicTimelineView):
 
 class Error404View(ErrorBaseView):
     name = "error404"
-    title =  _("Page not found (Error 404)")
+    title =  "Sorry, page not found"
     response_handler_method = HttpResponseNotFound
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> doesn't exist on this site!
@@ -168,7 +166,7 @@ class Error404View(ErrorBaseView):
 
 class Error500View(ErrorBaseView):
     name = "error500"
-    title = _("Server error")
+    title = "Server error"
     response_handler_method = HttpResponseServerError
     error_description = _("""<p>
   The page <span style="color:#E00023">%(requested_url)s</span> raises an error!
