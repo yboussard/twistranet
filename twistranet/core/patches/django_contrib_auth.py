@@ -9,7 +9,6 @@ def authenticate(**credentials):
     """
     If the given credentials are valid, return a User object.
     """
-    
     __account__ = account.SystemAccount.get()           # This is what we just add.
     for backend in auth.get_backends():
         try:
