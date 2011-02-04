@@ -481,8 +481,7 @@ def resource_by_publisher_json(request, publisher_id):
             preview = default.backend.get_thumbnail( img, u'500x500' )
             thumbnail_url = thumb.url        
             mini_url = mini.url
-            preview_url = preview.url  
-        
+            preview_url = preview.url
         else :
             thumbnail_url = mini_url = preview_url = ''
 
