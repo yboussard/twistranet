@@ -144,6 +144,8 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
     def as_action(self,):
         """Only return the action if there's pending nwk requests
         """
+        if self.auth.is_anonymous:
+            return
         req = self.auth.get_pending_network_requests(returned_model = Community)
         if not req:
             return
