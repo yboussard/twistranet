@@ -1,0 +1,52 @@
+Vocabulary
+===========
+
+This is the place where we discuss about interface vocabulary (in order to be consistant across project and translations).
+
+
+Personification
+----------------
+
+The website should talk to the end-user as if it was a neutral guiding person. Providing a lot of advice, but never talking about himself.
+
+EN: Usual actions should be infinitive verbs. Incitative actions can be imperative.
+    Eg. "Delete this content". vs. "Answer" (ok, not meaningful in english).
+    Infinitive is the rule, imperative the exception (there must not be more than 1 or 2 imperatives on a page).
+FR: Les actions normales sont des verbes à l'infinitif. Les actions importantes peuvent être à l'impératif.
+    Exemple : "Supprimer ce contenu" vs. "Répondez à ce message".
+    L'infinitif est la règle, l'impératif l'exception. Il ne doit pas y avoir plus d'1 ou 2 impératifs sur une page.
+
+
+File management
+---------------
+
+EN: Upload / Download (a file)
+FR: Envoyer / Télécharger (un fichier)
+
+
+Membership / Network management
+-------------------------------
+
+EN: A member is ...
+FR: Un membre de twistranet (UserAccount) est une PERSONNE.
+
+EN: You can ADD a member to your network and REMOVE it. Never DELETE him from your network!!
+FR: Vous pouvez AJOUTER un membre à votre réseau ou l'en RETIRER, mais vous ne pouvez jamais le SUPPRIMER de votre réseau !
+
+EN: A member leaves a community or is removed from it.
+FR: Une personne quiite une communauté ou un responsable le retire d'une communauté.
+
+EN: Community Manager(s)
+FR: Responsable(s) de la communauté.
+
+Communities
+-----------
+
+EN: Community
+FR: Communauté
+
+EN: Content is published BY a community (not FOR a community).
+FR: Le contenu est publié PAR une communauté (pas "pour" ni "sur" une communauté)
+
+
+

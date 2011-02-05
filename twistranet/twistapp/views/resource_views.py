@@ -352,11 +352,11 @@ def resource_quickupload(request):
         ul_csrf_token          = csrf(request)['csrf_token'],
         ul_error_try_again_wo  = _( u"please select files again without it."),
         ul_error_try_again     = _( u"please try again."),
-        ul_error_empty_file    = _( u"This file is empty :"),
-        ul_error_file_large    = _( u"This file is too large :"),
-        ul_error_maxsize_is    = _( u"maximum file size is :"),
-        ul_error_bad_ext       = _( u"This file has invalid extension :"),
-        ul_error_onlyallowed   = _( u"Only allowed :"),
+        ul_error_empty_file    = _( u"This file is empty:"),
+        ul_error_file_large    = _( u"This file is too large:"),
+        ul_error_maxsize_is    = _( u"maximum file size is:"),
+        ul_error_bad_ext       = _( u"This file has invalid extension:"),
+        ul_error_onlyallowed   = _( u"Only allowed:"),
         ul_error_server        = _( u"Server error, please contact support and/or try again."),
     )
     qu_script = UPLOAD_JS % qu_settings

@@ -34,7 +34,7 @@
            value="{{scope.id}}"/>
     {% with scope.title as scope_title %}
         <div class="mediaresource-help mediaresource-scopetitle"{% if not scope.icons %} style="display:none"{% endif %}>{% blocktrans %}Select a picture from account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>                           
-        <div class="mediaresource-help mediaresource-noresults"{% if scope.icons %} style="display:none"{% endif %}>{% blocktrans %}No picture available in account <strong>{{scope_title}}</strong>:{% endblocktrans %}</div>
+        <div class="mediaresource-help mediaresource-noresults"{% if scope.icons %} style="display:none"{% endif %}>{% blocktrans %}No picture available in account <strong>{{scope_title}}</strong>{% endblocktrans %}</div>
     {% endwith %}
         <div class="resource-back-button">{% blocktrans %}Go back{% endblocktrans %}</div>
         <div class="tnGrid tngridcols-6x">

@@ -155,7 +155,7 @@ class Error404View(ErrorBaseView):
     title =  "Sorry, page not found"
     response_handler_method = HttpResponseNotFound
     error_description = _("""<p>
-  The page <span style="color:#E00023">%(requested_url)s</span> doesn't exist on this site!
+  The page <em>%(requested_url)s</em> doesn't exist on this site!
 </p>
 <p>
   Please contact the site administrator.
@@ -206,7 +206,7 @@ class AccountNetworkView(AccountListingView, UserAccountView):
 
     def get_title(self,):
         if self.account.id == self.auth.id:
-            return _("My network")
+            return _("Your network")
         return _("%(name)s's network" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
@@ -224,7 +224,7 @@ class AccountCommunitiesView(AccountListingView, UserAccountView):
 
     def get_title(self,):
         if self.account.id == self.auth.id:
-            return _("My communities")
+            return _("Your communities")
         return _("%(name)s's communities" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
@@ -244,7 +244,7 @@ class AccountAdminCommunitiesView(AccountListingView, UserAccountView):
     
     def get_title(self,):
         if self.account.id == self.auth.id:
-            return _("My communities")
+            return _("Your communities")
         return _("%(name)s's communities" % {'name': self.account.title} )
 
     def prepare_view(self, *args, **kw):
@@ -339,7 +339,7 @@ class AddToNetworkView(BaseObjectActionView):
         # Networking actions
         if self.object.has_pending_network_request:
             return Action(
-                label = _("Accept in my network"),
+                label = _("Accept in your network"),
                 url = reverse(self.name, args = (self.object.id, ), ),
                 confirm = _(
                     "Would you like to accept %(name)s in your network?<br />"
@@ -350,7 +350,7 @@ class AddToNetworkView(BaseObjectActionView):
                             
         elif self.object.can_add_to_my_network:
             return Action(
-                label = _("Add to my network"),
+                label = _("Add to your network"),
                 url = reverse(self.name, args = (self.object.id, ), ),
                 confirm = _(
                     "Would you like to add %(name)s to your network?<br />"
@@ -389,14 +389,14 @@ class RemoveFromNetworkView(BaseObjectActionView):
         if self.object.has_received_network_request:
             return Action(
                 category = LOCAL_ACTIONS,
-                label = _("Cancel my network request"),
+                label = _("Cancel your network request"),
                 url = reverse(self.name, args = (self.object.id, ), ),
                 confirm = _("Would you like to cancel your network request?"),
             )
         if self.object.in_my_network:
             return Action(
                 category = LOCAL_ACTIONS,
-                label = _("Remove from my network"),
+                label = _("Remove from your network"),
                 url = reverse(self.name, args = (self.object.id, ), ),
                 confirm = _("Would you like to remove %(name)s from your network?") % {"name": self.object.title},
             )
@@ -450,7 +450,7 @@ class UserAccountEdit(UserAccountView):
         if not self.object:
             return _("Create a user account")
         elif self.object.id == self.auth.id:
-            return _("Edit my account")
+            return _("Edit your account")
         return _("Edit %(name)s" % {'name' : self.object.title })
 
 
