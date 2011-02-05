@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-05 10:20+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: templates/base.html:55
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: templates/base.html:58
+msgid "Log in"
+msgstr "Se connecter"
+
+#: templates/base.html:140
+msgid ""
+"Powered by <a href=\"http://www.twistranet.com\">twistranet</a> de <a href="
+"\"http://www.numericube.com\">numeriCube</a>"
+msgstr ""
+"Propulsé par <a href=\"http://www.twistranet.fr\">twistranet</a> de <a href="
+"\"http://www.numericube.com\">numeriCube</a>"
+
+#: templates/base.html:147 templates/popup.html:79
+msgid "Confirmation Required"
+msgstr "Veuillez confirmer"
+
+#: templates/base.html:150 templates/popup.html:82
+msgid "Are you sure about this?"
+msgstr "Êtes-vous sûr(e) ?"
+
+#: templates/base.html:152 templates/popup.html:84
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/base.html:153 templates/popup.html:85
+msgid "OK"
+msgstr "Ok"
+
+#: templates/base.html:156
+msgid ""
+"Changes have been made on this form, do you really want to quit without "
+"saving ?"
+msgstr ""
+"Vous avez modifié des éléments sur cette page. Voulez-vous vraiment quitter "
+"sans les enregistrer ?"
