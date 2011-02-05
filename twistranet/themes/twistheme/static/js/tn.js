@@ -15,15 +15,15 @@ var ls_hide_effect_speed = 300;
 
 // set first and last class on subblocks
 setFirstAndLast = function(block, sub, modulo) {
-   jQuery(block).each(function() {
+   jq(block).each(function() {
       if (typeof modulo=='undefined')  {
-        jQuery(sub+':first', jQuery(this)).addClass('first');
-        jQuery(sub+':last', jQuery(this)).addClass('last');
+        jq(sub+':first', jq(this)).addClass('first');
+        jq(sub+':last', jq(this)).addClass('last');
       }
       else {
-        jQuery(sub, jQuery(this)).each(function(i) {
-            if ((i+1)%modulo==0) jQuery(this).addClass('last');
-            if ((i+1)%modulo==1) jQuery(this).addClass('first');
+        jq(sub, jq(this)).each(function(i) {
+            if ((i+1)%modulo==0) jq(this).addClass('last');
+            if ((i+1)%modulo==1) jq(this).addClass('first');
         })
       }
    })
@@ -31,27 +31,27 @@ setFirstAndLast = function(block, sub, modulo) {
 
 // confirm boxes using jqueryui
 initConfirmBox = function(elt){
-    actionLabel = jQuery(elt).attr('title');
-    actionLink = jQuery(elt).attr('href');
-    dialogBox = jQuery('#tn-dialog');
+    actionLabel = jq(elt).attr('title');
+    actionLink = jq(elt).attr('href');
+    dialogBox = jq('#tn-dialog');
     // the title of the box is kept using link title + ' ?'
-    jQuery('#ui-dialog-title-tn-dialog').text(actionLabel+ ' ?');
+    jq('#ui-dialog-title-tn-dialog').text(actionLabel+ ' ?');
     // the legend of the box is kept inside a invisible block with class 
     // confirm-message 
     // inside the link
-    actionLegend = jQuery('.confirm-message', elt);
-    if (actionLegend.length) jQuery('#tn-dialog-message').text(actionLegend.text());
+    actionLegend = jq('.confirm-message', elt);
+    if (actionLegend.length) jq('#tn-dialog-message').text(actionLegend.text());
     // translations for buttons are kept in the current page 
     // (could also be done using django javascript translations tools >> TODO)
-    var cancelLabel = jQuery('#tn-dialog-button-cancel', dialogBox).text();
-    var okLabel = jQuery('#tn-dialog-button-ok', dialogBox).text();
+    var cancelLabel = jq('#tn-dialog-button-cancel', dialogBox).text();
+    var okLabel = jq('#tn-dialog-button-ok', dialogBox).text();
     var tnbuttons = {};  
     tnbuttons[okLabel] = function() {
       // ok action for now just redirect to the link
       window.location.replace(actionLink);
     };
     tnbuttons[cancelLabel] = function() {
-      jQuery( this ).dialog( "close" );
+      jq( this ).dialog( "close" );
     }; 
     dialogBox.dialog({   
       buttons: tnbuttons 
@@ -74,10 +74,10 @@ absolutizeURL = function(url) {
 // depending on current url
 setSelectedTopic = function(menu) {   
     selected = false;
-    jQuery('>ul>li', menu).each (function(i){
-      topic = jQuery(this);
-      jQuery('a', topic).each(function(){
-          href = jQuery(this).attr('href'); 
+    jq('>ul>li', menu).each (function(i){
+      topic = jq(this);
+      jq('a', topic).each(function(){
+          href = jq(this).attr('href'); 
           if (href && typeof href!='undefined' && ! selected) {
              if (absolutizeURL(href) == curr_url) { 
                selected = true;
@@ -86,7 +86,7 @@ setSelectedTopic = function(menu) {
           } 
       });
     });
-    if (!selected) jQuery('>ul>li:first', menu).addClass('selected');
+    if (!selected) jq('>ul>li:first', menu).addClass('selected');
 }
 
 liveSearchDisplayResult = function(link, thumblink, type, title, description) {
@@ -115,17 +115,17 @@ return template;
 // Live search ajax
 liveSearch = function(searchTerm) {
     livesearchurl = home_url + 'search/json' ;
-    var liveResults = jQuery('#search-live-results');
-    var nores_text = jQuery('#no-results-text').val();
+    var liveResults = jq('#search-live-results');
+    var nores_text = jq('#no-results-text').val();
     if (searchTerm) {
-      jQuery.get(livesearchurl+'?q='+searchTerm, 
+      jq.get(livesearchurl+'?q='+searchTerm, 
           function(data) {
               jsondata = eval( "(" + data + ")" );
               results = jsondata.results;
               liveResults.hide();
               liveResults.html('');
               if (results.length) {        
-                  jQuery(results).each(function(){
+                  jq(results).each(function(){
                       html_result = liveSearchDisplayResult(this.link, this.thumb, this.type, this.title, this.description);
                       liveResults.append(html_result);
                   });
@@ -136,27 +136,27 @@ liveSearch = function(searchTerm) {
                       html_more_results += '<div class="clear"></div></div>';
                       liveResults.append(html_more_results);
                   }
-                  allResults = jQuery('>.ls-result', liveResults);
+                  allResults = jq('>.ls-result', liveResults);
                   lenResults = allResults.length;
                   allResults.each( function(){
-                      var resBlock = jQuery(this);
+                      var resBlock = jq(this);
                       resBlock.click( function(e){
-                          jQuery("#search-text").unbind('focusout');
+                          jq("#search-text").unbind('focusout');
                           liveResults.stop();
-                          location = jQuery('a', this).attr('href');
+                          location = jq('a', this).attr('href');
                       });
-                      jQuery('a', resBlock).click(function(e){
+                      jq('a', resBlock).click(function(e){
                           e.preventDefault();
                           e.stopPropagation();
                           resBlock.trigger('click');
                           return false;
                       });
                   });
-                  var activeResult = jQuery('.ls-result:first', liveResults);
+                  var activeResult = jq('.ls-result:first', liveResults);
                   activeResult.addClass('ls-result-active');       
                   var i = 0;
                   // live search results keyboard behavior
-                  jQuery("#search-text").keydown(function(e){       
+                  jq("#search-text").keydown(function(e){       
                       if (e.keyCode == '13') {
                           e.preventDefault();
                           e.stopPropagation();
@@ -177,7 +177,7 @@ liveSearch = function(searchTerm) {
                           }
                           if (changes) {          
                               activeResult.removeClass('ls-result-active');
-                              activeResult = jQuery(allResults[i]);
+                              activeResult = jq(allResults[i]);
                               activeResult.addClass('ls-result-active');
                           }
                       }
@@ -209,10 +209,10 @@ gridStyle = function(grid) {
     if ( className.split('tngridcols-').length ) {
         ncols = parseInt(className.split('tngridcols-')[1].split('x')[0]);
         if (ncols) {
-            jQuery('.tnGridItem', grid).each(function(i) {
-                if ((i+1)%ncols==1) jQuery(grid).append('<div class="tnGridRow"></div>');
-                gridRow= jQuery('.tnGridRow:last', grid);
-                gridRow.append(jQuery(this));
+            jq('.tnGridItem', grid).each(function(i) {
+                if ((i+1)%ncols==1) jq(grid).append('<div class="tnGridRow"></div>');
+                gridRow= jq('.tnGridRow:last', grid);
+                gridRow.append(jq(this));
                 
             })
         }
@@ -221,7 +221,7 @@ gridStyle = function(grid) {
     gridOnChange(grid);
     // IMPORTANT : the grid is always shown at the end 
     // to avoid bad moving effect      
-    jQuery(grid).css('display', 'table');
+    jq(grid).css('display', 'table');
 }
 
 /* When something has changed on grid
@@ -229,15 +229,15 @@ gridStyle = function(grid) {
    a radio button to check/uncheck elements */
    
 gridOnChange = function(grid) {
-    jQuery('.tnGridItem', grid).each(function(){
-        var item = jQuery(this);       
-        var checkbox = jQuery('>input:checkbox, >input:radio', this);
+    jq('.tnGridItem', grid).each(function(){
+        var item = jq(this);       
+        var checkbox = jq('>input:checkbox, >input:radio', this);
         if (checkbox.length) {
             if (checkbox.is(':checked')) {
-                jQuery(this).addClass('itemSelected');
+                jq(this).addClass('itemSelected');
             }
             else {
-                jQuery(this).removeClass('itemSelected');    
+                jq(this).removeClass('itemSelected');    
             }
         }
     });
@@ -247,25 +247,25 @@ gridOnChange = function(grid) {
    eg : check/uncheck value before submit */
 
 gridOnSelect = function(grid) {
-    jQuery('.tnGridItem', grid).each(function() {
-        var item = jQuery(this);       
-        var checkbox = jQuery('>input:checkbox, >input:radio', this);
-        var radio = jQuery('>input:radio', this);
+    jq('.tnGridItem', grid).each(function() {
+        var item = jq(this);       
+        var checkbox = jq('>input:checkbox, >input:radio', this);
+        var radio = jq('>input:radio', this);
         if (checkbox.length) {
             item.click(function(e) {
                 if (checkbox.is(':checked')) {
-                    jQuery(this).removeClass('itemSelected');
+                    jq(this).removeClass('itemSelected');
                     checkbox.removeAttr("checked");
                 }
                 else {
                     checkbox.attr('checked', 'checked');
-                    jQuery(this).addClass('itemSelected');
+                    jq(this).addClass('itemSelected');
                 }
                 // for radios buttons unselect other items
                 if (radio.length) gridOnChange(grid);
             })
         }
-        jQuery('a', item).click(function(e) {
+        jq('a', item).click(function(e) {
             e.preventDefault();
             e.stopPropagation();
             item.trigger("click");
@@ -278,8 +278,8 @@ gridOnSelect = function(grid) {
 // for multiple uploaders in a same page 
 loadQuickUpload = function(obj) {
     var uploadUrl = home_url + 'resource_quickupload/' ;
-    var tnUploader = jQuery(obj);
-    jQuery.ajax({
+    var tnUploader = jq(obj);
+    jq.ajax({
         type: "GET",
         url: uploadUrl,
         dataType: 'html', 
@@ -345,20 +345,20 @@ var twistranet = {
     },
     setBrowserProperties : function(e) {
         if (! twistranet.browser_width){
-            twistranet.browser_width = jQuery(window).width();
-            twistranet.browser_height = jQuery(window).height();
+            twistranet.browser_width = jq(window).width();
+            twistranet.browser_height = jq(window).height();
         } 
     },
     prettyCombosLists: function(e) {
         // sexy combo list for permissions widget
-        jQuery("select.permissions-widget").msDropDown();
+        jq("select.permissions-widget").msDropDown();
         // remove the forced width (see also.dd .ddTitle in css) 
-        jQuery(document).ready(function(){jQuery('.dd').css('width','auto')});
+        jq(document).ready(function(){jq('.dd').css('width','auto')});
     },
     enableLiveSearch: function(e) {
-        var defaultSearchText = jQuery("#default-search-text").val();
-        searchGadget = jQuery("#search-text");                
-        var liveResults = jQuery('#search-live-results');
+        var defaultSearchText = jq("#default-search-text").val();
+        searchGadget = jq("#search-text");                
+        var liveResults = jq('#search-live-results');
         searchGadget.bind('focusin',function(){
             if (liveResults.html()!='') liveResults.show();
         });
@@ -376,24 +376,24 @@ var twistranet = {
     },
     finalizestyles: function(e) {
         /* set some first and last classes  */
-        jQuery([['.content-actions', 'li'],['#mainmenu > ul > li', '> ul> li'],['#content','.post']]).each(function(){
+        jq([['.content-actions', 'li'],['#mainmenu > ul > li', '> ul> li'],['#content','.post']]).each(function(){
            setFirstAndLast(this[0], this[1]);
         } );         
         // set how many thumbs by line in different blocks
-        jQuery([['.tn-box', '.thumbnail-50-bottom']]).each(function(){
+        jq([['.tn-box', '.thumbnail-50-bottom']]).each(function(){
            setFirstAndLast(this[0], this[1], 3);
         } );
-        jQuery([['.tn-box', '.thumbnail-32-none']]).each(function(){
+        jq([['.tn-box', '.thumbnail-32-none']]).each(function(){
            setFirstAndLast(this[0], this[1], 5);
         } );   
         /* set selected topic in menus*/    
-        setSelectedTopic(jQuery('#mainmenu'));
+        setSelectedTopic(jq('#mainmenu'));
         /* set classes for some inline fields > todo : place it in template */
-        jQuery('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
-          jQuery(this).parents('li').addClass('inlinefield');
+        jq('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
+          jq(this).parents('li').addClass('inlinefield');
         });
         /* finalize grids style */
-        jQuery('.tnGrid').each(function(){
+        jq('.tnGrid').each(function(){
             gridStyle(this);
         });
     },
@@ -402,28 +402,28 @@ var twistranet = {
     },
     showContentActions: function(e){
         /* show content actions on post mouseover */
-        jQuery('.post').bind('mouseenter', function(){
-          jQuery(this).addClass('activepost');
+        jq('.post').bind('mouseenter', function(){
+          jq(this).addClass('activepost');
         });
-        jQuery('.post').bind('mouseleave', function(){
-          jQuery(this).removeClass('activepost');
+        jq('.post').bind('mouseleave', function(){
+          jq(this).removeClass('activepost');
         });                                          
     },
     showCommentsActions: function(e){
         /* show content actions on post mouseover */
-        jQuery('.comment').bind('mouseenter', function(){
-          jQuery(this).addClass('activecomment');
-          jQuery(this).parents('.post').removeClass('activepost');
+        jq('.comment').bind('mouseenter', function(){
+          jq(this).addClass('activecomment');
+          jq(this).parents('.post').removeClass('activepost');
         });
-        jQuery('.comment').bind('mouseleave', function(){
-          jQuery(this).removeClass('activecomment'); 
-          jQuery(this).parents('.post').addClass('activepost');
+        jq('.comment').bind('mouseleave', function(){
+          jq(this).removeClass('activecomment'); 
+          jq(this).parents('.post').addClass('activepost');
         });                                          
     },
     initconfirmdialogs: function(e){
-        if (jQuery('#tn-dialog-message').length) {
-            defaultDialogMessage = jQuery('#tn-dialog-message').text();
-            jQuery("#tn-dialog").dialog({  
+        if (jq('#tn-dialog-message').length) {
+            defaultDialogMessage = jq('#tn-dialog-message').text();
+            jq("#tn-dialog").dialog({  
               resizable: false,
               draggable: false,
               autoOpen: false,
@@ -431,64 +431,64 @@ var twistranet = {
               width: 410,
               modal: true,
               close: function(ev, ui) { 
-                jQuery('#tn-dialog-message').text(defaultDialogMessage);
-                jQuery(this).hide(); 
+                jq('#tn-dialog-message').text(defaultDialogMessage);
+                jq(this).hide(); 
               },
               focus: function(event, ui) { 
                 ;
               }
             });
             links = 'a.confirmbefore';
-            jQuery(links).click(function(e){
+            jq(links).click(function(e){
                e.preventDefault();
                initConfirmBox(this);
             } );       
         }
     },
     initformserrors: function(e) {
-      jQuery('.fieldWrapper .errorlist').each(function(){
-          jQuery(jQuery(this).parent()).addClass('fieldWrapperWithError');
+      jq('.fieldWrapper .errorlist').each(function(){
+          jq(jq(this).parent()).addClass('fieldWrapperWithError');
       })
     },
     formsautofocus: function(e) {
-     if (jQuery("form .fieldWrapperWithError :input:first").focus().length) return;
-         jQuery("form.enableAutoFocus :input:visible:first").focus();
+     if (jq("form .fieldWrapperWithError :input:first").focus().length) return;
+         jq("form.enableAutoFocus :input:visible:first").focus();
     },
     formUndo: function(e) {
-        jQuery('.edit-form .form-controls button.reset').click( function(){
-            if (jQuery('#referer_url').length) location.href = jQuery('#referer_url').val();
+        jq('.edit-form .form-controls button.reset').click( function(){
+            if (jq('#referer_url').length) location.href = jq('#referer_url').val();
         })
     },
     formProtection: function(e) {
         var form_has_changes = false;
-        oform = jQuery('.enableUnloadProtect');
+        oform = jq('.enableUnloadProtect');
         if (oform.length) {
-            jQuery('input, textarea, select', oform).change(function() {
+            jq('input, textarea, select', oform).change(function() {
                 form_has_changes = true;
             });
-            jQuery(oform).submit(function(){
+            jq(oform).submit(function(){
                 form_has_changes = false;
                 if (typeof tinyMCE != 'undefined') tinyMCE.activeEditor.isNotDirty;
             });
-            jQuery(window).bind('beforeunload', function(e){
+            jq(window).bind('beforeunload', function(e){
                 if (typeof tinyMCE != 'undefined') {
                     if (tinyMCE.activeEditor.isDirty()) form_has_changes = true;
                 }
                 if (form_has_changes) {
                     // use the standard navigator beforeunload method
-                    msg = jQuery('#form-protect-unload-message').html();
+                    msg = jq('#form-protect-unload-message').html();
                     return msg;
                 }
             })
         }
     },
     tnGridActions: function(e) {
-     jQuery('.tnGrid').each(function(){
+     jq('.tnGrid').each(function(){
             gridOnSelect(this);
         });
     },
     loadUploaders: function(e) {
-        jQuery('.tnQuickUpload').each(function(){
+        jq('.tnQuickUpload').each(function(){
             loadQuickUpload(this);
         });
     },
@@ -516,4 +516,4 @@ var twistranet = {
     }
 }
 
-jQuery(document).ready(twistranet.__init__)
+jq(document).ready(twistranet.__init__)

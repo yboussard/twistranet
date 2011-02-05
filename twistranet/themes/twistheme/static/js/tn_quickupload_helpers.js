@@ -15,10 +15,10 @@ var lastUploadType = '';
     
 TwistranetQuickUpload.addUploadFields = function(uploader, domelement, file, id, fillTitles) {
     if (fillTitles)  {
-        var labelfiletitle = jQuery('#uploadify_label_file_title').val();
+        var labelfiletitle = jq('#uploadify_label_file_title').val();
         var blocFile = uploader._getItemByFileId(id);
         if (typeof id == 'string') id = parseInt(id.replace('qq-upload-handler-iframe',''));
-        jQuery('.qq-upload-cancel', blocFile).after('\
+        jq('.qq-upload-cancel', blocFile).after('\
                   <div class="uploadField">\
                       <label>' + labelfiletitle + '&nbsp;:&nbsp;</label> \
                       <input type="text" \
@@ -35,7 +35,7 @@ TwistranetQuickUpload.addUploadFields = function(uploader, domelement, file, id,
 TwistranetQuickUpload.showButtons = function(uploader, domelement) {
     var handler = uploader._handler;
     if (handler._files.length) {
-        jQuery('.uploadifybuttons', jQuery(domelement).parent()).show();
+        jq('.uploadifybuttons', jq(domelement).parent()).show();
         return 'ok';
     }
     return false;
@@ -49,10 +49,10 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
     var missing = 0;
     for ( var id = 0; id < files.length; id++ ) {
         if (files[id]) {
-            var fileContainer = jQuery('.qq-upload-list li', domelement)[id-missing];
+            var fileContainer = jq('.qq-upload-list li', domelement)[id-missing];
             var file_title = '';
             if (fillTitles)  {
-                file_title = jQuery('.file_title_field', fileContainer).val();
+                file_title = jq('.file_title_field', fileContainer).val();
             }
             params['title'] = file_title;
             params['typeupload'] = typeupload;
@@ -66,9 +66,9 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
 // same method as tn_resource_browser > showPreview
 // used when quickuploader is used outside of resource widget
 TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend, type) {
-    newResultContainer = jQuery('#renderer-new');
+    newResultContainer = jq('#renderer-new');
     if (newResultContainer.length) {
-        currentResultContainer = jQuery('#renderer-current');
+        currentResultContainer = jq('#renderer-current');
         result= '\
 <a class="image-block image-block-mini"\
    href="'+ url +'"\
@@ -77,8 +77,8 @@ TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend,
         alt="' + legend + '" />\
 </a>\
 ';
-        jQuery('a', newResultContainer).remove();      
-        jQuery('.sizes-selection', newResultContainer).remove();
+        jq('a', newResultContainer).remove();      
+        jq('.sizes-selection', newResultContainer).remove();
         newResultContainer.append(result);
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
@@ -89,7 +89,7 @@ TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend,
 TwistranetQuickUpload.onAllUploadsComplete = function(){
     showPreview (lastUploadUrl, lastUploadMiniUrl, lastUploadPreviewUrl, lastUploadLegend, lastUploadType);
     // fix selector value in a form
-    target_selector = jQuery('#selector_target');
+    target_selector = jq('#selector_target');
     if (target_selector.length) {
         selector.val(lastUploadValue);
         new_selection = lastUploadValue;
@@ -105,18 +105,18 @@ TwistranetQuickUpload.clearQueue = function(uploader, domelement) {
         if (files[id]) {
             handler.cancel(id);
         }
-        jQuery('.qq-upload-list li', domelement).remove();
+        jq('.qq-upload-list li', domelement).remove();
         handler._files = [];
         if (typeof handler._inputs != 'undefined') handler._inputs = {};
     }    
 }    
 TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, fileName, responseJSON) {
-    var uploadList = jQuery('.qq-upload-list', domelement);
+    var uploadList = jq('.qq-upload-list', domelement);
     if (responseJSON.success) {        
         window.setTimeout( function() {
-            jQuery(uploader._getItemByFileId(id)).remove();
+            jq(uploader._getItemByFileId(id)).remove();
             // after the last upload, if no errors, reload the page
-            var newlist = jQuery('li', uploadList);
+            var newlist = jq('li', uploadList);
             if (! newlist.length) {
                 lastUploadUrl = responseJSON.url;
                 lastUploadPreviewUrl = responseJSON.preview_url;

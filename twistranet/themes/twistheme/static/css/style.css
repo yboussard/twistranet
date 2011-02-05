@@ -727,14 +727,17 @@ a.action:hover {
 #content a.main-action {  
   float: right;
   display: block;
-  padding: 5px 15px;
+  padding: 4px 15px;
   color: white !important;
   background-color: #00B33E !important;
   border: 1px solid #ccc;
   text-decoration: none !important;
   cursor: pointer;
-  margin: 15px 0 10px 10px;
+  margin: 5px 0 0 20px;
   font-weight: bold;
+  border-radius: 5px;               
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 /* particular text classes */

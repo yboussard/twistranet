@@ -1,6 +1,8 @@
 # Create your views here.
 import urllib
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.template import RequestContext, loader
 from django.shortcuts import *
 from django.contrib import messages
 from django.utils.translation import ugettext as _
@@ -212,7 +214,7 @@ class AjaxCommentsList(ContentView):
             self.template_variables = self.template_variables + ["form", ]
             if self.request.method == 'POST': # If the form has been submitted...
                 self.form = CommentForm(self.request.POST, self.request.FILES)
-                self.redirect_to = self.request.POST.get('redirect_to')
+                self.redirect_to = self.request.POST.get('redirect_to', '')
                 if self.form.is_valid(): # All validation rules should pass. We ignore form errors anyway
                     # Save object and set publisher
                     comment = self.form.save(commit = False)
@@ -220,10 +222,12 @@ class AjaxCommentsList(ContentView):
                     comment.in_reply_to = self.object
                     comment.save()
                     self.form.save_m2m()
-                raise MustRedirect(urllib.unquote(self.redirect_to))
+                # only in rare situations (no javascript)
+                if self.redirect_to :
+                    raise MustRedirect(urllib.unquote(self.redirect_to))
             else:
                 # Fetch the redirect_to variable from the caller and generate form
-                self.redirect_to = self.request.META.get('HTTP_REFERER')
+                self.redirect_to = self.request.META.get('HTTP_REFERER') 
                 self.form = CommentForm(
                     initial = {"redirect_to": urlquote(self.redirect_to)}
                 )

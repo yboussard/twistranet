@@ -13,6 +13,7 @@ def js_vars(request):
     """
     src = """
 var home_url = '%(home_url)s';
+var jq = jQuery;
     """
 
     js_vars = dict(
