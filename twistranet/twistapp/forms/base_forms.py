@@ -39,7 +39,7 @@ class BaseForm(BaseEmptyForm):
                     permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
                 if issubclass(publisher.model_class, Community):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
-            self.fields['permissions'].choices = [ (p["id"], p["name"]) for p in permissions ]
+            self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
 
     permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget())
     publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)

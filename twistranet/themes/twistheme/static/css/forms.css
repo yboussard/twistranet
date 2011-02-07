@@ -305,6 +305,9 @@ select.permissions-widget {
     display: none;
 }
 
+.permission-description {
+    display: none;
+}
 
 /* Inline Comment forms */
 .comment-form {

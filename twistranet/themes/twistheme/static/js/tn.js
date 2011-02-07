@@ -354,6 +354,18 @@ var twistranet = {
         jq("select.permissions-widget").msDropDown();
         // remove the forced width (see also.dd .ddTitle in css) 
         jq(document).ready(function(){jq('.dd').css('width','auto')});
+        // permission description after all
+        jq(document).ready(twistranet.displayPermissionsDescriptions);
+    },
+    displayPermissionsDescriptions: function(e) {
+        jq('.permissions-widget').each(function(){
+            var pwidget = jq(jq(this).parent()).parent();
+            var pdescriptions = jq('.permission-description', pwidget);
+            jq('.ddChild a', pwidget ).each(function(i){
+                jq(this).attr('title', jq(pdescriptions[i]).text());
+                jq(pdescriptions[i]).remove();
+            })
+        })
     },
     enableLiveSearch: function(e) {
         var defaultSearchText = jq("#default-search-text").val();
