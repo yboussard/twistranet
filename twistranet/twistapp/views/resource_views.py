@@ -322,7 +322,8 @@ UPLOAD_JS = """
                 serverError: "%(ul_error_server)s",
                 typeError: "%(ul_error_bad_ext)s {file}. %(ul_error_onlyallowed)s {extensions}.",
                 sizeError: "%(ul_error_file_large)s {file}, %(ul_error_maxsize_is)s {sizeLimit}.",
-                emptyError: "%(ul_error_empty_file)s {file}, %(ul_error_try_again_wo)s"
+                emptyError: "%(ul_error_empty_file)s {file}, %(ul_error_try_again_wo)s",
+                unexpectedError: "%(ul_error_unexpected)s"
             }            
         });           
     }
@@ -358,6 +359,7 @@ def resource_quickupload(request):
         ul_error_bad_ext       = _( u"This file has invalid extension:"),
         ul_error_onlyallowed   = _( u"Only allowed:"),
         ul_error_server        = _( u"Server error, please contact support and/or try again."),
+        ul_error_unexpected    = _( u"Unexpected error, please use the 'Browse' button."),
     )
     qu_script = UPLOAD_JS % qu_settings
     c = Context({ 'qu_script': qu_script, }) 
@@ -387,7 +389,7 @@ def resource_quickupload_file(request):
             # could be useful if someone change the js behavior
             msg = {u'error': u'emptyError'}
     else:
-        # MSIE old behavior (classic upload with iframe) >> TODO : tests
+        # MSIE old behavior (classic upload with iframe)
         file_data = request.FILES.get("qqfile", None)
         filename = getattr(file_data,'name', '')
         file_name = filename.split("\\")[-1]
@@ -439,9 +441,9 @@ def resource_quickupload_file(request):
         # TODO : improve error messages with Unauthorized error
         except:
             log.exception("Unexpected error while trying to uplaod a file.")
-            msg = {u'error': _(u'Unexpected error, please use the "Browse" button.')}
+            msg = {u'error': u'unexpectedError'}
     else:
-        msg = {u'error': u'emptyError'}
+        msg = {u'error': u'serverError'}
 
     return HttpResponse( json.dumps(msg),
                          mimetype='text/html')

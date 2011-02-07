@@ -786,7 +786,7 @@ msgid "Server error, please contact support and/or try again."
 msgstr "Erreur lors de l'envoi. Essayez à nouveau ou contactez votre administrateur."
 
 #: views/resource_views.py:442
-msgid "Unexpected error, please use the \"Browse\" button."
+msgid "Unexpected error, please use the 'Browse' button."
 msgstr "Erreur lors de l'envoi, utilisez le bouton 'Parcourir'."
 
 #: views/resource_views.py:504

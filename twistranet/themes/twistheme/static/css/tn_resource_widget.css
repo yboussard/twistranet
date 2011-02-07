@@ -25,6 +25,9 @@
     line-height: 12px !important;
 }
 
+#resources-selector {
+    clear:both;
+}
 
 .resourcePane {
     display: none;
