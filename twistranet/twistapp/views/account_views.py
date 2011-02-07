@@ -259,7 +259,7 @@ class PendingNetworkView(AccountListingView, UserAccountView):
     """
     template = AccountListingView.template
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
-    title = "Pending network requests"
+    title = _("Pending network requests")
     name = "account_pending_network"
     category = ACCOUNT_ACTIONS
     

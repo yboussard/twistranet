@@ -163,7 +163,7 @@ class MyCommunitiesView(BaseView):
     """
     A list of n communities I manage
     """
-    title = "Communities I manage"
+    title = _("Communities you manage")
     template = "community/list.html"
     template_variables = BaseView.template_variables + [
         "communities",
@@ -234,7 +234,7 @@ class CommunityEdit(CommunityView):
 class ConfigurationEdit(CommunityEdit):
     name = "twistranet_config"
     form_class = community_forms.AdministrationForm
-    title = "Configuration"
+    title = _("Configuration")
     category = GLOBAL_ACTIONS
     
     def get_initial_values(self,):
@@ -293,7 +293,7 @@ class CommunityCreate(CommunityEdit):
     """
     context_boxes = []
     category = ACCOUNT_ACTIONS
-    title = "Create a community"
+    title = _("Create a community")
     name = "community_create"
     
     def as_action(self):
@@ -306,7 +306,7 @@ class CommunityManageMembers(CommunityView):
     """
     Manage ppl in a community
     """
-    title = "Manage members"
+    title = _("Manage members")
     template = "community/manage.html"
     name = "manage_members"
     template_variables = CommunityView.template_variables + [
@@ -365,7 +365,7 @@ class CommunityInvite(CommunityView):
     """
     # Various parameters
     model_lookup = Community
-    title = "Invite people in this community"
+    title = _("Invite people in this community")
     
     # Action rendering
     action_label = "Invite"
@@ -462,7 +462,7 @@ class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
     name = "community_join"
     category = MAIN_ACTION
-    title = "Join community"
+    title = _("Join community")
     confirm = "Do you really want to join this community?"
 
     def as_action(self):
@@ -489,7 +489,7 @@ class CommunityLeave(BaseObjectActionView):
     model_lookup = Community
     category = LOCAL_ACTIONS
     name = "community_leave"
-    title = "Leave community"
+    title = _("Leave community")
     confirm = "Do you really want to leave this community?"
 
     def as_action(self):
@@ -518,7 +518,7 @@ class CommunityDelete(BaseObjectActionView):
     model_lookup = Community
     name = "community_delete"
     confirm = "Do you really want to delete this community?"
-    title = "Delete community"
+    title = _("Delete community")
  
     def as_action(self):
         if not isinstance(getattr(self, "object", None), self.model_lookup):
