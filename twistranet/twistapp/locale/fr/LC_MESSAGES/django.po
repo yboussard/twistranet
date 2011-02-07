@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-07 15:25+0100\n"
+"POT-Creation-Date: 2011-02-07 15:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#: forms/fields.py:28 forms/fields.py:51
+#: forms/fields.py:29 forms/fields.py:65
 msgid "Select a valid choice. That choice is not one of the available choices."
 msgstr "Choisissez une valeur dans la liste"
 
@@ -783,75 +783,75 @@ msgstr "Voulez-vous supprimer ce contenu ?"
 msgid "'%(name)s' has been deleted."
 msgstr "Le contenu '%(name)s' est supprimé."
 
-#: views/resource_views.py:346
+#: views/resource_views.py:347
 msgid "Browse"
 msgstr "Parcourir"
 
-#: views/resource_views.py:347
+#: views/resource_views.py:348
 msgid "Drag and drop files to upload"
 msgstr "Glissez-déposez des fichiers ici pour les envoyer."
 
-#: views/resource_views.py:348
+#: views/resource_views.py:349
 msgid "All files uploaded with success."
 msgstr "Les fichiers sont envoyés."
 
-#: views/resource_views.py:349
+#: views/resource_views.py:350
 msgid " files uploaded with success, "
 msgstr " fichiers envoyés,"
 
-#: views/resource_views.py:350
+#: views/resource_views.py:351
 msgid " uploads return an error."
 msgstr " téléchargement échoués."
 
-#: views/resource_views.py:351
+#: views/resource_views.py:352
 msgid "Failed"
 msgstr "Erreur"
 
-#: views/resource_views.py:353
+#: views/resource_views.py:354
 msgid "please select files again without it."
 msgstr "Sélectionnez à nouveau des fichiers."
 
-#: views/resource_views.py:354
+#: views/resource_views.py:355
 msgid "please try again."
 msgstr "veuillez essayer à nouveau."
 
-#: views/resource_views.py:355
+#: views/resource_views.py:356
 msgid "This file is empty:"
 msgstr "Ce fichier est vide :"
 
-#: views/resource_views.py:356
+#: views/resource_views.py:357
 msgid "This file is too large:"
 msgstr "Ce fichier est trop gros :"
 
-#: views/resource_views.py:357
+#: views/resource_views.py:358
 msgid "maximum file size is:"
 msgstr "la taille maximale autorisée est :"
 
-#: views/resource_views.py:358
+#: views/resource_views.py:359
 msgid "This file has invalid extension:"
 msgstr "Ce fichier n'est pas d'un type reconnu :"
 
-#: views/resource_views.py:359
+#: views/resource_views.py:360
 msgid "Only allowed:"
 msgstr "Seuls sont acceptés :"
 
-#: views/resource_views.py:360
+#: views/resource_views.py:361
 msgid "Server error, please contact support and/or try again."
 msgstr ""
 "Erreur lors de l'envoi. Essayez à nouveau ou contactez votre administrateur."
 
-#: views/resource_views.py:442
+#: views/resource_views.py:362
 msgid "Unexpected error, please use the 'Browse' button."
 msgstr "Erreur lors de l'envoi, utilisez le bouton 'Parcourir'."
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Thumbnail cropped"
 msgstr "Vignette retaillée"
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Medium size"
 msgstr "Taille moyenne"
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Full size"
 msgstr "Grande taille"

@@ -78,7 +78,7 @@ class UserAccountView(BaseWallView):
         Just define a valid value for self.title and this get_title() will keep the BaseView behaviour
         """
         if not self.title:
-            return _("%(name)s's profile" % {'name': self.account.title} )
+            return _("%(name)s's profile") % {'name': self.account.title}
         return super(UserAccountView, self).get_title()
 
 
