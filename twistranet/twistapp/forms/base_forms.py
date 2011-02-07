@@ -3,6 +3,7 @@ from django.db import models
 from django.forms import widgets
 
 from twistranet.twistapp.forms.widgets import PermissionsWidget
+from twistranet.twistapp.forms.fields import PermissionsFormField
 from twistranet.twistapp.lib.log import log
 
 class BaseEmptyForm(forms.ModelForm):
@@ -41,7 +42,7 @@ class BaseForm(BaseEmptyForm):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
             self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
 
-    permissions = forms.ChoiceField(choices = (), widget = PermissionsWidget())
+    permissions = PermissionsFormField(choices = (), widget = PermissionsWidget())
     publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)
 
     def getName(self):

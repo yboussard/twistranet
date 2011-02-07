@@ -6,6 +6,7 @@ import os
 from django import forms
 from django.db import models
 from django.core.validators import EMPTY_VALUES
+from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext as _
 from  twistranet.twistapp.lib.log import log
 import widgets
@@ -29,12 +30,25 @@ class PermissionFormField(forms.ChoiceField):
                                 u' the available choices.'),
         }
 
+class PermissionsFormField(forms.ChoiceField):
+    """
+    This overrides the regular ChoiceField to add additional rendering.
+    """
+
+    def valid_value(self, value):
+        "Check to see if the provided value is a valid choice"
+
+        for id, name, description in self.choices:
+                if value == smart_unicode(id):
+                    return True
+        return False
+
 class ModelInputField(forms.Field):
     """
     This is a field used to enter a foreign key value inside a classic Input widget.
     This is used when there are a lot of values to check against (and ModelChoiceField is not
     efficient anymore), plus the value is checked against the QuerySet very late in the process.
-    """
+    """      
     def __init__(
         self, model, filter = None, required=True, widget=None, 
         label=None, initial=None, help_text=None, to_field_name=None, 
