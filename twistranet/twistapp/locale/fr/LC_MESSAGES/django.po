@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-05 09:23+0100\n"
+"POT-Creation-Date: 2011-02-07 15:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#: forms/fields.py:28 forms/fields.py:51
+#: forms/fields.py:29 forms/fields.py:65
 msgid "Select a valid choice. That choice is not one of the available choices."
 msgstr "Choisissez une valeur dans la liste"
 
@@ -38,8 +38,12 @@ msgstr "Envoyer un fichier"
 msgid "Home"
 msgstr "Accueil"
 
-#: templates/500.html:4
+#: templates/500.html:4 templates/500.html.py:6
 msgid "Server error"
+msgstr "Erreur interne"
+
+#: templates/500.html:9
+msgid "Server Error"
 msgstr "Erreur interne"
 
 #: templates/500.html:10
@@ -47,15 +51,15 @@ msgid ""
 "There's been an error. It's been reported to the site administrators via e-"
 "mail and should be fixed shortly. Thanks for your patience."
 msgstr ""
-"Désolé, une erreur sur le serveur empêche d'effectuer cette action. "
-"Les administrateurs du site ont été prévenus et le problème devrait être "
+"Désolé, une erreur sur le serveur empêche d'effectuer cette action. Les "
+"administrateurs du site ont été prévenus et le problème devrait être "
 "rapidement résolu. Merci pour votre patience."
 
 #: templates/wall.html:4 templates/wall.html.py:14
 msgid "Activity Feed"
 msgstr "Fil d'Activité"
 
-#: templates/wall.html:25 templates/account/view.html:12
+#: templates/wall.html:25
 msgid "No content."
 msgstr "Pas de contenu."
 
@@ -100,7 +104,7 @@ msgstr "Son réseau"
 msgid "Community manager"
 msgstr "Responsables"
 
-#: templates/account/summary.part.html:16 views/account_views.py:342
+#: templates/account/summary.part.html:16
 msgid "Accept in my network"
 msgstr "Ajouter à mon réseau"
 
@@ -116,9 +120,13 @@ msgstr "Ignorer la demande d'ajout à mon réseau"
 msgid "Ignore"
 msgstr "Ignorer"
 
-#: templates/account/summary.part.html:27 views/account_views.py:353
+#: templates/account/summary.part.html:27
 msgid "Add to my network"
 msgstr "Ajouter à mon réseau"
+
+#: templates/account/view.html:12
+msgid "No contents are available."
+msgstr ""
 
 #: templates/actions/content_summary.part.html:7
 msgid "Delete content"
@@ -146,9 +154,9 @@ msgid ""
 "Select people in the form below or search users. When you send an "
 "invitation, they receive a message asking them to join your community."
 msgstr ""
-"Vous pouvez rechercher des personnes ou les choisir ci-dessous. "
-"Quand vous envoyez une invitation, les destinataires reçoivent un email "
-"leur proposant de rejoindre cette communauté."
+"Vous pouvez rechercher des personnes ou les choisir ci-dessous. Quand vous "
+"envoyez une invitation, les destinataires reçoivent un email leur proposant "
+"de rejoindre cette communauté."
 
 #: templates/community/invite.html:11
 msgid "Search users"
@@ -238,16 +246,17 @@ msgid ""
 msgstr ""
 "\n"
 "                <p>\n"
-"                    Il n'y a pas de contenu publié par cette "
-"communauté. Mais il ne tient qu'à <strong>vous</strong> d'en créer !\n"
+"                    Il n'y a pas de contenu publié par cette communauté. "
+"Mais il ne tient qu'à <strong>vous</strong> d'en créer !\n"
 "                </p>\n"
 "                <p>\n"
-"                    N'hésitez pas à ajouter du contenu avec le formulaire ci-dessous. "
-"                    Par exemple, vous pourriez vous exprimer sur ces sujets :\n"
+"                    N'hésitez pas à ajouter du contenu avec le formulaire ci-"
+"dessous.                     Par exemple, vous pourriez vous exprimer sur "
+"ces sujets :\n"
 "                    <ul>\n"
 "                        <li>Sur quoi travaillez vous en ce moment ?</li>\n"
-"                        <li>Que vous attendez-vous à trouver sur la page de cette "
-"communauté ?</li>\n"
+"                        <li>Que vous attendez-vous à trouver sur la page de "
+"cette communauté ?</li>\n"
 "                    </ul>\n"
 "                </p>\n"
 "            "
@@ -281,7 +290,7 @@ msgstr "Envoyer"
 
 #: templates/content/content_creation.box.html:4
 msgid "Publish"
-msgstr "Publié par :"
+msgstr "Publier"
 
 #: templates/content/edit.html:6
 #, python-format
@@ -319,8 +328,12 @@ msgid_plural ""
 "\n"
 "                    View %(counter)s comments\n"
 "                "
-msgstr[0] "\nVoir le commentaire"
-msgstr[1] "\nVoir les %(counter)s commentaires"
+msgstr[0] ""
+"\n"
+"Voir le commentaire"
+msgstr[1] ""
+"\n"
+"Voir les %(counter)s commentaires"
 
 #: templates/content/summary.comments.part.html:13
 msgid "Reply"
@@ -355,7 +368,8 @@ msgstr "Cher, Chère %(target_title)s,"
 #: templates/email/request_add_to_network.html:13
 #, python-format
 msgid "You just recieved a request from %(client_title)s to join your network."
-msgstr "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
+msgstr ""
+"Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
 
 #: templates/email/request_add_to_network.html:16
 msgid "You have to take an action!"
@@ -367,8 +381,8 @@ msgid ""
 "Visit <a href=\"%(domain)s%(client_get_absolute_url)s\">%(client_title)s's "
 "page</a> to accept or decline his/her request."
 msgstr ""
-"Visitez <a href=\"%(domain)s%(client_get_absolute_url)s\">la page de %(client_title)s"
-"</a> pour accepter ou ignorer sa demande."
+"Visitez <a href=\"%(domain)s%(client_get_absolute_url)s\">la page de "
+"%(client_title)s</a> pour accepter ou ignorer sa demande."
 
 #: templates/registration/login.html:24
 msgid "Log in again"
@@ -405,7 +419,7 @@ msgstr "Choisissez une image depuis <strong>%(scope_title)s</strong> :"
 
 #: templates/resource/resource_browser.html:37
 #, python-format
-msgid "No picture available in account <strong>%(scope_title)s</strong>:"
+msgid "No picture available in account <strong>%(scope_title)s</strong>"
 msgstr "Pas d'image dans le compte <strong>%(scope_title)s</strong>"
 
 #: templates/resource/resource_browser.html:39
@@ -451,20 +465,18 @@ msgid ""
 "                        Want to learn about what you can do in twistranet? "
 "Just take a look here: [help]\n"
 "                        </p>\n"
+"                    "
 msgstr ""
 "                <p>\n"
-"                    Vous n'avez pas encore créé de contenu. C'est le moment "
-"                   de vous y mettre&nbsp;!"
-"                </p>\n"
+"                    Vous n'avez pas encore créé de contenu. C'est le "
+"moment                    de vous y mettre&nbsp;!                </p>\n"
 "                <p>\n"
-" C'est très facile de créer du contenu avec twistranet. Par exemple, dites "
-" sur quoi vous travaillez dans le formulaire ci-dessous et cliquez sur "
-" 'Envoyer'.    "
-"                   </p>"
-"   <p> "
-"   Envie d'en savoir plus sur <strong>twistranet</strong>&nbsp;? Consultez "
-"   l'aide en ligne ici : [help].       "
-"                </p>\n"
+" C'est très facile de créer du contenu avec twistranet. Par exemple, dites  "
+"sur quoi vous travaillez dans le formulaire ci-dessous et cliquez sur  "
+"'Envoyer'.                       </p>   <p>    Envie d'en savoir plus sur "
+"<strong>twistranet</strong>&nbsp;? Consultez    l'aide en ligne ici : "
+"[help].                       </p>\n"
+"                    "
 
 #: views/account_views.py:81
 #, python-format
@@ -480,8 +492,7 @@ msgstr "<p>Erreur sur la page <strong>%(requested_url)s</strong></p>"
 #, python-format
 msgid ""
 "<p>\n"
-"  The page <em>%(requested_url)s</em> doesn't "
-"exist on this site!\n"
+"  The page <em>%(requested_url)s</em> doesn't exist on this site!\n"
 "</p>\n"
 "<p>\n"
 "  Please contact the site administrator.\n"
@@ -491,8 +502,7 @@ msgid ""
 "</p>"
 msgstr ""
 "<p>\n"
-"  La page <em>%(requested_url)s</em> n'existe pas ou plus sur ce site. "
-"</p>\n"
+"  La page <em>%(requested_url)s</em> n'existe pas ou plus sur ce site. </p>\n"
 "<p>\n"
 "  Veuillez contacter votre administrateur pour en savoir plus.\n"
 "</p>"
@@ -517,28 +527,39 @@ msgid "Your network"
 msgstr "Votre réseau"
 
 #: views/account_views.py:210
+#, python-format
 msgid "%(name)s's network"
 msgstr "Réseau de %(name)s"
 
 #: views/account_views.py:227 views/account_views.py:247
-msgid "My communities"
+msgid "Your communities"
 msgstr "Vos communautés"
 
 #: views/account_views.py:228 views/account_views.py:248
+#, python-format
 msgid "%(name)s's communities"
 msgstr "Communautés de %(name)s"
 
-#: views/account_views.py:273
+#: views/account_views.py:262
+msgid "Pending network requests"
+msgstr "Demandes de réseau"
+
+#: views/account_views.py:275
 #, python-format
 msgid "<span class=\"badge\">%(number)d</span> Pending network requests"
-msgstr "<span class=\"badge\">%(number)d</span> Demande(s) d'ajout à votre réseau"
+msgstr ""
+"<span class=\"badge\">%(number)d</span> Demande(s) d'ajout à votre réseau"
 
-#: views/account_views.py:318
+#: views/account_views.py:320
 #, python-format
 msgid "'%(name)s' account has been deleted."
 msgstr "L'utilisateur %(name)s a été supprimé."
 
-#: views/account_views.py:345
+#: views/account_views.py:344
+msgid "Accept in your network"
+msgstr "Accepter dans mon réseau"
+
+#: views/account_views.py:347
 #, python-format
 msgid ""
 "Would you like to accept %(name)s in your network?<br />He/She will be able "
@@ -547,77 +568,80 @@ msgstr ""
 "Acceptez-vous que %(name)s rejoigne votre réseau?<br />Cette personne aura "
 "accès au contenu que vous publiez pour votre réseau."
 
-#: views/account_views.py:356
+#: views/account_views.py:355
+msgid "Add to your network"
+msgstr "Ajouter à mon réseau"
+
+#: views/account_views.py:358
 #, python-format
 msgid ""
 "Would you like to add %(name)s to your network?<br />He/She will have to "
 "agree to your request."
 msgstr ""
-"Voulez-vous ajouter %(name)s à votre réseau ? "
-"Cette personne devra accepter votre demande."
+"Voulez-vous ajouter %(name)s à votre réseau ? Cette personne devra accepter "
+"votre demande."
 
-#: views/account_views.py:370
+#: views/account_views.py:372
 #, python-format
 msgid "You're now connected with %(name)s."
 msgstr "Vous êtes maintenant dans le réseau de %(name)s"
 
-#: views/account_views.py:375
+#: views/account_views.py:377
 #, python-format
 msgid "A network request has been sent to %(name)s for approval."
 msgstr "Une demande d'ajout à votre réseau a été envoyée à %(name)s."
 
-#: views/account_views.py:392
-msgid "Cancel my network request"
+#: views/account_views.py:394
+msgid "Cancel your network request"
 msgstr "Annuler ma demande de réseau"
 
-#: views/account_views.py:394
+#: views/account_views.py:396
 msgid "Would you like to cancel your network request?"
-msgstr "Voulez-vous annuler votre demande d'ajout au réseau de cette personne ?"
-
-#: views/account_views.py:399
-msgid "Remove from my network"
-msgstr "Retirer de mon réseau"
+msgstr ""
+"Voulez-vous annuler votre demande d'ajout au réseau de cette personne ?"
 
 #: views/account_views.py:401
+msgid "Remove from your network"
+msgstr "Retirer de mon réseau"
+
+#: views/account_views.py:403
 #, python-format
 msgid "Would you like to remove %(name)s from your network?"
 msgstr "Voulez-vous retirer %(name)s de votre réseau ?"
 
-#: views/account_views.py:413
+#: views/account_views.py:415
 #, python-format
 msgid "You're not connected with %(name)s anymore."
 msgstr "Vous n'êtes plus dans le réseau de %(name)s."
 
-#: views/account_views.py:418
+#: views/account_views.py:420
 #, python-format
 msgid "Your network request to %(name)s has been canceled."
 msgstr "Votre demande à %(name)s a été annulée."
 
-#: views/account_views.py:451
+#: views/account_views.py:453
 msgid "Create a user account"
 msgstr "Créer un compte utilisateur"
 
-#: views/account_views.py:453
+#: views/account_views.py:455
 msgid "Edit your account"
 msgstr "Modifier votre compte"
 
-#: views/account_views.py:454
+#: views/account_views.py:456
 #, python-format
 msgid "Edit %(name)s"
 msgstr "Modifier %(name)s"
 
-#: views/account_views.py:508
+#: views/account_views.py:510
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
 "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
-#: views/account_views.py:528
+#: views/account_views.py:530
 msgid ""
 "You are now logged out.<br />Thanks for spending some quality time on "
 "Twistranet."
-msgstr ""
-"Vous êtes déconnecté.<br />"
-"Merci pour le temps passé sur Twistranet"
+msgstr "Vous êtes déconnecté.<br />Merci pour le temps passé sur Twistranet"
 
 #: views/community_views.py:78
 msgid ""
@@ -655,148 +679,179 @@ msgstr "Tous les membres de %(name)s"
 msgid "All managers of %(name)s"
 msgstr "Tous les responsables de %(name)s"
 
-#: views/community_views.py:151
+#: views/community_views.py:153
 #, python-format
 msgid "<span class=\"badge\">%(number)d</span> Community invitations"
-msgstr "<span class=\"badge\">%(number)d</span> Invitations dans des communautés"
+msgstr ""
+"<span class=\"badge\">%(number)d</span> Invitations dans des communautés"
 
-#: views/community_views.py:220
+#: views/community_views.py:166
+msgid "Communities you manage"
+msgstr "Les communautés que vous gérez"
+
+#: views/community_views.py:222 views/community_views.py:296
 msgid "Create a community"
 msgstr "Créer une communauté"
 
-#: views/community_views.py:221
+#: views/community_views.py:223
 msgid "Edit community"
 msgstr "Modifier cette communauté"
 
-#: views/community_views.py:347
+#: views/community_views.py:237
+msgid "Configuration"
+msgstr ""
+
+#: views/community_views.py:309
+msgid "Manage members"
+msgstr "Gérer les membres"
+
+#: views/community_views.py:349
 msgid "Users updated successfuly."
 msgstr "Les utilisateurs ont été mis à jour."
 
-#: views/community_views.py:350
+#: views/community_views.py:352
 msgid "Please select a user to operate on."
 msgstr "Sélectionnez les personnes à modifier."
 
-#: views/community_views.py:443
+#: views/community_views.py:368
+msgid "Invite people in this community"
+msgstr "Inviter dans cette communauté"
+
+#: views/community_views.py:445
 msgid "Users join the community."
 msgstr "Les personnes ont rejoint cette communauté."
 
-#: views/community_views.py:445
+#: views/community_views.py:447
 msgid "Invitations has been sent."
 msgstr "Les invitations sont envoyées."
 
-#: views/community_views.py:483
+#: views/community_views.py:465
+msgid "Join community"
+msgstr "Rejoindre"
+
+#: views/community_views.py:485
 #, python-format
 msgid "You're now part of %(name)s!<br />Welcome aboard."
 msgstr "Bienvenue dans la communauté %(name)s&nbsp;!"
 
-#: views/community_views.py:508
+#: views/community_views.py:492
+msgid "Leave community"
+msgstr "Quitter la communauté"
+
+#: views/community_views.py:510
 #, python-format
 msgid "You've left %(name)s."
 msgstr "Vous avez quitté la communauté %(name)s."
 
-#: views/community_views.py:534
+#: views/community_views.py:521
+msgid "Delete community"
+msgstr "Supprimer la communauté"
+
+#: views/community_views.py:536
 #, python-format
 msgid "'%(name)s' community has been deleted."
 msgstr "La communauté %(name)s a été supprimée."
 
-#: views/content_views.py:74
+#: views/content_views.py:76
 msgid "New content"
 msgstr "Nouveau contenu"
 
-#: views/content_views.py:76
+#: views/content_views.py:78
 #, python-format
 msgid "Edit %(model_name)s"
 msgstr "Modifier %(model_name)s"
 
-#: views/content_views.py:157
+#: views/content_views.py:159
 #, python-format
 msgid "Delete %(model_name)s"
 msgstr "Supprimer %(model_name)s"
 
-#: views/content_views.py:167
+#: views/content_views.py:169
 #, python-format
 msgid ""
 "Do you really want to delete '%(name)s'?<br />This action cannot be undone."
 msgstr ""
-"Voulez-vous vraiment supprimer '%(name)s'&nbsp;?<br />Cette action est irréversible&nbsp;!"
+"Voulez-vous vraiment supprimer '%(name)s'&nbsp;?<br />Cette action est "
+"irréversible&nbsp;!"
 
-#: views/content_views.py:169
+#: views/content_views.py:171
 msgid "Do you really want to delete this?"
 msgstr "Voulez-vous supprimer ce contenu ?"
 
-#: views/content_views.py:179
+#: views/content_views.py:181
 #, python-format
 msgid "'%(name)s' has been deleted."
 msgstr "Le contenu '%(name)s' est supprimé."
 
-#: views/resource_views.py:346
+#: views/resource_views.py:347
 msgid "Browse"
 msgstr "Parcourir"
 
-#: views/resource_views.py:347
+#: views/resource_views.py:348
 msgid "Drag and drop files to upload"
 msgstr "Glissez-déposez des fichiers ici pour les envoyer."
 
-#: views/resource_views.py:348
+#: views/resource_views.py:349
 msgid "All files uploaded with success."
 msgstr "Les fichiers sont envoyés."
 
-#: views/resource_views.py:349
+#: views/resource_views.py:350
 msgid " files uploaded with success, "
 msgstr " fichiers envoyés,"
 
-#: views/resource_views.py:350
+#: views/resource_views.py:351
 msgid " uploads return an error."
 msgstr " téléchargement échoués."
 
-#: views/resource_views.py:351
+#: views/resource_views.py:352
 msgid "Failed"
 msgstr "Erreur"
 
-#: views/resource_views.py:353
+#: views/resource_views.py:354
 msgid "please select files again without it."
 msgstr "Sélectionnez à nouveau des fichiers."
 
-#: views/resource_views.py:354
+#: views/resource_views.py:355
 msgid "please try again."
 msgstr "veuillez essayer à nouveau."
 
-#: views/resource_views.py:355
+#: views/resource_views.py:356
 msgid "This file is empty:"
 msgstr "Ce fichier est vide :"
 
-#: views/resource_views.py:356
+#: views/resource_views.py:357
 msgid "This file is too large:"
 msgstr "Ce fichier est trop gros :"
 
-#: views/resource_views.py:357
+#: views/resource_views.py:358
 msgid "maximum file size is:"
 msgstr "la taille maximale autorisée est :"
 
-#: views/resource_views.py:358
+#: views/resource_views.py:359
 msgid "This file has invalid extension:"
 msgstr "Ce fichier n'est pas d'un type reconnu :"
 
-#: views/resource_views.py:359
+#: views/resource_views.py:360
 msgid "Only allowed:"
 msgstr "Seuls sont acceptés :"
 
-#: views/resource_views.py:360
+#: views/resource_views.py:361
 msgid "Server error, please contact support and/or try again."
-msgstr "Erreur lors de l'envoi. Essayez à nouveau ou contactez votre administrateur."
+msgstr ""
+"Erreur lors de l'envoi. Essayez à nouveau ou contactez votre administrateur."
 
-#: views/resource_views.py:442
+#: views/resource_views.py:362
 msgid "Unexpected error, please use the 'Browse' button."
 msgstr "Erreur lors de l'envoi, utilisez le bouton 'Parcourir'."
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Thumbnail cropped"
 msgstr "Vignette retaillée"
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Medium size"
 msgstr "Taille moyenne"
 
-#: views/resource_views.py:504
+#: views/resource_views.py:506
 msgid "Full size"
 msgstr "Grande taille"

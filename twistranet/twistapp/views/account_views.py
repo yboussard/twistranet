@@ -78,7 +78,7 @@ class UserAccountView(BaseWallView):
         Just define a valid value for self.title and this get_title() will keep the BaseView behaviour
         """
         if not self.title:
-            return _("%(name)s's profile" % {'name': self.account.title} )
+            return _("%(name)s's profile") % {'name': self.account.title}
         return super(UserAccountView, self).get_title()
 
 
@@ -259,7 +259,7 @@ class PendingNetworkView(AccountListingView, UserAccountView):
     """
     template = AccountListingView.template
     template_variables = UserAccountView.template_variables + AccountListingView.template_variables
-    title = "Pending network requests"
+    title = _("Pending network requests")
     name = "account_pending_network"
     category = ACCOUNT_ACTIONS
     
