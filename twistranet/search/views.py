@@ -134,18 +134,26 @@ class TwistraNetJSONSearchView(BaseView):
             o = {}
             if res.object is not None:
                 res_obj = res.object
+                res_type = res_obj.model_name
                 o['description'] = truncate(getattr(res_obj, 'description', u''), 140)  
-                o['title'] = getattr(res_obj, 'title', u'')
                 o['link'] = res_obj.get_absolute_url()
-                o['type'] = res_obj.model_name
+                o['type'] = res_type
 
-                picture = res_obj.forced_picture
+                if res_type in ('Comment', 'StatusUpdate') :
+                    publisher = res_obj.publisher
+                    o['title'] = getattr(publisher, 'title', u'')
+                    o['link'] = publisher.get_absolute_url()
+                    picture = publisher.forced_picture
+                else :
+                    o['title'] = getattr(res_obj, 'title', u'')
+                    o['link'] = res_obj.get_absolute_url()
+                    picture = res_obj.forced_picture
 
                 if picture is not None :
                     from sorl.thumbnail import default
                     # generate the thumb or just get it
                     try :
-                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, options = {'crop': "center top"}, )
+                        thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, crop='center top', )
                         o['thumb'] = thumb.url 
                     except :
                         o['thumb'] = picture.get_absolute_url()

@@ -13,11 +13,10 @@
 }
 
 .activepost {
-  background-color: #F9F9F9;
+  background-color: #f7f7f7;
   -moz-border-radius: 5px; 
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  border-bottom-color: #F9F9F9 !important;
 }
 
 
@@ -194,7 +193,7 @@
 .comment {
     padding:            5px ;
     margin:             5px 5px 5px 0;
-    background-color:   #f9f9f9;
+    background-color:   #f7f7f7;
 }
 
 .view-comments {

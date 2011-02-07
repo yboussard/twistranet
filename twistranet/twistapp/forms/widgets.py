@@ -196,10 +196,14 @@ class PermissionsWidget(forms.Select):
         if value is None: value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         output = [u'<select%s>' % flatatt(final_attrs)]
-        options = self.render_options([value])
+        render_options = self.render_options([value])
+        options = render_options[0]
+        descriptions = render_options[1]
         if options:
             output.append(options)
         output.append(u'</select>')
+        for d in descriptions :
+            output.append('<div class="permission-description">%s</div>' %d) 
         return mark_safe(u'\n'.join(output))
 
     def render_option(self, selected_choices, option_value, option_label):
@@ -213,6 +217,8 @@ class PermissionsWidget(forms.Select):
         # Normalize to strings.
         selected_choices = set([force_unicode(v) for v in selected_choices])
         output = []
-        for option_value, option_label in self.choices:
+        descriptions = []
+        for option_value, option_label, option_description in self.choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
-        return u'\n'.join(output)
+            descriptions.append(option_description)
+        return u'\n'.join(output), descriptions

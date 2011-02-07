@@ -863,7 +863,7 @@ a.action:hover {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background-color: #F2F2F2;
+    background-color: #f7f7f7;
     border-bottom-color: white;
 }
 .ls-result.first {

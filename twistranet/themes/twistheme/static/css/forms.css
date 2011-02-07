@@ -14,7 +14,7 @@ fieldset {
 
 .fieldWrapper {
   padding: 10px;
-  border-bottom: 1px solid #EEEEEE ;
+  border-bottom: 1px solid white ;
   clear: both;
 }
 
@@ -305,6 +305,9 @@ select.permissions-widget {
     display: none;
 }
 
+.permission-description {
+    display: none;
+}
 
 /* Inline Comment forms */
 .comment-form {
