@@ -7,7 +7,7 @@ from twistranet.content_types import *
 from twistranet.twistapp.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 
-from twistranet.twistapp.lib import dbsetup
+from twistranet.core import bootstrap
 from twistranet import notifier
 
 class SecurityTest(TestCase):
@@ -21,8 +21,8 @@ class SecurityTest(TestCase):
         """
         Get A and B users
         """
-        dbsetup.bootstrap()
-        dbsetup.repair()
+        bootstrap.bootstrap()
+        bootstrap.repair()
         __account__ = SystemAccount.get()
         self.system = __account__
         self.A = UserAccount.objects.get(user__username = "A").account_ptr
@@ -35,6 +35,7 @@ class SecurityTest(TestCase):
         Test various has_role conditions
         """
         __account__ = self.system
+        import sys;sys.stdout=sys.__stdout__;sys.stderr=sys.__stderr__;import pdb;pdb.set_trace()
         obj = GlobalCommunity.objects.get()
         self.failUnless(self.system.has_role(roles.system, obj))
         self.failUnless(self.system.has_role(roles.owner, obj))

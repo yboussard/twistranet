@@ -6,7 +6,7 @@ We also test # of queries
 """
 from django.test import TestCase
 from twistranet.twistapp.models import *
-from twistranet.twistapp.lib import dbsetup
+from twistranet.core import bootstrap
 from django.test.client import Client
 from django.db import connections, DEFAULT_DB_ALIAS
 from django.conf import settings
@@ -18,8 +18,8 @@ class ViewsTest(TestCase):
         """
         Get A and B users
         """
-        dbsetup.bootstrap()
-        dbsetup.repair()
+        bootstrap.bootstrap()
+        bootstrap.repair()
         __account__ = SystemAccount.get()
         self._system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr

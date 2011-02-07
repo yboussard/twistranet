@@ -138,6 +138,8 @@ AUTH_PROFILE_MODULE = "twistapp.UserAccount"
 
 ROOT_URLCONF = 'urls'
 
+TEST_RUNNER = 'twistranet.core.test_runner.TwistranetTestRunner'
+
 #                                                       #
 #            TWISTRANET-SPECIFIC CONFIGURATION          #
 #                                                       #

@@ -4,7 +4,7 @@ This is a set of extensive resource management tests.
 from django.test import TestCase
 from twistranet.twistapp.models import *
 from twistranet.content_types import *
-from twistranet.twistapp.lib import dbsetup
+from twistranet.core import bootstrap
 
 class ResourcesTest(TestCase):
     """
@@ -17,8 +17,8 @@ class ResourcesTest(TestCase):
         """
         Get A and B users
         """
-        dbsetup.bootstrap()
-        dbsetup.repair()
+        bootstrap.bootstrap()
+        bootstrap.repair()
         __account__ = SystemAccount.get()
         self._system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr
