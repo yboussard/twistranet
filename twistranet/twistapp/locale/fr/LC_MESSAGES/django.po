@@ -290,7 +290,7 @@ msgstr "Envoyer"
 
 #: templates/content/content_creation.box.html:4
 msgid "Publish"
-msgstr "Publié par :"
+msgstr "Publier"
 
 #: templates/content/edit.html:6
 #, python-format
