@@ -87,7 +87,7 @@ class HomepageView(UserAccountView):
     Special treatment for homepage.
     """
     name = "twistranet_home"
-    title = "Timeline"
+    title = _("Timeline")
         
     def get_recent_content_list(self):
         """
@@ -118,7 +118,7 @@ class HomepageView(UserAccountView):
 
 class PublicTimelineView(UserAccountView):
     name = "timeline"
-    title = "Public timeline"
+    title = _("Public timeline")
     
     def get_recent_content_list(self):
         """
@@ -136,7 +136,7 @@ class PublicTimelineView(UserAccountView):
 
 class ErrorBaseView(PublicTimelineView):
     name = "error"
-    title =  "Error"
+    title = _("Error")
     error_description = _("<p>Error on page <strong>%(requested_url)s</strong></p>")
 
     def prepare_view(self, *args, **kw):
@@ -152,7 +152,7 @@ class ErrorBaseView(PublicTimelineView):
 
 class Error404View(ErrorBaseView):
     name = "error404"
-    title =  "Sorry, page not found"
+    title = _("Sorry, page not found")
     response_handler_method = HttpResponseNotFound
     error_description = _("""<p>
   The page <em>%(requested_url)s</em> doesn't exist on this site!
@@ -186,7 +186,7 @@ class AccountListingView(BaseView):
     """
     Todo: ALL accounts listing page.
     """
-    title = "Accounts"
+    title = _("Accounts")
     template = "account/list.html"
     template_variables = BaseView.template_variables + [
         "accounts",
@@ -293,7 +293,7 @@ class AccountDelete(BaseObjectActionView):
     model_lookup = UserAccount
     name = "account_delete"
     confirm = "Do you really want to delete this account?<br />All content for this user WILL BE DELETED."
-    title = "Delete account"
+    title = _("Delete account")
  
     def as_action(self):
         if not isinstance(getattr(self, "object", None), self.model_lookup):
@@ -467,7 +467,7 @@ class UserAccountCreate(UserAccountEdit):
 class AccountLogin(BaseView):
     template = "registration/login.html"
     name = "login"
-    title = "Login"
+    title = _("Login")
     template_variables = BaseView.template_variables + \
         ['form', 'site', 'next', ]
     
@@ -524,7 +524,7 @@ class AccountLogout(BaseView):
     template = "registration/login.html"
     template_variables = BaseView.template_variables + ["justloggedout", ]
     name = "logout"
-    title = "Logged out"
+    title = _("Logged out")
 
     def prepare_view(self,):
         messages.info(self.request, _("You are now logged out.<br />Thanks for spending some quality time on Twistranet."))

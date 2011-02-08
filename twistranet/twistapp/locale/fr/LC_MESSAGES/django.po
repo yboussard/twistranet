@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-07 15:31+0100\n"
+"POT-Creation-Date: 2011-02-08 10:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -126,7 +126,7 @@ msgstr "Ajouter à mon réseau"
 
 #: templates/account/view.html:12
 msgid "No contents are available."
-msgstr ""
+msgstr "Pas de contenu."
 
 #: templates/actions/content_summary.part.html:7
 msgid "Delete content"
@@ -483,10 +483,26 @@ msgstr ""
 msgid "%(name)s's profile"
 msgstr "Profil de %(name)s"
 
+#: views/account_views.py:90
+msgid "Timeline"
+msgstr "Fil d'activité"
+
+#: views/account_views.py:121
+msgid "Public timeline"
+msgstr "Fil d'activité public"
+
+#: views/account_views.py:139
+msgid "Error"
+msgstr "Erreur"
+
 #: views/account_views.py:140
 #, python-format
 msgid "<p>Error on page <strong>%(requested_url)s</strong></p>"
 msgstr "<p>Erreur sur la page <strong>%(requested_url)s</strong></p>"
+
+#: views/account_views.py:155
+msgid "Sorry, page not found"
+msgstr "Désolé, page introuvable."
 
 #: views/account_views.py:157
 #, python-format
@@ -522,6 +538,10 @@ msgid ""
 "</p>"
 msgstr ""
 
+#: views/account_views.py:189
+msgid "Accounts"
+msgstr "Comptes"
+
 #: views/account_views.py:209
 msgid "Your network"
 msgstr "Votre réseau"
@@ -549,6 +569,10 @@ msgstr "Demandes de réseau"
 msgid "<span class=\"badge\">%(number)d</span> Pending network requests"
 msgstr ""
 "<span class=\"badge\">%(number)d</span> Demande(s) d'ajout à votre réseau"
+
+#: views/account_views.py:296
+msgid "Delete account"
+msgstr "Supprimer ce compte"
 
 #: views/account_views.py:320
 #, python-format
@@ -632,10 +656,18 @@ msgstr "Modifier votre compte"
 msgid "Edit %(name)s"
 msgstr "Modifier %(name)s"
 
+#: views/account_views.py:470
+msgid "Login"
+msgstr "Se connecter"
+
 #: views/account_views.py:510
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
 "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
+
+#: views/account_views.py:527
+msgid "Logged out"
+msgstr "Déconnecté."
 
 #: views/account_views.py:530
 msgid ""
@@ -699,7 +731,7 @@ msgstr "Modifier cette communauté"
 
 #: views/community_views.py:237
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #: views/community_views.py:309
 msgid "Manage members"
@@ -782,6 +814,10 @@ msgstr "Voulez-vous supprimer ce contenu ?"
 #, python-format
 msgid "'%(name)s' has been deleted."
 msgstr "Le contenu '%(name)s' est supprimé."
+
+#: views/resource_views.py:258
+msgid "Resource browser"
+msgstr "Parcourir les ressources"
 
 #: views/resource_views.py:347
 msgid "Browse"
