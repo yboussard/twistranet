@@ -42,7 +42,7 @@ class BaseForm(BaseEmptyForm):
             self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
             
         # XXX => JMG
-        if self.fileds.has_key("XXX file ? picture ?"):
+        if self.fields.has_key("XXX file ? picture ?"):
             publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
             XXX_my_field.publisher = publisher
 

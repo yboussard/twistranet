@@ -158,9 +158,9 @@ class Account(twistable.Twistable):
         except KeyError:
             # XXX Perm template is invalid or incomplete... Should do something here...
             # But if we're on the system account, let's pass
-            log.warning("Invalid permission template: %s on %s" % (permission, obj.model_class, ))
             if issubclass(self.model_class, SystemAccount):
                 return True
+            log.warning("Invalid permission template: '%s' on %s" % (obj.permissions, obj.model_class, ))
         if self.has_role(p_template[permission], obj):
             return True
         
