@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-08 10:51+0100\n"
+"POT-Creation-Date: 2011-02-09 21:15+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -349,33 +349,65 @@ msgstr "Télécharger %(filetitle)s"
 msgid "Size: %(filesize)s"
 msgstr "Taille : %(filesize)s"
 
-#: templates/email/basemail.html:786
-#, python-format
-msgid ""
-"\n"
-"&nbsp;&nbsp;--<br />\n"
-"&nbsp;&nbsp;Greetings from <a href=\"%(domain)s\">twistranet</a>\n"
-msgstr ""
-"\n"
-"&nbsp;&nbsp;--<br />\n"
-"&nbsp;&nbsp;Cordialement, l'équipe de <a href=\"%(domain)s\">twistranet</a>\n"
+#: templates/email/basemail.html:531
+msgid "twistranet on Facebook"
+msgstr "twistranet sur Facebook"
 
+#: templates/email/basemail.html:543
+msgid "twistranet on Twitter"
+msgstr "@twistranet sur Twitter"
+
+#: templates/email/basemail.html:560
+msgid "What is twistranet?"
+msgstr "Qu'est-ce que twistranet ?"
+
+#: templates/email/basemail.html:561
+msgid ""
+"twistranet is an Enterprise Social Network. It's a place where people can "
+"engage together on projects to make teamwork easier."
+msgstr ""
+"twistranet est un Réseau Social d'Entreprise. C'est un endroit où "
+"l'on peut se consacrer ensemble à des projets et rendre le travail d'équipe "
+"plus agréable."
+
+#: templates/email/basemail.html:562
+msgid ""
+"Want to learn more about twistranet? Visit the <a href=\"http://www."
+"twistranet.com\">twistranet homepage</a> or become a <a href=\"http://www."
+"facebook.com/pages/Twistranet/190139264335508\">fan on Facebook</a>!"
+msgstr ""
+"Voulez-vous en savoir plus sur twistranet ? Visitez la <a href=\""
+"http://www.twistranet.fr\">page d'accueil de twistranet</a> ou devenez "
+"<a href=\"http://www.facebook.com/pages/Twistranet/190139264335508\">fan "
+"sur Facebook</a> !"
+
+#: templates/email/basemail.html:623
+msgid "This email has been sent automatically. Please do not answer it!"
+msgstr "Cet email a été envoyé automatiquement. N'y répondez pas s'il vous plaît."
+
+#: templates/email/request_add_to_network.html:4
 #: templates/email/request_add_to_network.html:10
+#, python-format
+msgid "%(client_title)s wants to join your network"
+msgstr ""
+"Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
+
+#: templates/email/request_add_to_network.html:12
 #, python-format
 msgid "Dear %(target_title)s,"
 msgstr "Cher, Chère %(target_title)s,"
 
-#: templates/email/request_add_to_network.html:13
+#: templates/email/request_add_to_network.html:15
 #, python-format
 msgid "You just recieved a request from %(client_title)s to join your network."
 msgstr ""
 "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
 
-#: templates/email/request_add_to_network.html:16
+#: templates/email/request_add_to_network.html:18
 msgid "You have to take an action!"
 msgstr "Vous devez répondre à cette demande."
 
-#: templates/email/request_add_to_network.html:19
+#: templates/email/request_add_to_network.html:21
 #, python-format
 msgid ""
 "Visit <a href=\"%(domain)s%(client_get_absolute_url)s\">%(client_title)s's "
@@ -891,3 +923,4 @@ msgstr "Taille moyenne"
 #: views/resource_views.py:506
 msgid "Full size"
 msgstr "Grande taille"
+
