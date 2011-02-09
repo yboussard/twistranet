@@ -22,14 +22,24 @@ class UserAccountForm(BaseForm):
 
 class UserAccountCreationForm(UserAccountForm):
     """
-    User account creation.
-    """    
+    User Creation form.
+    We add a few things to make this shiny.
+    """
+    # slug = forms.CharField()
+    email = forms.EmailField()
     class Meta:
         model = UserAccount
-        fields = ('user', 'title', 'description', 'picture', 'permissions', )
-
+        fields = ('slug', 'title', 'description', 'email', )
         widgets = {
-            "picture":          ResourceWidget(),
         }
 
+class UserInviteForm(forms.Form):
+    """
+    User account creation.
+    """
+    email = forms.EmailField()
+    invite_message = forms.CharField(required = False, widget = widgets.Textarea())
+    
+    class Meta:
+        pass
 

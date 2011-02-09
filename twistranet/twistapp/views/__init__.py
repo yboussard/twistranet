@@ -9,7 +9,15 @@ from common_views import *
 
 # Reference actions.
 # Note that actions may be pushed into database one day.
-BaseView.available_actions = [ ConfigurationEdit, PendingNetworkView, CommunityInvitations, MyCommunitiesView, CommunityCreate, ContentCreate, ]
+BaseView.available_actions = [ 
+    ConfigurationEdit, 
+    UserAccountInvite,
+    PendingNetworkView, 
+    CommunityInvitations, 
+    MyCommunitiesView, 
+    CommunityCreate, 
+    ContentCreate, 
+]
 
 UserAccountView.available_actions = super(UserAccountView, UserAccountView).available_actions + \
     [ AddToNetworkView, RemoveFromNetworkView, UserAccountEdit, AccountDelete ]

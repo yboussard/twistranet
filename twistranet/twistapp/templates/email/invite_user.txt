@@ -1,0 +1,19 @@
+{# {% extends "email/basemail.txt" %} #}
+{% load i18n %}
+{% with inviter.title as inviter_title %}
+Subject: {% blocktrans %}{{ inviter_title }} invites you to twistranet{% endblocktrans %}
+
+{% blocktrans %}Hi,{% endblocktrans %}
+  
+  {% blocktrans %}You just recieved a request from {{ inviter_title }} to join twistranet.{% endblocktrans %}
+  
+  {% blocktrans %}It's easy: just click the following link and let things happen!{% endblocktrans %}
+  
+  {% blocktrans %}{{ invitation_absolute_url }}{% endblocktrans %}
+  
+{% blocktrans %}
+  --
+  Greetings from twistranet
+{% endblocktrans %}
+{% endwith %}
+

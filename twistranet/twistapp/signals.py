@@ -14,6 +14,11 @@ twistable_post_save = django.dispatch.Signal(
 # In most of those signals, the "publisher" argument is who this signal
 # is normally targetting.
 
+# This is triggered when a user is invited to TN
+invite_user = django.dispatch.Signal(
+    providing_args = ["target", ]
+)
+
 # This signal is sent when a user adds another one to its network
 # Sender is the Account Model.
 #   client is the Account who explicitly wants to add the other one

@@ -13,7 +13,17 @@ from twistranet.twistapp.signals import *
 import handlers
 
 
-
+#                                       #
+#           Account signals             #
+#                                       #
+invite_user.connect(
+    handlers.MailHandler(
+        recipient_arg = "target",
+        text_template = "email/invite_user.txt",
+        html_template = "email/invite_user.html",
+    ),
+    weak = False,
+)
 
 #                                       #
 #           Community signals           #

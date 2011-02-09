@@ -1,0 +1,19 @@
+{% extends "email/basemail.html" %}
+{% load i18n %}
+
+{% block subject %}{% with inviter.title as inviter_title %}{% blocktrans %}{{ inviter_title }} invites you to {{ site_name }}{% endblocktrans %}{% endwith %}{% endblock %}
+
+{% block content %}
+{% with inviter.title as inviter_title %}
+<h2 class="h2">{% blocktrans %}{{ inviter_title }} invites you to {{ site_name }}{% endblocktrans %}</h2>
+<p>
+{% blocktrans %}Hi,{% endblocktrans %}
+</p>
+<p>  
+  {% blocktrans %}You've just recieved an invitation to join {{ site_name }} from your friend/coworker/stakeholder.{% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}Just <a href="{{ invitation_absolute_url }}"> follow this link</a> to accept this invitation, or ignore this mail to decline.{% endblocktrans %}
+</p>
+{% endwith %}
+{% endblock %}

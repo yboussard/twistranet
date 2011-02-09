@@ -1,4 +1,6 @@
-# Create your views here.
+import hashlib
+import urllib
+
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
 from django.template.loader import get_template
@@ -9,6 +11,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from twistranet.twistapp.signals import invite_user
 
 from twistranet.twistapp.models import *
 from twistranet.twistapp.forms import account_forms
@@ -236,7 +239,6 @@ class PendingNetworkView(AccountListingView, UserAccountView):
 #                                   ACTION VIEWS                                #
 #                                                                               #
 
-
 class AccountDelete(BaseObjectActionView):
     """
     Delete a community from the base
@@ -373,7 +375,7 @@ class RemoveFromNetworkView(BaseObjectActionView):
 
 
 #                                                                           #
-#                           Edition / Creation views                          #
+#                           Edition / Creation views                        #
 #                                                                           #
 
 class UserAccountEdit(UserAccountView):
@@ -400,20 +402,78 @@ class UserAccountEdit(UserAccountView):
         """
         Title suitable for creation or edition
         """
-        if not self.object:
+        if self.title:
+            return super(UserAccountEdit, self).get_title()
+        if not getattr(self, 'object', None):
             return _("Create a user account")
         elif self.object.id == self.auth.id:
             return _("Edit your account")
         return _("Edit %(name)s" % {'name' : self.object.title })
 
-
-class UserAccountCreate(UserAccountEdit):
+class UserAccountInvite(UserAccountEdit):
     """
-    UserAccount creation. Close to the edit class
+    UserAccount invitation. Close to the edit class!
     """
     context_boxes = []
-    form_class = account_forms.UserAccountCreationForm
+    form_class = account_forms.UserInviteForm
+    title = _("Invite user")
+    category = GLOBAL_ACTIONS
+    name = "user_account_invite"
     
+    def as_action(self):
+        if not Account.objects.can_create:
+            return None
+        return BaseView.as_action(self)
+        
+    def prepare_view(self):
+        """
+        Process additional form stuff.
+        Here we've got a valid self.form object.
+        """
+        super(UserAccountInvite, self).prepare_view()
+        if self.form_is_valid:            
+            # Generate the invitation link
+            # Invitation is in two parts: the verification hash and the email address.
+            email = self.form.cleaned_data['email']
+            h = "%s%s" % (settings.SECRET_KEY, self.form.cleaned_data['email'])
+            h = hashlib.md5(h).hexdigest()
+            invite_link = reverse(AccountJoin.name, args = (h, urllib.quote_plus(email)))
+            
+            # Send the invitation (as a signal)
+            invite_user.send(
+                sender = self.__class__,
+                inviter = UserAccount.objects.getCurrentAccount(self.request),
+                invitation_absolute_url = "%s%s" % (cache.get("twistranet_site_domain"), invite_link, ),
+                target = email,
+            )
+            
+            # Say we're happy and redirect
+            messages.info(self.request, _("Invitation sent successfuly."))
+            raise MustRedirect(reverse(self.name))
+    
+#                                                                                           #
+#                                   Account login/logout/join                               #
+#                                                                                           #
+
+class AccountJoin(BaseView):
+    """
+    join TN
+    """
+    template = "account/edit.html"
+    form_class = account_forms.UserAccountCreationForm
+    name = "account_join"
+    title = _("Join")
+    
+    def prepare_view(self, check_hash, email):
+        """
+        Render the join form.
+        """
+        # Check if hash and email match.
+        h = "%s%s" % (settings.SECRET_KEY, email)
+        h = hashlib.md5(h).hexdigest()
+        if not check_hash == h:
+            raise ValidationError("Invalid email. This invitation has been manually edited.")
+
 
 class AccountLogin(BaseView):
     template = "registration/login.html"
