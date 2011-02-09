@@ -34,7 +34,6 @@ def install_theme():
         data = re.sub(regex, repl, data)
     f.write(data)
 
-
     # Copy theme-defined static files into the static directory.
     # We start by importing the theme app
     theme_app = import_module(settings.TWISTRANET_THEME_APP)
@@ -51,10 +50,9 @@ def install_theme():
                 os.mkdir(dest_dir)
         for fname in files:
             dest_file = os.path.join(dest_root, relative_root, fname)
-            if not os.path.isfile(dest_file):
-                shutil.copy(
-                    os.path.join(source_root, root, fname),
-                    dest_file,
-                )
+            shutil.copy(
+                os.path.join(source_root, root, fname),
+                dest_file,
+            )
     
     log.info("The twistranet theme has been installed in your project.")
