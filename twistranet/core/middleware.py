@@ -10,8 +10,9 @@ def set_runtime_paths(sender,**kwds):
     """Dynamically adjust path settings based on runtime configuration.
 
     This function adjusts various path-related settings based on runtime
-    location info obtained from the get_script_prefix() function.  It also
-    adds settings.BASE_URL to record the root of the Django server.
+    location info obtained from the get_script_prefix() function.
+    It also adds settings.BASE_URL to record the root of the Django server,
+    and settings.BASE_DOMAIN to record the root of your domain.
     """
     # We only want to run this once; the signal is just for bootstrapping
     signals.request_started.disconnect(set_runtime_paths)

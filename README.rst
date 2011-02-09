@@ -160,5 +160,8 @@ It's easy to set a new one.
 
 - Start your server again
 
+Greetings
+==========
 
+Email templates are inspired from MailChimp's Email-Blueprints (https://github.com/mailchimp/Email-Blueprints). We do love Mailchimp and strongly recommand it if you want a powerful mailing-list solution!
 

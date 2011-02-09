@@ -7,11 +7,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
 from django.utils.safestring import mark_safe
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib import messages
+from django.contrib.sites.models import Site, RequestSite
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
@@ -148,6 +150,44 @@ class BaseView(object):
                 # log.debug("%s %s" % (self, param))
                 setattr(self, param, getattr(other_view, param, None))
                 
+        # Save domain for later use
+        self.save_site_domain()
+                
+    #                                                                                               #
+    #                                           Misc. stuff                                         #
+    #                                                                                               #
+
+    def save_site_domain(self,):
+        """
+        We use this method to save site domain while we know it.
+        It's most convenient to save it here, while we have the 'request' object...
+        XXX TODO: Move this out from the view, but in the core product.
+        """
+        # If we've got it in the cache, just return it.
+        cached_domain = cache.get("twistranet_site_domain")
+        if cached_domain:
+            return cached_domain
+        
+        # Else, save it in the site framework.
+        Site.objects.clear_cache()
+        current_site = Site.objects.get_current()
+        request_site = RequestSite(self.request)
+        current_site.domain = request_site.domain + reverse('twistranet_home')
+        current_site.save()
+        
+        # ...and of course, generate the full URL in a most convenient way.
+        if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
+            protocol = "https"
+        elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
+            protocol = "http"
+        else:
+            # Can't set it... We silently return by now.
+            return
+        cached_domain = "%s://%s" % (protocol, current_site.domain, )
+        while cached_domain.endswith('/'):
+            cached_domain = cached_domain[:-1]
+        cache.set("twistranet_site_domain", cached_domain, 60 * 60 * 24 * 365)  # 1yr should be enough ;)
+                            
     #                                                                                               #
     #                                       Actions Management                                      #
     #                                                                                               #

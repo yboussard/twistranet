@@ -1,11 +1,13 @@
 {% extends "email/basemail.html" %}
 {% load i18n %}
 
+{% block subject %}{% with client.title as client_title %}{{ site_name }} - {% blocktrans %}{{ client_title }} wants to join your network{% endblocktrans %}{% endwith %}{% endblock %}
+
 {% block content %}
 {% with client.title as client_title %}
 {% with target.title as target_title %}
 {% with client.get_absolute_url as client_get_absolute_url %}
-
+<h2 class="h2">{% blocktrans %}{{ client_title }} wants to join your network{% endblocktrans %}</h2>
 <p>
 {% blocktrans %}Dear {{ target_title }},{% endblocktrans %}
 </p>

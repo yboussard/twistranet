@@ -1,794 +1,648 @@
 {% load i18n %}
-
-<head>
- <style type="text/css">
-
-/*
-    DJANGO Admin styles
-*/
-
-body {
-    margin: 0;
-    padding: 0;
-    font-size: 12px;
-    font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
-    color: #333;
-    background: #fff;
-}
-
-/* LINKS */
-
-a:link, a:visited {
-    color: #5b80b2;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #036;
-}
-
-a img {
-    border: none;
-}
-
-a.section:link, a.section:visited {
-    color: white;
-    text-decoration: none;
-}
-
-/* GLOBAL DEFAULTS */
-
-p, ol, ul, dl {
-    margin: .2em 0 .8em 0;
-}
-
-p {
-    padding: 0;
-    line-height: 140%;
-}
-
-h1,h2,h3,h4,h5 {
-    font-weight: bold;
-}
-
-h1 {
-    font-size: 18px;
-    color: #666;
-    padding: 0 6px 0 0;
-    margin: 0 0 .2em 0;
-}
-
-h2 {
-    font-size: 16px;
-    margin: 1em 0 .5em 0;
-}
-
-h2.subhead {
-    font-weight: normal;
-    margin-top: 0;
-}
-
-h3 {
-    font-size: 14px;
-    margin: .8em 0 .3em 0;
-    color: #666;
-    font-weight: bold;
-}
-
-h4 {
-    font-size: 12px;
-    margin: 1em 0 .8em 0;
-    padding-bottom: 3px;
-}
-
-h5 {
-    font-size: 10px;
-    margin: 1.5em 0 .5em 0;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-ul li {
-    list-style-type: square;
-    padding: 1px 0;
-}
-
-ul.plainlist {
-    margin-left: 0 !important;
-}
-
-ul.plainlist li {
-    list-style-type: none;
-}
-
-li ul {
-    margin-bottom: 0;
-}
-
-li, dt, dd {
-    font-size: 11px;
-    line-height: 14px;
-}
-
-dt {
-    font-weight: bold;
-    margin-top: 4px;
-}
-
-dd {
-    margin-left: 0;
-}
-
-form {
-    margin: 0;
-    padding: 0;
-}
-
-fieldset {
-    margin: 0;
-    padding: 0;
-}
-
-blockquote {
-    font-size: 11px;
-    color: #777;
-    margin-left: 2px;
-    padding-left: 10px;
-    border-left: 5px solid #ddd;
-}
-
-code, pre {
-    font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
-    background: inherit;
-    color: #666;
-    font-size: 11px;
-}
-
-pre.literal-block {
-    margin: 10px;
-    background: #eee;
-    padding: 6px 8px;
-}
-
-code strong {
-    color: #930;
-}
-
-hr {
-    clear: both;
-    color: #eee;
-    background-color: #eee;
-    height: 1px;
-    border: none;
-    margin: 0;
-    padding: 0;
-    font-size: 1px;
-    line-height: 1px;
-}
-
-/* TEXT STYLES & MODIFIERS */
-
-.small {
-    font-size: 11px;
-}
-
-.tiny {
-    font-size: 10px;
-}
-
-p.tiny {
-    margin-top: -2px;
-}
-
-.mini {
-    font-size: 9px;
-}
-
-p.mini {
-    margin-top: -3px;
-}
-
-.help, p.help {
-    font-size: 10px !important;
-    color: #999;
-}
-
-p img, h1 img, h2 img, h3 img, h4 img, td img {
-    vertical-align: middle;
-}
-
-.quiet, a.quiet:link, a.quiet:visited {
-    color: #999 !important;
-    font-weight: normal !important;
-}
-
-.quiet strong {
-    font-weight: bold !important;
-}
-
-.float-right {
-    float: right;
-}
-
-.float-left {
-    float: left;
-}
-
-.clear {
-    clear: both;
-}
-
-.align-left {
-    text-align: left;
-}
-
-.align-right {
-    text-align: right;
-}
-
-.example {
-    margin: 10px 0;
-    padding: 5px 10px;
-    background: #efefef;
-}
-
-.nowrap {
-    white-space: nowrap;
-}
-
-/* TABLES */
-
-table {
-    border-collapse: collapse;
-    border-color: #ccc;
-}
-
-td, th {
-    font-size: 11px;
-    line-height: 13px;
-    border-bottom: 1px solid #eee;
-    vertical-align: top;
-    padding: 5px;
-    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-}
-
-th {
-    text-align: left;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-thead th,
-tfoot td {
-    color: #666;
-    padding: 2px 5px;
-    font-size: 11px;
-    background: #e1e1e1 url(../img/admin/nav-bg.gif) top left repeat-x;
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-tfoot td {
-    border-bottom: none;
-    border-top: 1px solid #ddd;
-}
-
-thead th:first-child,
-tfoot td:first-child {
-    border-left: none !important;
-}
-
-thead th.optional {
-    font-weight: normal !important;
-}
-
-fieldset table {
-    border-right: 1px solid #eee;
-}
-
-tr.row-label td {
-    font-size: 9px;
-    padding-top: 2px;
-    padding-bottom: 0;
-    border-bottom: none;
-    color: #666;
-    margin-top: -1px;
-}
-
-tr.alt {
-    background: #f6f6f6;
-}
-
-.row1 {
-    background: #EDF3FE;
-}
-
-.row2 {
-    background: white;
-}
-
-/* SORTABLE TABLES */
-
-thead th a:link, thead th a:visited {
-    color: #666;
-    display: block;
-}
-
-table thead th.sorted {
-    background-position: bottom left !important;
-}
-
-table thead th.sorted a {
-    padding-right: 13px;
-}
-
-table thead th.ascending a {
-    background: url(../img/admin/arrow-down.gif) right .4em no-repeat;
-}
-
-table thead th.descending a {
-    background: url(../img/admin/arrow-up.gif) right .4em no-repeat;
-}
-
-/* ORDERABLE TABLES */
-
-table.orderable tbody tr td:hover {
-    cursor: move;
-}
-
-table.orderable tbody tr td:first-child {
-    padding-left: 14px;
-    background-image: url(../img/admin/nav-bg-grabber.gif);
-    background-repeat: repeat-y;
-}
-
-table.orderable-initalized .order-cell, body>tr>td.order-cell {
-    display: none;
-}
-
-/* FORM DEFAULTS */
-
-input, textarea, select, .form-row p {
-    margin: 2px 0;
-    padding: 2px 3px;
-    vertical-align: middle;
-    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-    font-weight: normal;
-    font-size: 11px;
-}
-
-textarea {
-    vertical-align: top !important;
-}
-
-input[type=text], input[type=password], textarea, select, .vTextField {
-    border: 1px solid #ccc;
-}
-
-/* FORM BUTTONS */
-
-.button, input[type=submit], input[type=button], .submit-row input {
-    background: white url(../img/admin/nav-bg.gif) bottom repeat-x;
-    padding: 3px 5px;
-    color: black;
-    border: 1px solid #bbb;
-    border-color: #ddd #aaa #aaa #ddd;
-}
-
-.button:active, input[type=submit]:active, input[type=button]:active {
-    background-image: url(../img/admin/nav-bg-reverse.gif);
-    background-position: top;
-}
-
-.button.default, input[type=submit].default, .submit-row input.default {
-    border: 2px solid #5b80b2;
-    background: #7CA0C7 url(../img/admin/default-bg.gif) bottom repeat-x;
-    font-weight: bold;
-    color: white;
-    float: right;
-}
-
-.button.default:active, input[type=submit].default:active {
-    background-image: url(../img/admin/default-bg-reverse.gif);
-    background-position: top;
-}
-
-/* MODULES */
-
-.module {
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    background: white;
-}
-
-.module p, .module ul, .module h3, .module h4, .module dl, .module pre {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.module blockquote {
-    margin-left: 12px;
-}
-
-.module ul, .module ol {
-    margin-left: 1.5em;
-}
-
-.module h3 {
-    margin-top: .6em;
-}
-
-.module h2, .module caption, .inline-group h2 {
-    margin: 0;
-    padding: 2px 5px 3px 5px;
-    font-size: 11px;
-    text-align: left;
-    font-weight: bold;
-    background: #7CA0C7 url(../img/admin/default-bg.gif) top left repeat-x;
-    color: white;
-}
-
-.module table {
-    border-collapse: collapse;
-}
-
-/* MESSAGES & ERRORS */
-
-ul.messagelist {
-    padding: 0 0 5px 0;
-    margin: 0;
-}
-
-ul.messagelist li {
-    font-size: 12px;
-    display: block;
-    padding: 4px 5px 4px 25px;
-    margin: 0 0 3px 0;
-    border-bottom: 1px solid #ddd;
-    color: #666;
-    background: #ffc url(../img/admin/icon_success.gif) 5px .3em no-repeat;
-}
-
-ul.messagelist li.warning{
-    background-image: url(../img/admin/icon_alert.gif);
-}
-
-ul.messagelist li.error{
-    background-image: url(../img/admin/icon_error.gif);
-}
-
-.errornote {
-    font-size: 12px !important;
-    display: block;
-    padding: 4px 5px 4px 25px;
-    margin: 0 0 3px 0;
-    border: 1px solid red;
-    color: red;
-    background: #ffc url(../img/admin/icon_error.gif) 5px .3em no-repeat;
-}
-
-ul.errorlist {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.errorlist li {
-    font-size: 12px !important;
-    display: block;
-    padding: 4px 5px 4px 25px;
-    margin: 0 0 3px 0;
-    border: 1px solid red;
-    color: white;
-    background: red url(../img/admin/icon_alert.gif) 5px .3em no-repeat;
-}
-
-.errorlist li a {
- 	color: white;
-    text-decoration: underline;
-}
-
-td ul.errorlist {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-td ul.errorlist li {
-    margin: 0 !important;
-}
-
-.errors {
-    background: #ffc;
-}
-
-.errors input, .errors select {
-    border: 1px solid red;
-}
-
-div.system-message {
-    background: #ffc;
-    margin: 10px;
-    padding: 6px 8px;
-    font-size: .8em;
-}
-
-div.system-message p.system-message-title {
-    padding: 4px 5px 4px 25px;
-    margin: 0;
-    color: red;
-    background: #ffc url(../img/admin/icon_error.gif) 5px .3em no-repeat;
-}
-
-.description {
-    font-size: 12px;
-    padding: 5px 0 0 12px;
-}
-
-/* BREADCRUMBS */
-
-div.breadcrumbs {
-    background: white url(../img/admin/nav-bg-reverse.gif) 0 -10px repeat-x;
-    padding: 2px 8px 3px 8px;
-    font-size: 11px;
-    color: #999;
-    border-top: 1px solid white;
-    border-bottom: 1px solid #ccc;
-    text-align: left;
-}
-
-/* ACTION ICONS */
-
-.addlink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_addlink.gif) 0 .2em no-repeat;
-}
-
-.changelink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_changelink.gif) 0 .2em no-repeat;
-}
-
-.deletelink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_deletelink.gif) 0 .25em no-repeat;
-}
-
-a.deletelink:link, a.deletelink:visited {
-    color: #CC3434;
-}
-
-a.deletelink:hover {
-    color: #993333;
-}
-
-/* OBJECT TOOLS */
-
-.object-tools {
-    font-size: 10px;
-    font-weight: bold;
-    font-family: Arial,Helvetica,sans-serif;
-    padding-left: 0;
-    float: right;
-    position: relative;
-    margin-top: -2.4em;
-    margin-bottom: -2em;
-}
-
-.form-row .object-tools {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    float: none;
-    height: 2em;
-    padding-left: 3.5em;
-}
-
-.object-tools li {
-    display: block;
-    float: left;
-    background: url(../img/admin/tool-left.gif) 0 0 no-repeat;
-    padding: 0 0 0 8px;
-    margin-left: 2px;
-    height: 16px;
-}
-
-.object-tools li:hover {
-    background: url(../img/admin/tool-left_over.gif) 0 0 no-repeat;
-}
-
-.object-tools a:link, .object-tools a:visited {
-    display: block;
-    float: left;
-    color: white;
-    padding: .1em 14px .1em 8px;
-    height: 14px;
-    background: #999 url(../img/admin/tool-right.gif) 100% 0 no-repeat;
-}
-
-.object-tools a:hover, .object-tools li:hover a {
-    background: #5b80b2 url(../img/admin/tool-right_over.gif) 100% 0 no-repeat;
-}
-
-.object-tools a.viewsitelink, .object-tools a.golink {
-    background: #999 url(../img/admin/tooltag-arrowright.gif) top right no-repeat;
-    padding-right: 28px;
-}
-
-.object-tools a.viewsitelink:hover, .object-tools a.golink:hover {
-    background: #5b80b2 url(../img/admin/tooltag-arrowright_over.gif) top right no-repeat;
-}
-
-.object-tools a.addlink {
-    background: #999 url(../img/admin/tooltag-add.gif) top right no-repeat;
-    padding-right: 28px;
-}
-
-.object-tools a.addlink:hover {
-    background: #5b80b2 url(../img/admin/tooltag-add_over.gif) top right no-repeat;
-}
-
-/* OBJECT HISTORY */
-
-table#change-history {
-    width: 100%;
-}
-
-table#change-history tbody th {
-    width: 16em;
-}
-
-/* PAGE STRUCTURE */
-
-#container {
-    position: relative;
-    width: 100%;
-    min-width: 760px;
-    padding: 0;
-}
-
-#content {
-    margin: 10px 15px;
-}
-
-#header {
-    width: 100%;
-}
-
-#content-main {
-    float: left;
-    width: 100%;
-}
-
-#content-related {
-    float: right;
-    width: 18em;
-    position: relative;
-    margin-right: -19em;
-}
-
-#footer {
-    clear: both;
-    padding: 10px;
-}
-
-/* COLUMN TYPES */
-
-.colMS {
-    margin-right: 20em !important;
-}
-
-.colSM {
-    margin-left: 20em !important;
-}
-
-.colSM #content-related {
-    float: left;
-    margin-right: 0;
-    margin-left: -19em;
-}
-
-.colSM #content-main {
-    float: right;
-}
-
-.popup .colM {
-    width: 95%;
-}
-
-.subcol {
-    float: left;
-    width: 46%;
-    margin-right: 15px;
-}
-
-.dashboard #content {
-    width: 500px;
-}
-
-/* HEADER */
-
-#header {
-    background: #417690;
-    color: #ffc;
-    overflow: hidden;
-}
-
-#header a:link, #header a:visited {
-    color: white;
-}
-
-#header a:hover {
-    text-decoration: underline;
-}
-
-#branding h1 {
-    padding: 0 10px;
-    font-size: 18px;
-    margin: 8px 0;
-    font-weight: normal;
-    color: #f4f379;
-}
-
-#branding h2 {
-    padding: 0 10px;
-    font-size: 14px;
-    margin: -8px 0 8px 0;
-    font-weight: normal;
-    color: #ffc;
-}
-
-#user-tools {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1.2em 10px;
-    font-size: 11px;
-    text-align: right;
-}
-
-/* SIDEBAR */
-
-#content-related h3 {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 3px;
-}
-
-#content-related h4 {
-    font-size: 11px;
-}
-
-#content-related .module h2 {
-    background: #eee url(../img/admin/nav-bg.gif) bottom left repeat-x;
-    color: #666;
-}
-</style>
-</head>
-<body class="login">
-    
-    
-    
-<div id="logo">
-    <div class="logo-title">TwistraNet.</div>
-</div>
-
-<div class="clear"><!-- --></div>
-   
-  <div id="container">
-	<div class="colM" id="content">
-        {% block content %}
-
-
-        {% endblock %}
-	</div>
-  </div>
-
-{% block signature %}
-{% blocktrans %}
-&nbsp;&nbsp;--<br />
-&nbsp;&nbsp;Greetings from <a href="{{ domain }}">twistranet</a>
-{% endblocktrans %}
-{% endblock %}
-
-</div>
-
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <title>{% block subject %}{% endblock %}</title>
+		<style type="text/css">
+			/* Client-specific Styles */
+			#outlook a{padding:0;} /* Force Outlook to provide a "view in browser" button. */
+			body{width:100% !important;} /* Force Hotmail to display emails at full width */
+			body{-webkit-text-size-adjust:none;} /* Prevent Webkit platforms from changing default text sizes. */
+			
+			/* Reset Styles */
+			body{margin:0; padding:0;}
+			img{border:none; font-size:14px; font-weight:bold; height:auto; line-height:100%; outline:none; text-decoration:none; text-transform:capitalize;}
+			#backgroundTable{height:100% !important; margin:0; padding:0; width:100% !important;}
+			
+			/* Template Styles */
+
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: COMMON PAGE ELEMENTS /\/\/\/\/\/\/\/\/\/\ */
+            .siteName {
+                background: transparent;
+            }
+
+            #site_name {
+                color: #E00023;
+                font-size: 36px;
+                font-weight: bold;
+                padding-bottom: 0.3em;
+                padding-top: 0;
+                text-align: left;
+            }
+            
+            #baseline {
+                font-size: 24px;
+                color: #686868;
+                text-align: left;
+            }
+
+			/**
+			* @tab Page
+			* @section background color
+			* @tip Set the background color for your email. You may want to choose one that matches your company's branding.
+			* @theme page
+			*/
+			body, #backgroundTable{
+				/*@editable*/ background-color:#FAFAFA;
+			}
+
+			/**
+			* @tab Page
+			* @section email border
+			* @tip Set the border for your email.
+			*/
+			#templateContainer{
+				/*@editable*/ border: 1px solid #DDDDDD;
+			}
+
+			/**
+			* @tab Page
+			* @section heading 1
+			* @tip Set the styling for all first-level headings in your emails. These should be the largest of your headings.
+			* @style heading 1
+			*/
+			h1, .h1{
+				/*@editable*/ color:#202020;
+				display:block;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:34px;
+				/*@editable*/ font-weight:bold;
+				/*@editable*/ line-height:100%;
+				margin-top:0;
+				margin-right:0;
+				margin-bottom:10px;
+				margin-left:0;
+				/*@editable*/ text-align:left;
+			}
+
+			/**
+			* @tab Page
+			* @section heading 2
+			* @tip Set the styling for all second-level headings in your emails.
+			* @style heading 2
+			*/
+			h2, .h2{
+				/*@editable*/ color:#202020;
+				display:block;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:30px;
+				/*@editable*/ font-weight:bold;
+				/*@editable*/ line-height:100%;
+				margin-top:0;
+				margin-right:0;
+				margin-bottom:10px;
+				margin-left:0;
+				/*@editable*/ text-align:left;
+			}
+
+			/**
+			* @tab Page
+			* @section heading 3
+			* @tip Set the styling for all third-level headings in your emails.
+			* @style heading 3
+			*/
+			h3, .h3{
+				/*@editable*/ color:#202020;
+				display:block;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:26px;
+				/*@editable*/ font-weight:bold;
+				/*@editable*/ line-height:100%;
+				margin-top:0;
+				margin-right:0;
+				margin-bottom:10px;
+				margin-left:0;
+				/*@editable*/ text-align:left;
+			}
+
+			/**
+			* @tab Page
+			* @section heading 4
+			* @tip Set the styling for all fourth-level headings in your emails. These should be the smallest of your headings.
+			* @style heading 4
+			*/
+			h4, .h4{
+				/*@editable*/ color:#202020;
+				display:block;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:22px;
+				/*@editable*/ font-weight:bold;
+				/*@editable*/ line-height:100%;
+				margin-top:0;
+				margin-right:0;
+				margin-bottom:10px;
+				margin-left:0;
+				/*@editable*/ text-align:left;
+			}
+
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: PREHEADER /\/\/\/\/\/\/\/\/\/\ */
+
+			/**
+			* @tab Header
+			* @section preheader style
+			* @tip Set the background color for your email's preheader area.
+			* @theme page
+			*/
+			#templatePreheader{
+				/*@editable*/ background-color:#FAFAFA;
+			}
+
+			/**
+			* @tab Header
+			* @section preheader text
+			* @tip Set the styling for your email's preheader text. Choose a size and color that is easy to read.
+			*/
+			.preheaderContent div{
+				/*@editable*/ color:#505050;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:10px;
+				/*@editable*/ line-height:100%;
+				/*@editable*/ text-align:left;
+			}
+
+			/**
+			* @tab Header
+			* @section preheader link
+			* @tip Set the styling for your email's preheader links. Choose a color that helps them stand out from your text.
+			*/
+			.preheaderContent div a:link, .preheaderContent div a:visited{
+				/*@editable*/ color:#336699;
+				/*@editable*/ font-weight:normal;
+				/*@editable*/ text-decoration:underline;
+			}
+
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: HEADER /\/\/\/\/\/\/\/\/\/\ */
+
+			/**
+			* @tab Header
+			* @section header style
+			* @tip Set the background color and border for your email's header area.
+			* @theme header
+			*/
+			#templateHeader{
+				/*@editable*/ background-color:#D8E2EA;
+				/*@editable*/ border-bottom:0;
+			}
+
+			/**
+			* @tab Header
+			* @section header text
+			* @tip Set the styling for your email's header text. Choose a size and color that is easy to read.
+			*/
+			.headerContent{
+				/*@editable*/ color:#202020;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:34px;
+				/*@editable*/ font-weight:bold;
+				/*@editable*/ line-height:100%;
+				/*@editable*/ padding:0;
+				/*@editable*/ text-align:center;
+				/*@editable*/ vertical-align:middle;
+			}
+
+			/**
+			* @tab Header
+			* @section header link
+			* @tip Set the styling for your email's header links. Choose a color that helps them stand out from your text.
+			*/
+			.headerContent a:link, .headerContent a:visited{
+				/*@editable*/ color:#336699;
+				/*@editable*/ font-weight:normal;
+				/*@editable*/ text-decoration:underline;
+			}
+
+			#headerImage{
+				height:auto;
+				max-width:600px;
+			}
+
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: MAIN BODY /\/\/\/\/\/\/\/\/\/\ */
+
+			/**
+			* @tab Body
+			* @section body style
+			* @tip Set the background color for your email's body area.
+			*/
+			#templateContainer, .bodyContent{
+				/*@editable*/ background-color:#FDFDFD;
+			}
+			
+			/**
+			* @tab Body
+			* @section body text
+			* @tip Set the styling for your email's main content text. Choose a size and color that is easy to read.
+			* @theme main
+			*/
+			.bodyContent div{
+				/*@editable*/ color:#505050;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:14px;
+				/*@editable*/ line-height:150%;
+				/*@editable*/ text-align:left;
+			}
+			
+			/**
+			* @tab Body
+			* @section body link
+			* @tip Set the styling for your email's main content links. Choose a color that helps them stand out from your text.
+			*/
+			.bodyContent div a:link, .bodyContent div a:visited{
+				/*@editable*/ color:#336699;
+				/*@editable*/ font-weight:normal;
+				/*@editable*/ text-decoration:underline;
+			}
+			
+			.bodyContent img{
+				display:inline;
+				height:auto;
+			}
+			
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: SIDEBAR /\/\/\/\/\/\/\/\/\/\ */
+			
+			/**
+			* @tab Sidebar
+			* @section sidebar style
+			* @tip Set the background color and border for your email's sidebar area.
+			*/
+			#templateSidebar{
+				/*@editable*/ background-color:#FFFFFF;
+				/*@editable*/ border-left:0;
+			}
+			
+			/**
+			* @tab Sidebar
+			* @section sidebar text
+			* @tip Set the styling for your email's sidebar text. Choose a size and color that is easy to read.
+			*/
+			.sidebarContent div{
+				/*@editable*/ color:#505050;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:12px;
+				/*@editable*/ line-height:150%;
+				/*@editable*/ text-align:left;
+			}
+			
+			/**
+			* @tab Sidebar
+			* @section sidebar link
+			* @tip Set the styling for your email's sidebar links. Choose a color that helps them stand out from your text.
+			*/
+			.sidebarContent div a:link, .sidebarContent div a:visited{
+				/*@editable*/ color:#336699;
+				/*@editable*/ font-weight:normal;
+				/*@editable*/ text-decoration:underline;
+			}
+			
+			.sidebarContent img{
+				display:inline;
+				height:auto;
+			}
+			
+			/* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: FOOTER /\/\/\/\/\/\/\/\/\/\ */
+			
+			/**
+			* @tab Footer
+			* @section footer style
+			* @tip Set the background color and top border for your email's footer area.
+			* @theme footer
+			*/
+			#templateFooter{
+				/*@editable*/ background-color:#FDFDFD;
+				/*@editable*/ border-top:0;
+			}
+			
+			/**
+			* @tab Footer
+			* @section footer text
+			* @tip Set the styling for your email's footer text. Choose a size and color that is easy to read.
+			* @theme footer
+			*/
+			.footerContent div{
+				/*@editable*/ color:#707070;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:12px;
+				/*@editable*/ line-height:125%;
+				/*@editable*/ text-align:left;
+			}
+			
+			/**
+			* @tab Footer
+			* @section footer link
+			* @tip Set the styling for your email's footer links. Choose a color that helps them stand out from your text.
+			*/
+			.footerContent div a:link, .footerContent div a:visited{
+				/*@editable*/ color:#336699;
+				/*@editable*/ font-weight:normal;
+				/*@editable*/ text-decoration:underline;
+			}
+			
+			.footerContent img{
+				display:inline;
+			}
+			
+			/**
+			* @tab Footer
+			* @section social bar style
+			* @tip Set the background color and border for your email's footer social bar.
+			* @theme footer
+			*/
+			#social{
+				/*@editable*/ background-color:#FAFAFA;
+				/*@editable*/ border:0;
+			}
+			
+			/**
+			* @tab Footer
+			* @section social bar style
+			* @tip Set the background color and border for your email's footer social bar.
+			*/
+			#social div{
+				/*@editable*/ text-align:center;
+			}
+			
+			/**
+			* @tab Footer
+			* @section utility bar style
+			* @tip Set the background color and border for your email's footer utility bar.
+			* @theme footer
+			*/
+			#utility{
+				/*@editable*/ background-color:#FDFDFD;
+				/*@editable*/ border:0;
+			}
+
+			/**
+			* @tab Footer
+			* @section utility bar style
+			* @tip Set the background color and border for your email's footer utility bar.
+			*/
+			#utility div{
+				/*@editable*/ text-align:center;
+			}
+			
+			#monkeyRewards img{
+				max-width:190px;
+			}
+		</style>
+	</head>
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+    	<center>
+        	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
+            	<tr>
+                	<td align="center" valign="top">
+                        <!-- // Begin Template Preheader \\ -->
+                        <table border="0" cellpadding="10" cellspacing="0" width="600" id="templatePreheader">
+                            <tr>
+                                <td valign="top" class="preheaderContent">
+                                
+                                	<!-- // Begin Module: Standard Preheader \ -->
+                                    <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                                    	<tr>
+                                        	<td valign="top">
+                                            	<div>
+                                            	    {% block teaser %}
+                                            	        <!--
+                                                	    Use this area to offer a short teaser of your email's content. 
+                                                	    Text here will show in the preview area of some email clients.
+                                                	    -->
+                                                	{% endblock %}
+                                                </div>
+                                            </td>
+											<td valign="top" width="190">
+                                            	<div>
+                                            	    {% block alternate_link %}
+                                            	        <!--
+                                                	        Is this email not displaying correctly?<br />
+                                                	        <a href="*|ARCHIVE|*" target="_blank">View it in your browser</a>.
+                                                	    -->
+                                                	{% endblock %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                	<!-- // End Module: Standard Preheader \ -->
+                                
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- // End Template Preheader \\ -->
+                    	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer">
+                        	<tr>
+                            	<td align="center" valign="top">
+                                    <!-- // Begin Template Header \\ -->
+                                	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader">
+                                        <tr>
+                                            
+                                        	<!-- // Begin Sidebar \\  -->
+                                        	<td valign="top" width="160">
+                                            	<table border="0" cellpadding="0" cellspacing="0" width="160">
+                                                	<tr>
+                                                    	<td valign="top" class="sidebarContent">
+                                                            <!-- // Begin Module: Top Image with Content \\ -->
+                                                            <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                                <tr mc:repeatable>
+                                                                    <td valign="top">
+                                                                        {# <img src="http://gallery.mailchimp.com/653153ae841fd11de66ad181a/images/placeholder_160.gif" style="max-width:160px;" mc:label="image" mc:edit="tiwc200_image00" /> #}
+                                                                        <img src="{{ domain }}/static/images/logo-160.png" style="max-width:160px;" mc:label="image" mc:edit="tiwc200_image00" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <!-- // End Module: Top Image with Content \\ -->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <!-- // End Sidebar \\ -->
+
+                                            <td class="headerContent" width="400">
+                                            	<!-- // Begin Module: Standard Header Image \\ -->
+                                                <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <div id="site_name">{{ site_name }}</div>
+                                                            <div id="baseline">{{ baseline }}</div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        	<!-- // End Module: Standard Header Image \\ -->
+                                        </tr>
+                                    </table>
+                                    <!-- // End Template Header \\ -->
+                                </td>
+                            </tr>
+                        	<tr>
+                            	<td align="center" valign="top">
+                                    <!-- // Begin Template Body \\ -->
+                                	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
+                                    	<tr>
+                                        	<td valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td valign="top" class="bodyContent">
+                                            
+                                                            <!-- // Begin Module: Standard Content \\ -->
+                                                            <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td valign="top">
+			                                                            <div mc:edit="std_content00">
+			                                                                {% block content %}
+			                                                                    <!--
+			                                                                <h1 class="h1">Heading 1</h1>
+			                                                                <h2 class="h2">Heading 2</h2>
+			                                                                <h3 class="h3">Heading 3</h3>
+			                                                                <h4 class="h4">Heading 4</h4>
+			                                                                <strong>Getting started:</strong> Customize your template by clicking on the style editor tabs up above. Set your fonts, colors, and styles. After setting your styling is all done you can click here in this area, delete the text, and start adding your own awesome content!
+			                                                                <br />
+			                                                                <br />
+			                                                                After you enter your content, highlight the text you want to style and select the options you set in the style editor in the "styles" drop down box. Want to <a href="http://www.mailchimp.com/kb/article/im-using-the-style-designer-and-i-cant-get-my-formatting-to-change" target="_blank">get rid of styling on a bit of text</a>, but having trouble doing it? Just use the "remove formatting" button to strip the text of any formatting and reset your style.
+			                                                                    -->
+			                                                                {% endblock %}
+			                                                            </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <!-- // End Module: Standard Content \\ -->
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        	<!-- // Begin Sidebar \\  -->
+                                            {# <td valign="top" width="200" id="templateSidebar"> #}
+                                            {#                                              <table border="0" cellpadding="0" cellspacing="0" width="200"> #}
+                                            {#                                                  <tr> #}
+                                            {#                                                      <td valign="top" class="sidebarContent"> #}
+                                            {#                                                          #}
+                                            {#                                                             <!-- // Begin Module: Social Block with Icons \\  #}
+                                            {#                                                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding-top:20px; padding-left:20px;"> #}
+                                            {#                                                                 <tr> #}
+                                            {#                                                                     <td valign="top"> #}
+                                            {#                                                                         <table border="0" cellpadding="0" cellspacing="4"> #}
+                                            {#                                                                             <tr mc:hideable> #}
+                                            {#                                                                                 <td align="left" valign="middle" width="16"> #}
+                                            {#                                                                                     <img src="http://gallery.mailchimp.com/653153ae841fd11de66ad181a/images/sfs_icon_facebook.png" style="margin:0 !important;" /> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                                 <td align="left" valign="top"> #}
+                                            {#                                                                                     <div mc:edit="sbwi_link_one"> #}
+                                            {#                                                                                         <a href="*|FACEBOOK:PROFILEURL|*">Friend on Facebook</a> #}
+                                            {#                                                                                     </div> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                             </tr> #}
+                                            {#                                                                             <tr mc:hideable> #}
+                                            {#                                                                                 <td align="left" valign="middle" width="16"> #}
+                                            {#                                                                                     <img src="http://gallery.mailchimp.com/653153ae841fd11de66ad181a/images/sfs_icon_twitter.png" style="margin:0 !important;" /> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                                 <td align="left" valign="top"> #}
+                                            {#                                                                                     <div mc:edit="sbwi_link_two"> #}
+                                            {#                                                                                         <a href="*|TWITTER:PROFILEURL|*">Follow on Twitter</a> #}
+                                            {#                                                                                     </div> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                             </tr> #}
+                                            {#                                                                             <tr mc:hideable> #}
+                                            {#                                                                                 <td align="left" valign="middle" width="16"> #}
+                                            {#                                                                                     <img src="http://gallery.mailchimp.com/653153ae841fd11de66ad181a/images/sfs_icon_forward.png" style="margin:0 !important;" /> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                                 <td align="left" valign="top"> #}
+                                            {#                                                                                     <div mc:edit="sbwi_link_three"> #}
+                                            {#                                                                                         <a href="*|FORWARD|*">Forward to a Friend</a> #}
+                                            {#                                                                                     </div> #}
+                                            {#                                                                                 </td> #}
+                                            {#                                                                             </tr> #}
+                                            {#                                                                         </table> #}
+                                            {#                                                                     </td> #}
+                                            {#                                                                 </tr> #}
+                                            {#                                                             </table> #}
+                                            {#                                                             <!-- // End Module: Social Block with Icons \\ --> #}
+                                            {#  #}
+                                            {#                                                             <!-- // Begin Module: Top Image with Content \\ --> #}
+                                            {#                                                             <table border="0" cellpadding="20" cellspacing="0" width="100%"> #}
+                                            {#                                                                 <tr mc:repeatable> #}
+                                            {#                                                                     <td valign="top"> #}
+                                            {#                                                                         <img src="http://gallery.mailchimp.com/653153ae841fd11de66ad181a/images/placeholder_160.gif" style="max-width:160px;" mc:label="image" mc:edit="tiwc200_image00" /> #}
+                                            {#                                                                         <div mc:edit="tiwc200_content00"> #}
+                                            {#                                                                          <h4 class="h4">Heading 4</h4> #}
+                                            {#                                                                          <strong>Repeatable content blocks:</strong> Repeatable sections are noted with plus and minus signs so that you can add and subtract content blocks. You can also <a href="http://www.mailchimp.com/kb/article/how-do-i-work-with-repeatable-content-blocks" target="_blank">get a little fancy</a>: repeat blocks and remove all text to make image "gallery" sections, or do the opposite and remove images for text-only blocks! #}
+                                            {#                                                                         </div> #}
+                                            {#                                                                     </td> #}
+                                            {#                                                                 </tr> #}
+                                            {#                                                             </table> #}
+                                            {#                                                             <!-- // End Module: Top Image with Content \\ --> #}
+                                            {#                                                          #}
+                                            {#                                                         </td> #}
+                                            {#                                                     </tr> #}
+                                            {#                                                 </table> #}
+                                            {#                                             </td> #}
+                                            {#                                             <!-- // End Sidebar \\ --> #}
+                                        </tr>
+                                    </table>
+                                    <!-- // End Template Body \\ -->
+                                </td>
+                            </tr>
+                        	<tr>
+                            	<td align="center" valign="top">
+                                    <!-- // Begin Template Footer \\ -->
+                                	<table border="0" cellpadding="10" cellspacing="0" width="600" id="templateFooter">
+                                    	<tr>
+                                        	<td valign="top" class="footerContent">
+                                            
+                                                <!-- // Begin Module: Standard Footer \\ -->
+                                                <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td colspan="2" valign="middle" id="social">
+                                                            <div mc:edit="std_social">
+                                                                {# &nbsp;<a href="*|TWITTER:PROFILEURL|*">follow on Twitter</a> | <a href="*|FACEBOOK:PROFILEURL|*">friend on Facebook</a> | <a href="*|FORWARD|*">forward to a friend</a>&nbsp; #}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td valign="top" width="350">
+                                                            <br />
+                                                            {# <div mc:edit="std_footer"> #}
+                                                            {#     <em>Copyright &copy; *|CURRENT_YEAR|* *|LIST:COMPANY|*, All rights reserved.</em> #}
+                                                            {#     <br /> #}
+                                                            {#     *|IFNOT:ARCHIVE_PAGE|* #}
+                                                            {#     *|LIST:DESCRIPTION|* #}
+                                                            {#     <br /> #}
+                                                            {#     <strong>Our mailing address is:</strong> #}
+                                                            {#     <br /> #}
+                                                            {#     *|HTML:LIST_ADDRESS_HTML|* #}
+                                                            {#     <br /> #}
+                                                            {#     *|END:IF|* #}
+                                                            {# </div> #}
+                                                            {# <br /> #}
+                                                        </td>
+                                                        <td valign="top" width="190" id="monkeyRewards">
+                                                            <br />
+                                                            <div mc:edit="monkeyrewards">
+                                                                {# *|IF:REWARDS|* *|HTML:REWARDS|* *|END:IF|* #}
+                                                            </div>
+                                                            <br />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" valign="middle" id="utility">
+                                                            <div mc:edit="std_utility">
+                                                                {% blocktrans %}This email has been sent automatically. Please do not answer it!{% endblocktrans %}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <!-- // End Module: Standard Footer \\ -->
+                                            
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- // End Template Footer \\ -->
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>    
