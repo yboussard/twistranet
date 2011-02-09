@@ -129,55 +129,6 @@ class PublicTimelineView(UserAccountView):
         return latest_list
 
 
-#                                                                                   #
-#                                   Error pages                                     #
-#                                                                                   #
-
-
-class ErrorBaseView(PublicTimelineView):
-    name = "error"
-    title = _("Error")
-    error_description = _("<p>Error on page <strong>%(requested_url)s</strong></p>")
-
-    def prepare_view(self, *args, **kw):
-        """
-        Add a few parameters for the view
-        """                     
-        super(ErrorBaseView, self).prepare_view(*args, **kw)
-        meta_infos = self.request.META
-        requested_url = '%s//%s%s' %(meta_infos.get('wsgi.url_scheme',''),
-                                     meta_infos.get('HTTP_HOST',''),
-                                     meta_infos.get('PATH_INFO',''),)
-        messages.warning(self.request, self.error_description %{'requested_url' : requested_url})
-
-class Error404View(ErrorBaseView):
-    name = "error404"
-    title = _("Sorry, page not found")
-    response_handler_method = HttpResponseNotFound
-    error_description = _("""<p>
-  The page <em>%(requested_url)s</em> doesn't exist on this site!
-</p>
-<p>
-  Please contact the site administrator.
-</p>
-<p>
-  Sorry for the inconvenience.
-</p>""")
-
-class Error500View(ErrorBaseView):
-    name = "error500"
-    title = "Server error"
-    response_handler_method = HttpResponseServerError
-    error_description = _("""<p>
-  The page <span style="color:#E00023">%(requested_url)s</span> raises an error!
-</p>
-<p>
-  Please contact the site administrator.
-</p>
-<p>
-  Sorry for the inconvenience.
-</p>""")
-
 #                                                                               #
 #                               LISTING VIEWS                                   #
 #                                                                               #

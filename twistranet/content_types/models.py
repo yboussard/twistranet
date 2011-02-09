@@ -53,12 +53,10 @@ class Document(Content):
     A document is a (possibly long) text/html content associated with resource,
     with all the bells and whistle a CMS is expected to carry.
     """
-
     class Meta:
         app_label = 'twistapp'
 
     text = models.TextField()
-
 
 class File(Content):
     """

@@ -4,7 +4,7 @@ This module enables model translation for all twistranet base classes.
 from modeltranslation.translator import translator, TranslationOptions
 from twistranet.twistapp import Twistable, Account, Content, Community, \
     GlobalCommunity, AdminCommunity, SystemAccount, UserAccount, Resource
-from twistranet.content_types import Document, StatusUpdate, Comment
+from twistranet.content_types import Document, StatusUpdate, Comment, File
 
 # (oh, by the way, 'TO' stands for TranslationOptions)
 
@@ -56,6 +56,10 @@ translator.register(Document, _DocumentTO)
 class _StatusUpdateTO(TranslationOptions):
     fields = _ContentTO.fields
 translator.register(StatusUpdate, _StatusUpdateTO)
+
+class _FileTO(TranslationOptions):
+    fields = _ContentTO.fields
+translator.register(File, _FileTO)
 
 class _CommentTO(TranslationOptions):
     fields = _ContentTO.fields
