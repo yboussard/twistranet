@@ -32,7 +32,6 @@ class BaseForm(BaseEmptyForm):
 
         # Check if has permissions field
         if self.fields.has_key('permissions'):
-            super(BaseForm, self).__init__(*args, **kw)
             publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
             permissions = self.instance.permission_templates.permissions()
             if publisher:
@@ -41,6 +40,11 @@ class BaseForm(BaseEmptyForm):
                 if issubclass(publisher.model_class, Community):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
             self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
+            
+        # XXX => JMG
+        if self.fileds.has_key("XXX file ? picture ?"):
+            publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
+            XXX_my_field.publisher = publisher
 
     permissions = PermissionsFormField(choices = (), widget = PermissionsWidget())
     publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)
