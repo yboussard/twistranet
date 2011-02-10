@@ -93,3 +93,8 @@
     height: 65px;
     overflow: visible;
 }
+
+/*temp fix */ 
+.inline-form #resources-selector {
+    display: none;
+}
