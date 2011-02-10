@@ -565,8 +565,5 @@ class BaseWallView(BaseIndividualView):
         # if self.object:
         self.latest_content_list = self.get_recent_content_list()
         self.content_forms = self.get_inline_forms(self.object)
-        
-        
-        
-        
+
         
