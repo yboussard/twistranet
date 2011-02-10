@@ -26,8 +26,14 @@ class UserAccountCreationForm(forms.Form):
     User Creation form.
     We add a few things to make this shiny.
     """
-    first_name = forms.CharField(max_length = 40)
-    last_name = forms.CharField(max_length = 40)
+    first_name = forms.CharField(
+        max_length = 40,
+        label = _("First name"),
+    )
+    last_name = forms.CharField(
+        max_length = 40,
+        label = _("Last name"),
+    )
     username = forms.CharField(
         label = _("Login name"),
         max_length = 30

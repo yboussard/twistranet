@@ -79,16 +79,20 @@ class ResourceWidget(forms.MultiWidget):
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         output.append(u"""<div class="resource-widget">""")
+        
         # Render the current resource widget and the place for preview
         if self.display_renderer or value[0]:
-            output.append( """<div id="resources-renderer">""" )
+            output.append("""<div id="resources-renderer">""")
             if value[0]:
                 output.append("""<div id="renderer-current" class="renderer-preview">""")
                 try:
                     img = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                thumb = default.backend.get_thumbnail( img.object.image, u'100x100', crop ='center top' )
+                try:
+                    thumb = default.backend.get_thumbnail(img.object.image, u'100x100', crop ='center top')
+                except IOError:
+                    thumb = default.backend.get_thumbnail(img.forced_picture.image, u'100x100', crop ='center top')
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,
@@ -102,12 +106,10 @@ class ResourceWidget(forms.MultiWidget):
                            id="resource-current" />
                    </a>
                  """ % param_dict)
-    
                 output.append( """</div>""" ) # close renderer-current div
                 
             output.append("""<div id="renderer-new" class="renderer-preview">""")
             output.append("""<div class="mediaresource-help">""" + _(u"New:") + """</div></div>""")
-            
             output.append( """</div>""" ) # close resources-renderer div
         
         # Render the classic File widget and the hidden resource ForeignKey
