@@ -21,10 +21,10 @@
 ***************************************************************************** */
 
 #head a.logotext {
-    background: url(../images/logo-tn.png) 0px 5px no-repeat;
+    background: url(../images/logo-50.png) 0px 5px no-repeat;
     font-size: 14px;
     margin-left: 0;
-    padding: 7px 0 5px 65px;
+    padding: 3px 0 5px 55px;
     display: block;
     height: 45px;
     cursor: pointer;

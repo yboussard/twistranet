@@ -21,8 +21,8 @@ FIXTURES = [
             "Cette communauté est un bon endroit pour commencer à chercher des collègues, "
             "ou pour trouver des informations importantes sur twistranet.",
         site_name = 'twistranet',
-        baseline_en = "Enjoy working in team.",
-        baseline_fr = "Le plaisir de travailler en équipe.",
+        baseline_en = "Reinvent teamwork.",
+        baseline_fr = "Réinventez l'esprit d'équipe.",
         permissions = "intranet",
     ),
     Fixture(

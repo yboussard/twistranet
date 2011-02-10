@@ -13,10 +13,12 @@ import re
 from django.conf import settings
 from django.template import Context
 from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.cache import cache
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
 
-from  twistranet.twistapp.lib.log import log
+from twistranet.twistapp.lib.log import log
+from twistranet.twistapp.lib import utils
 
 SUBJECT_REGEX = re.compile(r"^[\s]*Subject:[ \t]?([^\n$]*)\n", re.IGNORECASE | re.DOTALL)
 EMPTY_LINE_REGEX = re.compile(r"\n\n+", re.DOTALL)
@@ -131,13 +133,13 @@ class MailHandler(NotifierHandler):
             # If host is disabled (EMAIL_HOST is None), skip that
             return
         
-        # Append domain to kwargs
+        # Append domain (and site info) to kwargs
         d = kwargs.copy()
-        domain = Site.objects.get_current().domain
-        if not domain.lower().startswith("http"):
-            domain = "http://%s" % domain
+        domain = cache.get("twistranet_site_domain")
         d.update({
-            "domain":   domain,
+            "domain":       domain,
+            "site_name":    utils.get_site_name(),
+            "baseline":     utils.get_baseline(),
         })
         
         # Load both templates and render them with kwargs context

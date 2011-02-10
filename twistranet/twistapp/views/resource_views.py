@@ -255,7 +255,7 @@ class ResourceBrowser(BaseView):
         "form",
     ]
     template = 'resource/resource_browser_form.html'
-    title = "Resource browser"
+    title = _("Resource browser")
     
     def prepare_view(self,):
         self.account = self.auth

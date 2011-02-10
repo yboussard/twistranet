@@ -1,5 +1,5 @@
 {% load thumbnail %}
-{% thumbnail content.object.file.image "120x80" as thumb %}
+{% thumbnail content.forced_picture.image "120x80" as thumb %}
   <a title="{{content.title}}"
      href="{{ content.get_absolute_url }}"
      class="image-block image-block-thumb image-block-content">

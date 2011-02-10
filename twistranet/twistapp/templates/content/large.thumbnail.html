@@ -1,5 +1,5 @@
 {% load thumbnail %}
-{% thumbnail content.object.file.image "500x333" as preview %}
+{% thumbnail content.forced_picture.image "500x333" as preview %}
   <a title="{{content.title}}"
      href="{{ content.file.get_absolute_url }}"
      class="image-block image-block-preview image-block-content">

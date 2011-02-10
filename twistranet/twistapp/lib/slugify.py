@@ -44,8 +44,12 @@ def slugify(value):
     value = unicode(re.sub('[.@]', '_', value))
     value = unicode(re.sub('[^\w\s_-]', '', value).strip().lower())
     
+    # If value starts with numbers, prefix it
+    if re.match(r"[0-9]", value):
+        value = u"_%s" % value
+    
+    # Double-check if we've slugified this correctly
     if not re.search(FULL_SLUG_REGEX, value):
-        value = "%s_" % value
-        # raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))
+        raise RuntimeError("Didn't manage to slugify '%s' correctly." % (value, ))
     return value[:50]
     
