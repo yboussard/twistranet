@@ -20,7 +20,6 @@ class BaseForm(BaseEmptyForm):
     with the usual permission field
     and possible resource fields
     """
-    
     def __init__(self, *args, **kw):
         """
         Overload widget rendering: we have to provide the model so that the PermissionsWidget

@@ -1,17 +1,24 @@
-# Create your views here.
+import hashlib
+import urllib
+
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
+from django.forms import widgets
 from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
+from django.contrib.sites.models import RequestSite
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from twistranet.twistapp.signals import invite_user
 
 from twistranet.twistapp.models import *
 from twistranet.twistapp.forms import account_forms
+from twistranet.twistapp.lib.slugify import slugify
 from twistranet.actions import *
 from twistranet.core.views import *
 
@@ -236,7 +243,6 @@ class PendingNetworkView(AccountListingView, UserAccountView):
 #                                   ACTION VIEWS                                #
 #                                                                               #
 
-
 class AccountDelete(BaseObjectActionView):
     """
     Delete a community from the base
@@ -373,7 +379,7 @@ class RemoveFromNetworkView(BaseObjectActionView):
 
 
 #                                                                           #
-#                           Edition / Creation views                          #
+#                           Edition / Creation views                        #
 #                                                                           #
 
 class UserAccountEdit(UserAccountView):
@@ -400,20 +406,153 @@ class UserAccountEdit(UserAccountView):
         """
         Title suitable for creation or edition
         """
-        if not self.object:
+        if self.title:
+            return super(UserAccountEdit, self).get_title()
+        if not getattr(self, 'object', None):
             return _("Create a user account")
         elif self.object.id == self.auth.id:
             return _("Edit your account")
         return _("Edit %(name)s" % {'name' : self.object.title })
 
-
-class UserAccountCreate(UserAccountEdit):
+class UserAccountInvite(UserAccountEdit):
     """
-    UserAccount creation. Close to the edit class
+    UserAccount invitation. Close to the edit class!
     """
     context_boxes = []
-    form_class = account_forms.UserAccountCreationForm
+    form_class = account_forms.UserInviteForm
+    title = _("Invite user")
+    category = GLOBAL_ACTIONS
+    name = "user_account_invite"
     
+    def as_action(self):
+        if not Account.objects.can_create:
+            return None
+        return BaseView.as_action(self)
+        
+    def prepare_view(self):
+        """
+        Process additional form stuff.
+        Here we've got a valid self.form object.
+        """
+        super(UserAccountInvite, self).prepare_view()
+        is_admin = UserAccount.objects.getCurrentAccount(self.request).is_admin
+        if not is_admin:
+            self.form.fields['make_admin'].widget = widgets.HiddenInput()
+        if self.form_is_valid:
+            # Double-check that user is not already registered
+            email = self.form.cleaned_data['email']
+            if User.objects.filter(email = email).exists():
+                messages.error(self.request, _("This user already exists."))
+                self.form_is_valid = False
+            
+        if self.form_is_valid:
+            # Generate the invitation link.
+            # Invitation is in two parts: the verification hash and the email address.
+            admin_string = ""
+            if is_admin:
+                if self.form.cleaned_data['make_admin']:
+                    admin_string = "?make_admin=1"
+            h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
+            h = hashlib.md5(h).hexdigest()
+            invite_link = reverse(AccountJoin.name, args = (h, urllib.quote_plus(email)))
+            domain = RequestSite(self.request).domain
+            if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
+                protocol = "https"
+            elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
+                protocol = "http"
+
+            
+            # Send the invitation (as a signal)
+            invite_user.send(
+                sender = self.__class__,
+                inviter = UserAccount.objects.getCurrentAccount(self.request),
+                invitation_absolute_url = "%s://%s%s" % (protocol, domain, invite_link, ),
+                target = email,
+                message = self.form.cleaned_data['invite_message'],
+            )
+            
+            # Say we're happy and redirect
+            if self.form_is_valid:
+                messages.success(self.request, _("Invitation sent successfuly."))
+                raise MustRedirect(reverse(self.name))
+    
+#                                                                                           #
+#                                   Account login/logout/join                               #
+#                                                                                           #
+
+class AccountJoin(UserAccountEdit):
+    """
+    join TN
+    """
+    template = "registration/join.html"
+    form_class = account_forms.UserAccountCreationForm
+    name = "account_join"
+    title = _("Join")
+    
+    def prepare_view(self, check_hash, email):
+        """
+        Render the join form.
+        """
+        # Check if hash and email AND admin priviledge match
+        is_admin = False
+        admin_string = "?make_admin=1"
+        h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
+        h = hashlib.md5(h).hexdigest()
+        if check_hash == h:
+            is_admin = True
+        else:
+            # Check if hash and email match.
+            h = "%s%s" % (settings.SECRET_KEY, email)
+            h = hashlib.md5(h).hexdigest()
+            if not check_hash == h:
+                raise ValidationError("Invalid email. This invitation has been manually edited.")
+            
+        # If user is already registered, return to login form
+        if User.objects.filter(email = email).exists():
+            raise MustRedirect(reverse(AccountLogin.name))
+        
+        # Call form processing. Prepare all arguments, esp. email and username
+        username = email.split('@')[0]
+        username = slugify(username)
+        self.initial = {
+            "email":    email,
+            "username": username,
+        }
+        super(AccountJoin, self).prepare_view()
+        
+        # Now save user info. But before, double-check that stuff is still valid
+        if self.form_is_valid:
+            cleaned_data = self.form.cleaned_data
+            # Check password and username
+            if not cleaned_data["password"] == cleaned_data["password_confirm"]:
+                messages.warning(self.request, _("Password and confirmation do not match"))
+            elif User.objects.filter(username = cleaned_data["username"]).exists():
+                messages.warning(self.request, _("A user with this name already exists."))
+            else:
+                # Create user and set information
+                __account__ = SystemAccount.get()
+                u = User.objects.create(
+                    username = cleaned_data["username"],
+                    first_name = cleaned_data["first_name"],
+                    last_name = cleaned_data["last_name"],
+                    email = cleaned_data["email"],
+                    is_superuser = is_admin,
+                    is_active = True,
+                )
+                u.set_password(cleaned_data["password"])
+                u.save()
+                useraccount = UserAccount.objects.get(user = u)
+                useraccount.title = u"%s %s" % (cleaned_data["first_name"], cleaned_data["last_name"])
+                useraccount.save()
+                if is_admin:
+                    admin_community = AdminCommunity.objects.get()
+                    if not admin_community in useraccount.communities:
+                        admin_community.join(useraccount, is_manager = True)
+                del __account__
+                
+                # Display a nice success message and redirect to login page
+                messages.success(self.request, _("Your account is now created. You can login to twistranet."))
+                raise MustRedirect(reverse(AccountLogin.name))
 
 class AccountLogin(BaseView):
     template = "registration/login.html"

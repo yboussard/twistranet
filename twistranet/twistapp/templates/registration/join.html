@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block topbar %}
+{% endblock %}
+
+{% block menu_items %}
+{% endblock %}
+
+{% block searchform %}
+{% endblock %}
+
+{% block globalbar %}
+{% endblock %}
+
+{% block contextbar %}
+{% endblock %}
+
+{% block content %}
+<div class="login">
+
+    {% if account %}
+        <form action="{{ path }}"
+              method="post"
+              class="edit-form enableAutoFocus enableUnloadProtect"
+              enctype="multipart/form-data"
+              >
+    {% else %}
+        <form action="{{ path }}" 
+              method="post"
+              class="edit-form enableAutoFocus enableUnloadProtect">
+    {% endif %}
+        <fieldset>
+        {% for field in form %}
+            {% if not field.is_hidden %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}  
+                    <div class="clear"><!-- --></div>
+                </div>
+            {% else %}                                                          
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        {% csrf_token %}
+        <div class="form-controls">
+          <input type="submit" value="{% trans 'Save' %}" />
+          <button type="button" class="reset">{% trans 'Undo' %}</button>
+          <input type="hidden" id="referer_url" value="{{referer_url}}" name="referer_url" />
+        </div>
+        </fieldset>
+    </form>    
+
+</div>
+
+{% endblock %}

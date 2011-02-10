@@ -182,6 +182,8 @@ class MailHandler(NotifierHandler):
                 members = recipient.members
             # XXX Suboptimal for very large communities
             to = [ member.email for member in members if member.email ]
+        elif type(recipient) in (str, unicode, ):
+            to = [ recipient, ]  # XXX Todo: check the '@'
         else:
             raise ValueError("Invalid recipient: %s" % recipient)
         

@@ -377,46 +377,50 @@ class BaseIndividualView(BaseView):
         model_name = self.model_lookup.__name__.lower()
         
         # If we have a form (ie. self.form_class or self.get_form_class available), process form
+        setattr(self, model_name, self.object)
         form_class = self.get_form_class()
         if form_class:
-            setattr(self, model_name, self.object)
+            self.form_is_valid = False
             self.referer_url = self.get_referer_url
             self.template_variables = self.template_variables + ["form", "referer_url"]
             if self.request.method == 'POST': # If the form has been submitted...
-                self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
+                if hasattr(form_class.Meta, "model"):
+                    self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
+                else:
+                    self.form = form_class(self.request.POST, self.request.FILES, )
                 publisher_id = self.request.POST.get('publisher_id', None)
                 if publisher_id:
                     publisher = Account.objects.get_query_set(request = self.request).get(id = publisher_id)    # Will raise if unauthorized
                 else:
                     publisher = None
-                if self.form.is_valid(): # All validation rules pass
-                    # Save object and set publisher.
-                    # We MAY have ValidationError here (eg: community without a title).
-                    # if so, we provide a nice error message instead of 500ing
-                    self.object = self.form.save(commit = False)
-                    if publisher:
-                        self.object.publisher = publisher
-                    try:
-                        self.object.save()
-                    except ValidationError(detail):
-                        messages.warning(self.request, _(detail.messages[0]))
-                    else:
-                        self.form.save_m2m()
-                        raise MustRedirect(self.object.get_absolute_url())
+                if self.form.is_valid(): # All validation rules pass.
+                    self.form_is_valid = True
+                    if hasattr(form_class.Meta, "model"):                    
+                        # Save object and set publisher.
+                        # We MAY have ValidationError here (eg: community without a title).
+                        # if so, we provide a nice error message instead of 500ing
+                        self.object = self.form.save(commit = False)
+                        if publisher:
+                            self.object.publisher = publisher
+                        try:
+                            self.object.save()
+                        except ValidationError(detail):
+                            messages.warning(self.request, _(detail.messages[0]))
+                        else:
+                            self.form.save_m2m()
+                            raise MustRedirect(self.object.get_absolute_url())
                 else:
                     messages.warning(self.request, _("Please correct the indicated errors."))
             else:
                 initial = self.get_initial_values()
-                if self.object:
+                if self.object and hasattr(form_class.Meta, "model"):
                     self.form = form_class(instance = self.object, initial = initial)      # An unbound form with an explicit instance
+                elif initial:
+                    self.form = form_class(initial = initial)
                 else:
-                    if initial:
-                        self.form = form_class(initial = initial)
-                    else:
-                        self.form = form_class()
+                    self.form = form_class()
 
         # Various data. Call parent LAST.
-        setattr(self, model_name, self.object)
         super(BaseIndividualView, self).prepare_view()
 
     def get_initial_values(self,):
@@ -561,8 +565,5 @@ class BaseWallView(BaseIndividualView):
         # if self.object:
         self.latest_content_list = self.get_recent_content_list()
         self.content_forms = self.get_inline_forms(self.object)
-        
-        
-        
-        
+
         

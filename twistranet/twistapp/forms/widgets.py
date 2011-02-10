@@ -88,7 +88,10 @@ class ResourceWidget(forms.MultiWidget):
                     img = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                thumb = default.backend.get_thumbnail( img.object.image, u'100x100', crop ='center top' )
+                try:
+                    thumb = default.backend.get_thumbnail(img.object.image, u'100x100', crop ='center top')
+                except IOError:
+                    thumb = default.backend.get_thumbnail(img.forced_picture.image, u'100x100', crop ='center top')
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,

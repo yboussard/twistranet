@@ -2,6 +2,7 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 from django.forms import fields
+from django.utils.translation import ugettext as _
 
 from twistranet.twistapp.lib import permissions
 from twistranet.twistapp.forms.widgets import ResourceWidget
@@ -20,16 +21,43 @@ class UserAccountForm(BaseForm):
             "picture":          ResourceWidget(),
         }
 
-class UserAccountCreationForm(UserAccountForm):
+class UserAccountCreationForm(forms.Form):
+    """
+    User Creation form.
+    We add a few things to make this shiny.
+    """
+    first_name = forms.CharField(
+        max_length = 40,
+        label = _("First name"),
+    )
+    last_name = forms.CharField(
+        max_length = 40,
+        label = _("Last name"),
+    )
+    username = forms.CharField(
+        label = _("Login name"),
+        max_length = 30
+    )
+    email = forms.EmailField(max_length = 40)
+    password = forms.CharField(
+        widget = widgets.PasswordInput(),
+        label = _("Choose your password"),
+    )
+    password_confirm = forms.CharField(
+        widget = widgets.PasswordInput(),
+        label = _("Confirm your password"),
+    )
+    class Meta:
+        pass
+
+class UserInviteForm(forms.Form):
     """
     User account creation.
-    """    
+    """
+    email = forms.EmailField()
+    make_admin = forms.BooleanField(label = _("Invite as an administrator?"))
+    invite_message = forms.CharField(required = False, widget = widgets.Textarea())
+    
     class Meta:
-        model = UserAccount
-        fields = ('user', 'title', 'description', 'picture', 'permissions', )
-
-        widgets = {
-            "picture":          ResourceWidget(),
-        }
-
+        pass
 
