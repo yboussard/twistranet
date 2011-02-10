@@ -6,17 +6,23 @@
     <div class="tn-box-content">
         <p>
             <strong>{% blocktrans %}Created by:{% endblocktrans %}</strong>
+            &nbsp;
             <a href="{{ content.owner.get_absolute_url }}">
                 {{ content.created_by.title }}
             </a><br />
-            <strong>On:</strong>{{ content.created_at }}
+            <strong>{% blocktrans %}On:{% endblocktrans %}</strong>
+            &nbsp;
+            <span>{{ content.created_at }}</span>
         </p>
         <p>
             <strong>{% blocktrans %}Last updated:{% endblocktrans %}</strong>
-            {{ content.modified_at|timesince }} ago.
+            &nbsp;
+            <span>{% blocktrans with content.modified_at|timesince as date %}{{ date }} ago.{% endblocktrans %}</span>
         </p>
         <p>
-            <strong>{% trans 'Scope' %}:</strong> {{ content.permissions }}
+            <strong>{% blocktrans %}Scope:{% endblocktrans %}</strong>
+            &nbsp;
+            <span>{{ content.permissions }}</span>
         </p>
     </div>
 </li>

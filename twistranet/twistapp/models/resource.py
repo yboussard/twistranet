@@ -1,5 +1,5 @@
 import os
-
+import mimetypes
 from django.db import models
 from django.db.models import Q, FileField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError, PermissionDenied, SuspiciousOperation
@@ -87,6 +87,18 @@ class Resource(twistable.Twistable):
             return self.resource_file
         if self.resource_url:
             return self.resource_url
-    
-    
+
+    @property
+    def content_type(self,):
+        if self.resource_file:
+            name = getattr(self.resource_file, 'name', '')
+            ct = mimetypes.guess_type(name)[0] or 'application/octet-stream'
+        if self.resource_url:
+            name = self.resource_url.split('/')[-1]
+            # TODO > more complex stuff here to get default 
+            # mimetype
+            default_mimetype = 'text/html'
+            ct = mimetypes.guess_type(name)[0] or default_mimetype
+        return ct
+
     

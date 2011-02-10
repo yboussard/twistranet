@@ -8,7 +8,7 @@ from twistranet.twistapp.lib import permissions, roles
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 
-from twistranet.twistapp.lib import dbsetup
+from twistranet.core import bootstrap
 
 class ContentTest(TestCase):
     """
@@ -20,8 +20,8 @@ class ContentTest(TestCase):
         """
         Get A and B users
         """
-        dbsetup.bootstrap()
-        dbsetup.repair()
+        bootstrap.bootstrap()
+        bootstrap.repair()
         __account__ = SystemAccount.get()
         self.system = __account__
         self.B = UserAccount.objects.get(user__username = "B").account_ptr

@@ -1,6 +1,7 @@
 """
 Default content types for twistranet
 """
+import mimetypes
 from django.db import models
 from twistranet.twistapp.lib import permissions   
 from twistranet.twistapp.lib.utils import formatbytes
@@ -69,7 +70,7 @@ class File(Content):
     class Meta:
         app_label = 'twistapp'
 
-    file = fields.ResourceField(allow_select = False)
+    file = fields.ResourceField(allow_select = True)
 
     type_detail_view = "content/view.file.html"
     type_summary_view = "content/summary.file.html"
@@ -85,6 +86,13 @@ class File(Content):
         Before saving, we use filename as this content title
         if title is empty.
         """
+        if self.file:
+            images_types = ('image/jpg', 'image/jpeg', 'image/png', 'image/gif')
+            if self.file.content_type in images_types:
+                self.picture = self.file
+            # else:
+            # TODO PJG > play with mimetype icons
+
         if not self.title:
             self.title = self.file.title
 

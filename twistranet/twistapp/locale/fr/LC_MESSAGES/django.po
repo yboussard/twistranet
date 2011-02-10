@@ -333,8 +333,8 @@ msgid "Last updated:"
 msgstr "Mis à jour : "
 
 #: templates/content/metadata.box.html:19
-msgid "Scope"
-msgstr "Visibilité"
+msgid "Scope:"
+msgstr "Visibilité :"
 
 #: templates/content/summary.comments.part.html:6
 #, python-format
