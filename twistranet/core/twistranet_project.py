@@ -97,7 +97,7 @@ def twistranet_project():
             raise ValueError("Invalid template directory: '%s'" % source_root)
         dest_root = project_path
         for root, dirs, files in os.walk(source_root):
-            # Ugly wat to ignore dotted dirs
+            # Ugly wat to deal with dotted dirs
             if '/.' in root:
                 continue
             relative_root = root[len(source_root) + 1:]

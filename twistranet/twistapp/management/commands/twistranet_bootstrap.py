@@ -14,3 +14,5 @@ class Command(BaseCommand):
         cmd.execute()
         from twistranet.core import bootstrap
         bootstrap.bootstrap()
+        from twistranet.core import install
+        install.install_theme()
