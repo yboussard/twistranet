@@ -16,7 +16,7 @@
 <p>
   {% blocktrans %}Here's what {{ inviter_title }} tells you about it:{% endblocktrans %}
 </p>
-<pre>{{ message }}</pre>
+<blockquote>{{ message|linebreaksbr }}</blockquote>
 {% endif %}
 <p>
   {% blocktrans %}Just <a href="{{ invitation_absolute_url }}"> follow this link</a> to accept this invitation, or ignore this mail to decline.{% endblocktrans %}

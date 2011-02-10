@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.contrib.sites.models import RequestSite
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
@@ -454,12 +455,18 @@ class UserAccountInvite(UserAccountEdit):
             h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
             h = hashlib.md5(h).hexdigest()
             invite_link = reverse(AccountJoin.name, args = (h, urllib.quote_plus(email)))
+            domain = RequestSite(self.request).domain
+            if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
+                protocol = "https"
+            elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
+                protocol = "http"
+
             
             # Send the invitation (as a signal)
             invite_user.send(
                 sender = self.__class__,
                 inviter = UserAccount.objects.getCurrentAccount(self.request),
-                invitation_absolute_url = "%s%s" % (cache.get("twistranet_site_domain"), invite_link, ),
+                invitation_absolute_url = "%s://%s%s" % (protocol, domain, invite_link, ),
                 target = email,
                 message = self.form.cleaned_data['invite_message'],
             )
