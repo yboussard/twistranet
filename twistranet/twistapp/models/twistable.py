@@ -310,6 +310,9 @@ class Twistable(_AbstractTwistable):
         XXX SHOULD CACHE THIS
         """
         import resource
+        if issubclass(self.model_class, resource.Resource):
+            if self.object.is_image:
+                return self
         try:
             picture = self.picture
             if picture is None:
@@ -320,6 +323,31 @@ class Twistable(_AbstractTwistable):
             except resource.Resource.DoesNotExist:
                 return None
         return picture
+        
+    def get_thumbnail(self, *args, **kw):
+        from sorl.thumbnail import default
+        return default.backend.get_thumbnail(self.forced_picture.image, *args, **kw)
+        
+    def get_preview_thumbnail(self,):
+        """
+        Return the preview thumbnail (form SORL)
+        XXX TODO: Cache this
+        """
+        import resource
+        preview_size = "50x50"
+        if issubclass(self.model_class, resource.Resource):
+            if self.object.is_image:
+                preview_size = "500x500"
+        return self.get_thumbnail(preview_size, crop = "center top")
+        
+    def get_medium_thumbnail(self,):
+        import resource
+        preview_size = "50x50"
+        if issubclass(self.model_class, resource.Resource):
+            if self.object.is_image:
+                preview_size = "100x100"
+        return self.get_thumbnail(preview_size, crop = "center top")
+        
             
     #                                                                   #
     #           Internal management, ensuring DB consistancy            #    

@@ -29,7 +29,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.context_processors import csrf
 from django.utils.translation import ugettext as _
 
-from sorl.thumbnail import default
 from twistranet.twistapp.models import *
 from twistranet.twistapp.forms.resource_forms import ResourceForm, ResourceBrowserForm
 from twistranet.twistapp.lib.decorators import require_access
@@ -404,42 +403,34 @@ def resource_quickupload_file(request):
         publisher_id = request.GET.get('publisher_id', request.POST.get('publisher_id', ''))
         # i'm not sure here
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
-        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
-            type = 'image'
-        else:
-            type = 'file'
         if not title:
             # try to split filenames when there's no title to avoid potential css surprises
             title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
+
         try:
+            # Create the resource itself
             params = {'resource_file' : file_data, 'title' : title }
-            try:
+            if publisher_id:
                 publisher_id = int(publisher_id)
-            except (TypeError, ValueError):
-                pass
-            else:
                 params['publisher'] = Account.objects.get(id = publisher_id)
-            new_file = Resource(**params)
-            new_file.save()
+            resource = Resource(**params)
+            resource.save()
 
-            if type== 'image' :
-                preview = default.backend.get_thumbnail( new_file.object.image, u'500x500' )
-                preview_url = preview.url
-                mini = default.backend.get_thumbnail( new_file.object.image, u'100x100', crop ='center top' ) 
-                mini_url = mini.url
-            else :
-                preview_url = mini_url = ''
-
-            msg = {'success': True,
-                   'value':        new_file.id,
-                   'url' :         new_file.get_absolute_url(),
-                   'preview_url' : preview_url,    
-                   'mini_url' :    mini_url, 
-                   'legend' :      title, 
-                   'scope':        publisher_id,
-                   'type' :        type,}
-        # TODO : improve error messages with Unauthorized error
+            # Generate the preview thumbnails
+            preview = resource.get_preview_thumbnail()
+            medium = resource.get_medium_thumbnail()
+            msg = {
+                'success':      True,
+                'value':        resource.id,
+                'url':          resource.get_absolute_url(),
+                'preview_url':  preview.url,    
+                'mini_url':     medium.url, 
+                'legend':       title, 
+                'scope':        publisher_id,
+            }
+                   # 'type':          type,}
         except:
+            # TODO : improve error messages with Unauthorized error
             log.exception("Unexpected error while trying to uplaod a file.")
             msg = {u'error': u'unexpectedError'}
     else:

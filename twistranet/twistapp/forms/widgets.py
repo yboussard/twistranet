@@ -85,22 +85,23 @@ class ResourceWidget(forms.MultiWidget):
             if value[0]:
                 output.append("""<div id="renderer-current" class="renderer-preview">""")
                 try:
-                    img = Resource.objects.get(id = value[0])
+                    resource = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                try:
-                    thumb = default.backend.get_thumbnail(img.object.image, u'100x100', crop ='center top')
-                except IOError:
-                    thumb = default.backend.get_thumbnail(img.forced_picture.image, u'100x100', crop ='center top')
+                if resource.is_image:
+                    thumb_size = '100x100'
+                else:
+                    thumb_size = '50x50'
+                thumb = default.backend.get_thumbnail(resource.picture.image, thumb_size, crop ='center center')
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,
-                    "value":            img.id,
-                    "img_url":          img.get_absolute_url(),
+                    "value":            resource.id,
+                    "res_url":          resource.get_absolute_url(),
                 }
                 output.append(u"""
-                  <a class="image-block image-block-mini"
-                     href="%(img_url)s">
+                  <a class="image-block"
+                     href="%(res_url)s">
                       <img src="%(thumbnail_url)s"
                            id="resource-current" />
                    </a>
@@ -109,7 +110,7 @@ class ResourceWidget(forms.MultiWidget):
                 output.append( """</div>""" ) # close renderer-current div
 
             output.append("""<div id="renderer-new" class="renderer-preview">""")
-            output.append("""<div class="mediaresource-help">""" + _(u"New:") + """</div></div>""")
+            output.append("""<div class="mediaresource-help">""" + _(u"Uploaded file:") + """</div></div>""")
 
             output.append( """</div>""" ) # close resources-renderer div
 

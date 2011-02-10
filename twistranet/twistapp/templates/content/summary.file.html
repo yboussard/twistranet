@@ -28,8 +28,12 @@
                                href="{{ content.get_absolute_url }}">
                                 {{ content.title_or_description }}
                             </a>
-                            <div class="summary-thumbnail">                  
-                                {% include 'content/medium.thumbnail.html' %}
+                            <div class="summary-thumbnail">
+                                {% if content.object.is_image %}
+                                    {% include 'content/preview.thumbnail.html' %}
+                                {% else %}
+                                    {% include 'content/medium.thumbnail.html' %}
+                                {% endif %}
                             </div>
                             <div class="content-description">
                             {{ content.description|safe|wiki }}

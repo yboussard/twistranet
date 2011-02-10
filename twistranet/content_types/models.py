@@ -80,6 +80,10 @@ class File(Content):
         file = self.file.resource_file
         if self.file is not None:
             return formatbytes(self.file.resource_file.size)
+            
+    @property
+    def is_image(self,):
+        return self.file.is_image
         
     def save(self, *args, **kw):
         """
@@ -87,8 +91,7 @@ class File(Content):
         if title is empty.
         """
         if self.file:
-            images_types = ('image/jpg', 'image/jpeg', 'image/png', 'image/gif')
-            if self.file.content_type in images_types:
+            if self.file.is_image:
                 self.picture = self.file
             # else:
             # TODO PJG > play with mimetype icons

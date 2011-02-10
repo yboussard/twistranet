@@ -12,7 +12,7 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
     if (newResultContainer.length) {
         currentResultContainer = jq('#renderer-current');
         result= '\
-<a class="image-block image-block-mini"\
+<a class="image-block"\
    href="'+ url +'"\
    title="' + legend + '">\
    <img src="' + miniurl + '"\

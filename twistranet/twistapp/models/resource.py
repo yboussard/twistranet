@@ -58,8 +58,8 @@ class Resource(twistable.Twistable):
     
     # Title / Description are optional resource description information.
     # May be given by the manager, BUT will be stored in TN.
-    # mimetype = models.CharField(max_length = 64)
-    # encoding = models.CharField(max_length = 64, null = True)
+    mimetype = models.CharField(max_length = 64)
+    encoding = models.CharField(max_length = 64, blank = True)
 
     # Resource securization
     permission_templates = permissions.content_templates        # This is the lazy man's solution, we use same perms as content ;)
@@ -80,13 +80,20 @@ class Resource(twistable.Twistable):
         self.mimetype = self.content_type
         return super(Resource, self).save(*args, **kw)
         
-    def related_set_null(self,):
+    @property
+    def is_image(self,):
+        """True if this is an image.
         """
-        See signals below. This is used to ensure that a
-        ON DELETE SET NULL behavior is set instead of
-        ON DELETE CASCADE.
+        return self.mimetype.startswith("image/")
+        
+    @property
+    def filename(self,):
+        """Return the underlying filename
         """
-        import pdb;pdb.set_trace()
+        if self.resource_file:
+            name = getattr(self.resource_file, 'name', '')
+            name = os.path.split(name)[1]
+            return name
         
     @property
     def image(self,):
@@ -110,25 +117,24 @@ class Resource(twistable.Twistable):
             default_mimetype = 'text/html'
             ct = mimetypes.guess_type(name)[0] or default_mimetype
         return ct
-        
 
-class ImageResource(Resource):
-    """
-    An ImageResource if a File with dedicated Image features.
-    It's used for the picture attribute of all Twistable objects.
-    """    
-    def save(self, *args, **kw):
-        """
-        While computing content_type, we double-check that it's an image.
-        """
-        ct = self.content_type
-        if not ct.startswith("image/"):
-            raise ValueError("Invalid MIME type for %s: %s" % (self, ct))
-        return super(ImageResource, self).save(*args, **kw)
 
-    class Meta:
-        app_label = 'twistapp'
-    
+# class ImageResource(Resource):
+#     """
+#     An ImageResource if a File with dedicated Image features.
+#     It's used for the picture attribute of all Twistable objects.
+#     """    
+#     def save(self, *args, **kw):
+#         """
+#         While computing content_type, we double-check that it's an image.
+#         """
+#         ct = self.content_type
+#         if not ct.startswith("image/"):
+#             raise ValueError("Invalid MIME type for %s: %s" % (self, ct))
+#         return super(ImageResource, self).save(*args, **kw)
+# 
+#     class Meta:
+#         app_label = 'twistapp'
 
 
 
