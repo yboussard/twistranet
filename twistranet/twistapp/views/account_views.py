@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
@@ -15,6 +16,7 @@ from twistranet.twistapp.signals import invite_user
 
 from twistranet.twistapp.models import *
 from twistranet.twistapp.forms import account_forms
+from twistranet.twistapp.lib.slugify import slugify
 from twistranet.actions import *
 from twistranet.core.views import *
 
@@ -455,11 +457,11 @@ class UserAccountInvite(UserAccountEdit):
 #                                   Account login/logout/join                               #
 #                                                                                           #
 
-class AccountJoin(BaseView):
+class AccountJoin(UserAccountEdit):
     """
     join TN
     """
-    template = "account/edit.html"
+    template = "registration/join.html"
     form_class = account_forms.UserAccountCreationForm
     name = "account_join"
     title = _("Join")
@@ -473,7 +475,49 @@ class AccountJoin(BaseView):
         h = hashlib.md5(h).hexdigest()
         if not check_hash == h:
             raise ValidationError("Invalid email. This invitation has been manually edited.")
-
+            
+        # If user is already registered, return to login form
+        if User.objects.filter(email = email).exists():
+            raise MustRedirect(reverse(AccountLogin.name))
+        
+        # Call form processing. Prepare all arguments, esp. email and username
+        username = email.split('@')[0]
+        username = slugify(username)
+        self.initial = {
+            "email":    email,
+            "username": username,
+        }
+        super(AccountJoin, self).prepare_view()
+        
+        # Now save user info. But before, double-check that stuff is still valid
+        if self.form_is_valid:
+            cleaned_data = self.form.cleaned_data
+            # Check password and username
+            if not cleaned_data["password"] == cleaned_data["password_confirm"]:
+                messages.warning(self.request, _("Password and confirmation do not match"))
+            elif User.objects.filter(username = cleaned_data["username"]).exists():
+                messages.warning(self.request, _("A user with this name already exists."))
+            else:
+                # Create user and set information
+                __account__ = SystemAccount.get()
+                u = User.objects.create(
+                    username = cleaned_data["username"],
+                    first_name = cleaned_data["first_name"],
+                    last_name = cleaned_data["last_name"],
+                    email = cleaned_data["email"],
+                    is_superuser = False,
+                    is_active = True,
+                )
+                u.set_password(cleaned_data["password"])
+                u.save()
+                useraccount = UserAccount.objects.get(user = u)
+                useraccount.title = u"%s %s" % (cleaned_data["first_name"], cleaned_data["last_name"])
+                useraccount.save()
+                del __account__
+                
+                # Display a nice success message and redirect to login page
+                messages.success(self.request, _("Your account is now created. You can login to twistranet."))
+                raise MustRedirect(reverse(AccountLogin.name))
 
 class AccountLogin(BaseView):
     template = "registration/login.html"
