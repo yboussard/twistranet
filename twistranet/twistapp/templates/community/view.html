@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block local_headers %}
+    {% for form in content_forms %}
+        {{ form.media }}
+    {% endfor %}
+{% endblock %}
+
 {% block content %}
     {% if community.description %}
         <p class="discreet">

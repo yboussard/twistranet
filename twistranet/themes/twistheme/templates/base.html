@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" />      
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/jquery-dd.css" type="text/css" media="screen" /> 
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/fileuploader.css" type="text/css" media="screen" />
+    {% block local_css %}{% endblock %}
     <!--[if lte IE 7]><style type="text/css" media="all">@import url({% url twistranet_home %}static/css/ie.css);</style><![endif]-->
     <script type="text/javascript" src="{% url twistranet_home %}static/js/jquery.js" charset="utf-8"></script>
     <script type="text/javascript" src="{% url twistranet_js_vars %}" charset="utf-8"></script>
@@ -32,6 +33,8 @@
     <script type="text/javascript" src="{% url twistranet_home %}static/js/tn_quickupload_helpers.js" charset="utf-8"></script>
     <script type="text/javascript" src="{% url twistranet_home %}static/js/comments.js" charset="utf-8"></script>      
     <script type="text/javascript" src="{% url twistranet_home %}static/js/tn.js" charset="utf-8"></script>
+    {% block local_js %}{% endblock %}
+    {% block local_headers %}{% endblock %}
     {% if form %}{{ form.media }}{% endif %}
 </head>
 <body>

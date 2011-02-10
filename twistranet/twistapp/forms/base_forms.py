@@ -16,7 +16,9 @@ class BaseEmptyForm(forms.ModelForm):
 
 class BaseForm(BaseEmptyForm):
     """
-    A base TN form with the usual permission field
+    A base TN form
+    with the usual permission field
+    and possible resource fields
     """
     
     def __init__(self, *args, **kw):
@@ -29,7 +31,6 @@ class BaseForm(BaseEmptyForm):
         super(BaseForm, self).__init__(*args, **kw)
         from twistranet.twistapp.models.community import Community
         from twistranet.twistapp.models.account import UserAccount
-
         # Check if has permissions field
         if self.fields.has_key('permissions'):
             publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
@@ -41,10 +42,11 @@ class BaseForm(BaseEmptyForm):
                     permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
             self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
             
-        # XXX => JMG
-        if self.fields.has_key("XXX file ? picture ?"):
-            publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
-            XXX_my_field.publisher = publisher
+        for field_name in ('picture', 'file', 'browsed_resource'):
+            if self.fields.has_key(field_name):
+                publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
+                if publisher :
+                    self.fields[field_name].widget.publisher = publisher
 
     permissions = PermissionsFormField(choices = (), widget = PermissionsWidget())
     publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)

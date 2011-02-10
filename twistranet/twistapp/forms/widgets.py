@@ -38,7 +38,7 @@ class ResourceWidget(forms.MultiWidget):
         self.allow_select = kwargs.pop("allow_select", True)
         widgets.append(forms.HiddenInput())
         self.allow_upload = kwargs.pop("allow_upload", True)
-        if self.allow_upload  and not self.allow_select :
+        if self.allow_upload  and not self.allow_select:
             widgets.append(forms.FileInput())
         else:
             # question : is it important ?
@@ -50,7 +50,7 @@ class ResourceWidget(forms.MultiWidget):
         Handle choices generation for the reference widget.
         """
         return (value, None)
-    
+
 
     def render(self, name, value, attrs=None):
         """
@@ -64,7 +64,7 @@ class ResourceWidget(forms.MultiWidget):
         - The file upload field
         - The resource browser.
         """
-        from twistranet.twistapp.models import Resource, Twistable  
+        from twistranet.twistapp.models import Resource, Twistable
 
         # Beginning of the super-render() code
         if self.is_localized:
@@ -98,20 +98,20 @@ class ResourceWidget(forms.MultiWidget):
                 output.append(u"""
                   <a class="image-block image-block-mini"
                      href="%(img_url)s">
-                      <img src="%(thumbnail_url)s" 
+                      <img src="%(thumbnail_url)s"
                            id="resource-current" />
                    </a>
                  """ % param_dict)
-    
+
                 output.append( """</div>""" ) # close renderer-current div
-                
+
             output.append("""<div id="renderer-new" class="renderer-preview">""")
             output.append("""<div class="mediaresource-help">""" + _(u"New:") + """</div></div>""")
-            
+
             output.append( """</div>""" ) # close resources-renderer div
-        
+
         # Render the classic File widget and the hidden resource ForeignKey
-        if self.allow_upload and not self.allow_select :
+        if self.allow_upload and not self.allow_select:
             output.append( """<div id="resources-uploader">""" )
             output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
             for i, widget in enumerate(self.widgets):
@@ -135,42 +135,45 @@ class ResourceWidget(forms.MultiWidget):
                     final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
                 output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             account = Twistable.objects._getAuthenticatedAccount()
-            # TODO : the default publisher for upload is current account, could be improved
-            default_publisher = account.id
+            default_publisher = getattr(self, 'publisher', None)
+            if default_publisher is None:
+                default_publisher = account
             selectable_accounts = Resource.objects.selectable_accounts(account)
-            
+            sids = [s.id for s in selectable_accounts]
+            if default_publisher.id not in sids:
+                selectable_accounts.insert(0, default_publisher)
             t = loader.get_template('resource/resource_browser.html')
             scopes = []
-            for account in selectable_accounts :
+            for account in selectable_accounts:
                 img = account.forced_picture
                 icon = default.backend.get_thumbnail( img.image,  u'16x16', crop ='center top' )
-                activeClass = account.id == default_publisher and ' activePane' or ''
+                activeClass = account.id == default_publisher.id and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),
                     "icon_url":         icon.url,
                     "title":            account.title,
-                    "id":               account.id, 
+                    "id":               account.id,
                     "activeClass":      activeClass,
                 }
                 scope['icons'] = []
                 images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
                 # TODO  Should implement image searching, batching & so on
-                for img in images :
-                    if len(scope['icons'])<=9 :
+                for img in images:
+                    if len(scope['icons'])<=9:
                         file_name = img.object.image.name
                         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
-                        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif') :
+                        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif'):
                             icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
-                        else :
+                        else:
                             continue
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
 
-            c = Context({ 'name': name, 'scopes' : scopes })
-            
-            if self.allow_upload :
+            c = Context({ 'name': name, 'scopes': scopes })
+
+            if self.allow_upload:
                 output.append('<div class="tnQuickUpload"></div>')
-            
+
             output.append (t.render(c))
 
         # finalize and return the complete resource widget
@@ -202,8 +205,8 @@ class PermissionsWidget(forms.Select):
         if options:
             output.append(options)
         output.append(u'</select>')
-        for d in descriptions :
-            output.append('<div class="permission-description">%s</div>' %d) 
+        for d in descriptions:
+            output.append('<div class="permission-description">%s</div>' %d)
         return mark_safe(u'\n'.join(output))
 
     def render_option(self, selected_choices, option_value, option_label):

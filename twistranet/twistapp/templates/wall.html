@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% block local_headers %}
+    {% if account.can_publish %}
+        {% for form in content_forms %}
+            {{ form.media }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
 
 {% block title %}{% blocktrans %}Activity Feed{% endblocktrans %}{% endblock %}
 
