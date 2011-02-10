@@ -79,8 +79,17 @@ def twistranet_project():
         print "shutil.copytree is likely not to have the 'ignore' attribute available.\n"
         shutil.copytree(template_dir, project_path)
     
+    # Generate variables replaced in the project files
+    replacement = {
+        "SECRET_KEY.*$":        "SECRET_KEY = '%s'" % (uuid1(), ),
+        "__INSTANCE_NAME__":    '%s' % project_name,
+    }
+
     # If project_template <> default, we copy the project_template-specific files as well
-    if project_template != "default":
+    if project_template == "default":
+        replaceable_files = (os.path.join(project_path, "local_settings.py"))
+    else:
+        replaceable_files = []
         source_root = os.path.join(twist_package_path, "project_templates", project_template)
         if not os.path.isdir(source_root):
             source_root = os.path.abspath(os.path.join(os.path.curdir, project_template))
@@ -92,35 +101,39 @@ def twistranet_project():
             if '/.' in root:
                 continue
             relative_root = root[len(source_root) + 1:]
+            
             for d in dirs:
                 if d.startswith('.'):
                     continue
                 dest_dir = os.path.join(dest_root, relative_root, d)
                 if not os.path.isdir(dest_dir):
                     os.mkdir(dest_dir)
+                    
             for fname in files:
+                # Ignore doted files, and rename if it contains any replacement string
                 if fname.startswith('.'):
                     continue
-                dest_file = os.path.join(dest_root, relative_root, fname)
+                dname = fname
+                for regex, repl in replacement.items():
+                    dname = re.sub(regex, repl, dname)
+                    
+                # Actually copy
+                dest_file = os.path.join(dest_root, relative_root, dname)
                 shutil.copy(
                     os.path.join(source_root, root, fname),
                     dest_file,
-                )        
-    
-    # Generate variables replaced in the project files
-    replacement = {
-        "SECRET_KEY.*$":        "SECRET_KEY = '%s'" % (uuid1(), ),
-        "__INSTANCE_NAME__":    '"%s"' % project_name,
-    }
+                )
+                replaceable_files.append(dest_file)
     
     # Write files, copy/replace things on-the-fly.
-    settings_path = os.path.join(project_path, "local_settings.py")
-    with open(settings_path, "r") as f:
-        data = f.read()
-    with open(settings_path, "w") as f:
-        for regex, repl in replacement.items():
-            data = re.sub(regex, repl, data)
-        f.write(data)
+    for replaceable_path in replaceable_files:
+        with open(replaceable_path, "r") as f:
+            data = f.read()
+        with open(replaceable_path, "w") as f:
+            for regex, repl in replacement.items():
+                data = re.sub(regex, repl, data)
+            f.write(data)
+            f.close()
         
     # As we use a standard sqlite configuration, we can boostrap quite safely just now.
     # First we append project_path to sys.path, then we start the server.
