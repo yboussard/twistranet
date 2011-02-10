@@ -18,7 +18,7 @@ from django.db import models
 from django.db.models import Q, loading
 from django.db.utils import DatabaseError
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.utils.safestring import mark_safe
 
 from  twistranet.twistapp.lib.log import log
@@ -236,7 +236,7 @@ class Twistable(_AbstractTwistable):
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = None
-    picture = ResourceField(null = True, blank = True)
+    picture = ResourceField(null = True, blank = True, related_name = "picture_of")
     
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
@@ -495,6 +495,28 @@ class Twistable(_AbstractTwistable):
         #     _p_can_list = roles.public
         # ).update(_access_network = glob)
             
+    def delete(self,):
+        """
+        Here we avoid deleting related object for nullabled ForeignKeys.
+        XXX This is bad 'cause if we use the Manager.delete() method, this won't get checked!!!
+        XXX We need to migrate to Django 1.3 ASAP to get this issue solved with the on_delete attribute.
+        
+        Hack from http://djangosnippets.org/snippets/1231/
+        """
+        self.clear_nullable_related()
+        super(Twistable, self).delete()
+
+    def clear_nullable_related(self):
+        """
+        Recursively clears any nullable foreign key fields on related objects.
+        Django is hard-wired for cascading deletes, which is very dangerous for
+        us. This simulates ON DELETE SET NULL behavior manually.
+        """
+        # Update picture__id
+        Twistable.objects.__booster__.filter(picture__id = self.id).update(
+            picture = None
+        )
+
     @property
     def model_class(self):
         """
@@ -619,4 +641,4 @@ class Twistable(_AbstractTwistable):
     def detail_view(self):
         return self.model_class.type_detail_view
 
-    
+

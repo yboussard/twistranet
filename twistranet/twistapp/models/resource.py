@@ -41,6 +41,7 @@ def twistorage_upload_to(instance, filename):
         raise PermissionDenied("You're not allowed to upload a file on '%s'." % instance.publisher)
     return os.path.join(str(instance.publisher.id), filename)
 
+
 class Resource(twistable.Twistable):
     """
     A resource object.
@@ -76,7 +77,16 @@ class Resource(twistable.Twistable):
         if not self.title:
             if self.resource_file:
                 self.title = self.resource_file.name
+        self.mimetype = self.content_type
         return super(Resource, self).save(*args, **kw)
+        
+    def related_set_null(self,):
+        """
+        See signals below. This is used to ensure that a
+        ON DELETE SET NULL behavior is set instead of
+        ON DELETE CASCADE.
+        """
+        import pdb;pdb.set_trace()
         
     @property
     def image(self,):
@@ -100,5 +110,25 @@ class Resource(twistable.Twistable):
             default_mimetype = 'text/html'
             ct = mimetypes.guess_type(name)[0] or default_mimetype
         return ct
+        
 
+class ImageResource(Resource):
+    """
+    An ImageResource if a File with dedicated Image features.
+    It's used for the picture attribute of all Twistable objects.
+    """    
+    def save(self, *args, **kw):
+        """
+        While computing content_type, we double-check that it's an image.
+        """
+        ct = self.content_type
+        if not ct.startswith("image/"):
+            raise ValueError("Invalid MIME type for %s: %s" % (self, ct))
+        return super(ImageResource, self).save(*args, **kw)
+
+    class Meta:
+        app_label = 'twistapp'
     
+
+
+
