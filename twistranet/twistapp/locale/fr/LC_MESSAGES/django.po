@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-09 21:15+0100\n"
+"POT-Creation-Date: 2011-02-10 12:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -17,6 +17,22 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: django\n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+
+#: forms/account_forms.py:32
+msgid "Login name"
+msgstr "Nom d'utilisateur"
+
+#: forms/account_forms.py:38
+msgid "Choose your password"
+msgstr "Choisissez votre mot de passe"
+
+#: forms/account_forms.py:42
+msgid "Confirm your password"
+msgstr "Confirmez votre mot de passe"
+
+#: forms/account_forms.py:52
+msgid "Invite as an administrator?"
+msgstr "Inviter à devenir administrateur ?"
 
 #: forms/fields.py:29 forms/fields.py:65
 msgid "Select a valid choice. That choice is not one of the available choices."
@@ -64,12 +80,14 @@ msgid "No content."
 msgstr "Pas de contenu."
 
 #: templates/account/edit.html:30 templates/community/edit.html:30
-#: templates/content/edit.html:39 templates/resource/edit.html:40
+#: templates/content/edit.html:39 templates/registration/join.html:47
+#: templates/resource/edit.html:40
 msgid "Save"
 msgstr "Valider"
 
 #: templates/account/edit.html:31 templates/community/edit.html:31
-#: templates/content/edit.html:40 templates/resource/edit.html:41
+#: templates/content/edit.html:40 templates/registration/join.html:48
+#: templates/resource/edit.html:41
 msgid "Undo"
 msgstr "Annuler"
 
@@ -366,9 +384,9 @@ msgid ""
 "twistranet is an Enterprise Social Network. It's a place where people can "
 "engage together on projects to make teamwork easier."
 msgstr ""
-"twistranet est un Réseau Social d'Entreprise. C'est un endroit où "
-"l'on peut se consacrer ensemble à des projets et rendre le travail d'équipe "
-"plus agréable."
+"twistranet est un Réseau Social d'Entreprise. C'est un endroit où l'on peut "
+"se consacrer ensemble à des projets et rendre le travail d'équipe plus "
+"agréable."
 
 #: templates/email/basemail.html:562
 msgid ""
@@ -376,14 +394,46 @@ msgid ""
 "twistranet.com\">twistranet homepage</a> or become a <a href=\"http://www."
 "facebook.com/pages/Twistranet/190139264335508\">fan on Facebook</a>!"
 msgstr ""
-"Voulez-vous en savoir plus sur twistranet ? Visitez la <a href=\""
-"http://www.twistranet.fr\">page d'accueil de twistranet</a> ou devenez "
-"<a href=\"http://www.facebook.com/pages/Twistranet/190139264335508\">fan "
-"sur Facebook</a> !"
+"Voulez-vous en savoir plus sur twistranet ? Visitez la <a href=\"http://www."
+"twistranet.fr\">page d'accueil de twistranet</a> ou devenez <a href=\"http://"
+"www.facebook.com/pages/Twistranet/190139264335508\">fan sur Facebook</a> !"
 
 #: templates/email/basemail.html:623
 msgid "This email has been sent automatically. Please do not answer it!"
-msgstr "Cet email a été envoyé automatiquement. N'y répondez pas s'il vous plaît."
+msgstr ""
+"Cet email a été envoyé automatiquement. N'y répondez pas s'il vous plaît."
+
+#: templates/email/invite_user.html:4 templates/email/invite_user.html.py:8
+#, python-format
+msgid "%(inviter_title)s invites you to %(site_name)s"
+msgstr "%(inviter_title)s vous invite sur %(site_name)s"
+
+#: templates/email/invite_user.html:10
+msgid "Hi,"
+msgstr "Bonjour,"
+
+#: templates/email/invite_user.html:13
+#, python-format
+msgid ""
+"You've just recieved an invitation to join %(site_name)s from your friend/"
+"coworker/stakeholder."
+msgstr ""
+"Vous avez reçu une invitation à rejoindre %(site_name)s de la part d'un ami, "
+"collègue ou partenaire."
+
+#: templates/email/invite_user.html:17
+#, python-format
+msgid "Here's what %(inviter_title)s tells you about it:"
+msgstr "%(inviter_title)s vous envoie ce message :"
+
+#: templates/email/invite_user.html:22
+#, python-format
+msgid ""
+"Just <a href=\"%(invitation_absolute_url)s\"> follow this link</a> to accept "
+"this invitation, or ignore this mail to decline."
+msgstr ""
+"<a href=\"%(invitation_absolute_url)s\">Suivez ce lien</a> pour accepter "
+"cette invitation, ou ignorez-la simplement."
 
 #: templates/email/request_add_to_network.html:4
 #: templates/email/request_add_to_network.html:10
@@ -482,7 +532,7 @@ msgstr "Envoyer des fichiers"
 msgid "Clear Queue"
 msgstr "Effacer la liste"
 
-#: views/account_views.py:53
+#: views/account_views.py:59
 msgid ""
 "<p>\n"
 "                        It seems that you do not have created content yet. "
@@ -510,33 +560,198 @@ msgstr ""
 "[help].                       </p>\n"
 "                    "
 
-#: views/account_views.py:81
+#: views/account_views.py:87
 #, python-format
 msgid "%(name)s's profile"
 msgstr "Profil de %(name)s"
 
-#: views/account_views.py:90
+#: views/account_views.py:96
 msgid "Timeline"
 msgstr "Fil d'activité"
 
-#: views/account_views.py:121
+#: views/account_views.py:127
 msgid "Public timeline"
 msgstr "Fil d'activité public"
 
-#: views/account_views.py:139
+#: views/account_views.py:146
+msgid "Accounts"
+msgstr "Comptes"
+
+#: views/account_views.py:166
+msgid "Your network"
+msgstr "Votre réseau"
+
+#: views/account_views.py:167
+#, python-format
+msgid "%(name)s's network"
+msgstr "Réseau de %(name)s"
+
+#: views/account_views.py:184 views/account_views.py:204
+msgid "Your communities"
+msgstr "Vos communautés"
+
+#: views/account_views.py:185 views/account_views.py:205
+#, python-format
+msgid "%(name)s's communities"
+msgstr "Communautés de %(name)s"
+
+#: views/account_views.py:219
+msgid "Pending network requests"
+msgstr "Demandes de réseau"
+
+#: views/account_views.py:232
+#, python-format
+msgid "<span class=\"badge\">%(number)d</span> Pending network requests"
+msgstr ""
+"<span class=\"badge\">%(number)d</span> Demande(s) d'ajout à votre réseau"
+
+#: views/account_views.py:252
+msgid "Delete account"
+msgstr "Supprimer ce compte"
+
+#: views/account_views.py:276
+#, python-format
+msgid "'%(name)s' account has been deleted."
+msgstr "L'utilisateur %(name)s a été supprimé."
+
+#: views/account_views.py:300
+msgid "Accept in your network"
+msgstr "Accepter dans mon réseau"
+
+#: views/account_views.py:303
+#, python-format
+msgid ""
+"Would you like to accept %(name)s in your network?<br />He/She will be able "
+"to see your network-only content."
+msgstr ""
+"Acceptez-vous que %(name)s rejoigne votre réseau?<br />Cette personne aura "
+"accès au contenu que vous publiez pour votre réseau."
+
+#: views/account_views.py:311
+msgid "Add to your network"
+msgstr "Ajouter à mon réseau"
+
+#: views/account_views.py:314
+#, python-format
+msgid ""
+"Would you like to add %(name)s to your network?<br />He/She will have to "
+"agree to your request."
+msgstr ""
+"Voulez-vous ajouter %(name)s à votre réseau ? Cette personne devra accepter "
+"votre demande."
+
+#: views/account_views.py:328
+#, python-format
+msgid "You're now connected with %(name)s."
+msgstr "Vous êtes maintenant dans le réseau de %(name)s"
+
+#: views/account_views.py:333
+#, python-format
+msgid "A network request has been sent to %(name)s for approval."
+msgstr "Une demande d'ajout à votre réseau a été envoyée à %(name)s."
+
+#: views/account_views.py:350
+msgid "Cancel your network request"
+msgstr "Annuler ma demande de réseau"
+
+#: views/account_views.py:352
+msgid "Would you like to cancel your network request?"
+msgstr ""
+"Voulez-vous annuler votre demande d'ajout au réseau de cette personne ?"
+
+#: views/account_views.py:357
+msgid "Remove from your network"
+msgstr "Retirer de mon réseau"
+
+#: views/account_views.py:359
+#, python-format
+msgid "Would you like to remove %(name)s from your network?"
+msgstr "Voulez-vous retirer %(name)s de votre réseau ?"
+
+#: views/account_views.py:371
+#, python-format
+msgid "You're not connected with %(name)s anymore."
+msgstr "Vous n'êtes plus dans le réseau de %(name)s."
+
+#: views/account_views.py:376
+#, python-format
+msgid "Your network request to %(name)s has been canceled."
+msgstr "Votre demande à %(name)s a été annulée."
+
+#: views/account_views.py:411
+msgid "Create a user account"
+msgstr "Créer un compte utilisateur"
+
+#: views/account_views.py:413
+msgid "Edit your account"
+msgstr "Modifier votre compte"
+
+#: views/account_views.py:414
+#, python-format
+msgid "Edit %(name)s"
+msgstr "Modifier %(name)s"
+
+#: views/account_views.py:422
+msgid "Invite user"
+msgstr "Inviter"
+
+#: views/account_views.py:444
+msgid "This user already exists."
+msgstr "Cet utilisateur existe déjà."
+
+#: views/account_views.py:469
+msgid "Invitation sent successfuly."
+msgstr "Les invitations sont envoyées."
+
+#: views/account_views.py:483
+msgid "Join"
+msgstr "Rejoindre"
+
+#: views/account_views.py:521
+msgid "Password and confirmation do not match"
+msgstr "Le mot de passe et la confirmation ne correspondent pas."
+
+#: views/account_views.py:523
+msgid "A user with this name already exists."
+msgstr "Un utilisateur avec ce nom existe déjà."
+
+#: views/account_views.py:547
+msgid "Your account is now created. You can login to twistranet."
+msgstr "Votre compte est créé. Vous pouvez maintenant vous connecter à twistranet."
+
+#: views/account_views.py:553
+msgid "Login"
+msgstr "Se connecter"
+
+#: views/account_views.py:593
+msgid "Sorry, that's not a valid username or password"
+msgstr ""
+"Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
+
+#: views/account_views.py:610
+msgid "Logged out"
+msgstr "Déconnecté."
+
+#: views/account_views.py:613
+msgid ""
+"You are now logged out.<br />Thanks for spending some quality time on "
+"Twistranet."
+msgstr "Vous êtes déconnecté.<br />Merci pour le temps passé sur Twistranet"
+
+#: views/common_views.py:43
 msgid "Error"
 msgstr "Erreur"
 
-#: views/account_views.py:140
+#: views/common_views.py:44
 #, python-format
 msgid "<p>Error on page <strong>%(requested_url)s</strong></p>"
 msgstr "<p>Erreur sur la page <strong>%(requested_url)s</strong></p>"
 
-#: views/account_views.py:155
+#: views/common_views.py:61
 msgid "Sorry, page not found"
 msgstr "Désolé, page introuvable."
 
-#: views/account_views.py:157
+#: views/common_views.py:63
 #, python-format
 msgid ""
 "<p>\n"
@@ -555,7 +770,11 @@ msgstr ""
 "  Veuillez contacter votre administrateur pour en savoir plus.\n"
 "</p>"
 
-#: views/account_views.py:171
+#: views/common_views.py:76
+msgid "Internal error"
+msgstr "Erreur interne"
+
+#: views/common_views.py:78
 #, python-format
 msgid ""
 "<p>\n"
@@ -569,143 +788,6 @@ msgid ""
 "  Sorry for the inconvenience.\n"
 "</p>"
 msgstr ""
-
-#: views/account_views.py:189
-msgid "Accounts"
-msgstr "Comptes"
-
-#: views/account_views.py:209
-msgid "Your network"
-msgstr "Votre réseau"
-
-#: views/account_views.py:210
-#, python-format
-msgid "%(name)s's network"
-msgstr "Réseau de %(name)s"
-
-#: views/account_views.py:227 views/account_views.py:247
-msgid "Your communities"
-msgstr "Vos communautés"
-
-#: views/account_views.py:228 views/account_views.py:248
-#, python-format
-msgid "%(name)s's communities"
-msgstr "Communautés de %(name)s"
-
-#: views/account_views.py:262
-msgid "Pending network requests"
-msgstr "Demandes de réseau"
-
-#: views/account_views.py:275
-#, python-format
-msgid "<span class=\"badge\">%(number)d</span> Pending network requests"
-msgstr ""
-"<span class=\"badge\">%(number)d</span> Demande(s) d'ajout à votre réseau"
-
-#: views/account_views.py:296
-msgid "Delete account"
-msgstr "Supprimer ce compte"
-
-#: views/account_views.py:320
-#, python-format
-msgid "'%(name)s' account has been deleted."
-msgstr "L'utilisateur %(name)s a été supprimé."
-
-#: views/account_views.py:344
-msgid "Accept in your network"
-msgstr "Accepter dans mon réseau"
-
-#: views/account_views.py:347
-#, python-format
-msgid ""
-"Would you like to accept %(name)s in your network?<br />He/She will be able "
-"to see your network-only content."
-msgstr ""
-"Acceptez-vous que %(name)s rejoigne votre réseau?<br />Cette personne aura "
-"accès au contenu que vous publiez pour votre réseau."
-
-#: views/account_views.py:355
-msgid "Add to your network"
-msgstr "Ajouter à mon réseau"
-
-#: views/account_views.py:358
-#, python-format
-msgid ""
-"Would you like to add %(name)s to your network?<br />He/She will have to "
-"agree to your request."
-msgstr ""
-"Voulez-vous ajouter %(name)s à votre réseau ? Cette personne devra accepter "
-"votre demande."
-
-#: views/account_views.py:372
-#, python-format
-msgid "You're now connected with %(name)s."
-msgstr "Vous êtes maintenant dans le réseau de %(name)s"
-
-#: views/account_views.py:377
-#, python-format
-msgid "A network request has been sent to %(name)s for approval."
-msgstr "Une demande d'ajout à votre réseau a été envoyée à %(name)s."
-
-#: views/account_views.py:394
-msgid "Cancel your network request"
-msgstr "Annuler ma demande de réseau"
-
-#: views/account_views.py:396
-msgid "Would you like to cancel your network request?"
-msgstr ""
-"Voulez-vous annuler votre demande d'ajout au réseau de cette personne ?"
-
-#: views/account_views.py:401
-msgid "Remove from your network"
-msgstr "Retirer de mon réseau"
-
-#: views/account_views.py:403
-#, python-format
-msgid "Would you like to remove %(name)s from your network?"
-msgstr "Voulez-vous retirer %(name)s de votre réseau ?"
-
-#: views/account_views.py:415
-#, python-format
-msgid "You're not connected with %(name)s anymore."
-msgstr "Vous n'êtes plus dans le réseau de %(name)s."
-
-#: views/account_views.py:420
-#, python-format
-msgid "Your network request to %(name)s has been canceled."
-msgstr "Votre demande à %(name)s a été annulée."
-
-#: views/account_views.py:453
-msgid "Create a user account"
-msgstr "Créer un compte utilisateur"
-
-#: views/account_views.py:455
-msgid "Edit your account"
-msgstr "Modifier votre compte"
-
-#: views/account_views.py:456
-#, python-format
-msgid "Edit %(name)s"
-msgstr "Modifier %(name)s"
-
-#: views/account_views.py:470
-msgid "Login"
-msgstr "Se connecter"
-
-#: views/account_views.py:510
-msgid "Sorry, that's not a valid username or password"
-msgstr ""
-"Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
-
-#: views/account_views.py:527
-msgid "Logged out"
-msgstr "Déconnecté."
-
-#: views/account_views.py:530
-msgid ""
-"You are now logged out.<br />Thanks for spending some quality time on "
-"Twistranet."
-msgstr "Vous êtes déconnecté.<br />Merci pour le temps passé sur Twistranet"
 
 #: views/community_views.py:78
 msgid ""
@@ -923,4 +1005,3 @@ msgstr "Taille moyenne"
 #: views/resource_views.py:506
 msgid "Full size"
 msgstr "Grande taille"
-
