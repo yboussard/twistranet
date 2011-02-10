@@ -82,14 +82,25 @@ def twistranet_project():
     # If project_template <> default, we copy the project_template-specific files as well
     if project_template != "default":
         source_root = os.path.join(twist_package_path, "project_templates", project_template)
+        if not os.path.isdir(source_root):
+            source_root = os.path.abspath(os.path.join(os.path.curdir, project_template))
+        if not os.path.isdir(source_root):
+            raise ValueError("Invalid template directory: '%s'" % source_root)
         dest_root = project_path
         for root, dirs, files in os.walk(source_root):
+            # Ugly wat to ignore dotted dirs
+            if '/.' in root:
+                continue
             relative_root = root[len(source_root) + 1:]
             for d in dirs:
+                if d.startswith('.'):
+                    continue
                 dest_dir = os.path.join(dest_root, relative_root, d)
                 if not os.path.isdir(dest_dir):
                     os.mkdir(dest_dir)
             for fname in files:
+                if fname.startswith('.'):
+                    continue
                 dest_file = os.path.join(dest_root, relative_root, fname)
                 shutil.copy(
                     os.path.join(source_root, root, fname),
@@ -99,6 +110,7 @@ def twistranet_project():
     # Generate variables replaced in the project files
     replacement = {
         "SECRET_KEY.*$":        "SECRET_KEY = '%s'" % (uuid1(), ),
+        "__INSTANCE_NAME__":    '"%s"' % project_name,
     }
     
     # Write files, copy/replace things on-the-fly.
