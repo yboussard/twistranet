@@ -16,7 +16,7 @@ twistable_post_save = django.dispatch.Signal(
 
 # This is triggered when a user is invited to TN
 invite_user = django.dispatch.Signal(
-    providing_args = ["target", ]
+    providing_args = ["target", "message", ]
 )
 
 # This signal is sent when a user adds another one to its network

@@ -3,6 +3,7 @@ import urllib
 
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
+from django.forms import widgets
 from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -433,11 +434,24 @@ class UserAccountInvite(UserAccountEdit):
         Here we've got a valid self.form object.
         """
         super(UserAccountInvite, self).prepare_view()
-        if self.form_is_valid:            
-            # Generate the invitation link
-            # Invitation is in two parts: the verification hash and the email address.
+        is_admin = UserAccount.objects.getCurrentAccount(self.request).is_admin
+        if not is_admin:
+            self.form.fields['make_admin'].widget = widgets.HiddenInput()
+        if self.form_is_valid:
+            # Double-check that user is not already registered
             email = self.form.cleaned_data['email']
-            h = "%s%s" % (settings.SECRET_KEY, self.form.cleaned_data['email'])
+            if User.objects.filter(email = email).exists():
+                messages.error(self.request, _("This user already exists."))
+                self.form_is_valid = False
+            
+        if self.form_is_valid:
+            # Generate the invitation link.
+            # Invitation is in two parts: the verification hash and the email address.
+            admin_string = ""
+            if is_admin:
+                if self.form.cleaned_data['make_admin']:
+                    admin_string = "?make_admin=1"
+            h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
             h = hashlib.md5(h).hexdigest()
             invite_link = reverse(AccountJoin.name, args = (h, urllib.quote_plus(email)))
             
@@ -447,11 +461,13 @@ class UserAccountInvite(UserAccountEdit):
                 inviter = UserAccount.objects.getCurrentAccount(self.request),
                 invitation_absolute_url = "%s%s" % (cache.get("twistranet_site_domain"), invite_link, ),
                 target = email,
+                message = self.form.cleaned_data['invite_message'],
             )
             
             # Say we're happy and redirect
-            messages.info(self.request, _("Invitation sent successfuly."))
-            raise MustRedirect(reverse(self.name))
+            if self.form_is_valid:
+                messages.success(self.request, _("Invitation sent successfuly."))
+                raise MustRedirect(reverse(self.name))
     
 #                                                                                           #
 #                                   Account login/logout/join                               #
@@ -470,11 +486,19 @@ class AccountJoin(UserAccountEdit):
         """
         Render the join form.
         """
-        # Check if hash and email match.
-        h = "%s%s" % (settings.SECRET_KEY, email)
+        # Check if hash and email AND admin priviledge match
+        is_admin = False
+        admin_string = "?make_admin=1"
+        h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
         h = hashlib.md5(h).hexdigest()
-        if not check_hash == h:
-            raise ValidationError("Invalid email. This invitation has been manually edited.")
+        if check_hash == h:
+            is_admin = True
+        else:
+            # Check if hash and email match.
+            h = "%s%s" % (settings.SECRET_KEY, email)
+            h = hashlib.md5(h).hexdigest()
+            if not check_hash == h:
+                raise ValidationError("Invalid email. This invitation has been manually edited.")
             
         # If user is already registered, return to login form
         if User.objects.filter(email = email).exists():
@@ -505,7 +529,7 @@ class AccountJoin(UserAccountEdit):
                     first_name = cleaned_data["first_name"],
                     last_name = cleaned_data["last_name"],
                     email = cleaned_data["email"],
-                    is_superuser = False,
+                    is_superuser = is_admin,
                     is_active = True,
                 )
                 u.set_password(cleaned_data["password"])
@@ -513,6 +537,10 @@ class AccountJoin(UserAccountEdit):
                 useraccount = UserAccount.objects.get(user = u)
                 useraccount.title = u"%s %s" % (cleaned_data["first_name"], cleaned_data["last_name"])
                 useraccount.save()
+                if is_admin:
+                    admin_community = AdminCommunity.objects.get()
+                    if not admin_community in useraccount.communities:
+                        admin_community.join(useraccount, is_manager = True)
                 del __account__
                 
                 # Display a nice success message and redirect to login page

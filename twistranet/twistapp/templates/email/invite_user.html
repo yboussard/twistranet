@@ -12,6 +12,12 @@
 <p>  
   {% blocktrans %}You've just recieved an invitation to join {{ site_name }} from your friend/coworker/stakeholder.{% endblocktrans %}
 </p>
+{% if message %}
+<p>
+  {% blocktrans %}Here's what {{ inviter_title }} tells you about it:{% endblocktrans %}
+</p>
+<pre>{{ message }}</pre>
+{% endif %}
 <p>
   {% blocktrans %}Just <a href="{{ invitation_absolute_url }}"> follow this link</a> to accept this invitation, or ignore this mail to decline.{% endblocktrans %}
 </p>
