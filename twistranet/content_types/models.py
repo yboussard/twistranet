@@ -75,9 +75,9 @@ class File(Content):
     type_summary_view = "content/summary.file.html"
 
     @property
-    def size(self) :
+    def size(self):
         file = self.file.resource_file
-        if self.file is not None :
+        if self.file is not None:
             return formatbytes(self.file.resource_file.size)
         
     def save(self, *args, **kw):
