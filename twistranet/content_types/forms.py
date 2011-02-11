@@ -28,8 +28,10 @@ class InlineFileForm(BaseInlineForm):
     class Meta(BaseInlineForm.Meta):
         from twistranet.content_types.models import File
         model = File
-        fields = ('file', ) + BaseInlineForm.Meta.fields
-        
+        fields = ('file', 'description', ) + BaseInlineForm.Meta.fields
+        widgets = {
+            'description':             widgets.Textarea(attrs = {'rows': 3, 'cols': 30}),
+        }
 
 class QuickDocumentForm(BaseRegularForm):
     """
