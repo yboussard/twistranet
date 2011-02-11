@@ -125,7 +125,7 @@ def _getResourceResponse(request, resource, last_modified = None, force_download
     response = serve(request, path, document_root = storage.location, show_indexes = False, nocache = True)
     response["Content-Type"] = resource.mimetype
     content_disposition = force_download and "attachment" or "inline"
-    response["Content-Disposition"] = "%s; filename=\"%s\"" % (content_disposition, urllib.quote(resource.filename))
+    response["Content-Disposition"] = "%s; filename=\"%s\"" % (content_disposition, urllib.quote(resource.filename.encode("ascii", "ignore")))
     return response
     
 @require_access
