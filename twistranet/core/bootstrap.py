@@ -65,7 +65,6 @@ def bootstrap():
         traceback.print_exc()
         return
 
-        
     # Now create the bootstrap / default / help fixture objects.
     # Import your fixture there, if you don't do so they may not be importable.
     from twistranet.fixtures.bootstrap import FIXTURES as BOOTSTRAP_FIXTURES
@@ -172,7 +171,7 @@ def bootstrap():
     if admin_password is not None:
         print "\n\n" \
             "  You can now run your server with 'manage.py runserver'.\n" \
-            "  Your initial administrator login/password are 'admin / %s'" % admin_password
+            "  Your initial administrator login/password are '%s / %s'" % (settings.TWISTRANET_DEFAULT_ADMIN_USERNAME, admin_password)
     
 
 def check_consistancy():
