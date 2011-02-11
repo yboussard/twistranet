@@ -25,6 +25,10 @@ def twistranet_project():
         action="store_false", dest="bootstrap", default=True,
         help="Don't bootstrap project immediately. Use this if you want to review your settings before bootstraping.",
     )
+    parser.add_option("-d", "--develmode",
+        action="store_true", dest="develmode", default=False,
+        help="Use this option if you want to work on sources in your project. eg: static files",
+    )
     (options, args) = parser.parse_args()
 
     # Check template and path args
@@ -87,7 +91,7 @@ def twistranet_project():
 
     # If project_template <> default, we copy the project_template-specific files as well
     if project_template == "default":
-        replaceable_files = (os.path.join(project_path, "local_settings.py"))
+        replaceable_files = ((os.path.join(project_path, "local_settings.py")),)
     else:
         replaceable_files = []
         source_root = os.path.join(twist_package_path, "project_templates", project_template)
@@ -134,7 +138,6 @@ def twistranet_project():
                 data = re.sub(regex, repl, data)
             f.write(data)
             f.close()
-        
     # As we use a standard sqlite configuration, we can boostrap quite safely just now.
     # First we append project_path to sys.path, then we start the server.
     if options.bootstrap:
@@ -145,6 +148,11 @@ def twistranet_project():
         os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
         os.environ["TWISTRANET_NOMAIL"] = "1"   # Disable emails
         import settings
+        # update static files and so on,
+        # excepted in devel mode
+        if not options.develmode:
+            import ipdb; ipdb.set_trace()
+            call_command('twistranet_update')
         call_command('twistranet_bootstrap')
         
         # Now we can start the server!
