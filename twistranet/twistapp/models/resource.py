@@ -58,6 +58,7 @@ class Resource(twistable.Twistable):
     
     # Title / Description are optional resource description information.
     # May be given by the manager, BUT will be stored in TN.
+    filename = models.CharField(max_length = 255, blank = True)     # http://en.wikipedia.org/wiki/Comparison_of_file_systems
     mimetype = models.CharField(max_length = 64)
     encoding = models.CharField(max_length = 64, blank = True)
 
@@ -76,9 +77,14 @@ class Resource(twistable.Twistable):
         """
         if not self.title:
             if self.resource_file:
-                self.title = self.resource_file.name
+                self.title = self._pretty_title(self.resource_file.name)
         self.mimetype = self.content_type
         return super(Resource, self).save(*args, **kw)
+        
+    def _pretty_title(self, raw_filename):
+        """XXX TODO: transform raw filename into a pretty title
+        """
+        return raw_filename
         
     @property
     def is_image(self,):
@@ -86,14 +92,14 @@ class Resource(twistable.Twistable):
         """
         return self.mimetype.startswith("image/")
         
-    @property
-    def filename(self,):
-        """Return the underlying filename
-        """
-        if self.resource_file:
-            name = getattr(self.resource_file, 'name', '')
-            name = os.path.split(name)[1]
-            return name
+    # @property
+    # def filename(self,):
+    #     """Return the underlying filename
+    #     """
+    #     if self.resource_file:
+    #         name = getattr(self.resource_file, 'name', '')
+    #         name = os.path.split(name)[1]
+    #         return name
         
     @property
     def image(self,):

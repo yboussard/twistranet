@@ -409,12 +409,12 @@ def resource_quickupload_file(request):
 
         try:
             # Create the resource itself
-            params = {'resource_file' : file_data, 'title' : title }
-            if publisher_id:
-                publisher_id = int(publisher_id)
-                params['publisher'] = Account.objects.get(id = publisher_id)
-            resource = Resource(**params)
-            resource.save()
+            resource = Resource.objects.create(
+                resource_file = file_data,
+                title = title,
+                publisher_id = publisher_id and int(publisher_id),
+                filename = file_name,
+            )
 
             # Generate the preview thumbnails
             thumbnails = resource.thumbnails
