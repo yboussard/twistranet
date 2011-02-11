@@ -50,6 +50,11 @@
                 <li class="date">{{ content.created_at|timesince }}</li>
                 {%if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
                 <li class="target">{{ content.permissions }}</li>
+                <li>
+                    <a href="{% url download_by_id content.object.file.id %}">
+                        {% blocktrans %}Download{% endblocktrans %}
+                    </a>
+                </li>
                 {%if content.can_edit %}
                     <li class="action">
                         <a href="{% url edit_content content.id %}">Edit</a>
