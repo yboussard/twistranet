@@ -79,7 +79,8 @@ class ResourceWidget(forms.MultiWidget):
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         output.append(u"""<div class="resource-widget">""")
-        # Render the current resource widget and the place for preview
+        
+        # Render the current resource widget and the room for preview
         if self.display_renderer or value[0]:
             output.append( """<div id="resources-renderer">""" )
             if value[0]:
@@ -88,11 +89,7 @@ class ResourceWidget(forms.MultiWidget):
                     resource = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                if resource.is_image:
-                    thumb_size = '100x100'
-                else:
-                    thumb_size = '50x50'
-                thumb = default.backend.get_thumbnail(resource.picture.image, thumb_size, crop ='center center')
+                thumb = resource.thumbnails['medium']
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,
@@ -150,7 +147,7 @@ class ResourceWidget(forms.MultiWidget):
             scopes = []
             for account in selectable_accounts:
                 img = account.forced_picture
-                icon = default.backend.get_thumbnail( img.image,  u'16x16', crop ='center top' )
+                icon = img.thumbnails['icon']
                 activeClass = account.id == default_publisher.id and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),

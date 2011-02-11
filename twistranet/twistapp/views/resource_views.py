@@ -417,14 +417,13 @@ def resource_quickupload_file(request):
             resource.save()
 
             # Generate the preview thumbnails
-            preview = resource.get_preview_thumbnail()
-            medium = resource.get_medium_thumbnail()
+            thumbnails = resource.thumbnails
             msg = {
                 'success':      True,
                 'value':        resource.id,
                 'url':          resource.get_absolute_url(),
-                'preview_url':  preview.url,    
-                'mini_url':     medium.url, 
+                'preview_url':  thumbnails['preview'].url,    
+                'mini_url':     thumbnails['medium'].url, 
                 'legend':       title, 
                 'scope':        publisher_id,
             }
@@ -460,34 +459,18 @@ def resource_by_publisher_json(request, publisher_id):
     # TODO : use haystack and batch
     files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
-    for file in files :
-        img = file.object.image
-        file_name = img.name
-        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
-        if content_type in ('image/jpeg', 'image/jpg', 'image/png', 'image/gif') :
-            type = 'image'
-        else:
-            type = 'file'
-        if type == 'image' :
-            thumb = default.backend.get_thumbnail( img, u'50x50', crop ='center top' )
-            mini = default.backend.get_thumbnail( img, u'100x100', crop ='center top' )
-            preview = default.backend.get_thumbnail( img, u'500x500' )
-            thumbnail_url = thumb.url        
-            mini_url = mini.url
-            preview_url = preview.url
-        else :
-            thumbnail_url = mini_url = preview_url = ''
-
-        is_selected = file.id == (int(selection) or 0)
+    for file_ in files:
+        type_ = file_.is_image and 'image' or 'file'
+        is_selected = file_.id == (int(selection) or 0)
         result = {
-                "url":              file.get_absolute_url(),
-                "thumbnail_url":    thumbnail_url,
-                "mini_url":         mini_url, 
-                "preview_url":      preview_url,
-                "id":               file.id,
-                "title":            file.title,
+                "url":              file_.get_absolute_url(),
+                "thumbnail_url":    file_.thumbnails['medium'].url,
+                "mini_url":         file_.thumbnails['summary'].url,
+                "preview_url":      file_.thumbnails['preview'].url,
+                "id":               file_.id,
+                "title":            file_.title,
                 "selected":         is_selected and ' checked="checked"' or '',
-                "type":             type,
+                "type":             type_,
                 }
         results.append(result)
     data = {}

@@ -325,29 +325,31 @@ class Twistable(_AbstractTwistable):
         return picture
         
     def get_thumbnail(self, *args, **kw):
+        """
+        Same arguments as sorl's get_thumbnail method.
+        """
         from sorl.thumbnail import default
         return default.backend.get_thumbnail(self.forced_picture.image, *args, **kw)
         
-    def get_preview_thumbnail(self,):
+    @property
+    def thumbnails(self,):
         """
-        Return the preview thumbnail (form SORL)
-        XXX TODO: Cache this
+        Return a dict of standard thumbnails methods.
+        XXX TODO: Cache this! And use lazy resolution!
+        Some day resources will be able to have several DIFFERENT previews...
+        
+        Preview: Max = 500x500; Used when a large version should be available.
+        Summary: Max = 100x100;
+        Medium:  Max = Min = 50x50;
+        Icon:    Max = Min = 16x16;
         """
-        import resource
-        preview_size = "50x50"
-        if issubclass(self.model_class, resource.Resource):
-            if self.object.is_image:
-                preview_size = "500x500"
-        return self.get_thumbnail(preview_size, crop = "center top")
-        
-    def get_medium_thumbnail(self,):
-        import resource
-        preview_size = "50x50"
-        if issubclass(self.model_class, resource.Resource):
-            if self.object.is_image:
-                preview_size = "100x100"
-        return self.get_thumbnail(preview_size, crop = "center top")
-        
+        return {
+            "preview":  self.get_thumbnail("500x500", crop = "", upscale = False),
+            "summary":  self.get_thumbnail("100x100", crop = "", upscale = False),
+            "medium":   self.get_thumbnail("50x50", crop = "center top", upscale = True),
+            "icon":     self.get_thumbnail("16x16", crop = "center top", upscale = True),
+        }
+                
             
     #                                                                   #
     #           Internal management, ensuring DB consistancy            #    

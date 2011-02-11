@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load wiki %}
-{% load thumbnail %}
 
 {% block content %}
     <div class="content-file-view">
       <div class="content-summary">
           {{ content.description|fullwiki }}
       </div>
-      {% include 'content/large.thumbnail.html' %}
+      {% with content.thumbnails.preview as thumbnail %}
+          {% include 'content/thumbnail.link.part.html' %}
+      {% endwith %}
       <div class="content-file-link">
         {% with content.file.filename as filename %}
           <a href="{{content.file.get_absolute_url}}">
