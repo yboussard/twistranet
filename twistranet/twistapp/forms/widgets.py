@@ -37,12 +37,9 @@ class ResourceWidget(forms.MultiWidget):
         self.display_renderer = kwargs.pop("display_renderer", True)
         self.allow_select = kwargs.pop("allow_select", True)
         widgets.append(forms.HiddenInput())
+        # is it useful ?
+        widgets.append(forms.HiddenInput())
         self.allow_upload = kwargs.pop("allow_upload", True)
-        if self.allow_upload  and not self.allow_select:
-            widgets.append(forms.FileInput())
-        else:
-            # question : is it important ?
-            widgets.append(forms.HiddenInput())
         super(ResourceWidget, self).__init__(widgets)
 
     def decompress(self, value):
@@ -111,30 +108,25 @@ class ResourceWidget(forms.MultiWidget):
 
             output.append( """</div>""" ) # close resources-renderer div
 
-        # Render the classic File widget and the hidden resource ForeignKey
-        if self.allow_upload and not self.allow_select:
-            output.append( """<div id="resources-uploader">""" )
-            output.append(u"""<div class="mediaresource-help">""" + _(u"Upload a file:") + u"""</div>""")
-            for i, widget in enumerate(self.widgets):
-                try:
-                    widget_value = value[i]
-                except IndexError:
-                    widget_value = None
-                if id_:
-                    final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
-                output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
-            output.append( """</div>""" ) # close resources-uploader div
+        # Render computed widgets
+        for i, widget in enumerate(self.widgets):
+            try:
+                widget_value = value[i]
+            except IndexError:
+                widget_value = None
+            if id_:
+                final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
+            output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
 
-        # Display resources from all selectable accounts and quickupload widget
+        # Render selector for upload and browser
+        output.append('<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name)
+        
+        # Render the Quick upload File widget
+        if self.allow_upload:
+            output.append('<div class="tnQuickUpload"></div>')
+
+        # Display browser resources in all selectable accounts
         if self.allow_select:
-            for i, widget in enumerate(self.widgets):
-                try:
-                    widget_value = value[i]
-                except IndexError:
-                    widget_value = None
-                if id_:
-                    final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
-                output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
             account = Twistable.objects._getAuthenticatedAccount()
             default_publisher = getattr(self, 'publisher', None)
             if default_publisher is None:
@@ -157,8 +149,7 @@ class ResourceWidget(forms.MultiWidget):
                     "activeClass":      activeClass,
                 }
                 scope['icons'] = []
-                images = Resource.objects.filter(publisher=account)[:N_DISPLAYED_ITEMS]
-                # TODO  Should implement image searching, batching & so on
+                images = Resource.objects.filter(publisher=account)[:9]
                 for img in images:
                     if len(scope['icons'])<=9:
                         file_name = img.object.image.name
@@ -171,9 +162,6 @@ class ResourceWidget(forms.MultiWidget):
                 scopes.append(scope)
 
             c = Context({ 'name': name, 'scopes': scopes })
-
-            if self.allow_upload:
-                output.append('<div class="tnQuickUpload"></div>')
 
             output.append (t.render(c))
 

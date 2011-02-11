@@ -160,8 +160,10 @@ loadScopeResources = function(scope_id, selection) {
 ';
                   tnGrid.append(html);
               });
-          gridStyle(tnGrid[0]);
-          gridOnSelect(tnGrid[0]) ;
+          if (tnGrid.length) {
+              gridStyle(tnGrid[0]);
+              gridOnSelect(tnGrid[0]) ;
+          }
           //widgetHeight();
           } );
     Panels[scope_id] = 'loaded';
@@ -192,8 +194,13 @@ widgetHeight = function() {
     jq('#resources-selector').height(selector_height);
 }
 
+// XXX larache
 getActivePublisher = function() {
-    return jq('.activePane input.scopeId').val();
+    publisher_pane = jq('.activePane input.scopeId')
+    // if resource panes 
+    if (publisher_pane.length)   return publisher_pane.val();
+    // upload alone
+    return jq('input[name="publisher_id"]' ,jq('.resource-widget').parents('form')).val();
 }
 
 
