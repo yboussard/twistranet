@@ -235,6 +235,8 @@ img.centered {
   background-image: url(../images/icons/icons-normal.png);
   background-repeat: no-repeat;
   background-position: 0 -96px;
+  display: block;
+  height: 10px;
 }
 .icon-delete:hover {
   background-image: url(../images/icons/icons-hover.png);
