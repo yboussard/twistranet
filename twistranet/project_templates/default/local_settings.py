@@ -30,6 +30,11 @@ DATABASES = {
 # and will be set as admin account's primary email address.
 TWISTRANET_ADMIN_EMAIL = 'your_email@domain.com'
 
+# The following lines are for default admin user created at bootstrap
+TWISTRANET_DEFAULT_ADMIN_USERNAME = "admin"
+TWISTRANET_DEFAULT_ADMIN_FIRSTNAME = "Administrator"
+TWISTRANET_DEFAULT_ADMIN_LASTNAME = ""
+
 # Account sending 'system' email
 SERVER_EMAIL = "twistranet <twistranet@numericube.com>"
 

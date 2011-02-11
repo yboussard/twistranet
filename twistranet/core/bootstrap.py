@@ -133,12 +133,15 @@ def bootstrap():
         admin_password = ""
         for i in range(6):
             admin_password = "%s%s" % (admin_password, random.choice(string.lowercase + string.digits))
-        u = User.objects.create(
-            username = "admin",
+        admin = User.objects.create(
+            username = settings.TWISTRANET_DEFAULT_ADMIN_USERNAME,
+            first_name = settings.TWISTRANET_DEFAULT_ADMIN_FIRSTNAME,
+            last_name = settings.TWISTRANET_DEFAULT_ADMIN_LASTNAME,
+            email = settings.TWISTRANET_ADMIN_EMAIL,
             is_superuser = True,
         )
-        u.set_password(admin_password)
-        u.save()
+        admin.set_password(admin_password)
+        admin.save()
         
     # Sample data only imported if asked to in settings.py
     if settings.TWISTRANET_IMPORT_SAMPLE_DATA:

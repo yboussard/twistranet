@@ -305,6 +305,8 @@ class UserAccount(Account):
         from twistranet.twistapp.models import community
         if not self.slug:
             self.slug = self.user.username
+        if not self.title:
+            self.title = "%s %s" % (self.user.first_name, self.user.last_name, )
         creation = not self.id
         ret = super(UserAccount, self).save(*args, **kw)
 
