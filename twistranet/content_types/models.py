@@ -74,6 +74,7 @@ class File(Content):
 
     type_detail_view = "content/view.file.html"
     type_summary_view = "content/summary.file.html"
+    default_picture_resource_slug = "default_resource_picture"
 
     @property
     def size(self):
