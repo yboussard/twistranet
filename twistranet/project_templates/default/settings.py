@@ -173,8 +173,10 @@ TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS = 9
 # Live Search behaviour
 LIVE_SEARCH_RESULTS_NUMBER = 7
 
-# Log settings
-TWISTRANET_LOG_LEVEL = logging.WARNING
+# The following lines are for default admin user created at bootstrap
+TWISTRANET_DEFAULT_ADMIN_USERNAME = "admin"
+TWISTRANET_DEFAULT_ADMIN_FIRSTNAME = "Administrator"
+TWISTRANET_DEFAULT_ADMIN_LASTNAME = ""
 
 # TinyMCE configuration
 TINYMCE_FILEBROWSER = False
