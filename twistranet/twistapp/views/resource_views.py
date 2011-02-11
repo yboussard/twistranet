@@ -467,11 +467,13 @@ def resource_by_publisher_json(request, publisher_id):
     as json dict (for images dict contains all thumb urls) 
     """
     # minimal security check
+    publisher_id = int(publisher_id)
     account = Twistable.objects.getCurrentAccount(request)
-    selectable_accounts_ids = [account.id for account in Resource.objects.selectable_accounts(account)]
+    selectable_accounts_ids = [a.id for a in Resource.objects.selectable_accounts(account)] # XXX Suboptimal, should be 1! query
     request_account = Account.objects.get(id = publisher_id)
-    if int(publisher_id) not in selectable_accounts_ids :
-        raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
+    if not publisher_id == account.id:
+        if int(publisher_id) not in selectable_accounts_ids:
+            raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
     
     selection = request.GET.get('selection','')  or 0
     # TODO : use haystack and batch
