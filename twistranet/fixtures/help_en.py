@@ -20,7 +20,7 @@ FIXTURES = [
         text_en = """<h2>Getting started</h2>
 <p>
 If you can read that document, that probably means you're already connected to twistranet!
-If you're not logged-in, <a href="/login">login now</a>.
+If you're not logged-in, please login now.
 </p>
 <table width="100%">
     <tr>
@@ -51,7 +51,7 @@ If you're not logged-in, <a href="/login">login now</a>.
             </p>
         </td>
         <td>
-            <p><strong>Have a report, a memo, a template to share??</strong></p>
+            <p><strong>Have a report, a memo, a template to share?</strong></p>
             <p>
             Don't spam your co-workers, use a <strong>Document</strong>.
             Your network will know you've got something to say,
@@ -68,7 +68,7 @@ Working with TwistraNet is as easy as that!
         text_fr = """<h2>Bien démarrer avec twistranet</h2>
 <p>
 Si vous lisez ce document, c'est que vous êtes déjà connecté à twistranet&nbsp;!
-Si vous n'êtes pas connecté, vous pouvez vous <a href="/login">connecter immédiatement</a>
+Si vous n'êtes pas connecté, vous pouvez vous connecter immédiatement.
 </p>
 <table width="100%">
     <tr>
@@ -81,7 +81,7 @@ Si vous n'êtes pas connecté, vous pouvez vous <a href="/login">connecter immé
             [bubble_64]
         </th>
         <th width="33%">
-            <p><a href="/content/new/Document">Publiez du contenu</a></p>
+            <p>Publiez du contenu</p>
             [document_64]
         </th>
    </tr>
@@ -104,7 +104,7 @@ Si vous n'êtes pas connecté, vous pouvez vous <a href="/login">connecter immé
         <td>
             <p><strong>Avez-vous un mémo ou un document à partager&nbsp;?</strong></p>
             <p>
-            N'envahissez plus vos collègues de mails, utilisez un <a href="/content/new/Document">Document</a>.<br />
+            N'envahissez plus vos collègues de mails, utilisez un <strong>Document</strong>.<br />
             Vos proches collègues sauront que vous voulez partager quelque chose avec eux,
             et les autres pourront trouver facilement votre document s'ils en ont besoin.
             </p>
