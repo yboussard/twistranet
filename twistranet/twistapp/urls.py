@@ -25,8 +25,10 @@ urlpatterns = patterns('',
     url(r'^pending_network/$',                      AsView(PendingNetworkView), name = PendingNetworkView.name),
     
     # Resource links (w/ id or w/ alias or from an account or content)
-    url(r'^resource/(\d+)$',                    'twistranet.twistapp.views.resource_by_id', name='resource_by_id'),
-    url(r'^resource/(%s)/$' % SLUG_REGEX,       'twistranet.twistapp.views.resource_by_slug', name='resource_by_slug'),
+    url(r'^resource/(\d+)$',                        'twistranet.twistapp.views.resource_by_id', name='resource_by_id'),
+    url(r'^resource/(%s)/$' % SLUG_REGEX,           'twistranet.twistapp.views.resource_by_slug', name='resource_by_slug'),
+    url(r'^resource/download/(\d+)$',               'twistranet.twistapp.views.download_by_id', name='download_by_id'),
+    url(r'^resource/download/(%s)/$' % SLUG_REGEX,  'twistranet.twistapp.views.download_by_slug', name='download_by_slug'),
     # (r'^resource/new$',                         'twistranet.twistapp.views.create_resource'),      
     # (r'^resource/(\w+)$',                       'twistranet.twistapp.views.resource_by_slug_or_id'),  
     (r'^resource_by_publisher/json/(\d+)$',     'twistranet.twistapp.views.resource_by_publisher_json'),     # return json list of resources by publisher id

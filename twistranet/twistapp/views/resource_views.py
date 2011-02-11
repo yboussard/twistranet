@@ -39,7 +39,6 @@ from twistranet.core.views import *
 
 from django.conf import settings
 
-
 def serve(request, path, document_root = None, show_indexes = False, nocache = False):
     """
     Adapted from django.views.static to handle the creation/modification date of the resource's publisher
@@ -100,12 +99,11 @@ def serve(request, path, document_root = None, show_indexes = False, nocache = F
     response["Content-Length"] = len(contents)
     return response
 
-
-
-def _getResourceResponse(request, resource, last_modified = None):
+def _getResourceResponse(request, resource, last_modified = None, force_download = False):
     """
     Return the proper HTTP stream for a resource object
     XXX TODO: Handle the last_modified parameter
+    If force_download is True, then we return attachment instead of inline.
     """
     # Determinate the appropriate rendering scheme: file or URL
     if resource.resource_url:
@@ -124,7 +122,11 @@ def _getResourceResponse(request, resource, last_modified = None):
         raise ValueError("Invalid resource: %s" % resource)
 
     # Return the underlying file, adapt the Last-Modified header as necessary
-    return serve(request, path, document_root = storage.location, show_indexes = False, nocache = True)
+    response = serve(request, path, document_root = storage.location, show_indexes = False, nocache = True)
+    response["Content-Type"] = resource.mimetype
+    content_disposition = force_download and "attachment" or "inline"
+    response["Content-Disposition"] = "%s; filename=\"%s\"" % (content_disposition, urllib.quote(resource.filename))
+    return response
     
 @require_access
 def resource_cache(request, cache_path):
@@ -148,6 +150,22 @@ def resource_by_slug(request, slug):
     """
     resource = Resource.objects.get(slug = slug)
     return _getResourceResponse(request, resource)
+
+@require_access
+def download_by_id(request, resource_id):
+    """
+    Return a resource by id
+    """
+    resource = Resource.objects.get(id = resource_id)
+    return _getResourceResponse(request, resource, force_download = True)
+
+@require_access
+def download_by_slug(request, slug):
+    """
+    XXX TODO: Make this more efficient?
+    """
+    resource = Resource.objects.get(slug = slug)
+    return _getResourceResponse(request, resource, force_download = True)
 
 @require_access
 def resource_by_slug_or_id(request, slug_or_id):
