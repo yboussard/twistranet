@@ -96,6 +96,10 @@ TwistranetQuickUpload.onAllUploadsComplete = function(){
         // reload the publisher panel with last upload value if exists
         if (scopeValue && typeof reloadScope != 'undefined') reloadScope(scopeValue.toString(), lastUploadValue, true);
     }
+    // XXX FIXME it's not safe
+    // in inline forms after upload
+    jq('#form-File .tnQuickUpload').remove();
+    jq('#form-File  textarea#id_description').show();
 
 }
 TwistranetQuickUpload.clearQueue = function(uploader, domelement) {

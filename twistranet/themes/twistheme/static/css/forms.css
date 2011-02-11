@@ -186,6 +186,12 @@ ul.inline-form select {
   background-color: #efefef;
 }
 
+/* XXX FIXME, something else must be done */
+
+#form-File  textarea#id_description {
+  display: none;
+}
+
 
 /* edit forms */
 
