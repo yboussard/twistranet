@@ -1,0 +1,10 @@
+{# Parameters: #}
+{#     content: the content (or twistable) object for which this link is generated; #}
+{#     thumbnail: the thumbnail from twistranet.thumbnails[xxx] #}
+  <a title="{{content.title}}"
+     href="{{ content.get_absolute_url }}"
+     class="image-block image-block-thumb image-block-content">
+    <img title="{{content.title}}"
+         alt="{{content.title}}"
+         src="{{ thumbnail.url }}" />  
+  </a>
