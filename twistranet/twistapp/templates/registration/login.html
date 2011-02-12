@@ -31,12 +31,12 @@
 	      <label for="password">{% blocktrans %}Password:{% endblocktrans %}</label>
 	      <input type="password" name="password" value="" id="password">
 		</div>
+		<div class="forgotten-password">
+		    <a href="{% url forgotten_password %}">{% blocktrans %}Forgot your password?{% endblocktrans %}</a>
+		</div>
 	    <div class="submit-row">
           <input type="submit" value="{% trans 'login' %}" />
 	      <input type="hidden" name="next" value="{{ next|escape }}" />
-		</div>
-		<div class="forgotten-password">
-		    <a href="">{% blocktrans %}Forgot your password?{% endblocktrans %}</a>
 		</div>
 	  </form>
 	</div>

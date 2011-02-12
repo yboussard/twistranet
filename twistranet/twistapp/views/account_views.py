@@ -610,6 +610,22 @@ class AccountLogin(BaseView):
         setattr(self, redirect_field_name, redirect_to)
     
     
+class AccountForgottenPassword(BaseView):
+    """
+    Forgotten pwd. Sorry, this has yet to be implemented.
+    """
+    name = "forgotten_password"
+    title = _("Forgot your password")
+    
+    def prepare_view(self,):
+        """
+        XXX Not implemented yet.
+        """
+        messages.warning(self.request, _("We're sorry but password retrieval is not implemented yet."))
+        redirect_to = settings.LOGIN_REDIRECT_URL
+        raise MustRedirect(redirect_to)
+        
+    
 class AccountLogout(BaseView):
     template = "registration/login.html"
     template_variables = BaseView.template_variables + ["justloggedout", ]

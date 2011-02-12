@@ -74,7 +74,8 @@ urlpatterns = patterns('',
 
     # Login / Logout / Register stuff
     url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
-    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),  
+    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),
+    url(r'^forgotten_password/$',               AsPublicView(AccountForgottenPassword), name = AccountForgottenPassword.name, ),
     
     # Administration pages.
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
