@@ -1,20 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block topbar %}
-{% endblock %}
-
-{% block menu_items %}
-{% endblock %}
-
-{% block searchform %}
-{% endblock %}
-
-{% block globalbar %}
-{% endblock %}
-
-{% block contextbar %}
-{% endblock %}
+{% block title %}{% endblock %}
+{% block topbar %}{% endblock %}
+{% block menu_items %}{% endblock %}
+{% block searchform %}{% endblock %}
+{% block globalbar %}{% endblock %}
+{% block contextbar %}{% endblock %}
 
 {% block content %}
 <div class="login">
@@ -42,6 +34,9 @@
 	    <div class="submit-row">
           <input type="submit" value="{% trans 'login' %}" />
 	      <input type="hidden" name="next" value="{{ next|escape }}" />
+		</div>
+		<div class="forgotten-password">
+		    <a href="">{% blocktrans %}Forgot your password?{% endblocktrans %}</a>
 		</div>
 	  </form>
 	</div>

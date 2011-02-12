@@ -410,7 +410,12 @@ var twistranet = {
         });
     },
     setEmptyCols : function(e) {
-        if (! $('#contextbar .tn-box-container:first').children().size() ) $('body').addClass('noleftcol');
+        if (! $('#globalbar .tn-box-container:first').children().size() &
+            ! $('#contextbar .tn-box-container:first').children().size() ) {
+            $('body').addClass('nocol');
+        } else if (! $('#contextbar .tn-box-container:first').children().size() ) {
+            $('body').addClass('noleftcol');
+        }
     },
     showContentActions: function(e){
         /* show content actions on post mouseover */
