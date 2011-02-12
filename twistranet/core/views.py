@@ -464,12 +464,12 @@ class BaseIndividualView(BaseView):
         """
         referer_url = self.request.META.get('HTTP_REFERER', '')
         current_url = self.request.build_absolute_uri(self.request.get_full_path())
-        if not (referer_url) or referer_url == current_url :
+        if not (referer_url) or referer_url == current_url:
             if hasattr(self, 'publisher'):
                 publisher = self.publisher
-                if publisher :
+                if publisher:
                     referer_path =  reverse('account_by_id', args = (publisher.id,))
-            else :
+            else:
                 from twistranet.twistapp.views.account_views import HomepageView
                 referer_path = reverse(HomepageView.name)
             referer_url = self.request.build_absolute_uri(referer_path)

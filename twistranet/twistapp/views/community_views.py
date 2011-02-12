@@ -53,7 +53,7 @@ class CommunityView(UserAccountView):
         else:
             return super(CommunityView, self).get_title()
         
-    def set_community_vars(self) :
+    def set_community_vars(self):
         """
         set community template vars 
         """

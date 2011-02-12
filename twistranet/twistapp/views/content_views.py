@@ -223,7 +223,7 @@ class AjaxCommentsList(ContentView):
                     comment.save()
                     self.form.save_m2m()
                 # only in rare situations (no javascript)
-                if self.redirect_to :
+                if self.redirect_to:
                     raise MustRedirect(urllib.unquote(self.redirect_to))
             else:
                 # Fetch the redirect_to variable from the caller and generate form

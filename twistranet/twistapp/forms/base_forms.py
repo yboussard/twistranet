@@ -44,10 +44,10 @@ class BaseForm(BaseEmptyForm):
         for field_name in ('picture', 'file', 'browsed_resource'):
             if self.fields.has_key(field_name):
                 publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
-                if publisher :
+                if publisher:
                     # XXX FIXME > when editing account publisher is often 
                     # 'all twistranet', and of course only admin has the rights
-                    if getattr(publisher, 'slug')==u'all_twistranet' :
+                    if getattr(publisher, 'slug')==u'all_twistranet':
                         publisher = self.instance.account
                     self.fields[field_name].widget.publisher = publisher
 

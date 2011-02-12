@@ -113,7 +113,7 @@ class ResourceField(models.ForeignKey):
             data_select, data_upload = data
             if self.allow_upload and data_upload:         # We have a file using a classic file field (no more used ?), it takes precedence.
                 resource = self.upload_resource(instance, data_upload)
-            elif (self.allow_upload or self.allow_select) and data_select :   # we have a dataselect using quickupload or browser select
+            elif (self.allow_upload or self.allow_select) and data_select:   # we have a dataselect using quickupload or browser select
                 if isinstance(data_select, Resource):
                     resource = data_select
                 elif isinstance(data_select, unicode):       # We just have an id. Try to get the resource.

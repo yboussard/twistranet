@@ -262,7 +262,7 @@ class Twistable(_AbstractTwistable):
     _p_can_create = models.IntegerField(default = 16, db_index = True)
     
     @property
-    def kind(self) :
+    def kind(self):
         """
         Return the kind of object it is (as a lower-cased string).
         """
@@ -286,8 +286,8 @@ class Twistable(_AbstractTwistable):
         category = self.kind
         viewbyslug = '%s_by_slug' % category
         viewbyid = '%s_by_id' % category
-        if hasattr(self, 'slug') :
-            if self.slug :
+        if hasattr(self, 'slug'):
+            if self.slug:
                 return  (viewbyslug, [self.slug])
         return (viewbyid, [self.id])
 

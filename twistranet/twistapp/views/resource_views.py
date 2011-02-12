@@ -9,10 +9,10 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-try :
+try:
     # python 2.6
     import json
-except :
+except:
     # python 2.4 with simplejson
     import simplejson as json
 
@@ -396,10 +396,10 @@ def resource_quickupload_file(request):
         file_name = urllib.unquote(request.environ['HTTP_X_FILE_NAME'])
         title = request.GET.get('title', '')
         upload_with = "XHR"        
-        try :
+        try:
             # the solution for sync ajax file upload
             file_data = SimpleUploadedFile(file_name, request.raw_post_data)
-        except :
+        except:
             log.debug("XHR Upload of %s has been aborted" %file_name)
             # not really useful here since the upload block
             # is removed by "cancel" action, but
@@ -413,7 +413,7 @@ def resource_quickupload_file(request):
         title = request.POST.get('title', '')
         upload_with = "CLASSIC FORM POST"
         # we must test the file size in this case (because there is no size client test with msie file field)
-        if not utils._check_file_size(file_data) :
+        if not utils._check_file_size(file_data):
             log.debug("The file %s is too big, quick iframe upload rejected" % file_name) 
             msg = {u'error': u'sizeError'}
 

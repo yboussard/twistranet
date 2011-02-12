@@ -12,10 +12,10 @@ from django.core.paginator import Paginator, InvalidPage
 from twistranet.core.views import BaseView, MustRedirect
 from twistranet.twistapp.lib.utils import truncate
 
-try :
+try:
     #python 2.6
     import json
-except :
+except:
     #python 2.4
     import simplejson as json
 
@@ -139,30 +139,30 @@ class TwistraNetJSONSearchView(BaseView):
                 o['link'] = res_obj.get_absolute_url()
                 o['type'] = res_type
 
-                if res_type in ('Comment', 'StatusUpdate') :
+                if res_type in ('Comment', 'StatusUpdate'):
                     publisher = res_obj.publisher
                     o['title'] = getattr(publisher, 'title', u'')
                     o['link'] = publisher.get_absolute_url()
                     picture = publisher.forced_picture
-                else :
+                else:
                     o['title'] = getattr(res_obj, 'title', u'')
                     o['link'] = res_obj.get_absolute_url()
                     picture = res_obj.forced_picture
 
-                if picture is not None :
+                if picture is not None:
                     from sorl.thumbnail import default
                     # generate the thumb or just get it
-                    try :
+                    try:
                         thumb = default.backend.get_thumbnail( picture.image, LIVE_SEARCH_THUMBS_SIZE, crop='center top', )
                         o['thumb'] = thumb.url 
-                    except :
+                    except:
                         o['thumb'] = picture.get_absolute_url()
-                else :
+                else:
                     o['thumb'] = ''  
                 data.append(o)
                 
         complete_data = {'results' : data, 'has_more_results' : False }
-        if nb_results > LIVE_SEARCH_RESULTS_NUMBER :
+        if nb_results > LIVE_SEARCH_RESULTS_NUMBER:
             complete_data['has_more_results'] = True
             complete_data['all_results_url'] = '/search?q=%s' %request.GET.get('q')
             complete_data['all_results_text'] = _(u'All results') + ' (%i)' %nb_results
