@@ -1,12 +1,78 @@
-{% extends "admin/base_site.html" %}
-{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://gmpg.org/xfn/11">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>twistranet - Server error</title>
+    <link rel="icon" type="image/png" href="{% url twistranet_home %}static/images/favicon.png" />
+    <meta name="generator" content="twistranet" />
+	<style type="text/css">
+		body {
+        	margin: 0;
+        	background: #1F2756 url({% url twistranet_home %}static/images/ocean-background.png) 0 0 repeat-x;
+    		padding:0;
+            font-family: 'Lucida Grande', tahoma, 'Lucida Sans Unicode', 'bitstream vera sans', arial, helvetica, geneva, sans-serif;
+            color: #88CFE1;
+	    }
+	    #wrapper {
+	        background: transparent url({% url twistranet_home %}static/images/logo-failed.png) 0 0 no-repeat;
+	        padding: 30px 0 0 500px;
+	        margin: auto;
+	        width: 500px;
+	        height: 350px;
+	        margin-top: 157px;
+        }
+        
+        #wrapper h1 {
+            position: absolute;
+            top: 170px;
+            color: #1F2756;
+        }
+        
+        #wrapper #text {
+            position: absolute;
+            top: 250px;
+            line-height: 1.5em;
+        }
+        
+        #contact {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 1em;
+            font-size: 10px;
+            bottom: 10px;
+        }
+		
+		a:link,
+		a:hover,
+		a:visited {
+		    color: #cfe188;
+	    }
+		
+		img{border:none; font-size:14px; font-weight:bold; height:auto; line-height:100%; outline:none; text-decoration:none; text-transform:capitalize;}
+	</style>
+</head>
+<body>
+    <div id="page">
+        <div id="wrapper">
+            <h1>Splash.</h1>
+            <div id="text">
+                <p>
+                    Oops... Looks like something went wrong.
+                </p>
+                <p>
+                    But don't worry, we are already busy fixing this error.
+                </p>
+            </div>
+        </div>
+        <div id="contact">
+            <p>
+                Want us to go faster? Want to help us by giving some feedback? Or just want to support our hard work?
+            </p>
+            <p>
+                You can report this error here: <a target="_blank" href="http://www.twistranet.org">twistranet community website</a>
+            </p>
+        </div>
+    </div>
+</body>
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans "Home" %}</a> &rsaquo; {% trans "Server error" %}</div>{% endblock %}
-
-{% block title %}{% trans 'Server error' %}{% endblock %}
-
-{% block content %}
-<h1>{% trans 'Server Error' %}</h1>
-<p>{% trans "There's been an error. It's been reported to the site administrators via e-mail and should be fixed shortly. Thanks for your patience." %}</p>
-
-{% endblock %}
