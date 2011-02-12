@@ -5,11 +5,12 @@
     min-width: 100px; 
     padding: 4px 15px;
     text-align:center;    
-    background: #278FB8; 
-    color:#fff;
+    background: #EFEFEF; 
+    color:#686868;
     float: left;
     cursor: pointer !important;
     margin: 0 10px 15px 0;
+    border: 1px solid #ccc;
     -moz-border-radius:5px;
     -webkit-border-radius:5px;
     border-radius:5px;
