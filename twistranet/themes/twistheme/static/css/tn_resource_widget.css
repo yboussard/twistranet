@@ -95,6 +95,6 @@
 }
 
 /*temp fix */ 
-.inline-form #resources-selector {
+.inline-form .resource-widget .mediaresource-help {
     display: none;
 }

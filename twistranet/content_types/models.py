@@ -70,7 +70,7 @@ class File(Content):
     class Meta:
         app_label = 'twistapp'
 
-    file = fields.ResourceField(allow_select = True)
+    file = fields.ResourceField(allow_upload = True, allow_select = False)
 
     type_detail_view = "content/view.file.html"
     type_summary_view = "content/summary.file.html"

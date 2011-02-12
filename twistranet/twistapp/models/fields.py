@@ -108,21 +108,16 @@ class ResourceField(models.ForeignKey):
         resource = None
         
         # Process either upload file or resource id
+        # XXX Fix me : i'm not sure
         if data:
             data_select, data_upload = data
-            
-            if self.allow_upload and data_upload:         # We have a file, it takes precedence.
+            if self.allow_upload and data_upload:         # We have a file using a classic file field (no more used ?), it takes precedence.
                 resource = self.upload_resource(instance, data_upload)
-            elif self.allow_select and data_select and isinstance(data_select, int):       # We just have an id. Try to get the resource.
-                resource = Resource.objects.get(id = data_select)
-            elif self.allow_select and data_select and isinstance(data_select, Resource):
-                resource = data_select
-            elif not data_upload and not self.allow_select:
-                # If we don't have any data BUT just have a FileField (no select),
-                # then that means that content didn't change (a new file has not been
-                # downloaded).
-                # In the future, we should check explicit against file deletion here.
-                return
+            elif (self.allow_upload or self.allow_select) and data_select :   # we have a dataselect using quickupload or browser select
+                if isinstance(data_select, Resource):
+                    resource = data_select
+                elif isinstance(data_select, unicode):       # We just have an id. Try to get the resource.
+                    resource = Resource.objects.get(id = data_select)
             else:
                 raise ValueError("Invalid incoming data for resource field: %s" % data)
 

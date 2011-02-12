@@ -15,7 +15,7 @@ Requirements
 - an internet connection
 
 - python2.6 or later (python 3 is not supported)
-- twistranet can also work with python2.5 (but install simplejson)
+- twistranet can also work with python2.5 (but simplejson must be installed first)
 
     To install python, goto http://python.org/download/
     choose, download, and install the last Python 2.xx for your platform.
@@ -60,22 +60,22 @@ Installation
 ------------
 
 Open a command line
-To install the last Twistranet released version (not released at this time)
+To install the last Twistranet released version (it comes soon)
 
-    $ pip install django-twistranet        
+    $ pip install numericube-twistranet
 
 .. note:: behind an http proxy you need to add an option to pip, exemple:: pip --proxy proxy-server:proxy-port install django-twistranet 
 
 Or to install the devel version from github Twistranet public repository, open a command line
 
-    $ git clone git://github.com/numericube/twistranet.git ./django-twistranet
-    $ pip install ./django-twistranet 
+    $ git clone git://github.com/numericube/twistranet.git ./numericube-twistranet
+    $ pip install ./numericube-twistranet 
 
 .. note:: the './' is important here, it can be replaced by any "path to" expression
 
 Delete the installation folder, no more used
 
-    $ rm -Rf ./Twistranet
+    $ rm -Rf ./numericube-twistranet
 
 Twistranet and all its dependencies are downloaded and installed
 in your python path ::
@@ -109,40 +109,30 @@ This will install all you need for your project in 'mysite' folder :
   - your project configuration 'local_settings.py'
   
   - django initialization files
+  
+  - a sqlite data base in var/tn.db
+  
+  - a site root for static files, css, js and images
 
-If you need to customize css and templates
-You can initialize the customization work by copy/paste standard Twistranet templates
-and themes in 'mysite' folder, just change the previous command
-with::
+The 'twistranet_project' command also starts the server on port 8000
 
-    $ twistranet_project -t mysite
+Your admin password is given at the end of the start log.
+
+To stop it, just enter CTRL-C
 
 You will probably have to change some configuration in local_settings.py
 
-
-
-
-
-Initialize the project
-----------------------
-
-Create Your project Database
-    
-    $ cd mysite
-    $ python manage.py syncdb
-
-Reply "no" to the question about superuser creation  
-(because the AUTH_PROFILE_MODULE has changed, it doesn't work)  
-The data is stored in data/tn.db when using sqlite
-
-Bootstrap the first data
-    
-    $ python manage.py twistranet_bootstrap
-
 Run the server in foreground
 
+    $ cd mysite
     $ python manage.py runserver
 
+
+To change admin password
+
+    $ python manage.py changepassword admin
+
+and follow instructions
 
 Connect to your site
 --------------------
@@ -151,16 +141,5 @@ With your favorite browser
 
 http://localhost:8000
 
-admin / azerty1234
-
-
-You can change admin name email && password using admin interface.
-
-http://localhost:8000/admin
-
-
-Change your local settings
---------------------------
-
-Customize the file local_settings.py  to change the themes and/or templates
+admin / yourpassword
  

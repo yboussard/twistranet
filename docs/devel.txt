@@ -30,42 +30,59 @@ Fork Twistranet from github (with your login or public adress git://github.com/n
 
     (twistranet-devel) $ git clone https://yourlogin@github.com/numericube/twistranet.git ./numericube-twistranet
 
-.. note:: don't call the cloned folder 'twistranet' in all lowercase if you want to start Django directly from this folder
-
->> Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnails, tinymce ...)
+Install Twistranet in place with all dependencies (django, debug_toolbar, piston, haystack, solr-thumbnail, tinymce ...)
 
     (twistranet-devel) $ pip install -e ./numericube-twistranet
 
 .. note:: the './' is important here, it can be replaced by any "path to" expression
+.. note:: the '-e' is also VERY important for devel, this option do not install the product, but just simlink the devel package
 
+Create a project in devel mode
+------------------------------
 
-Create Twistranet Database
-Reply "no" to the question about superuser creation  
-(since the AUTH_PROFILE_MODULE has changed, it doesn't work)  
-By default (using sqlite), the data is stored in data/tn.db
-    (twistranet) $ cd Twistranet
-    (twistranet) $ python manage.py syncdb
+At prompt, enter this command line
 
-Bootstrap the first data
-The structure by default is set in twistranet/fixtures/initial_data.json
-You can define in this file a new superuser (by default admin/azerty1234)
-    
-    (twistranet) $ python manage.py twistranet_bootstrap
+    (twistranet-devel) $ twistranet_project -d cogip MyProject
 
-Run the server in foreground
+This will create a new project called "MyProject" in devel mode.
 
-    (twistranet) $ python manage.py runserver
+.. note:: the '-d' or '--develmode' option don't copy static files so you can develop on it when running the project
+.. note:: the 'cogip' option bootstrap a complete example for your Project
 
+The server is started on port 8000.
+
+To start the server in debug mode
+Enter CTR-C to stop it
+
+    (twistranet-devel) $ cd MyProject
+
+Under Linux
+
+    (twistranet-devel) $ echo $TWISTRANET_DEBUG="DEBUG"
+
+Under Windows
+
+    (twistranet-devel) $ set TWISTRANET_DEBUG="DEBUG"
+
+And start
+
+    (twistranet-devel) $ python manage.py runserver
 
 Admininistration
 ----------------
 
-You can set your initial data using the classic django admin interface.
-Use the superuser login defined in initial_data.json
+You can change the twistranet admin password
 
-   * http://localhost:8000/admin
+    (twistranet-devel) $ python manage.py changepassword admin
 
+To leave the virtualenv
 
+    (twistranet-devel) $ deactivate
+
+Under MS Windows, the command is
+
+    (twistranet-devel) $ cd ..
+    (twistranet-devel) $ Scripts\deactivate.bat
 
 Internationalisation
 --------------------
@@ -73,20 +90,23 @@ Internationalisation
 Find new internationalized strings in your code
 and update your .po files
 more information here : http://docs.djangoproject.com/en/dev/topics/i18n/localization/
-At Twistranet product root
+At your project root
 
-    (twistranet) $ cd twistranet
-    (twistranet) $ python ../../manage.py makemessages -a
+    (twistranet-devel) $ python manage.py makemessages -a
 
 Compile your .po (it's a mandatory after each change)
 
-    (twistranet) $ python ../../manage.py compilemessages
+    (twistranet-devel) $ python manage.py compilemessages
 
 
 Running Tests
 -------------
-At your Twistranet repository root, just enter
+To run all twistranet tests, at your Project root, just enter
 
     (twistranet-devel) $ python manage.py test twistranet
 
+To run a specific test in one twistranet application (eg test_azerty in twistranet/twistapp/tests/MyTestCase)
 
+    (twistranet-devel) $ python manage.py test twistranet.twistapp.MyTestCase.test_azerty
+
+.. note:: the MyTestCase class must be called in the tests/__init__.py
