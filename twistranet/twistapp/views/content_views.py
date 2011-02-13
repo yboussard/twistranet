@@ -52,6 +52,7 @@ class ContentEdit(ContentView):
     template = "content/edit.html"
     name = "edit_content"
     category = LOCAL_ACTIONS
+    template_variables = ContentView.template_variables + ['content_type', ]
     
     def as_action(self):
         if self.is_model:
@@ -67,6 +68,11 @@ class ContentEdit(ContentView):
             return form_registry.getFormEntries(ctype, edition = True)[0]['form_class']
         except IndexError:
             raise ValueError("No Form registered for this content type: '%s'" % ctype)
+
+    def prepare_view(self, *args, **kw):
+        super(ContentEdit, self).prepare_view(*args, **kw)
+        if self.object:
+            self.content_type = self.object.model_name
 
     def get_title(self,):
         """

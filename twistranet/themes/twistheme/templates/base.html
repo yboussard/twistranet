@@ -130,9 +130,11 @@
                         </div>
                         {% endif %}
                         
-                        {% block title %}
-                            <h1>{{ title|safe }}</h1>
-                        {% endblock %}
+                        <h1>
+                            {% block title %}
+                                {{ title|safe }}</h1>
+                            {% endblock %}
+                        </h1>
                         
                         {% include "actions/main.part.html" %}                        
                         {% block content %}
