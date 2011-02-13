@@ -560,6 +560,9 @@ class AccountLogin(BaseView):
     title = _("Login")
     template_variables = BaseView.template_variables + \
         ['form', 'site', 'next', ]
+    global_boxes = [
+        'registration/introduction.box.html',
+    ]
     
     def prepare_view(self,):
         """
