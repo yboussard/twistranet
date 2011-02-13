@@ -1,0 +1,23 @@
+{% load i18n %}
+{# This is what's inside the <fieldset> of a form. #}
+
+{% for field in form %}
+    {% if not field.is_hidden %}
+        <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            <span class="hint">{{ field.help_text }}
+                <span class="hint-pointer">&nbsp;</span>
+            </span>
+            <div class="clear"><!-- --></div>
+        </div>
+    {% else %}                                                          
+        {{ field }}
+    {% endif %}
+{% endfor %}
+{% csrf_token %}
+<div class="form-controls">
+  <input type="submit" value="{% trans 'Save' %}" />
+  <button type="button" class="reset">{% trans 'Undo' %}</button>
+  <input type="hidden" id="referer_url" value="{{referer_url}}" name="referer_url" />
+</div>

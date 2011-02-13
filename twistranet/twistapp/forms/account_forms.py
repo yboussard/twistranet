@@ -14,10 +14,19 @@ class UserAccountForm(BaseForm):
     """
     User account edition.
     """    
+    title = fields.CharField(
+        label = _("Your name"),
+        help_text = _("Enter your full name (eg. Firstname Lastname) as you want it to be displayed to other users."),
+    )
+    description = fields.CharField(
+        label = _("About you"),
+        help_text = _("Present yourself in a few lines. What are you working on? What do you like besides work?"),
+        widget = widgets.Textarea(),
+    )
+
     class Meta:
         model = UserAccount
         fields = ('title', 'description', 'picture', )
-
         widgets = {
             "picture":          ResourceWidget(),
         }
