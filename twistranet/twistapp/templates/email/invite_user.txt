@@ -11,8 +11,8 @@ Subject: {% blocktrans %}{{ inviter_title }} invites you to twistranet{% endbloc
   {% blocktrans %}Here's what {{ inviter_title }} tells you:{% endblocktrans %}
   
 {{ message }}
+
 {% endif %}  
-  {% blocktrans %}It's easy: just click the following link and let things happen!{% endblocktrans %}
   
   {% blocktrans %}{{ invitation_absolute_url }}{% endblocktrans %}
   

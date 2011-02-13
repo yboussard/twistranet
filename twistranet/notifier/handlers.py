@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.core.cache import cache
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 
 from twistranet.twistapp.lib.log import log
 from twistranet.twistapp.lib import utils
@@ -169,7 +170,7 @@ class MailHandler(NotifierHandler):
         recipient = d.get(self.recipient_arg, None)
         if not recipient:
             raise ValueError("Recipient must be provided as a '%s' parameter" % self.recipient_arg)
-        if isinstance(recipient, UserAccount):
+        if isinstance(recipient, UserAccount) or isinstance(recipient, User):
             to = recipient.email
             if not to:
                 log.warning("Can't send email for '%s': %s doesn't have an email registered." % (sender, recipient, ))

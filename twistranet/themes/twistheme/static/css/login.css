@@ -66,4 +66,7 @@ li.learn-more-box {
     margin:     10px;
 }
 
+#login-form ul.errorlist li {
+    color:      #E00023;
+}   
 

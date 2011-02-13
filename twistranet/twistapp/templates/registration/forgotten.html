@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% endblock %}
+{% block topbar %}{% endblock %}
+{% block menu_items %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block searchform %}{% endblock %}
+{% block globalbar %}{% include 'registration/introduction.box.html' %}{% endblock %}
+{% block contextbar %}{% endblock %}
+
+{% block content %}
+<div class="login">
+  <div id="login-container">
+	<div class="colM" id="login-content">
+	  <form id="login-form" action="" method="post" class="enableAutoFocus">
+	      {% csrf_token %}
+	    <p>
+	        {% blocktrans %}Enter your email address to reset your password.<br />
+	        You will recieve an email with instruction on how to do it.{% endblocktrans %}
+	    </p>
+        {% for field in form %}
+            {% if not field.is_hidden %}
+                <div class="form-row">
+                    {{ field.label_tag }} {{ field }}
+                    {{ field.errors }}
+                    <div class="clear"><!-- --></div>
+                </div>
+            {% else %}                                                          
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        {#      <div class="form-row"> #}
+        {#   <label for="username">{% blocktrans %}Email address:{% endblocktrans %}</label> #}
+        {#        <input type="text" name="username" value="" id="username"> #}
+        {# </div> #}
+	    <div class="submit-row">
+          <input type="submit" value="{% trans 'Reset password' %}" />
+		</div>
+	  </form>
+	</div>
+  </div>
+</div>
+
+{% endblock %}

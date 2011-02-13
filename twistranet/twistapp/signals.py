@@ -19,6 +19,11 @@ invite_user = django.dispatch.Signal(
     providing_args = ["target", "message", ]
 )
 
+# Here's how we send the reset password link
+reset_password = django.dispatch.Signal(
+    providing_args = ["target", "reset_password_absolute_url", ]
+)
+
 # This signal is sent when a user adds another one to its network
 # Sender is the Account Model.
 #   client is the Account who explicitly wants to add the other one

@@ -76,6 +76,7 @@ urlpatterns = patterns('',
     url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
     url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),
     url(r'^forgotten_password/$',               AsPublicView(AccountForgottenPassword), name = AccountForgottenPassword.name, ),
+    url(r'^reset/(\w+)/([\w\-@%\._]+)$',        AsPublicView(ResetPassword), name = ResetPassword.name, ),
     
     # Administration pages.
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),

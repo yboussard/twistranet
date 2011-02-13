@@ -1,5 +1,6 @@
 import hashlib
 import urllib
+import time
 
 from django.template import Context, RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
@@ -8,16 +9,16 @@ from django.template.loader import get_template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UNUSABLE_PASSWORD
 from django.contrib.sites.models import RequestSite
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from twistranet.twistapp.signals import invite_user
+from twistranet.twistapp.signals import invite_user, reset_password
 
 from twistranet.twistapp.models import *
-from twistranet.twistapp.forms import account_forms
+from twistranet.twistapp.forms import account_forms, registration_forms
 from twistranet.twistapp.lib.slugify import slugify
 from twistranet.actions import *
 from twistranet.core.views import *
@@ -613,21 +614,86 @@ class AccountLogin(BaseView):
         setattr(self, redirect_field_name, redirect_to)
     
     
-class AccountForgottenPassword(BaseView):
+class AccountForgottenPassword(AccountLogin):
     """
     Forgotten pwd. Sorry, this has yet to be implemented.
     """
     name = "forgotten_password"
     title = _("Forgot your password")
+    template = "registration/forgotten.html"
+    template_variables = BaseView.template_variables + ['form', ]
     
     def prepare_view(self,):
-        """
-        XXX Not implemented yet.
-        """
-        messages.warning(self.request, _("We're sorry but password retrieval is not implemented yet."))
-        redirect_to = settings.LOGIN_REDIRECT_URL
-        raise MustRedirect(redirect_to)
+        if self.request.method == "POST":
+            self.form = registration_forms.ForgottenPasswordForm(data=self.request.POST)
+            if self.form.is_valid():
+                # Generate the reset password link.
+                # The link is in two parts: the verification hash and the email.
+                # The verification hash is a combination of the server's secret key, user's email,
+                # HASHED version of the user password and current date.
+                # That way, we ensure that an email/site hash/password hash combination will
+                # get a unique reset password link.
+                email = self.form.cleaned_data['email']
+                user = User.objects.get(email = email)
+                h = "%s%s%s%s" % (settings.SECRET_KEY, email, user.password, time.strftime("%Y%m%d"))
+                h = hashlib.md5(h).hexdigest()
+                reset_link = reverse(ResetPassword.name, args = (h, urllib.quote_plus(email)))
+                domain = RequestSite(self.request).domain
+                if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
+                    protocol = "https"
+                elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
+                    protocol = "http"
+
+                # Send the invitation (as a signal)
+                reset_password.send(
+                    sender = self.__class__,
+                    target = user,
+                    reset_password_absolute_url = "%s://%s%s" % (protocol, domain, reset_link, ),
+                )
+
+                # Say we're happy and redirect
+                messages.success(self.request, _("We've sent you a password reset email."))
+                raise MustRedirect(reverse("twistranet_home"))
+        else:
+            self.form = registration_forms.ForgottenPasswordForm()
         
+class ResetPassword(AccountLogin):
+    """
+    Provide a way for users to reset their password.
+    Works with a hash generated in the AccountForgottenPassword view.
+    """
+    name = "reset_password"
+    title = _("Reset your password")
+    template = "registration/reset_password.html"
+    template_variables = BaseView.template_variables + ['form', ]
+    
+    def prepare_view(self, check_hash, email):
+        if self.request.method == "POST":
+            self.form = registration_forms.ResetPasswordForm(data=self.request.POST)
+            if self.form.is_valid():
+                # Generate the reset password link.
+                # The link is in two parts: the verification hash and the password hash.
+                # That way, we ensure that an email/site hash/password hash combination will
+                # get a unique reset password link.
+                user = User.objects.get(email = email)
+                if user.password == UNUSABLE_PASSWORD:
+                    raise ValidationError(_("Can't set password on this user."))
+                h = "%s%s%s%s" % (settings.SECRET_KEY, email, user.password, time.strftime("%Y%m%d"))
+                h = hashlib.md5(h).hexdigest()
+                if not h == check_hash:
+                    raise ValidationError("Attempt to access an invalid verification hash.")
+                    
+                # Actually change password
+                user.set_password(self.form.cleaned_data['password'])
+                user.save()
+
+                # Say we're happy and redirect
+                messages.success(self.request, _("Your password is set to its new value. You can now login."))
+                raise MustRedirect(reverse("twistranet_home"))
+        else:
+            self.form = registration_forms.ResetPasswordForm()
+        
+    
     
 class AccountLogout(BaseView):
     template = "registration/login.html"
