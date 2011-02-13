@@ -693,7 +693,42 @@ class ResetPassword(AccountLogin):
         else:
             self.form = registration_forms.ResetPasswordForm()
         
+
+class ChangePassword(UserAccountEdit):
+    """
+    Classic "change password" with former password validation.
+    """
+    name = "change_password"
+    title = _("Change your password")
+    template = "account/edit.html"
+    form_class = account_forms.ChangePasswordForm
+    template_variables = UserAccountEdit.template_variables + ['form', ]
     
+    def as_action(self,):
+        """
+        Display this action only on current account, with user-settable backends.
+        """
+        if not self.auth.id == self.object.id:
+            return None
+        if self.auth.user.password == UNUSABLE_PASSWORD:
+            return None
+        return super(ChangePassword, self).as_action()
+
+    def prepare_view(self, *args, **kw):
+        super(ChangePassword, self).prepare_view(*args, **kw)
+        if self.request.method == "POST":
+            self.form = account_forms.ChangePasswordForm(data=self.request.POST)
+            if self.form.is_valid():
+                # Actually change password
+                user = self.useraccount.user
+                user.set_password(self.form.cleaned_data['new_password'])
+                user.save()
+        
+                # Say we're happy and redirect
+                messages.success(self.request, _("New password set."))
+                raise MustRedirect(reverse("twistranet_home"))
+        else:
+            self.form = account_forms.ChangePasswordForm()
     
 class AccountLogout(BaseView):
     template = "registration/login.html"

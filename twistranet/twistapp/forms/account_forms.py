@@ -3,10 +3,11 @@ from django.db import models
 from django.forms import widgets
 from django.forms import fields
 from django.utils.translation import ugettext as _
+from django.contrib.auth import authenticate
 
 from twistranet.twistapp.lib import permissions
 from twistranet.twistapp.forms.widgets import ResourceWidget
-from twistranet.twistapp.models import UserAccount
+from twistranet.twistapp.models import UserAccount, Account
 from twistranet.twistapp.forms.base_forms import BaseForm
 
 class UserAccountForm(BaseForm):
@@ -61,3 +62,40 @@ class UserInviteForm(forms.Form):
     class Meta:
         pass
 
+class ChangePasswordForm(forms.Form):
+    """
+    Password reset form.
+    """
+    password = forms.CharField(
+        label = _("Enter your current password"),
+        widget=forms.PasswordInput,
+    )
+    new_password = forms.CharField(
+        label = _("Enter your new password"),
+        widget=forms.PasswordInput,
+    )
+    confirm = forms.CharField(
+        label = _("Confirm your new password"),
+        help_text = _("Enter the same password as above, for verification."),
+        widget=forms.PasswordInput,
+    )
+    
+    def clean_password(self,):
+        # Double check username according to currently logged-in user
+        username = Account.objects._getAuthenticatedAccount().user.username
+        password = self.cleaned_data.get('password')
+        if password:
+            user_cache = authenticate(username=username, password=password)
+            if user_cache is None:
+                raise forms.ValidationError(_("Invalid password."))
+            elif not user_cache.is_active:
+                raise RuntimeError("Inactive account! Should never reach there.")
+            else:
+                return "(valid)"        # Avoid propagating the clean password...
+
+    def clean_confirm(self,):
+        password = self.cleaned_data.get("new_password", "")
+        confirm = self.cleaned_data["confirm"]
+        if password != confirm:
+            raise forms.ValidationError(_("The two password fields didn't match."))
+        return confirm

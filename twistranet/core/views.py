@@ -384,7 +384,7 @@ class BaseIndividualView(BaseView):
             self.referer_url = self.get_referer_url
             self.template_variables = self.template_variables + ["form", "referer_url"]
             if self.request.method == 'POST': # If the form has been submitted...
-                if hasattr(form_class.Meta, "model"):
+                if hasattr(form_class, '_meta') and hasattr(form_class._meta, "model"):
                     self.form = form_class(self.request.POST, self.request.FILES, instance = self.object)
                 else:
                     self.form = form_class(self.request.POST, self.request.FILES, )
@@ -395,7 +395,7 @@ class BaseIndividualView(BaseView):
                     publisher = None
                 if self.form.is_valid(): # All validation rules pass.
                     self.form_is_valid = True
-                    if hasattr(form_class.Meta, "model"):                    
+                    if hasattr(form_class, '_meta') and hasattr(form_class._meta, "model"):                    
                         # Save object and set publisher.
                         # We MAY have ValidationError here (eg: community without a title).
                         # if so, we provide a nice error message instead of 500ing
@@ -413,7 +413,7 @@ class BaseIndividualView(BaseView):
                     messages.warning(self.request, _("Please correct the indicated errors."))
             else:
                 initial = self.get_initial_values()
-                if self.object and hasattr(form_class.Meta, "model"):
+                if self.object and hasattr(form_class, '_meta') and hasattr(form_class._meta, "model"):
                     self.form = form_class(instance = self.object, initial = initial)      # An unbound form with an explicit instance
                 elif initial:
                     self.form = form_class(initial = initial)
