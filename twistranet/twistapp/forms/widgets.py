@@ -86,7 +86,7 @@ class ResourceWidget(forms.MultiWidget):
                     resource = Resource.objects.get(id = value[0])
                 except Resource.DoesNotExist:
                     raise       # XXX TODO: Handle the case of a deleted resource
-                thumb = resource.thumbnails['medium']
+                thumb = resource.thumbnails['summary_preview']
                 output.append(u"""<div class="mediaresource-help">""" + _(u"Current:") + u"""</div>""")
                 param_dict = {
                     "thumbnail_url":    thumb.url,

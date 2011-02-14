@@ -7,11 +7,12 @@ var selector = '';
 var Panels = {};
 var allow_browser_selection=0;
 
-showPreview = function(url, miniurl, previewurl, legend, type) {
+showPreview = function(url, thumbnailurl, miniurl, summaryurl, previewurl, legend, type) {
     newResultContainer = jq('#renderer-new');
     if (newResultContainer.length) {
         currentResultContainer = jq('#renderer-current');
-        result= '\
+        if (type=='image') {
+            result= '\
 <a class="image-block"\
    href="'+ url +'"\
    title="' + legend + '">\
@@ -19,6 +20,17 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
         alt="' + legend + '" />\
 </a>\
 ';
+        }
+        else {
+            result= '\
+<a class="image-block"\
+   href="'+ url +'"\
+   title="' + legend + '">\
+   <img src="' + thumbnailurl + '"\
+        alt="' + legend + '" />\
+</a>\
+';
+        }
         if (allow_browser_selection) {
             if (type=='image') {
                 result += '\
@@ -42,10 +54,10 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
         </p>\
         <p>\
           <input type="radio"\
-                 id="selection-mini"\
+                 id="selection-summary"\
                  name="selection"\
-                 value="' + miniurl + '" />\
-          <label for="selection-mini">Thumbnail cropped (100*100)</label>\
+                 value="' + summaryurl + '" />\
+          <label for="selection-summary">Small size (100*100)</label>\
         </p>\
         <div class="form-controls">\
           <input type="submit" value="OK" />\
@@ -82,7 +94,7 @@ showPreview = function(url, miniurl, previewurl, legend, type) {
         newResultContainer.append(result);
         newResultContainer.css('visibility', 'visible');
         if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
-        
+
         if (allow_browser_selection) {
             jq(document).ready(function(){
                 jq('#browser-selection-form').bind('submit', function(e){
@@ -152,6 +164,14 @@ loadScopeResources = function(scope_id, selection) {
          name="grid-item-miniurl"\
          class="grid-item-miniurl"\
          value="' + this.mini_url + '" />\
+  <input type="hidden"\
+         name="grid-item-thumbnailurl"\
+         class="grid-item-thumbnailurl"\
+         value="' + this.thumbnail_url + '" />\
+  <input type="hidden"\
+         name="grid-item-summaryurl"\
+         class="grid-item-summaryurl"\
+         value="' + this.summary_url + '" />\
   <input type="hidden"\
          name="grid-item-type"\
          class="grid-item-type"\
@@ -269,7 +289,9 @@ jq(
                         // event triggered on hidden field for unload protection
                         selector.trigger('change');
                         showPreview(jq('a', itemselected).attr('href'),
+                                    jq('.grid-item-thumbnailurl', itemselected).val(), 
                                     jq('.grid-item-miniurl', itemselected).val(),
+                                    jq('.grid-item-summaryurl', itemselected).val(),
                                     jq('.grid-item-previewurl', itemselected).val(),
                                     jq('a', itemselected).attr('title'),
                                     jq('.grid-item-type', itemselected).val());

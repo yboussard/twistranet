@@ -346,6 +346,7 @@ class Twistable(_AbstractTwistable):
         return {
             "preview":  self.get_thumbnail("500x500", crop = "", upscale = False),
             "summary":  self.get_thumbnail("100x100", crop = "", upscale = False),
+            "summary_preview":  self.get_thumbnail("100x100", crop = "center top", upscale = True),
             "medium":   self.get_thumbnail("50x50", crop = "center top", upscale = True),
             "icon":     self.get_thumbnail("16x16", crop = "center top", upscale = True),
         }
