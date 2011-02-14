@@ -52,7 +52,7 @@
     overflow: hidden;
 }
 
-.qq-upload-spinner {display:none; background: url("/++resource++quickupload_static/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
+.qq-upload-spinner {display:none; background: url("../images/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
 .qq-upload-size,.qq-upload-cancel {font-size:11px;}
 
 .qq-upload-list .qq-upload-cancel,
