@@ -91,13 +91,17 @@ class ResourceWidget(forms.MultiWidget):
                 param_dict = {
                     "thumbnail_url":    thumb.url,
                     "value":            resource.id,
+                    "title":            resource.title,
                     "res_url":          resource.get_absolute_url(),
                 }
                 output.append(u"""
                   <a class="image-block"
+                     title="%(title)s"
                      href="%(res_url)s">
                       <img src="%(thumbnail_url)s"
+                           alt="%(title)s"
                            id="resource-current" />
+                     <span class="image-block-legend">%(title)s</span>
                    </a>
                  """ % param_dict)
 
@@ -166,7 +170,7 @@ class ResourceWidget(forms.MultiWidget):
             output.append (t.render(c))
 
         # finalize and return the complete resource widget
-
+        output.append("""<div class="clear"><!-- --></div>""")
         output.append("""</div>""") # (close the resource-widget div)
 
         return mark_safe(self.format_output(output))

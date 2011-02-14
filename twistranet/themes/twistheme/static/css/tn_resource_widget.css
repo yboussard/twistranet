@@ -94,7 +94,23 @@
     overflow: visible;
 }
 
-/*temp fix */ 
+/* Resource Widget in inline form*/ 
+.inline-form .resource-widget {
+    display: block;
+    margin: 0 0 10px !important;
+    min-width: 50px;
+    min-height: 67px;
+}
+
+.inline-form .resource-widget .renderer-preview {
+    display: block;
+    width: auto;
+    min-width: 50px;
+    margin: 0 10px 0 0 !important;
+    float: left;
+}
+
+
 .inline-form .resource-widget .mediaresource-help {
     display: none;
 }

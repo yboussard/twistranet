@@ -18,6 +18,7 @@ showPreview = function(url, thumbnailurl, miniurl, summaryurl, previewurl, legen
    title="' + legend + '">\
    <img src="' + miniurl + '"\
         alt="' + legend + '" />\
+   <span class="image-block-legend">' + legend + '</span>\
 </a>\
 ';
         }
@@ -28,6 +29,7 @@ showPreview = function(url, thumbnailurl, miniurl, summaryurl, previewurl, legen
    title="' + legend + '">\
    <img src="' + thumbnailurl + '"\
         alt="' + legend + '" />\
+   <span class="image-block-legend">' + legend + '</span>\
 </a>\
 ';
         }

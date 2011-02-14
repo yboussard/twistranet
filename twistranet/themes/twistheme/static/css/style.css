@@ -362,6 +362,15 @@ ul.children li {
   position: relative;
 }  
 
+.image-block span.image-block-legend {
+    clear: left;
+    color: #444444 !important;
+    display: block;
+    font-size: 10px;
+    text-align: center;
+    white-space: pre;
+}
+
 /* different named sizes */
 
 .image-block-tile,
