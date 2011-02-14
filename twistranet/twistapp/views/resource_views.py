@@ -422,9 +422,6 @@ def resource_quickupload_file(request):
         try:                publisher_id = int(publisher_id)
         except ValueError:  publisher_id = None
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
-        if not title:
-            # try to split filenames when there's no title to avoid potential css surprises
-            title = file_name.split('.')[0].replace('_',' ').replace('-',' ')
 
         try:
             # Create the resource itself
