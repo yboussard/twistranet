@@ -120,7 +120,7 @@ class CommunityListingView(BaseView):
     """
     A list of n first available (visible) communities
     """
-    title = "Communities"
+    title = _("Communities")
     template = "community/list.html"
     template_variables = BaseView.template_variables + [
         "communities",
@@ -137,7 +137,7 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
     """
     template = CommunityListingView.template
     template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
-    title = "Community invitations"
+    title = _("Community invitations")
     name = "community_invitations"
     category = ACCOUNT_ACTIONS
     
@@ -456,8 +456,6 @@ class CommunityInvite(CommunityView):
             return None
         return super(CommunityInvite, self).as_action()
     
-
-    
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
     name = "community_join"
@@ -504,11 +502,15 @@ class CommunityLeave(BaseObjectActionView):
     def prepare_view(self, value, ):
         super(CommunityLeave, self).prepare_view(value)
         name = self.community.title
-        if not self.community.can_leave:
-            raise NotImplementedError("Should return permission denied!")
-        self.community.leave()
-        messages.info(self.request, _("You've left %(name)s.") % {'name': name})
-        raise MustRedirect(self.community.get_absolute_url())
+        if self.community.is_member:
+            if not self.community.can_leave:
+                raise NotImplementedError("Should return permission denied!")
+            self.community.leave()
+            messages.success(self.request, _("You've left %(name)s.") % {'name': name})
+        else:
+            self.community.leave()
+            messages.info(self.request, _("You've declined %(name)s invitation.") % {'name': name})
+        raise MustRedirect(reverse("twistranet_home"))
 
 
 class CommunityDelete(BaseObjectActionView):

@@ -709,6 +709,8 @@ class ChangePassword(UserAccountEdit):
         """
         Display this action only on current account, with user-settable backends.
         """
+        if not hasattr(self, "object"):
+            return None
         if not self.auth.id == self.object.id:
             return None
         if self.auth.user.password == UNUSABLE_PASSWORD:

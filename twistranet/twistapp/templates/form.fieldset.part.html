@@ -6,9 +6,11 @@
         <div class="fieldWrapper">
             {{ field.errors }}
             {{ field.label_tag }} {{ field }}
-            <span class="hint">{{ field.help_text }}
-                <span class="hint-pointer">&nbsp;</span>
-            </span>
+            {% if field.help_text %}
+                <span class="hint">{{ field.help_text }}
+                    <span class="hint-pointer">&nbsp;</span>
+                </span>
+            {% endif %}
             <div class="clear"><!-- --></div>
         </div>
     {% else %}                                                          

@@ -971,7 +971,7 @@ ul.network-actions li.action {
 	background-color: #e00023;
 	background: -webkit-gradient(linear, 0 top, 0 bottom, from(#e00023), to(#B50003));
 	background: -moz-linear-gradient(#e00023, #B50003);
-	border: 1px #fff solid;
+	border: 2px #fff solid;
 	display: block;
 	padding: 1px 4px 2px;
 	position: relative;
@@ -980,21 +980,18 @@ ul.network-actions li.action {
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
-	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
-	box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
 .community_manager_badge {
 	overflow:hidden;
     float: left;
-	color: #000;
+	color: #686868;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	background-color: #E0BD00;
 	background: -webkit-gradient(linear, 0 top, 0 bottom, from(#FFDA14), to(#E0BD00));
 	background: -moz-linear-gradient(#FFDA14, #E0BD00);
-	border: 1px #000 solid;
+	border: 2px #686868 solid;
 	display: block;
 	height: 11px;
 	padding: 1px 4px 2px;
@@ -1002,9 +999,6 @@ ul.network-actions li.action {
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.3);
-	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.3);
-	box-shadow: 0 0 3px rgba(0,0,0,0.3);
 	z-index: 50;
 }
 
