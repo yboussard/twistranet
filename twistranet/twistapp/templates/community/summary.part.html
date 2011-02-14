@@ -9,6 +9,26 @@
                 {{ account.description|wiki }}
             </div>
             <div class="postmetadata">
+                <ul class="network-actions">
+                    {% if account.has_pending_invitation %}
+                        <li class="action">
+                            <a class="tn-button tn-button-default"
+                                title="{% blocktrans %}Accept invitation and join group{% endblocktrans %}"
+                               href="{% url community_join account.id %}">{% blocktrans %}Accept invitation{% endblocktrans %}</a>
+                        </li>
+                        <li class="action">
+                            <a class="tn-button tn-button-discreet"
+                                title="{% blocktrans %}Ignore request to join this group{% endblocktrans %}"
+                               href="{% url community_leave account.id %}">{% blocktrans %}Decline invitation{% endblocktrans %}</a>
+                        </li>
+                    {% else %}
+                        {% if account.can_add_to_my_network %}
+                            <li class="action">
+                                <a href="{% url add_to_my_network account.id %}">{% blocktrans %}Add to my network{% endblocktrans %}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
                 <ul>
                     <li class="target">
                         {{ account.permissions }}

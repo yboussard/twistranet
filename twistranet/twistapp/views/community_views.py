@@ -120,7 +120,7 @@ class CommunityListingView(BaseView):
     """
     A list of n first available (visible) communities
     """
-    title = "Communities"
+    title = _("Communities")
     template = "community/list.html"
     template_variables = BaseView.template_variables + [
         "communities",
@@ -137,7 +137,7 @@ class CommunityInvitations(CommunityListingView, UserAccountView):
     """
     template = CommunityListingView.template
     template_variables = UserAccountView.template_variables + CommunityListingView.template_variables
-    title = "Community invitations"
+    title = _("Community invitations")
     name = "community_invitations"
     category = ACCOUNT_ACTIONS
     

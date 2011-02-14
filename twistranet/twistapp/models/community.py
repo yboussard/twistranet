@@ -47,6 +47,10 @@ class Community(Account):
         )
         
     @property
+    def member_ids(self):
+        return self.members.values_list("id", flat = True)
+        
+    @property
     def members_for_display(self):
         """
         Same as members but we really know we're going to display related information on them.
@@ -152,7 +156,9 @@ class Community(Account):
     @property
     def can_join(self):
         auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_join, self)
+        base_auth = auth.has_permission(permissions.can_join, self)
+        if not base_auth:
+            return self.has_pending_invitation
         
     @property
     def can_leave(self):
@@ -164,8 +170,18 @@ class Community(Account):
         
         # Regular checks
         auth = Account.objects._getAuthenticatedAccount()
-        return auth.has_permission(permissions.can_leave, self)
-        
+        return auth.has_permission(permissions.can_leave, self)        
+
+    @property
+    def has_pending_invitation(self):
+        """
+        True if currently auth user has a pending invitation in this community
+        """
+        auth = Account.objects._getAuthenticatedAccount()
+        if self.id in auth.get_pending_network_request_ids(returned_model = Community):
+            return True             # Has pending request
+        return False                # No request pending
+
     def invite(self, account):
         """
         Invite a user to join the community.

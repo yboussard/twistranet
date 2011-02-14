@@ -236,12 +236,17 @@ class Account(twistable.Twistable):
     def communities(self):
         """
         Return communities this user is actually a member of.
+        XXX TODO: Cache this!!
         """
         from community import Community
         return Community.objects.filter(
             targeted_network__target__id = self.id,
             requesting_network__client__id = self.id,
         )
+        
+    @property
+    def community_ids(self,):
+        return self.communities.values_list("id", flat = True)
 
     @property
     def communities_for_display(self,):
@@ -466,6 +471,8 @@ class UserAccount(Account):
             
         return returned_model.objects.filter(id__in = unvalidated_ids)
         
+    def get_pending_network_request_ids(self, returned_model = None):
+        return self.get_pending_network_requests(returned_model).values_list("id", flat = True)
 
     # Follow / Unfollow support
     # Can be used in API but not in the web interface.
