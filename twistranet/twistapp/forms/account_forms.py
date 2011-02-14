@@ -65,8 +65,15 @@ class UserInviteForm(forms.Form):
     User account creation.
     """
     email = forms.EmailField()
-    make_admin = forms.BooleanField(label = _("Invite as an administrator?"))
-    invite_message = forms.CharField(required = False, widget = widgets.Textarea())
+    make_admin = forms.BooleanField(
+        label = _("Invite as an administrator?")
+    )
+    invite_message = forms.CharField(
+        required = False, 
+        widget = widgets.Textarea(),
+        label = _("Invitation message"),
+        help_text = _("If given, this text will be added to the user when sending the invitation."),
+    )
     
     class Meta:
         pass
