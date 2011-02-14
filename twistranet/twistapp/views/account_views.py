@@ -645,9 +645,10 @@ class AccountForgottenPassword(AccountLogin):
                     protocol = "http"
 
                 # Send the invitation (as a signal)
+                useraccount = UserAccount.objects.__booster__.get(user__id = user.id)
                 reset_password.send(
                     sender = self.__class__,
-                    target = user,
+                    target = useraccount,
                     reset_password_absolute_url = "%s://%s%s" % (protocol, domain, reset_link, ),
                 )
 

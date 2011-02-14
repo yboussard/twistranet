@@ -170,7 +170,7 @@ class MailHandler(NotifierHandler):
         recipient = d.get(self.recipient_arg, None)
         if not recipient:
             raise ValueError("Recipient must be provided as a '%s' parameter" % self.recipient_arg)
-        if isinstance(recipient, UserAccount) or isinstance(recipient, User):
+        if isinstance(recipient, UserAccount):
             to = recipient.email
             if not to:
                 log.warning("Can't send email for '%s': %s doesn't have an email registered." % (sender, recipient, ))
