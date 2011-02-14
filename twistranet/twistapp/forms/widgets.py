@@ -165,8 +165,11 @@ class ResourceWidget(forms.MultiWidget):
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
 
-            c = Context({ 'name': name, 'scopes': scopes })
-
+            c = Context({
+                'name': name, 
+                'scopes': scopes,
+                'publisher_id': self.publisher_id,      # Default publisher id
+            })
             output.append (t.render(c))
 
         # finalize and return the complete resource widget

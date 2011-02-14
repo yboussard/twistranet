@@ -9,17 +9,11 @@ from twistranet.twistapp.lib.log import log
 class BaseEmptyForm(forms.ModelForm):
     """
     A base, dummy, empty form used as a base for all other TN forms.
+    We do some widget tweaking here.
     """
     error_css_class = 'error'
     required_css_class = 'required'
     
-
-class BaseForm(BaseEmptyForm):
-    """
-    A base TN form
-    with the usual permission field
-    and possible resource fields
-    """
     def __init__(self, *args, **kw):
         """
         Overload widget rendering: we have to provide the model so that the PermissionsWidget
@@ -27,30 +21,63 @@ class BaseForm(BaseEmptyForm):
         Note that we only do so on forms with a 'permissions' field.
         XXX TODO: Move part of this code in the model
         """
-        super(BaseForm, self).__init__(*args, **kw)
+        super(BaseEmptyForm, self).__init__(*args, **kw)
         from twistranet.twistapp.models.community import Community
-        from twistranet.twistapp.models.account import UserAccount
-        # Check if has permissions field
-        if self.fields.has_key('permissions'):
-            publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
-            permissions = self.instance.permission_templates.permissions()
-            if publisher:
-                if issubclass(publisher.model_class, UserAccount):
-                    permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
-                if issubclass(publisher.model_class, Community):
-                    permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
-            self.fields['permissions'].choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
-            
-        for field_name in ('picture', 'file', 'browsed_resource'):
-            if self.fields.has_key(field_name):
-                publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
-                if publisher:
-                    # XXX FIXME > when editing account publisher is often 
-                    # 'all twistranet', and of course only admin has the rights
-                    if getattr(publisher, 'slug')==u'all_twistranet':
-                        publisher = self.instance.account
-                    self.fields[field_name].widget.publisher = publisher
+        from twistranet.twistapp.models.account import Account, UserAccount
+        from twistranet.twistapp.forms.fields import PermissionsFormField
+        from twistranet.twistapp.forms.fields import ResourceFormField
 
+        # Special fields tweaks
+        for field_name, field in self.fields.items():
+            # Permission field tweak: just display the right options for the right object
+            if isinstance(field, PermissionsFormField):
+                publisher = self.initial.get("publisher", getattr(self.instance, "publisher", None))
+                permissions = self.instance.permission_templates.permissions()
+                if publisher:
+                    if issubclass(publisher.model_class, UserAccount):
+                        permissions = [ p for p in permissions if not p.get("disabled_for_useraccount", False) ]
+                    if issubclass(publisher.model_class, Community):
+                        permissions = [ p for p in permissions if not p.get("disabled_for_community", False) ]
+                field.choices = [ (p["id"], p["name"], p["description"]) for p in permissions ]
+            
+            # File browser field tweaks: give publisher to the field so that we can upload it safely.
+            if isinstance(field, ResourceFormField):
+                deepest_publisher = None
+                if self.initial.get("publisher", None):
+                    deepest_publisher = self.initial['publisher']
+                elif self.instance:
+                    deepest_publisher = self.instance
+                else:
+                    # No instance, we must be creating something.
+                    # XXX TODO: Fix the case of an image set when creating a Community,
+                    # because it will be put on the account instead of the community.
+                    # We use 100% default values.
+                    deepest_publisher = None
+                    
+                # Go up the "deepest_publisher" object to find the correct account
+                publisher = None
+                if deepest_publisher: 
+                    while deepest_publisher and not isinstance(deepest_publisher, Account):
+                        deepest_publisher = deepest_publisher.publisher
+                    
+                    # Publisher is now either an Account or None.
+                    # But we double check if we've got the rights on it.
+                    if deepest_publisher and deepest_publisher.can_edit:
+                        publisher = deepest_publisher
+
+                # Set field parameters
+                field.widget.publisher = publisher
+                field.widget.publisher_id = publisher and publisher.id
+
+
+class BaseForm(BaseEmptyForm):
+    """
+    A base TN form
+    with the usual permission field
+    and possible resource fields
+    """
+    _publisher_cache = None
+    
     permissions = PermissionsFormField(choices = (), widget = PermissionsWidget())
     publisher_id = forms.IntegerField(required = False, widget = widgets.HiddenInput)
 

@@ -218,8 +218,8 @@ widgetHeight = function() {
 
 // XXX larache
 getActivePublisher = function() {
-    publisher_pane = jq('.activePane input.scopeId')
-    // if resource panes
+    // if resource panes, we always upload on default publisher anyway
+    publisher_pane = jq('.activePane input.publisherId')
     if (publisher_pane.length)   return publisher_pane.val();
     // upload alone
     return jq('input[name="publisher_id"]' ,jq('.resource-widget').parents('form')).val();
