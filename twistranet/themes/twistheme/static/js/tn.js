@@ -362,11 +362,11 @@ var twistranet = {
     displayPermissionsDescriptions: function(e) {
         jq('.permissions-widget').each(function(){
             var pwidget = jq(jq(this).parent()).parent();
-            var pdescriptions = jq('.permission-description', pwidget);
+            var pdescriptions = jq('.hint', pwidget);
             jq('.ddChild a', pwidget ).each(function(i){
-                jq(this).attr('title', jq(pdescriptions[i]).text());
-                jq(pdescriptions[i]).remove();
-            })
+                jq(this).mouseenter(function(){jq(pdescriptions[i]).show()});
+                jq(this).mouseleave(function(){jq(pdescriptions[i]).hide()});
+            });
         })
     },
     enableLiveSearch: function(e) {
