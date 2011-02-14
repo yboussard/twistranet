@@ -431,19 +431,21 @@ def resource_quickupload_file(request):
                 publisher_id = publisher_id and int(publisher_id),
                 filename = file_name,
             )
-
+            type = resource.is_image and 'image' or 'file'
             # Generate the preview thumbnails
             thumbnails = resource.thumbnails
             msg = {
-                'success':      True,
-                'value':        resource.id,
-                'url':          resource.get_absolute_url(),
-                'preview_url':  thumbnails['preview'].url,    
-                'mini_url':     thumbnails['medium'].url, 
-                'legend':       title, 
-                'scope':        publisher_id,
+                'success':       True,
+                'value':         resource.id,
+                'url':           resource.get_absolute_url(),
+                'thumbnail_url': thumbnails['medium'].url,
+                'preview_url':   thumbnails['preview'].url,
+                'mini_url':      thumbnails['summary_preview'].url,
+                'summary_url':   thumbnails['summary'].url, 
+                'legend':        title, 
+                'scope':         publisher_id,
+                'type':          type
             }
-                   # 'type':          type,}
         except:
             # TODO : improve error messages with Unauthorized error
             log.exception("Unexpected error while trying to uplaod a file.")
@@ -483,7 +485,8 @@ def resource_by_publisher_json(request, publisher_id):
         result = {
                 "url":              file_.get_absolute_url(),
                 "thumbnail_url":    file_.thumbnails['medium'].url,
-                "mini_url":         file_.thumbnails['summary'].url,
+                "mini_url":         file_.thumbnails['summary_preview'].url,
+                "summary_url":      file_.thumbnails['summary'].url,
                 "preview_url":      file_.thumbnails['preview'].url,
                 "id":               file_.id,
                 "title":            file_.title,
@@ -495,6 +498,6 @@ def resource_by_publisher_json(request, publisher_id):
     # TODO : change it for batch
     data['page'] = 1
     data['results'] = results
-    data['sizes'] = ((_('Thumbnail cropped'), '100*100'), (_('Medium size'), '500*500'), (_('Full size'), 'full') )
+    data['sizes'] = ((_('Small size'), '100*100'), (_('Medium size'), '500*500'), (_('Full size'), 'full') )
     return HttpResponse( json.dumps(data),
                          mimetype='text/plain')

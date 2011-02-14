@@ -8,6 +8,8 @@ var TwistranetQuickUpload = {};
 var lastUploadUrl = '';
 var lastUploadPreviewUrl = '';
 var lastUploadMiniUrl = '';
+var lastUploadThumbUrl = '';
+var lastUploadSummaryUrl = '';
 var lastUploadLegend = '';
 var lastUploadValue = '';  
 var scopeValue = '';
@@ -63,31 +65,9 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
     }
 }
 
-// same method as tn_resource_browser > showPreview
-// used when quickuploader is used outside of resource widget
-TwistranetQuickUpload.uploadPreview = function(url, miniurl, previewurl, legend, type) {
-    newResultContainer = jq('#renderer-new');
-    if (newResultContainer.length) {
-        currentResultContainer = jq('#renderer-current');
-        result= '\
-<a class="image-block image-block-mini"\
-   href="'+ url +'"\
-   title="' + legend + '">\
-   <img src="' + miniurl + '"\
-        alt="' + legend + '" />\
-</a>\
-';
-        jq('a', newResultContainer).remove();      
-        jq('.sizes-selection', newResultContainer).remove();
-        newResultContainer.append(result);
-        newResultContainer.css('visibility', 'visible');
-        if (currentResultContainer.length) currentResultContainer.animate({'opacity': '0.4'}, 500);
-    }
-}
-
 
 TwistranetQuickUpload.onAllUploadsComplete = function(){
-    showPreview (lastUploadUrl, lastUploadMiniUrl, lastUploadPreviewUrl, lastUploadLegend, lastUploadType);
+    showPreview (lastUploadUrl, lastUploadThumbUrl, lastUploadMiniUrl, lastUploadSummaryUrl, lastUploadPreviewUrl, lastUploadLegend, lastUploadType);
     // fix selector value in a form
     target_selector = jq('#selector_target');
     if (target_selector.length) {
@@ -125,6 +105,8 @@ TwistranetQuickUpload.onUploadComplete = function(uploader, domelement, id, file
                 lastUploadUrl = responseJSON.url;
                 lastUploadPreviewUrl = responseJSON.preview_url;
                 lastUploadMiniUrl = responseJSON.mini_url;
+                lastUploadThumbUrl = responseJSON.thumbnail_url;  
+                lastUploadSummaryUrl = responseJSON.summary_url;
                 lastUploadType = responseJSON.type;
                 lastUploadLegend = responseJSON.legend; 
                 lastUploadValue = responseJSON.value;
