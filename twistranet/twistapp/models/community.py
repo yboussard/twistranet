@@ -263,12 +263,15 @@ class Community(Account):
         auth = Account.objects._getAuthenticatedAccount()
         if not account:
             account = auth
-        if auth == account and not self.can_leave:
-            raise PermissionDenied("You're not allowed to leave this community")
-        if not auth.id == account.id:
-            if not self.is_manager:
-                raise PermissionDenied("You're not allowed to oust somebody from this community.")
+        if self.is_member:
+            if auth == account and not self.can_leave:
+                raise PermissionDenied("You're not allowed to leave this community")
+            if not auth.id == account.id:
+                if not self.is_manager:
+                    raise PermissionDenied("You're not allowed to oust somebody from this community.")
         
+        # Unconditionnaly remove network links.
+        # We use this here to allow invitations to be declined.
         Network.objects.filter(client__id = self.id, target__id = account.id).delete()
         Network.objects.filter(target__id = self.id, client__id = account.id).delete()
 
