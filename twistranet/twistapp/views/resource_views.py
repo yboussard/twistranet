@@ -442,7 +442,7 @@ def resource_quickupload_file(request):
                 'preview_url':   thumbnails['preview'].url,
                 'mini_url':      thumbnails['summary_preview'].url,
                 'summary_url':   thumbnails['summary'].url, 
-                'legend':        title, 
+                'legend':        title and title or file_name, 
                 'scope':         publisher_id,
                 'type':          type
             }

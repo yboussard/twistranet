@@ -401,10 +401,6 @@ var twistranet = {
         } );   
         /* set selected topic in menus*/    
         setSelectedTopic(jq('#mainmenu'));
-        /* set classes for some inline fields > todo : place it in template */
-        jq('ul.inline-form #id_permissions, ul.inline-form #id_language, ul.inline-form :submit').each(function(){
-          jq(this).parents('li').addClass('inlinefield');
-        });
         /* finalize grids style */
         jq('.tnGrid').each(function(){
             gridStyle(this);
