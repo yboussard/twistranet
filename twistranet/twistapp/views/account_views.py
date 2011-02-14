@@ -439,7 +439,6 @@ class UserAccountInvite(UserAccountEdit):
         is_admin = UserAccount.objects.getCurrentAccount(self.request).is_admin
         if not is_admin:
             self.form.fields['make_admin'].widget = widgets.HiddenInput()
-        import pdb;pdb.set_trace()
         if self.form_is_valid:
             # Double-check that user is not already registered
             email = self.form.cleaned_data['email']
