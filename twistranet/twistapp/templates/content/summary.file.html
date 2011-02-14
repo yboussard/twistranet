@@ -60,9 +60,13 @@
                         <a href="{% url edit_content content.id %}">Edit</a>
                     </li>
                 {%endif%}
+                <li class="action">
+                  {% include 'content/summary.comments.part.html' %}
+                </li>
                 <!-- {{ content.id }} -->
             </ul>
         </div>
+        <div id="view_comments{{ content.id }}"></div>
     </div>
     <div class="clearfix"><!-- --></div>
 </div>
