@@ -202,7 +202,7 @@ class PermissionsWidget(forms.Select):
             output.append(options)
         output.append(u'</select>')
         for d in descriptions:
-            output.append('<div class="permission-description">%s</div>' %d)
+            output.append('<span class="hint">%s</span>' %d)
         return mark_safe(u'\n'.join(output))
 
     def render_option(self, selected_choices, option_value, option_label):
