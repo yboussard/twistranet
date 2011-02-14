@@ -1,0 +1,33 @@
+{% load i18n %}
+<div id="globalbar" class="sidebar">
+    <ul class="tn-box-container">
+        <li class="tn-box global-box introduction-box">
+            <h3>{% trans "About twistranet" %}</h3>
+            <p>
+                {% blocktrans %}twistranet is an Enterprise Social Network.<br />
+                Engage on projects, enjoy teamwork.{% endblocktrans %}
+            </p>
+        </li>
+        <li class="tn-box global-box learn-more-box">
+            <h3>{% trans "Learn more" %}</h3>
+            <p>
+                {% blocktrans %}Want to learn more about twistranet?{% endblocktrans %}
+            </p>
+            <p>
+                <img src="{% url twistranet_home %}static/images/icons/facebook.png" />
+                {% blocktrans %}
+                    <a href="http://www.facebook.com/pages/Twistranet/190139264335508">
+                        Visit our Facebook page
+                    </a>
+                {% endblocktrans %}
+                <br />
+                <img src="{% url twistranet_home %}static/images/icons/twitter.png" />
+                {% blocktrans %}
+                    <a href="http://www.twitter.com/twistranet">
+                        Follow us on Twitter
+                    </a>
+                {% endblocktrans %}
+            </p>
+        </li>
+    </ul>
+</div>

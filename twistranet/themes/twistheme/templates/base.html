@@ -8,7 +8,8 @@
 
     <title>{{ site_name }} - {{ title }}</title>
 
-    <meta name="generator" content="TwistraNet" />
+    <link rel="icon" type="image/png" href="{% url twistranet_home %}static/images/favicon.png" />
+    <meta name="generator" content="twistranet" />
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/style.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/login.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="{% url twistranet_home %}static/css/forms.css" type="text/css" media="screen" />
@@ -128,8 +129,13 @@
                           </ul>
                         </div>
                         {% endif %}
-
-                        <h1>{{ title|safe }}</h1>
+                        
+                        <h1>
+                            {% block title %}
+                                {{ title|safe }}
+                            {% endblock %}
+                        </h1>
+                        
                         {% include "actions/main.part.html" %}                        
                         {% block content %}
                         {% endblock %}

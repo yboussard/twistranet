@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^account/(\d+)/communities/$',            AsView(AccountCommunitiesView), name='account_communities'),
     url(r'^account/(\d+)/network/$',                AsView(AccountNetworkView), name='account_network'),
     url(r'^account/(\d+)/edit$',                    AsView(UserAccountEdit), name = UserAccountEdit.name),
+    url(r'^account/(\d+)/change_password$',         AsView(ChangePassword), name = ChangePassword.name),
     url(r'^account/invite$',                        AsView(UserAccountInvite), name = UserAccountInvite.name),
     url(r'^join/(\w+)/([\w\-@%\._]+)$',             AsPublicView(AccountJoin), name = AccountJoin.name),
     url(r'^account/(\d+)/delete$',                  AsView(AccountDelete), name = AccountDelete.name),
@@ -74,7 +75,9 @@ urlpatterns = patterns('',
 
     # Login / Logout / Register stuff
     url(r'^login/$',                            AsPublicView(AccountLogin), name = AccountLogin.name),
-    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),  
+    url(r'^logout/$',                           AsPublicView(AccountLogout), name = AccountLogout.name, ),
+    url(r'^forgotten_password/$',               AsPublicView(AccountForgottenPassword), name = AccountForgottenPassword.name, ),
+    url(r'^reset/(\w+)/([\w\-@%\._]+)$',        AsPublicView(ResetPassword), name = ResetPassword.name, ),
     
     # Administration pages.
     url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),

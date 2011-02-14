@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.core.cache import cache
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 
 from twistranet.twistapp.lib.log import log
 from twistranet.twistapp.lib import utils

@@ -22,6 +22,9 @@ BaseView.available_actions = [
 UserAccountView.available_actions = super(UserAccountView, UserAccountView).available_actions + \
     [ AddToNetworkView, RemoveFromNetworkView, UserAccountEdit, AccountDelete ]
 
+UserAccountEdit.available_actions = super(UserAccountEdit, UserAccountEdit).available_actions + \
+    [ ChangePassword, ]
+
 CommunityView.available_actions = super(CommunityView, CommunityView).available_actions + \
     [ CommunityEdit, CommunityJoin, CommunityManageMembers, CommunityInvite, CommunityLeave, CommunityDelete, ]
 

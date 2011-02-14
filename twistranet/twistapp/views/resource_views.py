@@ -293,7 +293,7 @@ UPLOAD_JS = """
     var auto = %(ul_auto_upload)s;
     var uploadparams = {};
     if (typeof getActivePublisher!='undefined') {
-        uploadparams['publisher_id']= getActivePublisher();
+        uploadparams['publisher_id'] = getActivePublisher();
     }
     uploadparams['csrfmiddlewaretoken'] = '%(ul_csrf_token)s' ;
     addUploadFields_%(ul_id)s = function(file, id) {
@@ -419,7 +419,8 @@ def resource_quickupload_file(request):
 
     if file_data and not msg:
         publisher_id = request.GET.get('publisher_id', request.POST.get('publisher_id', ''))
-        # i'm not sure here
+        try:                publisher_id = int(publisher_id)
+        except ValueError:  publisher_id = None
         content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
         if not title:
             # try to split filenames when there's no title to avoid potential css surprises

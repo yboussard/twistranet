@@ -1,20 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block topbar %}
-{% endblock %}
-
-{% block menu_items %}
-{% endblock %}
-
-{% block searchform %}
-{% endblock %}
-
-{% block globalbar %}
-{% endblock %}
-
-{% block contextbar %}
-{% endblock %}
+{% block title %}{% endblock %}
+{% block topbar %}{% endblock %}
+{% block menu_items %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block searchform %}{% endblock %}
+{% block globalbar %}{% include 'registration/introduction.box.html' %}{% endblock %}
+{% block contextbar %}{% endblock %}
 
 {% block content %}
 <div class="login">
@@ -38,6 +31,9 @@
 	    <div class="form-row">
 	      <label for="password">{% blocktrans %}Password:{% endblocktrans %}</label>
 	      <input type="password" name="password" value="" id="password">
+		</div>
+		<div class="forgotten-password">
+		    <a href="{% url forgotten_password %}">{% blocktrans %}Forgot your password?{% endblocktrans %}</a>
 		</div>
 	    <div class="submit-row">
           <input type="submit" value="{% trans 'login' %}" />

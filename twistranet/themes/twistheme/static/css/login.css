@@ -1,29 +1,72 @@
-.login #login-container {
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-	margin: auto;
-	width: 130px;
+/*.login #login-container {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    margin: auto;
+    width: 130px;
 }
-.login #login-container #login-content {
-	padding: 10px 15px;
-	margin: 0;
+*/
+.login #login-container {
+    background: transparent url(../images/login-background.png) 106px 0 no-repeat;
+	padding: 80px 70px 0 182px;
+	margin-top: -20px;
+	width: 390px;
+	height: 625px;
+}
+
+.nocol #tn-message {
+	padding: 0 70px 0 182px;
+	width: 380px;
 }
 
 .login .logout-message {
-  position: relative;
-  margin-top: 40px;
-  width: 963px;
-  margin: 40px auto 0;
-  text-align: left;
-  font-size: 110%;
+    position: relative;
+    margin-top: 40px;
+    width: 963px;
+    margin: 40px auto 0;
+    text-align: left;
+    font-size: 110%;
 } 
 
 .login .form-row label {
- white-space: nowrap;
- width: 120px;
+    margin-top: 20px;
+    white-space: nowrap;
+    width: 120px;
+    font-size: 24px;
 }
 
 .login .submit-row {
-  padding: 11px 0 0 120px;
+    padding: 0;
 }
+
+.login input[type=text],
+.login input[type=password] {
+    width: 370px;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.login input[type=submit] {
+    margin-top: 40px;
+    padding:    5px 10px;
+    font-size:  18px;
+}
+
+li.introduction-box,
+li.learn-more-box {
+    padding-bottom:  1em;
+}
+
+.learn-more-box img {
+    vertical-align: middle;
+}
+
+.introduction-box p,
+.learn-more-box p {
+    margin:     10px;
+}
+
+#login-form ul.errorlist li {
+    color:      #E00023;
+}   
+

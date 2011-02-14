@@ -325,5 +325,27 @@ select.permissions-widget {
     padding: 5px;
 }
 
+/*                                                  */
+/*                   Form Tooltips                  */
+/*                                                  */
 
+.hint {
+  display:none;
+  position: absolute;
+  right: 150px;
+  width: 200px;
+  margin-top: -25px;
+  border: 1px solid #c93;
+  padding: 10px 12px;
+  background-color: #ffc;
+}
+
+.hint .hint-pointer {
+    position: absolute;
+    left: -10px;
+    top: 5px;
+    width: 10px;
+    height: 19px;
+    background: url(../images/tooltip-pointer.gif) left top no-repeat;
+}
 

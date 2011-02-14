@@ -25,6 +25,15 @@ invite_user.connect(
     weak = False,
 )
 
+reset_password.connect(
+    handlers.MailHandler(
+        recipient_arg = "target",
+        text_template = "email/reset_password.txt",
+        html_template = "email/reset_password.html",
+    ),
+    weak = False,
+)
+
 #                                       #
 #           Community signals           #
 #                                       #

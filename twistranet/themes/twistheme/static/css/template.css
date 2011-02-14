@@ -104,6 +104,10 @@ body {
 			color: #999;
 			overflow: hidden;
 		  }
+		  .nocol #breadcrumb {
+              border:       none 0 black;
+              width:        743px;		
+	      }
 		  #breadcrumb a {
               color: #999;
         }
@@ -126,6 +130,9 @@ body {
 			border-style: none solid solid;	
             width: 776px;		
 			}
+			.nocol #container {
+                border:     none 0 black;
+		    }
 			#contextbar {
 				background-color: #f7f7f7;
         width: 181px;
@@ -195,9 +202,13 @@ body {
 				background-color: white;
 			}
 			.noleftcol #content {
-        float: none;
-        width: 730px;
-      } 
+                float: none;
+                width: 730px;
+            } 
+            .nocol #content {
+                float: none;
+                width: 773px;
+            }
 	#bottom {
 		clear: both !important;
 	}
