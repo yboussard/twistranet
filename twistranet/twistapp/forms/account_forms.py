@@ -66,6 +66,7 @@ class UserInviteForm(forms.Form):
     """
     email = forms.EmailField()
     make_admin = forms.BooleanField(
+        required = False,
         label = _("Invite as an administrator?")
     )
     invite_message = forms.CharField(
