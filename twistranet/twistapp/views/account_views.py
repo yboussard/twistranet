@@ -462,7 +462,6 @@ class UserAccountInvite(UserAccountEdit):
             elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
                 protocol = "http"
 
-            
             # Send the invitation (as a signal)
             invite_user.send(
                 sender = self.__class__,
