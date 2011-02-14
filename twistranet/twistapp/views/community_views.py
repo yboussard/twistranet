@@ -456,8 +456,6 @@ class CommunityInvite(CommunityView):
             return None
         return super(CommunityInvite, self).as_action()
     
-
-    
 class CommunityJoin(BaseObjectActionView):
     model_lookup = Community
     name = "community_join"

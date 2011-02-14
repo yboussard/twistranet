@@ -159,6 +159,7 @@ class Community(Account):
         base_auth = auth.has_permission(permissions.can_join, self)
         if not base_auth:
             return self.has_pending_invitation
+        return base_auth
         
     @property
     def can_leave(self):
