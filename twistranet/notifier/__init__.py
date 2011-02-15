@@ -34,6 +34,15 @@ reset_password.connect(
     weak = False,
 )
 
+content_created.connect(
+    handlers.MailHandler(
+        recipient_arg = "target",
+        text_template = "email/created_content.txt",
+        html_template = "email/created_content.html",
+    ),
+    weak = False,
+)
+
 #                                       #
 #           Community signals           #
 #                                       #

@@ -7,6 +7,7 @@ import twistable
 from account import Account
 from resource import Resource
 from twistranet.twistapp.lib import roles, permissions
+from twistranet.twistapp.signals import *
 
 class ContentManager(twistable.TwistableManager):
     """
@@ -121,13 +122,52 @@ class Content(_AbstractContent):
             if not self.publisher.can_publish:
                 raise PermissionDenied("%s can't publish on %s." % (authenticated, self.publisher, ))
 
-        # Check if user has modification rights for existing content
+        # Creation or not?
         if self.id:
+            creation = True
+        else:
+            creation = False
+
+        # Check if user has modification rights for existing content
+        if creation:
             if not self.can_edit:
                 raise PermissionDenied("You're not allowed to edit this content.")
                         
         # Actually save stuff
-        return super(Content, self).save(*args, **kw)
+        ret = super(Content, self).save(*args, **kw)
+        
+        # If we're on a creation mode, send the proper signal and return.
+        # Here we determine who has to be notified about this content.
+        # To be notified for a content, a UserAccount must...
+        #   - have view access to the content (for sure)
+        #   - either:
+        #       - be the publisher of the content ; (ie. content posted on my wall)
+        #       - be a member of the publisher ;    (ie. content published on a community)
+        #   The comments have one more rule : all the parents that are not in this list are notified.
+        content_created.send(sender = self.__class__, instance = self, target = self.listeners)
+        return ret
+
+    @property
+    def listeners(self,):
+        """
+        List of ppl who will get notified when this content is created.
+        # To be notified for a content, a UserAccount must...
+        #   - have view access to the content (for sure)
+        #   - either:
+        #       - be the publisher of the content ; (ie. content posted on my wall)
+        #       - be a member of the publisher ;    (ie. content published on a community)
+
+        One day we'll implement explicit content following.
+        """
+        from twistranet.twistapp.models import Community
+        pub = self.publisher
+        owner = self.owner
+        if pub.id == owner.id:
+            return []       # I won't get notified for content I create!
+        if issubclass(pub.model_class, Community):
+            # Notify everybody in the community but the content author
+            return pub.object.members.exclude(id = owner.id)
+        return [ pub ]
 
     def delete(self,):
         """

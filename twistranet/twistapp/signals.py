@@ -10,6 +10,12 @@ twistable_post_save = django.dispatch.Signal(
     providing_args = ["instance", "created", ],
 )
 
+# This one is sent when a content (whichever it is) is created.
+# It's many used to send notification emails on new content.
+content_created = django.dispatch.Signal(
+    providing_args = ["instance", ],
+)
+
 # General notification signals.
 # In most of those signals, the "publisher" argument is who this signal
 # is normally targetting.

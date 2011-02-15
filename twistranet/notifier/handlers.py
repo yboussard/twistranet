@@ -17,6 +17,7 @@ from django.core.cache import cache
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
+from django.db.models.query import QuerySet
 
 from twistranet.twistapp.lib.log import log
 from twistranet.twistapp.lib import utils
@@ -126,7 +127,7 @@ class MailHandler(NotifierHandler):
         """
         # Fake-Login with SystemAccount so that everybody can be notified,
         # even users this current user can't list.
-        from twistranet.twistapp.models import SystemAccount, Account, UserAccount, Community
+        from twistranet.twistapp.models import SystemAccount, Account, UserAccount, Community, Twistable
         __account__ = SystemAccount.get()
         from_email = settings.SERVER_EMAIL
         host = settings.EMAIL_HOST
@@ -134,71 +135,80 @@ class MailHandler(NotifierHandler):
             # If host is disabled (EMAIL_HOST is None), skip that
             return
         
-        # Append domain (and site info) to kwargs
-        d = kwargs.copy()
-        domain = cache.get("twistranet_site_domain")
-        d.update({
-            "domain":       domain,
-            "site_name":    utils.get_site_name(),
-            "baseline":     utils.get_baseline(),
-        })
-        
-        # Load both templates and render them with kwargs context
-        text_tpl = get_template(self.text_template)
-        c = Context(d)
-        text_content = text_tpl.render(c).strip()
-        if self.html_template:
-            html_tpl = get_template(self.html_template)
-            html_content = html_tpl.render(c)
-        else:
-            html_content = None
-            
-        # Fetch back subject from text template
-        subject = self.subject
-        if not subject:
-            match = SUBJECT_REGEX.search(text_content)
-            if match:
-                subject = match.groups()[0]
-        if not subject:
-            raise ValueError("No subject provided nor 'Subject:' first line in your text template")
-            
-        # Remove empty lines and "Subject:" line from text templates
-        text_content = SUBJECT_REGEX.sub('', text_content)
-        text_content = EMPTY_LINE_REGEX.sub('\n', text_content)
-        
-        # Handle recipient emails
-        recipient = d.get(self.recipient_arg, None)
-        if not recipient:
+        # Handle recipients emails
+        recipients = kwargs.get(self.recipient_arg, None)
+        if not recipients:
             raise ValueError("Recipient must be provided as a '%s' parameter" % self.recipient_arg)
-        if isinstance(recipient, UserAccount):
-            to = recipient.email
-            if not to:
-                log.warning("Can't send email for '%s': %s doesn't have an email registered." % (sender, recipient, ))
-                return
-            to = [to]
-        elif isinstance(recipient, Community):
-            if self.managers_only:
-                members = recipient.managers
+        to_list = []
+        if not isinstance(recipients, (list, tuple, QuerySet, )):
+            recipients = (recipients, )
+        for recipient in recipients:
+            if isinstance(recipient, Twistable):
+                recipient = recipient.object
+            if isinstance(recipient, UserAccount):
+                to = recipient.email
+                if not to:
+                    log.warning("Can't send email for '%s': %s doesn't have an email registered." % (sender, recipient, ))
+                    return
+                to_list.append(to)
+            elif isinstance(recipient, Community):
+                if self.managers_only:
+                    members = recipient.managers
+                else:
+                    members = recipient.members
+                # XXX Suboptimal for very large communities
+                to_list.extend([ member.email for member in members if member.email ])
+            elif type(recipient) in (str, unicode, ):
+                to_list.append(recipient)        # XXX Todo: check the '@'
             else:
-                members = recipient.members
-            # XXX Suboptimal for very large communities
-            to = [ member.email for member in members if member.email ]
-        elif type(recipient) in (str, unicode, ):
-            to = [ recipient, ]  # XXX Todo: check the '@'
-        else:
-            raise ValueError("Invalid recipient: %s" % recipient)
+                raise ValueError("Invalid recipient: %s (%s)" % (recipient, type(recipient), ))
+                
+        # Now generate template and send mail for each recipient
+        for to in to_list:
+            # Append domain (and site info) to kwargs
+            d = kwargs.copy()
+            domain = cache.get("twistranet_site_domain")
+            d.update({
+                "domain":       domain,
+                "site_name":    utils.get_site_name(),
+                "baseline":     utils.get_baseline(),
+                "recipient":    to,     # A string
+            })
         
-        # Prepare messages
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to)
-        if html_content:
-            msg.attach_alternative(html_content, "text/html")
+            # Load both templates and render them with kwargs context
+            text_tpl = get_template(self.text_template)
+            c = Context(d)
+            text_content = text_tpl.render(c).strip()
+            if self.html_template:
+                html_tpl = get_template(self.html_template)
+                html_content = html_tpl.render(c)
+            else:
+                html_content = None
             
-        # Send safely
-        try:
-            log.debug("Sending mail: '%s' from '%s' to '%s'" % (subject, from_email, to))
-            msg.send()
-        except:
-            log.warning("Unable to send message to %s" % to)
-            traceback.print_exc()
+            # Fetch back subject from text template
+            subject = self.subject
+            if not subject:
+                match = SUBJECT_REGEX.search(text_content)
+                if match:
+                    subject = match.groups()[0]
+            if not subject:
+                raise ValueError("No subject provided nor 'Subject:' first line in your text template")
+            
+            # Remove empty lines and "Subject:" line from text templates
+            text_content = SUBJECT_REGEX.sub('', text_content)
+            text_content = EMPTY_LINE_REGEX.sub('\n', text_content)
+        
+            # Prepare messages
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [ to ], )
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
+            
+            # Send safely
+            try:
+                log.debug("Sending mail: '%s' from '%s' to '%s'" % (subject, from_email, to))
+                msg.send()
+            except:
+                log.warning("Unable to send message to %s" % to)
+                traceback.print_exc()
 
 
