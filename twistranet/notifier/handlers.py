@@ -164,6 +164,8 @@ class MailHandler(NotifierHandler):
                 raise ValueError("Invalid recipient: %s (%s)" % (recipient, type(recipient), ))
                 
         # Now generate template and send mail for each recipient
+        # XXX TODO: See http://docs.djangoproject.com/en/1.2/topics/email/#sending-multiple-e-mails
+        # for the good approach to use.
         for to in to_list:
             # Append domain (and site info) to kwargs
             d = kwargs.copy()
@@ -209,6 +211,6 @@ class MailHandler(NotifierHandler):
                 msg.send()
             except:
                 log.warning("Unable to send message to %s" % to)
-                traceback.print_exc()
+                log.exception("Here's what we've got as an error.")
 
 

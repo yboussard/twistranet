@@ -1,7 +1,14 @@
 {# {% extends "email/basemail.txt" %} #}
-{% load i18n %}{% with instance.owner.title as owner %}{% with instance.content_type as content_type%}
-{% with instance.title as title %}{% with instance.absolute_url as absolute_url %}
+{% load i18n %}
+{% with instance.owner.title as owner %}{% with instance.model_name as content_type%}
+{% with instance.title as title %}{% with instance.get_absolute_url as absolute_url %}
+{% if instance.is_comment %}
+{% with instance.root_content.model_name as content_type%}
+Subject: {% blocktrans %}{{ owner }} commented a {{ content_type }}.{% endblocktrans %}
+{% endwith %}
+{% else %}
 Subject: {% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}
+{% endif %}
 
 {% blocktrans %}Hi,{% endblocktrans %}
 
