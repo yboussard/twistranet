@@ -131,13 +131,13 @@ class ResourceWidget(forms.MultiWidget):
 
         # Display browser resources in all selectable accounts
         if self.allow_select:
-            account = Twistable.objects._getAuthenticatedAccount()
+            auth = Twistable.objects._getAuthenticatedAccount()
             default_publisher = getattr(self, 'publisher', None)
             if default_publisher is None:
-                default_publisher = account
-            selectable_accounts = Resource.objects.selectable_accounts(account)
+                default_publisher = auth
+            selectable_accounts = Resource.objects.selectable_accounts(auth)
             sids = [s.id for s in selectable_accounts]
-            if default_publisher.id not in sids:
+            if default_publisher.id and default_publisher.id not in sids:
                 selectable_accounts.insert(0, default_publisher)
             t = loader.get_template('resource/resource_browser.html')
             scopes = []
