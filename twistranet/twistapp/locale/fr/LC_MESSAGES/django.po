@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 10:53+0100\n"
+"POT-Creation-Date: 2011-02-16 12:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -159,6 +159,7 @@ msgstr "Ses Communautés"
 
 #: templates/account/relations.box.html:25
 #: templates/account/relations.box.html:54
+#: templates/community/communities.box.html:19
 #: templates/community/members.box.html:19
 #: templates/community/members.box.html:41
 msgid "See all"
@@ -217,6 +218,10 @@ msgstr "Utilisateurs et communautés"
 #: templates/actions/general.part.html:24
 msgid "Toolbox"
 msgstr "Boîte à outils"
+
+#: templates/community/communities.box.html:6
+msgid "My communities"
+msgstr "Mes Communautés"
 
 #: templates/community/community_forms.part.html:23
 msgid "Send message"
@@ -480,7 +485,8 @@ msgid ""
 msgstr ""
 "Voulez-vous en savoir plus sur twistranet ? Visitez la <a href=\"http://www."
 "twistranet.fr\">page d'accueil de twistranet</a> ou devenez <a href=\"http://"
-"www.facebook.com/pages/Twistranet-Reseau-Social-dEntreprise/194244467261907\">fan sur Facebook</a> !"
+"www.facebook.com/pages/Twistranet-Reseau-Social-"
+"dEntreprise/194244467261907\">fan sur Facebook</a> !"
 
 #: templates/email/basemail.html:611
 msgid "This email has been sent automatically. Please do not answer it!"
@@ -530,7 +536,8 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"            Pour voir ce commentaire et le contenu auquel il se rapport, rendez-vous sur\n"
+"            Pour voir ce commentaire et le contenu auquel il se rapport, "
+"rendez-vous sur\n"
 "            <a href=\"%(domain)s%(absolute_url)s\">%(title)s</a>.\n"
 "        "
 
@@ -1298,6 +1305,36 @@ msgstr "Taille moyenne"
 #: views/resource_views.py:501
 msgid "Full size"
 msgstr "Grande taille"
+
+#~ msgid ""
+#~ "\n"
+#~ "    We're happy to tell you that %(owner)s published a new "
+#~ "%(content_type)s:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "            %(owner)s a publié un nouveau %(content_type)s :\n"
+#~ "        "
+
+#~ msgid "%(inviter_title)s invites you to twistranet"
+#~ msgstr "%(inviter_title)s vous invite sur %(site_name)s"
+
+#~ msgid ""
+#~ "You just recieved a request from %(inviter_title)s to join twistranet."
+#~ msgstr ""
+#~ "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
+
+#~ msgid "Here's what %(inviter_title)s tells you:"
+#~ msgstr "%(inviter_title)s vous envoie ce message :"
+
+#~ msgid "%(client_title)s wants to join your network."
+#~ msgstr ""
+#~ "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
+
+#~ msgid ""
+#~ "Visit %(client_get_absolute_url)s to accept or decline his/her request."
+#~ msgstr ""
+#~ "Visitez <a href=\"%(domain)s%(client_get_absolute_url)s\">la page de "
+#~ "%(client_title)s</a> pour accepter ou ignorer sa demande."
 
 #~ msgid "Upload a file:"
 #~ msgstr "Envoyer un fichier :"
