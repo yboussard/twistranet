@@ -310,9 +310,10 @@ class Twistable(_AbstractTwistable):
         XXX SHOULD CACHE THIS
         """
         import resource
-        if issubclass(self.model_class, resource.Resource):
-            if self.object.is_image:
-                return self
+        if self.model_class:
+            if issubclass(self.model_class, resource.Resource):
+                if self.object.is_image:
+                    return self
         try:
             picture = self.picture
             if picture is None:
