@@ -648,7 +648,7 @@ class AccountForgottenPassword(AccountLogin):
                 reset_password.send(
                     sender = self.__class__,
                     target = useraccount,
-                    reset_password_absolute_url = "%s://%s%s" % (protocol, domain, reset_link, ),
+                    reset_password_absolute_url = "%s" % (reset_link, ),
                 )
 
                 # Say we're happy and redirect
