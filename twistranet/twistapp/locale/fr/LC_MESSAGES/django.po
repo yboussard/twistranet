@@ -480,7 +480,7 @@ msgid ""
 msgstr ""
 "Voulez-vous en savoir plus sur twistranet ? Visitez la <a href=\"http://www."
 "twistranet.fr\">page d'accueil de twistranet</a> ou devenez <a href=\"http://"
-"www.facebook.com/pages/Twistranet/190139264335508\">fan sur Facebook</a> !"
+"www.facebook.com/pages/Twistranet-Reseau-Social-dEntreprise/194244467261907\">fan sur Facebook</a> !"
 
 #: templates/email/basemail.html:611
 msgid "This email has been sent automatically. Please do not answer it!"
