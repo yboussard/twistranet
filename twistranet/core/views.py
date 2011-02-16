@@ -404,7 +404,8 @@ class BaseIndividualView(BaseView):
                             self.object.publisher = publisher
                         try:
                             self.object.save()
-                        except ValidationError(detail):
+                        except ValidationError:
+                            detail = sys.exc_info()[1]
                             messages.warning(self.request, _(detail.messages[0]))
                         else:
                             self.form.save_m2m()

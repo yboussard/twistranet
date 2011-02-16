@@ -144,7 +144,9 @@ class Content(_AbstractContent):
         #       - be the publisher of the content ; (ie. content posted on my wall)
         #       - be a member of the publisher ;    (ie. content published on a community)
         #   The comments have one more rule : all the parents that are not in this list are notified.
-        content_created.send(sender = self.__class__, instance = self, target = self.listeners)
+        listeners = self.listeners
+        if listeners:
+            content_created.send(sender = self.__class__, instance = self, target = self.listeners)
         return ret
 
     @property
