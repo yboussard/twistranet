@@ -503,7 +503,7 @@ msgstr "%(owner)s a commenté un %(content_type)s"
 #: templates/email/created_content.html:35
 #, python-format
 msgid "%(owner)s published %(content_type)s."
-msgstr "%(owner)s a pulié un %(content_type)s"
+msgstr "%(owner)s a publié un %(content_type)s"
 
 #: templates/email/created_content.html:38 templates/email/invite_user.html:10
 msgid "Hi,"
