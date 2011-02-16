@@ -254,7 +254,6 @@ INSTALLED_APPS = [a for a in _INSTALLED_APPS if a]
 # Contrib.auth module settings
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-SESSION_COOKIE_PATH = '/'
 
 # Settings that should get altered with BASE_URL configuration.
 # This is used in RuntimePathsMiddleware to ensure all TN settings
@@ -266,7 +265,6 @@ BASE_URL_DEPDENDANT = (
     "LOGOUT_URL",
     "LOGIN_REDIRECT_URL",
     "TINYMCE_JS_URL",
-    "SESSION_COOKIE_PATH",
 )
 
 # Local and bootstrap settings.
