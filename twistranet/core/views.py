@@ -99,6 +99,7 @@ class BaseView(object):
     global_boxes = [
         "actions/general.part.html",
         "content/content_creation.box.html",
+        "community/communities.box.html",
     ]
     view_template = None
     available_actions = []      # List of either Action objects or BaseView classes (that will be instanciated and called with view.as_action() method)
