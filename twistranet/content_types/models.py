@@ -27,21 +27,8 @@ class Comment(StatusUpdate):
     # The Content or Comment this is a reply to
     in_reply_to = models.ForeignKey(Content, related_name = "direct_comments", null = False)
     # The original content this is a (possibly indirect) reply to
-    _root_content = models.ForeignKey(Content, related_name = "comments", null = False)
-    
-    is_comment = True           # Special tag to handle notifications messages correctly
-    @property
-    def root_content(self,):
-        """ XXX Ugly shortcut. Todo: rename the _root_content field into root_content..."""
-        return self._root_content
-    
-    @property
-    def get_content_absolute_url(self, ):
-        """
-        Return the proper absolute url of the root content this is a comment for.
-        """
-        return self._root_content.get_absolute_url()
-    
+    root_content = models.ForeignKey(Content, related_name = "comments", null = False, db_column = "_root_content_id")
+        
     def save(self, *args, **kw):
         """
         We ensure that in_reply_to and _root_content are properly set.
