@@ -31,17 +31,17 @@ class Comment(StatusUpdate):
         
     def save(self, *args, **kw):
         """
-        We ensure that in_reply_to and _root_content are properly set.
+        We ensure that in_reply_to and root_content are properly set.
         """
-        # Compute the _root_content value
+        # Compute the root_content value
         if not isinstance(self.in_reply_to, Content):
             raise ValueError("A comment must be in reply to a content")
-        self._root_content = self.in_reply_to
-        while isinstance(self._root_content, Comment):
-            self._root_content = self._root_content.in_reply_to
+        self.root_content = self.in_reply_to
+        while isinstance(self.root_content, Comment):
+            self.root_content = self.root_content.in_reply_to
             
-        # Particularity here: we must be able to publish on the _root_content to be allowed to comment.
-        self.publisher = self._root_content.publisher
+        # Particularity here: we must be able to publish on the root_content to be allowed to comment.
+        self.publisher = self.root_content.publisher
 
         # Ok; regular saving otherwise
         super(Comment, self).save(*args, **kw)
