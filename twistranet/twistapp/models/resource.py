@@ -107,9 +107,22 @@ class Resource(twistable.Twistable):
         Return the attribute suitable for sorl-thumbnail.
         """
         if self.resource_file:
-            return self.resource_file
+            if self.is_image:
+                return self.resource_file
+            else:
+                return self.mimetype_icon
+
         if self.resource_url:
-            return self.resource_url
+            return self.mimetype_icon
+
+    @property
+    def mimetype_icon(self):
+        mimetype_slug = self.mimetype.replace('/','_')
+        try:
+            src = Resource.objects.get(slug = mimetype_slug)
+        except:
+            src = Resource.objects.get(slug = self.default_picture_resource_slug)
+        return src.image
 
     @property
     def content_type(self,):

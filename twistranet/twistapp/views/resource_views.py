@@ -287,7 +287,7 @@ class ResourceBrowser(BaseView):
 
 
 # JS String used inline by resource_quickupload template
-
+# XXX TODO JMG : some cleaning (put template in fileupload.js, remove unused methods ...)
 UPLOAD_JS = """       
     var fillTitles = %(ul_fill_titles)s;
     var auto = %(ul_auto_upload)s;
@@ -349,7 +349,7 @@ UPLOAD_JS = """
 
 
 # This view is rendering html with inline javascript and is called in ajax
-# TODO : call it with a simple include
+# XXX TODO (JMG), not urgent : call it with a simple include
 @require_access
 def resource_quickupload(request):
     qu_settings = dict(
@@ -406,7 +406,7 @@ def resource_quickupload_file(request):
             # could be useful if someone change the js behavior
             msg = {u'error': u'emptyError'}
     else:
-        # MSIE old behavior (classic upload with iframe)
+        # MSIE fallback behavior (classic upload with iframe)
         file_data = request.FILES.get("qqfile", None)
         filename = getattr(file_data,'name', '')
         file_name = filename.split("\\")[-1]
@@ -448,7 +448,7 @@ def resource_quickupload_file(request):
             }
         except:
             # TODO : improve error messages with Unauthorized error
-            log.exception("Unexpected error while trying to uplaod a file.")
+            log.exception("Unexpected error while trying to upload a file.")
             msg = {u'error': u'unexpectedError'}
     else:
         msg = {u'error': u'serverError'}
@@ -476,18 +476,19 @@ def resource_by_publisher_json(request, publisher_id):
             raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
     
     selection = request.GET.get('selection','')  or 0
-    # TODO : use haystack and batch
+    # XXX TODO (JMG) : use haystack for search and batch
     files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
     for file_ in files:
         type_ = file_.is_image and 'image' or 'file'
         is_selected = file_.id == (int(selection) or 0)
+        thumbnails = file_.thumbnails
         result = {
                 "url":              file_.get_absolute_url(),
-                "thumbnail_url":    file_.thumbnails['medium'].url,
-                "mini_url":         file_.thumbnails['summary_preview'].url,
-                "summary_url":      file_.thumbnails['summary'].url,
-                "preview_url":      file_.thumbnails['preview'].url,
+                "thumbnail_url":    thumbnails['medium'].url,
+                "mini_url":         thumbnails['summary_preview'].url,
+                "summary_url":      thumbnails['summary'].url,
+                "preview_url":      thumbnails['preview'].url,
                 "id":               file_.id,
                 "title":            file_.title,
                 "selected":         is_selected and ' checked="checked"' or '',
@@ -495,9 +496,10 @@ def resource_by_publisher_json(request, publisher_id):
                 }
         results.append(result)
     data = {}
-    # TODO : change it for batch
+    # XXX TODO : change it for batch
     data['page'] = 1
     data['results'] = results
+    # used only by Wysiwyg browser window
     data['sizes'] = ((_('Small size'), '100*100'), (_('Medium size'), '500*500'), (_('Full size'), 'full') )
     return HttpResponse( json.dumps(data),
                          mimetype='text/plain')
