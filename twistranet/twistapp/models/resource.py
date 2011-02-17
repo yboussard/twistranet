@@ -117,7 +117,7 @@ class Resource(twistable.Twistable):
 
     @property
     def mimetype_icon(self):
-        mimetype_slug = self.mimetype.replace('/','_')
+        mimetype_slug = self.mimetype.replace('/','_').replace('.','_')
         try:
             src = Resource.objects.get(slug = mimetype_slug)
         except:
