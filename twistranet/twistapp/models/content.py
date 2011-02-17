@@ -86,7 +86,13 @@ class Content(_AbstractContent):
     
     # Security models available for the user
     permission_templates = permissions.content_templates
-        
+    
+    # This is used to identify comment-derivated objects
+    @property
+    def is_comment(self,):
+        from twistranet.content_types.models import Comment
+        return issubclass(self.model_class, Comment)
+    
     # View overriding support.
     # This will be saved into the Content object for performance reasons.
     # That way you don't have to dereference the underlying object until you want to see the whole page.
@@ -123,11 +129,8 @@ class Content(_AbstractContent):
                 raise PermissionDenied("%s can't publish on %s." % (authenticated, self.publisher, ))
 
         # Creation or not?
-        if self.id:
-            creation = True
-        else:
-            creation = False
-
+        creation = not self.id
+        
         # Check if user has modification rights for existing content
         if creation:
             if not self.can_edit:
@@ -144,9 +147,11 @@ class Content(_AbstractContent):
         #       - be the publisher of the content ; (ie. content posted on my wall)
         #       - be a member of the publisher ;    (ie. content published on a community)
         #   The comments have one more rule : all the parents that are not in this list are notified.
-        listeners = self.listeners
-        if listeners:
-            content_created.send(sender = self.__class__, instance = self, target = self.listeners)
+        if creation:
+            if not self.is_comment:
+                listeners = self.listeners
+                if listeners:
+                    content_created.send(sender = self.__class__, instance = self, target = self.listeners)
         return ret
 
     @property

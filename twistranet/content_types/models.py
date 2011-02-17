@@ -27,34 +27,21 @@ class Comment(StatusUpdate):
     # The Content or Comment this is a reply to
     in_reply_to = models.ForeignKey(Content, related_name = "direct_comments", null = False)
     # The original content this is a (possibly indirect) reply to
-    _root_content = models.ForeignKey(Content, related_name = "comments", null = False)
-    
-    is_comment = True           # Special tag to handle notifications messages correctly
-    @property
-    def root_content(self,):
-        """ XXX Ugly shortcut. Todo: rename the _root_content field into root_content..."""
-        return self._root_content
-    
-    @property
-    def get_content_absolute_url(self, ):
-        """
-        Return the proper absolute url of the root content this is a comment for.
-        """
-        return self._root_content.get_absolute_url()
-    
+    root_content = models.ForeignKey(Content, related_name = "comments", null = False, db_column = "_root_content_id")
+        
     def save(self, *args, **kw):
         """
-        We ensure that in_reply_to and _root_content are properly set.
+        We ensure that in_reply_to and root_content are properly set.
         """
-        # Compute the _root_content value
+        # Compute the root_content value
         if not isinstance(self.in_reply_to, Content):
             raise ValueError("A comment must be in reply to a content")
-        self._root_content = self.in_reply_to
-        while isinstance(self._root_content, Comment):
-            self._root_content = self._root_content.in_reply_to
+        self.root_content = self.in_reply_to
+        while isinstance(self.root_content, Comment):
+            self.root_content = self.root_content.in_reply_to
             
-        # Particularity here: we must be able to publish on the _root_content to be allowed to comment.
-        self.publisher = self._root_content.publisher
+        # Particularity here: we must be able to publish on the root_content to be allowed to comment.
+        self.publisher = self.root_content.publisher
 
         # Ok; regular saving otherwise
         super(Comment, self).save(*args, **kw)
