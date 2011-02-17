@@ -35,8 +35,8 @@
     <script type="text/javascript" src="{% url twistranet_home %}static/js/comments.js" charset="utf-8"></script>      
     <script type="text/javascript" src="{% url twistranet_home %}static/js/tn.js" charset="utf-8"></script>
     {% block local_js %}{% endblock %}
-    {% block local_headers %}{% endblock %}
     {% if form %}{{ form.media }}{% endif %}
+    {% block local_headers %}{% endblock %}
 </head>
 <body>
     <div id="page">
