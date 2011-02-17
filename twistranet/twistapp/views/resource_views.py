@@ -383,7 +383,6 @@ def resource_quickupload(request):
     t = loader.get_template('resource/resource_quickupload.html')
     return HttpResponse(t.render(c))
 
-
 @require_access
 def resource_quickupload_file(request):
     """
@@ -431,17 +430,19 @@ def resource_quickupload_file(request):
                 publisher_id = publisher_id and int(publisher_id),
                 filename = file_name,
             )
-            type = resource.is_image and 'image' or 'file'
+            is_image = resource.is_image
+            type = is_image and 'image' or 'file'
             # Generate the preview thumbnails
             thumbnails = resource.thumbnails
             msg = {
                 'success':       True,
                 'value':         resource.id,
                 'url':           resource.get_absolute_url(),
-                'thumbnail_url': thumbnails['medium'].url,
-                'preview_url':   thumbnails['preview'].url,
-                'mini_url':      thumbnails['summary_preview'].url,
-                'summary_url':   thumbnails['summary'].url, 
+                'thumbnail_url': is_image and thumbnails['medium'].url or thumbnails['big_icon'].url,
+                'mini_url':      is_image and thumbnails['summary_preview'].url or thumbnails['big_icon'].url,
+                # only used by image size selection (wysiwyg browser)
+                'summary_url':   is_image and thumbnails['summary'].url or '',
+                'preview_url':   is_image and thumbnails['preview'].url or '',
                 'legend':        title and title or file_name, 
                 'scope':         publisher_id,
                 'type':          type
@@ -480,15 +481,17 @@ def resource_by_publisher_json(request, publisher_id):
     files = Resource.objects.filter(publisher=request_account)[:30]
     results = []
     for file_ in files:
-        type_ = file_.is_image and 'image' or 'file'
+        is_image = file_.is_image
+        type_ = is_image and 'image' or 'file'
         is_selected = file_.id == (int(selection) or 0)
         thumbnails = file_.thumbnails
         result = {
                 "url":              file_.get_absolute_url(),
-                "thumbnail_url":    thumbnails['medium'].url,
-                "mini_url":         thumbnails['summary_preview'].url,
-                "summary_url":      thumbnails['summary'].url,
-                "preview_url":      thumbnails['preview'].url,
+                "thumbnail_url":    is_image and thumbnails['medium'].url or thumbnails['big_icon'].url,
+                "mini_url":         is_image and thumbnails['summary_preview'].url or thumbnails['big_icon'].url,
+                # only used by image size selection (wysiwyg browser)
+                "summary_url":      is_image and thumbnails['summary'].url or '',
+                "preview_url":      is_image and thumbnails['preview'].url or '',
                 "id":               file_.id,
                 "title":            file_.title,
                 "selected":         is_selected and ' checked="checked"' or '',
