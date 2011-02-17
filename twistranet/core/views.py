@@ -151,14 +151,14 @@ class BaseView(object):
                 # log.debug("%s %s" % (self, param))
                 setattr(self, param, getattr(other_view, param, None))
                 
-        # Save domain for later use
-        self.save_site_domain()
+        # Save domain for use outside a view (eg. in signals)
+        self.domain = self.get_site_domain()
                 
     #                                                                                               #
     #                                           Misc. stuff                                         #
     #                                                                                               #
 
-    def save_site_domain(self,):
+    def get_site_domain(self,):
         """
         We use this method to save site domain while we know it.
         It's most convenient to save it here, while we have the 'request' object...
@@ -173,7 +173,7 @@ class BaseView(object):
         Site.objects.clear_cache()
         current_site = Site.objects.get_current()
         request_site = RequestSite(self.request)
-        current_site.domain = request_site.domain + reverse('twistranet_home')
+        current_site.domain = request_site.domain
         current_site.save()
         
         # ...and of course, generate the full URL in a most convenient way.
@@ -187,7 +187,8 @@ class BaseView(object):
         cached_domain = "%s://%s" % (protocol, current_site.domain, )
         while cached_domain.endswith('/'):
             cached_domain = cached_domain[:-1]
-        cache.set("twistranet_site_domain", cached_domain, 60 * 60 * 24 * 365)  # 1yr should be enough ;)
+        cache.set("twistranet_site_domain", cached_domain, 60 * 60 * 24)  # 1 day is enough here
+        return cached_domain
                             
     #                                                                                               #
     #                                       Actions Management                                      #
