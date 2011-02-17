@@ -58,7 +58,9 @@
 }
 
 #renderer-new .image-block {
-    float: left !important
+    float: left !important;
+    min-width: 100px;
+    text-align: center;
 }
 
 #renderer-new .sizes-selection {

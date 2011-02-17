@@ -153,15 +153,11 @@ class ResourceWidget(forms.MultiWidget):
                     "activeClass":      activeClass,
                 }
                 scope['icons'] = []
-                images = Resource.objects.filter(publisher=account)[:9]
+                # XXX TODO (JMG) : use haystack for search only reource with is_image=1
+                images = Resource.objects.filter(publisher=account)
                 for img in images:
                     if len(scope['icons'])<=9:
-                        file_name = img.object.image.name
-                        content_type = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
-                        if content_type in ('image/jpg', 'image/jpeg', 'image/png', 'image/gif'):
-                            icon = default.backend.get_thumbnail( img.object.image, u'16x16' )
-                        else:
-                            continue
+                        icon = img.thumbnails['icon']
                         scope['icons'].append(icon.url)
                 scopes.append(scope)
 

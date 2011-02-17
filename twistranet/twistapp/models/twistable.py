@@ -311,8 +311,7 @@ class Twistable(_AbstractTwistable):
         """
         import resource
         if issubclass(self.model_class, resource.Resource):
-            if self.object.is_image:
-                return self
+            return self
         try:
             picture = self.picture
             if picture is None:
@@ -340,6 +339,7 @@ class Twistable(_AbstractTwistable):
         
         Preview: Max = 500x500; Used when a large version should be available.
         Summary: Max = 100x100;
+        Summary Preview: Max = Min = 100x100;
         Medium:  Max = Min = 50x50;
         Icon:    Max = Min = 16x16;
         """

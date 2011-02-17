@@ -78,7 +78,6 @@ class File(Content):
 
     @property
     def size(self):
-        file = self.file.resource_file
         if self.file is not None:
             return formatbytes(self.file.resource_file.size)
             
@@ -89,13 +88,10 @@ class File(Content):
     def save(self, *args, **kw):
         """
         Before saving, we use filename as this content title
-        if title is empty.
+        if title is empty, we set also picture.
         """
-        if self.file:
-            if self.file.is_image:
-                self.picture = self.file
-            # else:
-            # TODO PJG > play with mimetype icons
+        if self.file is not None:
+            self.picture = self.file
 
         if not self.title:
             self.title = self.file.title
