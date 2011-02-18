@@ -6,6 +6,7 @@ from optparse import OptionParser
 import shutil
 from uuid import uuid4, uuid1
 import os
+from django.utils.importlib import import_module
 
 IGNORE_PATTERNS = ('.pyc','.git','.svn')
 
@@ -148,11 +149,22 @@ def twistranet_project():
         os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
         os.environ["TWISTRANET_NOMAIL"] = "1"   # Disable emails
         import settings
-        # update static files and so on,
+        # update static files,
         # excepted in devel mode
         if not options.develmode:
-            import ipdb; ipdb.set_trace()
             call_command('twistranet_update')
+        # update settings.TWISTRANET_STATIC_PATH in devel mode
+        # to use theme from product itself
+        if options.develmode:
+            theme_app = import_module(settings.TWISTRANET_THEME_APP)
+            theme_app_dir = os.path.split(theme_app.__file__)[0]
+            DEVEL_TWISTRANET_STATIC_PATH = os.path.abspath(os.path.join(theme_app_dir, 'static'))
+            local_settings_path = os.path.join(project_path, "local_settings.py")
+            f = open(local_settings_path, "r")
+            data = f.read()
+            f = open(local_settings_path, "w")
+            data = data + '\nTWISTRANET_STATIC_PATH ="%s"\n' %DEVEL_TWISTRANET_STATIC_PATH
+            f.write(data)
         call_command('twistranet_bootstrap')
         
         # Now we can start the server!

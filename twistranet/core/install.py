@@ -20,20 +20,6 @@ def install_theme():
     Change settings of this instance
     """
 
-    # change settings.TWISTRANET_STATIC_PATH
-    module = import_module('settings')
-    project_path = os.path.dirname(os.path.abspath(module.__file__))
-    replacement = {
-        "TWISTRANET_STATIC_PATH = .*\n": "TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')\n", 
-    }
-    settings_path = os.path.join(project_path, "settings.py")
-    f = open(settings_path, "r")
-    data = f.read()
-    f = open(settings_path, "w")
-    for regex, repl in replacement.items():
-        data = re.sub(regex, repl, data)
-    f.write(data)
-
     # Copy theme-defined static files into the static directory.
     # We start by importing the theme app
     theme_app = import_module(settings.TWISTRANET_THEME_APP)

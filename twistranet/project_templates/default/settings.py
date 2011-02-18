@@ -1,7 +1,6 @@
 # Django settings for TwistraNet project.
 # NEVER WRITE THIS FILE DIRECTLY, but copy/paste your settings in the local_settings.py file.
 import os.path
-from django.utils.importlib import import_module
 HERE = os.path.dirname(__file__)
 
 # Tiny config
@@ -145,9 +144,7 @@ TEST_RUNNER = 'twistranet.core.test_runner.TwistranetTestRunner'
 #                                                       #
 # Theme app
 TWISTRANET_THEME_APP = "twistranet.themes.twistheme"
-theme_app = import_module(TWISTRANET_THEME_APP)
-theme_app_dir = os.path.split(theme_app.__file__)[0]
-TWISTRANET_STATIC_PATH = os.path.abspath(os.path.join(theme_app_dir, 'static'))
+TWISTRANET_STATIC_PATH = os.path.join(HERE, 'www', 'static')
 
 # Some project-dependant settings
 TINYMCE_JS_URL = "/static/js/tiny_mce/tiny_mce.js"
