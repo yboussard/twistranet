@@ -17,11 +17,19 @@
           </a>
          {% endwith %}
       </div>
-      <div class="content-file-size">
-        {% with content.size as filesize %}
-            {% blocktrans %}Size: {{ filesize }}{% endblocktrans %}
-        {% endwith %}
-      </div>      
+      <div class="content-file-infos">
+        <span class="content-file-size">
+          {% with content.size as filesize %}
+              {% blocktrans %}Size: {{ filesize }}{% endblocktrans %}
+          {% endwith %}
+        </span>
+        <span>&nbsp;&sim;&nbsp;</span>
+        <span class="content-file-mimetype">
+          {% with content.file.mimetype as mimetype %}
+              {% blocktrans %}File type: {{ mimetype }}{% endblocktrans %}
+          {% endwith %}
+        </span>
+      </div>
     </div>
     <div class="clearfix"><!-- --></div>
     <div class="view-metadata">

@@ -236,7 +236,8 @@ class Twistable(_AbstractTwistable):
     # If None, will use the default_picture_resource_slug attribute.
     # If you want to get the account picture, use the 'picture' attribute.
     default_picture_resource_slug = None
-    picture = ResourceField(null = True, blank = True, related_name = "picture_of")
+    # XXX TODO PJ : the widget params are never rendered
+    picture = ResourceField( media_type='image', null = True, blank = True, related_name = "picture_of")
     
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.

@@ -48,19 +48,21 @@ class PermissionField(models.CharField):
 
 class ResourceField(models.ForeignKey):
     """
-    ResourceField can be passed 2 arguments:
-    - the resource id we're going to use (easy)
-    - the File we're going to upload as a resource (more complicated)
+    ResourceField can be passed 1 argument:
+    - the resource id we're going to use
     """
-    def __init__(self, model = "Resource", allow_upload = True, allow_select = True, *args, **kw):
+    def __init__(self, model = "Resource", allow_upload = True, allow_select = True, media_type='file', *args, **kw):
         """
         Default model is Resource.
         - model: The model to use as the Resource target. Use only a Resource-derived object.
-        - allow_create: if False, won't allow to upload a new file.
-        - allow_select: il False, won't allow to select a file from existing resources.
+        - allow_select: if False, won't allow to select a file from existing resources.
+        - allow_upload: if False, won't display the widget to upload resource before select.
+        - media_type: if set to 'image' allow only upload or select images mimetype, 
+                      could be also 'flash', 'video', or string list of extensions '*.doc;*.pdf'.
         """
         self.allow_upload = allow_upload
         self.allow_select = allow_select
+        self.media_type = media_type
         super(ResourceField, self).__init__(model, *args, **kw)
     
     def delete_file(self, instance, *args, **kwargs):
@@ -72,28 +74,6 @@ class ResourceField(models.ForeignKey):
             if os.path.exists(file_name) and \
                 not instance.__class__._default_manager.filter(**{'%s__exact' % self.name: getattr(instance, self.attname)}).exclude(pk=instance._get_pk_val()):
                 os.remove(file_name)
-
-    def upload_resource(self, instance, data):
-        """
-        Upload the given file (data parameter) as a resource published by instance.
-        Return the newly created resource object.
-        """
-        # Determine the new resource's publisher according to its type
-        from twistranet.twistapp.models import Account, Resource, Content
-        if isinstance(instance, Account):
-            publisher = instance
-        elif isinstance(instance, Content):
-            publisher = instance.publisher
-        else:
-            raise NotImplementedError("Have to find who is the publisher for a new resource for %s" % (instance, ))
-            
-        # Create the resource itself
-        resource = Resource(
-            publisher = publisher,
-            resource_file = data,
-            )
-        resource.save()
-        return resource
 
     def get_internal_type(self):
         return 'ForeignKey'
@@ -108,18 +88,17 @@ class ResourceField(models.ForeignKey):
         resource = None
         
         # Process either upload file or resource id
-        # XXX Fix me : i'm not sure
         if data:
-            data_select, data_upload = data
-            if self.allow_upload and data_upload:         # We have a file using a classic file field (no more used ?), it takes precedence.
-                resource = self.upload_resource(instance, data_upload)
-            elif (self.allow_upload or self.allow_select) and data_select:   # we have a dataselect using quickupload or browser select
-                if isinstance(data_select, Resource):
-                    resource = data_select
-                elif isinstance(data_select, unicode):       # We just have an id. Try to get the resource.
+            data_select = data[0]
+            if isinstance(data_select, Resource):
+                resource = data_select
+            elif isinstance(data_select, unicode):       # We just have an id. Try to get the resource.
+                try :
                     resource = Resource.objects.get(id = data_select)
+                except:
+                    raise ValueError("Resource not found : %s" % data_select)
             else:
-                raise ValueError("Invalid incoming data for resource field: %s" % data)
+                raise ValueError("Invalid incoming data type for resource field: %s" % data[0])
 
         # Supersave data
         super(ResourceField, self).save_form_data(instance, resource)
@@ -129,7 +108,8 @@ class ResourceField(models.ForeignKey):
         defaults = {
             'form_class': fields.ResourceFormField,
             'allow_upload': self.allow_upload,
-            'allow_select': self.allow_select,
+            'allow_select': self.allow_select, 
+            'media_type': self.media_type,
         }
         defaults.update(kwargs)
         return super(ResourceField, self).formfield(**defaults)

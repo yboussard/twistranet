@@ -108,11 +108,13 @@ class ResourceFormField(forms.MultiValueField):
         self.allow_upload = kwargs.pop("allow_upload", True)
         self.allow_select = kwargs.pop("allow_select", True)
         self.display_renderer = kwargs.pop("display_renderer", True)
+        self.media_type = kwargs.pop("media_type", 'file')
         self.widget = kwargs.pop("widget", self.widget(
             model = self.model, filter = self.filter,
             allow_upload = self.allow_upload,
             allow_select = self.allow_select,
-            display_renderer = self.display_renderer
+            display_renderer = self.display_renderer,
+            media_type = self.media_type
         ))
         self.required = kwargs.pop("required", True)
         
@@ -121,14 +123,11 @@ class ResourceFormField(forms.MultiValueField):
         # - A FileField used to handle data upload.
         fields = []
         field0 = self.field(model = self.model, filter = self.filter, required = self.required)
-        field1 = forms.FileField(required = False)
+        # no more used
+        # field1 = forms.FileField(required = False)
         dummy = forms.CharField(required = False)
-        if self.allow_select:
+        if self.allow_select or self.allow_upload:
             fields.append(field0)
-        else:
-            fields.append(dummy)
-        if self.allow_upload:
-            fields.append(field1)
         else:
             fields.append(dummy)
         
