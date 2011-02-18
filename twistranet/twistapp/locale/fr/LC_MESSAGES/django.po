@@ -175,7 +175,7 @@ msgstr "Son réseau"
 
 #: templates/account/select.part.html:10
 msgid "Community manager"
-msgstr "Responsables"
+msgstr "Responsable"
 
 #: templates/account/summary.part.html:16
 msgid "Accept in my network"
