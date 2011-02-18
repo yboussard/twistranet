@@ -1,0 +1,91 @@
+{% extends "email/basemail.html" %}
+{% load i18n %}
+{% block subject %}
+    {% if instance.is_comment %}
+        {% with instance.owner.title as owner %}
+        {% with instance.root_content.model_name as content_type%}
+        {% with instance.get_absolute_url as absolute_url %}
+            {% blocktrans %}{{ owner }} commented a {{ content_type }}.{% endblocktrans %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+    {% else %}
+        {% with instance.owner.title as owner %}
+        {% with instance.model_name as content_type%}
+        {% with instance.title as title %}
+        {% with instance.get_absolute_url as absolute_url %}
+            {% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+{% with instance.owner.title as owner %}
+{% with instance.model_name as content_type %}
+{% with instance.title as title %}
+{% with instance.get_absolute_url as absolute_url %}
+{% if instance.is_comment %}
+{% with instance.root_content.model_name as content_type%}
+<h2 class="h2">{% blocktrans %}{{ owner }} commented a {{ content_type }}.{% endblocktrans %}</h2>
+{% endwith %}
+{% else %}
+<h2 class="h2">{% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}</h2>
+{% endif %}
+<p>
+{% blocktrans %}Hi,{% endblocktrans %}
+</p>
+
+{% if instance.is_comment %}
+{% with instance.get_content_absolute_url as absolute_url %}
+{% with instance.description as description %}
+{% with instance.root_content.title as title %}
+    <p>
+            {% blocktrans %}
+                {{ owner }} commented on <a href="{{ domain }}{{ absolute_url }}"{{ title }}</a>.
+            {% endblocktrans %}
+    </p>
+    
+    <p>{% blocktrans %}{{ owner }} wrote:{% endblocktrans %}</p>
+    
+    <blockquote>
+        <a href="{{ domain }}{{ absolute_url }}">{{ description }}</a>
+    </endblockquote>
+
+    <p>
+        {% blocktrans %}
+            To view this comment and the content it  and comment it, visit
+            <a href="{{ domain }}{{ absolute_url }}">{{ title }}</a>.
+        {% endblocktrans %}
+    </p>
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% else %}
+    <p>
+        {% blocktrans %}
+            {{ owner }} published a new {{ content_type }}:
+        {% endblocktrans %}
+    </p>
+
+    <blockquote>
+        <a href="{{ domain }}{{ absolute_url }}">{{ title }}</a>
+    </endblockquote>
+    
+    <p>
+        {% blocktrans %}
+            To view this content and comment it, visit
+            <a href="{{ domain }}{{ absolute_url }}">{{ site_name }}</a>.
+        {% endblocktrans %}
+    </p>
+{% endif %}
+
+    
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endblock %}
+
