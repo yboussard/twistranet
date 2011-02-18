@@ -1,85 +1,85 @@
-/*---------------------------------------------------------------- 
+/*----------------------------------------------------------------
   Global typography
 ---------------------------------------------------------------- */
 
 body {
-	font-family: "Lucida Grande",tahoma,"Lucida Sans Unicode","bitstream vera sans",arial,helvetica,geneva,sans-serif;
-	font-size: 11px;
-	color: #686868;
-	}
-  
+  font-family: "Lucida Grande",tahoma,"Lucida Sans Unicode","bitstream vera sans",arial,helvetica,geneva,sans-serif;
+  font-size: 11px;
+  color: #686868;
+  }
+
 /* Headings
 ***************************************************************************** */
 h1,h2,h3,h4,h5,h6 {
-	color: #686868;
-	font-weight: normal;
-	line-height: 1.2em;
-	margin:5px 0 3px;
-	clear: both;
+  color: #686868;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin:5px 0 3px;
+  clear: both;
 }
-	
+
 h1 { font-size: 24px; margin: 0; }
 h2 { font-size: 20px; }
 h3 { font-size: 16px; }
 h4 { font-size: 14px; }
 
-	
-h5 { 
-	font-size: 12px;
-	font-weight: bold; }
-	
-h6 { 
-	font-size: 11px;
-	font-weight: bold; }
+
+h5 {
+  font-size: 12px;
+  font-weight: bold; }
+
+h6 {
+  font-size: 11px;
+  font-weight: bold; }
 
 code, pre {
-	margin: 1em 0;
-	font-family: "Courier New", Courier, monospace;
-	font-size: 11px;
-	color: #000;
-	}
+  margin: 1em 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: #000;
+  }
 
 pre {
-	overflow: auto;
-	padding: 1em;
-	border: 1px solid #ddd;
-	background: #f1f1f1;
-	}
-	pre.script {
-		border: 1px dashed #ccd;
-		background: #ffffdd;
-	}
+  overflow: auto;
+  padding: 1em;
+  border: 1px solid #ddd;
+  background: #f1f1f1;
+  }
+  pre.script {
+    border: 1px dashed #ccd;
+    background: #ffffdd;
+  }
 
 blockquote {
-	font-style: italic;
-	padding-left: 48px;
-	background: url(../images/icons/quote.png) 0 0 no-repeat;
+  font-style: italic;
+  padding-left: 48px;
+  background: url(../images/icons/quote.png) 0 0 no-repeat;
 }
 
 acronym, abbr
 {
-	font-size: 9px;
-	letter-spacing: .07em;
-	cursor: help;
-	border-bottom: 1px dashed #999;
+  font-size: 9px;
+  letter-spacing: .07em;
+  cursor: help;
+  border-bottom: 1px dashed #999;
 }
 
 
 /* General elements
 ***************************************************************************** */
 p {
-	margin: 2px 0 10px;
-	line-height: 1.3em;
+  margin: 2px 0 10px;
+  line-height: 1.3em;
 }
 
 
 hr { display: none; }
 
-strong { 
-	color:#666;
-	font-weight: bold;
+strong {
+  color:#666;
+  font-weight: bold;
 }
-	
+
 em { font-style: italic; }
 
 
@@ -88,9 +88,9 @@ em { font-style: italic; }
 
 input, select, textarea, button {
   font-family: "Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms",verdana,sans-serif;
-  font-size: 11px;       
-  color: #686868;       
-	border: 1px solid #CCC;
+  font-size: 11px;
+  color: #686868;
+  border: 1px solid #CCC;
 }
 
 input:focus, select:focus, textarea:focus, button:focus {
@@ -100,8 +100,8 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 input[type="text"],
 input[type="password"] {
-	padding:  1px 5px;
-	background-color: white; 
+  padding:  1px 5px;
+  background-color: white;
 }
 
 select {
@@ -117,17 +117,17 @@ input[type="reset"],
 input[type="submit"] {
   padding: 4px 15px;
   cursor:pointer;
-  float: right; 
+  float: right;
   margin-left: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 button,
 input[type="reset"] {
-  background-color: #efefef;   
-  color: #686868;  
+  background-color: #efefef;
+  color: #686868;
 }
 
 button:focus,
@@ -148,50 +148,49 @@ button:active {
 label {
   display: block;
   font-weight: bold;
-	color: #686868;
+  color: #686868;
 }
 
 textarea {
-	background: white;
+  background: white;
 }
 
 /* Links
 ***************************************************************************** */
 
-a {	text-decoration: none; }
-	a:link    { color: #e00023; }     
-	a:visited { color: #e00023; }
-	a:hover   { color: #e00023; }
-	a:active  { color: #e00023; }
+a {  text-decoration: none; }
+  a:link    { color: #e00023; }
+  a:visited { color: #e00023; }
+  a:hover   { color: #e00023; }
+  a:active  { color: #e00023; }
 
-a img {	border: none;	}
+a img {  border: none;  }
 
 #content a:hover,
 #content a:active {
   text-decoration: underline;
 }
 
-/* list 
+/* list
 ***************************************************************************** */
 
 /* Unordered and Ordered list */
-ul, ol { 
-	margin: .5em 1.5em 2em 1.7em;
+ul, ol {
+  margin: .5em 1.5em 2em 1.7em;
 }
 
-ul { 	list-style-type: disc; }
+ul {   list-style-type: disc; }
 
 ol { list-style-type: decimal}
-	/* on the search results page */
-	ol.list li { margin-bottom: 2em; }
-	ol.list h4 { margin: 0 0 .2em; }
+  /* on the search results page */
+  ol.list li { margin-bottom: 2em; }
+  ol.list h4 { margin: 0 0 .2em; }
 
-/* Definiton list */	
+/* Definiton list */
 dl { margin: 0 0 1.5em 0; }
-	dl dt { font-weight: bold; }
-	dd { margin-left: 1.5em; }
-	
+  dl dt { font-weight: bold; }
+  dd { margin-left: 1.5em; }
+
 
 /* Tables
 ***************************************************************************** */
-	

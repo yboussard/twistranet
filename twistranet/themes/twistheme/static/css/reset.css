@@ -1,13 +1,13 @@
-/* -------------------------------------------------------------- 
-  
+/* --------------------------------------------------------------
+
    reset.css
    * Resets default browser CSS.
-   
+
    Based on work by Eric Meyer
    meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
-   
+
    This file contain also clearfix and round corners reset
-   
+
 -------------------------------------------------------------- */
 
 
@@ -19,32 +19,32 @@ small, strike, strong, sub, sup, tt, var,
 b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: transparent;}
-	
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;}
+
 body { line-height: 1;}
 
 ol, ul { list-style: none;}
 
-blockquote, q {	quotes: none;}
+blockquote, q {  quotes: none;}
 
 /* remember to define focus styles! */
 :focus { outline: 0; }
 
 /* remember to highlight inserts somehow! */
-ins {	text-decoration: none;}
+ins {  text-decoration: none;}
 
-del {	text-decoration: line-through;}
+del {  text-decoration: line-through;}
 
 /* tables still need 'cellspacing="0"' in the markup */
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 /* Clearing floats without extra markup
@@ -52,14 +52,14 @@ table {
    [http://www.positioniseverything.net/easyclearing.html] */
 
 .clearfix:after, .container:after {
-  content: "."; 
-  display: block; 
-  height: 0; 
-  clear: both; 
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
   visibility: hidden;
 }
 
-.clearfix { display: inline-block; }   
+.clearfix { display: inline-block; }
 
 * html .clearfix { height: 1%; }
 
@@ -68,4 +68,4 @@ table {
 /* Round Corners Reset */
 /* \*/
 * html .tlc, * html .trc { height: 1%; }
-/* */	
+/* */

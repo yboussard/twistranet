@@ -16,18 +16,18 @@
   display: inline-block;
   font-weight: bold;
   float: left;
-  background: #ebebeb url(../images/icons/permissions.png) 4px 1px no-repeat; 
+  background: #ebebeb url(../images/icons/permissions.png) 4px 1px no-repeat;
   cursor:pointer;
 }
 .dd .ddTitle > span {
 }
 .dd .ddTitle span.arrow {
-  background: transparent url(../images/icons/dd-arrow-dn.png) no-repeat 0 0; 
-  float:right; 
+  background: transparent url(../images/icons/dd-arrow-dn.png) no-repeat 0 0;
+  float:right;
   display:inline-block;
-  width:13px; 
-  height:15px; 
-  cursor:pointer; 
+  width:13px;
+  height:15px;
+  cursor:pointer;
   margin-left: 10px;
 }
 
@@ -49,7 +49,7 @@
   background-color:#ffffff;
   min-width:150px;
   margin-top: -1px;
-  
+
 }
 .dd .ddChild .opta a, .dd .ddChild .opta a:visited {padding-left:10px}
 .dd .ddChild a {
@@ -75,7 +75,7 @@
 .dd .ddChild a.selected {
   background: transparent url(../images/icons/dd-selected.png) 4px 2px no-repeat;
   color: black;
-  
+
 }
 .dd .ddChild a.selected:hover {
   background: #f3f3f3 url(../images/icons/dd-selected.png) 4px 2px no-repeat;
@@ -88,4 +88,3 @@
 .dd .noBorderTop{
 /*border-top:none 0  !important*/
 }
-

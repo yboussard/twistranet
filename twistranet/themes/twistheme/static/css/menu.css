@@ -1,5 +1,5 @@
-/*---------------------------------------------------------------- 
-  Copyright: 
+/*----------------------------------------------------------------
+  Copyright:
   Copyright (C) 2009 danielfajardo web
   Based on:
   * Superfish v1.4.8 - jQuery menu widget
@@ -7,9 +7,9 @@
   * http://users.tpg.com.au/j_birch/plugins/superfish/
   * Dual licensed under the MIT and GPL licenses:
   *   http://www.opensource.org/licenses/mit-license.php
-  *   http://www.gnu.org/licenses/gpl.html 
-  
-  Author: 
+  *   http://www.gnu.org/licenses/gpl.html
+
+  Author:
   danielfajardo - http: //wwww.danielfajardo.com
 ---------------------------------------------------------------- */
 
@@ -104,7 +104,7 @@ ul.sf-menu li li li.sfHover ul {
         -moz-border-radius: 5px 5px 0 0;
         border-radius: 5px 5px 0 0;
         color: white;
-      }  
+      }
     #mainmenu ul li a:hover {
       -webkit-box-shadow: inset 0 3px 3px rgba(0,0,0,0.3);
       -moz-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);

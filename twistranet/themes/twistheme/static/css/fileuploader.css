@@ -2,10 +2,10 @@
 
 .qq-upload-button {
     display:block; /* or inline-block */
-    min-width: 100px; 
+    min-width: 100px;
     padding: 4px 15px;
-    text-align:center;    
-    background: #EFEFEF; 
+    text-align:center;
+    background: #EFEFEF;
     color:#686868;
     float: left;
     cursor: pointer !important;
@@ -30,9 +30,9 @@
 .qq-upload-drop-area-active {}
 
 .qq-upload-list {
-    display: block; 
-    float: left; 
-    padding:0; 
+    display: block;
+    float: left;
+    padding:0;
     margin: 0;
     list-style: none outside none}
 
@@ -65,7 +65,7 @@
    display: block;
    float: right;
    width: 16px;
-   height: 16px;    
+   height: 16px;
    background-image: url("../images/icons/icons-normal.png");
    background-position: 0 -96px;
    background-repeat: no-repeat;
@@ -138,7 +138,7 @@
     float: right;
     width: 39%;
     display: none;
-    margin-left: 1%;  
+    margin-left: 1%;
 }
 
 #tnuploadresult .image-block {

@@ -74,7 +74,7 @@
 
 #renderer-new .sizes-selection p {
     margin: 0 !important;
-}       
+}
 
 #renderer-new .sizes-selection h4 {
     margin-bottom: 5px !important;
@@ -96,7 +96,7 @@
     overflow: visible;
 }
 
-/* Resource Widget in inline form*/ 
+/* Resource Widget in inline form*/
 .inline-form .resource-widget {
     display: block;
     margin: 0 0 10px !important;

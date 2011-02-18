@@ -14,7 +14,7 @@
 
 .activepost {
   background-color: #f7f7f7;
-  -moz-border-radius: 5px; 
+  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
@@ -49,19 +49,19 @@
   line-height: auto;
 }
   .entry div.postmetadata {
-    margin-top: 7px;  
+    margin-top: 7px;
     clear: left;
   }
   .entry .postmetadata ul {
     margin: 0;
     padding: 0;
-  }  
+  }
   .entry .postmetadata ul li {
     margin: 0 0.5em 0 0;
     padding: 1px 0 2px 17px;
     display: inline;
     list-style: none;
-    list-style-image: none; 
+    list-style-image: none;
     list-style-type: none;
   }
 
@@ -121,18 +121,18 @@
 .content-actions ul {
   margin: 0;
   padding: 0;
-  list-style: none;    
+  list-style: none;
   list-style-image: none;
   display: inline;
   white-space: no-wrap;
 }
 
 .content-actions ul li {
-  list-style: none;    
-  list-style-image: none;  
+  list-style: none;
+  list-style-image: none;
   display: inline;
   margin: 0 0 0 0.5em;
-  padding: 0; 
+  padding: 0;
   white-space: no-wrap;
 }
 
@@ -144,7 +144,7 @@
   white-space: no-wrap;
 }
 
-.content-actions ul li.first a {  
+.content-actions ul li.first a {
 }
 .content-actions ul li a:hover {
   color: #ad1c20;
@@ -168,7 +168,7 @@
 }
 
 .content-file-view img {
-   max-width: 700px;     
+   max-width: 700px;
    max-height: 465px;
 }
 
@@ -178,7 +178,7 @@
 }
 
 
-/* 
+/*
     Comments Management
 */
 
