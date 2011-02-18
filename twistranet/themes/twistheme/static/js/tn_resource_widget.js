@@ -234,6 +234,7 @@ jq(
         reswidget = jq('.resource-widget');
         theform = reswidget.parents('form');
         target_selector = jq('#selector_target', reswidget);
+        target_mediatype = jq('#media_type', reswidget);
         allow_browser_selection_field = jq('#allow_browser_selection');
         if (allow_browser_selection_field.length) allow_browser_selection = parseInt(allow_browser_selection_field.val());
         if (target_selector.length) {
@@ -244,6 +245,7 @@ jq(
             // remove input fields used by ajax requests only
             theform.bind('submit', function(){
                  target_selector.remove();
+                 target_mediatype.remove();
                  allow_browser_selection_field.remove();
                  jq('.tnGrid input', reswidget).remove();
             })

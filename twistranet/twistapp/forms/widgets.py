@@ -34,13 +34,12 @@ class ResourceWidget(forms.MultiWidget):
 
     def __init__(self, initial = None, **kwargs):
         widgets = []
+        widgets.append(forms.HiddenInput())
+        super(ResourceWidget, self).__init__(widgets)
         self.display_renderer = kwargs.pop("display_renderer", True)
         self.allow_select = kwargs.pop("allow_select", True)
-        widgets.append(forms.HiddenInput())
-        # is it useful ?
-        widgets.append(forms.HiddenInput())
         self.allow_upload = kwargs.pop("allow_upload", True)
-        super(ResourceWidget, self).__init__(widgets)
+        self.media_type = kwargs.pop("media_type", 'file')
 
     def decompress(self, value):
         """
@@ -60,7 +59,7 @@ class ResourceWidget(forms.MultiWidget):
         - The current resource, if there is already one.
         - The file upload field
         - The resource browser.
-        """
+        """            
         from twistranet.twistapp.models import Resource, Twistable
 
         # Beginning of the super-render() code
@@ -122,7 +121,8 @@ class ResourceWidget(forms.MultiWidget):
                 final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
             output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
 
-        # Render selector for upload and browser
+        # Render hidden fields used for upload and browser
+        output.append('<input type="hidden" id="media_type" name="media_type" value="%s" />' %self.media_type)
         output.append('<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name)
         
         # Render the Quick upload File widget
@@ -153,7 +153,7 @@ class ResourceWidget(forms.MultiWidget):
                     "activeClass":      activeClass,
                 }
                 scope['icons'] = []
-                # XXX TODO (JMG) : use haystack for search only reource with is_image=1
+                # XXX TODO (JMG) : use haystack for search only resource with is_image=1
                 images = Resource.objects.filter(publisher=account)
                 for img in images:
                     if len(scope['icons'])<=9:
