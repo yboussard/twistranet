@@ -1,12 +1,9 @@
 {% load i18n %}
+{% ifnotequal account.id current_account.id %}
 {% if account.communities_for_display %}
 <li class="tn-box relations-box">
     <h3 class="community-actions">
-      {% ifequal account.id current_account.id %}
-        <span>{% blocktrans %}My Communities{% endblocktrans %}</span>
-      {% else %}
         <span>{% blocktrans %}His/Her Communities{% endblocktrans %}</span>    
-      {%endifequal%}
       <span><a href="{% url account_communities account.id %}" class="nb-link">({{n_communities}})</a></span>
     </h3>         
     <div class="tn-box-content">  
@@ -27,6 +24,7 @@
     </div>
 </li>
 {% endif %}
+{%endifnotequal%}
 
 {% if account.network_for_display %}
 <li class="tn-box relations-box">

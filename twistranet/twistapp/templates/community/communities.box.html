@@ -1,24 +1,27 @@
 {% load i18n %}
 {% if current_account %}
-    {% if current_account.communities %}
-        <li id="communities-box" class="tn-box communities-box">
-            <h3>
-              <span>{% blocktrans %}My communities{% endblocktrans %}</span>
-            </h3>
-            <div class="tn-box-content">
-              <ul class="thumbnails-inner">
-                {% for account in current_account.communities %}
-                    {% include "account/medium.thumbnail.html" %}
-                {% endfor %}
-              </ul>
-              <div class="clearfix"><!-- --></div>
-            </div>
-            <div class="tn-box-footer">
-              <a href="{% url account_communities current_account.id %}"
-                 class="more">
-                {% blocktrans %}See all{% endblocktrans %}
-              </a>
-            </div>
-        </li>
+    {% if current_account.communities_for_display %}
+    <li class="tn-box relations-box">
+        <h3 class="community-actions">
+            <span>{% blocktrans %}My Communities{% endblocktrans %}</span>    
+          <span><a href="{% url account_communities current_account.id %}" class="nb-link">({{n_communities}})</a></span>
+        </h3>         
+        <div class="tn-box-content">  
+          <ul class="thumbnails-inner">
+            <li>
+              {% for account in current_account.communities_for_display %}
+                  {% include 'account/medium.thumbnail.html' %}
+              {% endfor %}
+            </li>
+          </ul>
+          <div class="clearfix"><!-- --></div>
+        </div>
+        <div class="tn-box-footer">
+          <a href="{% url account_communities current_account.id %}"
+             class="more">
+            {% blocktrans %}See all{% endblocktrans %}
+          </a>
+        </div>
+    </li>
     {% endif %}
 {% endif %}

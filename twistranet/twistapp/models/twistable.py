@@ -598,9 +598,12 @@ class Twistable(_AbstractTwistable):
         The return value is considered HTML-safe.
         """
         for attr in ('title', 'description', 'slug', 'id'):
-            v = unicode(getattr(self, attr, None))
-            if v:
-                return mark_safe(v)
+            v = getattr(self, attr, None)
+            if not v:
+                continue
+            if not isinstance(v, unicode):
+                v = unicode(v, errors = 'ignore')
+            return mark_safe(v)
             
     class Meta:
         app_label = 'twistapp'

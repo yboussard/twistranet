@@ -151,7 +151,6 @@ def twistranet_project():
         # update static files and so on,
         # excepted in devel mode
         if not options.develmode:
-            import ipdb; ipdb.set_trace()
             call_command('twistranet_update')
         call_command('twistranet_bootstrap')
         
