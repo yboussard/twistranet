@@ -162,7 +162,11 @@ def bootstrap():
     # Import COGIP sample (if requested)
     if settings.TWISTRANET_IMPORT_COGIP:
         from twistranet.fixtures.cogip import load_cogip
+        # We disable email sending
+        backup_EMAIL_BACKEND = settings.EMAIL_BACKEND
+        settings.EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
         load_cogip()
+        settings.EMAIL_BACKEND = backup_EMAIL_BACKEND
 
     # Repair permissions
     repair()

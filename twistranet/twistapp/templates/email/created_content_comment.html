@@ -12,14 +12,14 @@
 
     <h2 class="h2">
         {% blocktrans with instance.owner.title as owner and instance.root_content.owner.title as content_owner and instance.root_content.model_name as content_type %}
-            {{ owner }} commented {{ content_owner }}'s {{ content_type }}
+            {{ owner }} commented {{ content_owner }}'s content
         {% endblocktrans %}
     </h2>
 
     {% with instance.owner.title as owner %}
     {% with instance.model_name as content_type %}
     {% with instance.title_or_description as title_or_description %}
-    {% with instance.get_absolute_url as absolute_url %}
+    {% with instance.root_content.get_absolute_url as absolute_url %}
     {% with instance.root_content.title_or_description as content_title_or_description %}
     
         <p>
