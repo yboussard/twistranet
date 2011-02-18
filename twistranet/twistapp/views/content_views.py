@@ -43,7 +43,8 @@ class ContentView(BaseIndividualView):
         self.content = self.content and self.content.object
         if not self.template:
             self.template = self.content.detail_view
-
+        if not self.template:
+            raise ValueError("No correct template set for '%s' content type" % self.content.model_name)
 
 class ContentEdit(ContentView):
     """

@@ -21,7 +21,7 @@
                 {% endif %}
             </div>
             <span class="headline">
-                {% if content.detail_view %}
+                {% if content.detail_link %}
                     <div class="summary-content">
                         <div class="headline-content">
                             <a href="{{ content.get_absolute_url }}">
@@ -32,7 +32,7 @@
                     {{ content.title_or_description|wiki }}
                 {% endif %}
             </span>
-            {% if content.detail_view %}
+            {% if content.detail_link %}
                     {{ content.description|safe|wiki }}
                 </div>
             {% endif %}

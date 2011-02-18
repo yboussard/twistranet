@@ -1,30 +1,10 @@
 {# {% extends "email/basemail.txt" %} #}
 {% load i18n %}
-{% with instance.owner.title as owner %}{% with instance.model_name as content_type%}
-{% with instance.title as title %}{% with instance.get_absolute_url as absolute_url %}
-{% if instance.is_comment %}
-{% with instance.root_content.model_name as content_type%}
-Subject: {% blocktrans %}{{ owner }} commented a {{ content_type }}.{% endblocktrans %}
-{% endwith %}
-{% else %}
-Subject: {% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}
-{% endif %}
+{% with instance.owner.title as owner %}{% with instance.publisher.title as published_on %}
+{% with instance.title_or_description as title %}{% with instance.get_absolute_url as absolute_url %}
+Subject: {% blocktrans %}{{ owner }} published on {{ published_on }}'s wall{% endblocktrans %}
 
-{% blocktrans %}Hi,{% endblocktrans %}
-
-{% blocktrans %}
-    We're happy to tell you that {{ owner }} published a new {{ content_type }}:
-{% endblocktrans %}
-    {{ title }}
-{% blocktrans %}
-  You can click here to view and comment it: {{ domain }}{{ absolute_url }}
-{% endblocktrans %}
-
-{% blocktrans %}
-  --
-  Greetings from twistranet
-{% endblocktrans %}
-
+(This template is not available in plain-text)
 
 {% endwith %}
 {% endwith %}
