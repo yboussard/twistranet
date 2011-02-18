@@ -58,7 +58,7 @@ class Comment(StatusUpdate):
         current = self.in_reply_to
         additional_listeners = []
         while current.id != self.root_content.id:
-            for l in current.listeners:
+            for l in [ current.owner, ]:
                 if not l.id in listener_ids and not l.id in additional_listeners:
                     additional_listeners.append(l)
         if additional_listeners:
