@@ -37,8 +37,6 @@ from twistranet.twistorage.storage import Twistorage
 from twistranet.twistapp.lib import utils
 from twistranet.core.views import *
 
-from django.conf import settings
-
 def serve(request, path, document_root = None, show_indexes = False, nocache = False):
     """
     Adapted from django.views.static to handle the creation/modification date of the resource's publisher
