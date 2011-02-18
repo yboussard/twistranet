@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-18 10:37+0100\n"
+"POT-Creation-Date: 2011-02-18 11:43+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -551,7 +551,8 @@ msgid ""
 "  You can click here to view and comment it: %(domain)s%(absolute_url)s\n"
 msgstr ""
 "\n"
-"  Cliquez ici pour voir ce contenu et le commenter : %(domain)s%(absolute_url)s\n"
+"  Cliquez ici pour voir ce contenu et le commenter : %(domain)s"
+"%(absolute_url)s\n"
 
 #: templates/email/created_content.txt:19
 #: templates/email/created_content_comment.txt:18
@@ -572,11 +573,11 @@ msgstr "%(owner)s a commenté un %(content_type)s"
 #, python-format
 msgid ""
 "\n"
-"            %(owner)s commented %(content_owner)s's %(content_type)s\n"
+"            %(owner)s commented %(content_owner)s's content\n"
 "        "
 msgstr ""
 "\n"
-"            %(owner)s a commenté le contenu %(content_type)s de "
+"            %(owner)s a commenté le contenu de "
 "%(content_owner)s\n"
 "        "
 
@@ -615,9 +616,9 @@ msgstr ""
 
 #: templates/email/created_content_comment.txt:5
 #, python-format
-msgid "Subject: %(owner)s commented %(content_owner)s's %(content_type)s\n"
+msgid "Subject: %(owner)s commented %(content_owner)s's contenu\n"
 msgstr ""
-"Subject: %(owner)s a commenté le contenu %(content_type)s de "
+"Subject: %(owner)s a commenté le contenu de "
 "%(content_owner)s\n"
 
 #: templates/email/created_content_comment.txt:10
@@ -1435,8 +1436,8 @@ msgstr "Grande taille"
 
 #~ msgid ""
 #~ "\n"
-#~ "                %(owner)s commented on <a href=\"%(domain)s"
-#~ "%(absolute_url)s\"%(title)s</a>.\n"
+#~ "                %(owner)s commented on <a href=\"%(domain)s%(absolute_url)"
+#~ "s\"%(title)s</a>.\n"
 #~ "            "
 #~ msgstr ""
 #~ "\n"
