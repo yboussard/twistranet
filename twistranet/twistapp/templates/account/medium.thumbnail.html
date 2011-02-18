@@ -1,5 +1,13 @@
+{% load i18n %}
 {% load thumbnail %}
 <div class="thumbnail-account-part thumbnail-50-bottom">
+    {% if account.model_class.is_community %}
+        {% if account.is_manager %}
+            <a href="{% url twistranet_home %}">
+                <span class="community_manager_badge" title="{% blocktrans %}Community manager{% endblocktrans %}">*</span>
+            </a>
+        {% endif %}
+    {% endif %}
       <a href="{{ account.get_absolute_url }}" class="image-block image-block-tile">
       {% thumbnail account.forced_picture.image "50x50" crop="center top" as thumb %}
           <img
