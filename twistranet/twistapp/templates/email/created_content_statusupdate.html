@@ -2,25 +2,26 @@
 {% load i18n %}
 {% block subject %}
     {% with instance.owner.title as owner %}
-    {% with instance.model_name as content_type%}
-        {% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}
+    {% with instance.publisher.title as published_on%}
+        {% blocktrans %}{{ owner }} published on {{ published_on }}'s wall{% endblocktrans %}
     {% endwith %}
     {% endwith %}
 {% endblock %}
 
 {% block content %}
     {% with instance.owner.title as owner %}
-    {% with instance.model_name as content_type %}
+    {% with instance.publisher.title as published_on%}
     {% with instance.title_or_description as title_or_description %}
     {% with instance.get_absolute_url as absolute_url %}
-        <h2 class="h2">{% blocktrans %}{{ owner }} published {{ content_type }}.{% endblocktrans %}</h2>
+        <h2 class="h2">{% blocktrans %}{{ owner }} published  on {{ published_on }}'s wall{% endblocktrans %}</h2>
+        
         <p>
         {% blocktrans %}Hi,{% endblocktrans %}
         </p>
 
         <p>
             {% blocktrans %}
-                {{ owner }} published a new {{ content_type }}:
+                {{ owner }} published on {{ published_on }}'s wall :
             {% endblocktrans %}
         </p>
 

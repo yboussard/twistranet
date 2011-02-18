@@ -11,7 +11,7 @@ Subject: {% blocktrans %}{{ client_title }} wants to join your network.{% endblo
   
   {% blocktrans %}You have to take an action!{% endblocktrans %}
   
-  {% blocktrans %}Visit {{ client_get_absolute_url }} to accept or decline his/her request.{% endblocktrans %}
+  {% blocktrans %}Visit {{ domain }}{{ client_get_absolute_url }} to accept or decline his/her request.{% endblocktrans %}
   
 {% endwith %}
 {% endwith %}

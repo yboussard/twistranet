@@ -1,0 +1,12 @@
+{# {% extends "email/basemail.txt" %} #}
+{% load i18n %}
+{% with instance.owner.title as owner %}{% with instance.publisher.title as published_on %}
+{% with instance.title_or_description as title %}{% with instance.get_absolute_url as absolute_url %}
+Subject: {% blocktrans %}{{ owner }} published on {{ published_on }}'s wall{% endblocktrans %}
+
+(This template is not available in plain-text)
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}

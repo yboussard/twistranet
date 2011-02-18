@@ -14,7 +14,9 @@ class StatusUpdate(Content):
     It provides a good example of what you can do with a content type.
     """
     permission_templates = permissions.ephemeral_templates
-    type_detail_view = None
+    type_detail_link = False
+    type_text_template_creation = "email/created_content_statusupdate.txt"
+    type_html_template_creation = "email/created_content_statusupdate.html"
 
     class Meta:
         app_label = 'twistapp'
@@ -28,6 +30,10 @@ class Comment(StatusUpdate):
     in_reply_to = models.ForeignKey(Content, related_name = "direct_comments", null = False)
     # The original content this is a (possibly indirect) reply to
     root_content = models.ForeignKey(Content, related_name = "comments", null = False, db_column = "_root_content_id")
+
+    # Other type settings
+    type_text_template_creation = "email/created_content_comment.txt"
+    type_html_template_creation = "email/created_content_comment.html"
         
     def save(self, *args, **kw):
         """
@@ -45,6 +51,24 @@ class Comment(StatusUpdate):
 
         # Ok; regular saving otherwise
         super(Comment, self).save(*args, **kw)
+        
+        # Additional notifications for comments (we don't care about checking if we're
+        # in the creation mode, as comments should never be edited).
+        listener_ids = [ l.id for l in self.listeners ]
+        current = self.in_reply_to
+        additional_listeners = []
+        while current.id != self.root_content.id:
+            for l in current.listeners:
+                if not l.id in listener_ids and not l.id in additional_listeners:
+                    additional_listeners.append(l)
+        if additional_listeners:
+            content_created.send(
+                sender = self.__class__, 
+                instance = self, 
+                target = additional_listeners,
+                text_template = self.model_class.type_text_template_creation,
+                html_template = self.model_class.type_html_template_creation,
+            )
     
     class Meta:
         app_label = 'twistapp'

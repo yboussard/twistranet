@@ -456,17 +456,12 @@ class UserAccountInvite(UserAccountEdit):
             h = "%s%s%s" % (settings.SECRET_KEY, email, admin_string)
             h = hashlib.md5(h).hexdigest()
             invite_link = reverse(AccountJoin.name, args = (h, urllib.quote_plus(email)))
-            domain = RequestSite(self.request).domain
-            if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
-                protocol = "https"
-            elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
-                protocol = "http"
 
             # Send the invitation (as a signal)
             invite_user.send(
                 sender = self.__class__,
                 inviter = UserAccount.objects.getCurrentAccount(self.request),
-                invitation_absolute_url = "%s://%s%s" % (protocol, domain, invite_link, ),
+                invitation_uri = "%s" % (invite_link, ),
                 target = email,
                 message = self.form.cleaned_data['invite_message'],
             )
@@ -637,18 +632,13 @@ class AccountForgottenPassword(AccountLogin):
                 h = "%s%s%s%s" % (settings.SECRET_KEY, email, user.password, time.strftime("%Y%m%d"))
                 h = hashlib.md5(h).hexdigest()
                 reset_link = reverse(ResetPassword.name, args = (h, urllib.quote_plus(email)))
-                domain = RequestSite(self.request).domain
-                if self.request.META['SERVER_PROTOCOL'].startswith("HTTPS"):
-                    protocol = "https"
-                elif self.request.META['SERVER_PROTOCOL'].startswith("HTTP"):
-                    protocol = "http"
 
                 # Send the invitation (as a signal)
                 useraccount = UserAccount.objects.__booster__.get(user__id = user.id)
                 reset_password.send(
                     sender = self.__class__,
                     target = useraccount,
-                    reset_password_absolute_url = "%s" % (reset_link, ),
+                    reset_password_uri = "%s" % (reset_link, ),
                 )
 
                 # Say we're happy and redirect

@@ -14,7 +14,7 @@ Subject: {% blocktrans %}{{ inviter_title }} invites you to twistranet{% endbloc
 
 {% endif %}  
   
-  {% blocktrans %}{{ invitation_absolute_url }}{% endblocktrans %}
+  {% blocktrans %}{{ domain }}{{ invitation_uri }}{% endblocktrans %}
   
 {% blocktrans %}
   --

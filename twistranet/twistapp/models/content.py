@@ -93,14 +93,24 @@ class Content(_AbstractContent):
         from twistranet.content_types.models import Comment
         return issubclass(self.model_class, Comment)
     
-    # View overriding support.
-    # This will be saved into the Content object for performance reasons.
-    # That way you don't have to dereference the underlying object until you want to see the whole page.
-    # Overload the 'type_summary_view' in your subclasses if you want.
-    # Same for detail_view. Set to 'None' if no detail view (so no links on summary views)
+    # View overriding support. Not very DRYful but convenient for product authors.
+    # Just overload the 'type_summary_view' in your subclasses if you want.
+    # Same for detail_view. 
+    # If you don't want implicit links to detail view, set type_detail_link to False.
+    # This is useful for status updates: we don't want links everywhere to status updates,
+    # but want to be able to reference them anyway.
+    # Use those variables when setting information, but ALWAYS use the 'type_'-less property
+    # when accessing it: that will avoid an unncecessary database hit.
     type_summary_view = "content/summary.part.html"
     type_detail_view = "content/view.html"
+    type_detail_link = True
+    type_text_template_creation = "email/created_content.txt"
+    type_html_template_creation = "email/created_content.html"
     default_picture_resource_slug = "default_menu_picture"
+    
+    @property
+    def detail_link(self,):
+        return self.model_class.type_detail_link
         
     class Meta:
         app_label = 'twistapp'
@@ -146,12 +156,18 @@ class Content(_AbstractContent):
         #   - either:
         #       - be the publisher of the content ; (ie. content posted on my wall)
         #       - be a member of the publisher ;    (ie. content published on a community)
-        #   The comments have one more rule : all the parents that are not in this list are notified.
+        #   The comments have one more rule : all the parents that are not in this list are notified
+        #   (but this is treated in the Comment class).
         if creation:
-            if not self.is_comment:
-                listeners = self.listeners
-                if listeners:
-                    content_created.send(sender = self.__class__, instance = self, target = self.listeners)
+            listeners = self.listeners
+            if listeners:
+                content_created.send(
+                    sender = self.__class__, 
+                    instance = self, 
+                    target = self.listeners,
+                    text_template = self.model_class.type_text_template_creation,
+                    html_template = self.model_class.type_html_template_creation,
+                )
         return ret
 
     @property

@@ -1,0 +1,56 @@
+{% extends "email/created_content.html" %}
+{% load i18n %}
+{% block subject %}
+    {% with instance.owner.title as owner %}
+    {% with instance.root_content.model_name as content_type%}
+        {% blocktrans %}{{ owner }} commented a {{ content_type }}.{% endblocktrans %}
+    {% endwith %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+    <h2 class="h2">
+        {% blocktrans with instance.owner.title as owner and instance.root_content.owner.title as content_owner and instance.root_content.model_name as content_type %}
+            {{ owner }} commented {{ content_owner }}'s {{ content_type }}
+        {% endblocktrans %}
+    </h2>
+
+    {% with instance.owner.title as owner %}
+    {% with instance.model_name as content_type %}
+    {% with instance.title_or_description as title_or_description %}
+    {% with instance.get_absolute_url as absolute_url %}
+    {% with instance.root_content.title_or_description as content_title_or_description %}
+    
+        <p>
+        {% blocktrans %}Hi,{% endblocktrans %}
+        </p>
+
+        <p>
+            {% blocktrans %}
+                {{ owner }} commented on <a href="{{ domain }}{{ absolute_url }}"{{ content_title_or_description }}</a>.
+            {% endblocktrans %}
+        </p>
+
+        <p>
+            {% blocktrans %}{{ owner }} wrote:{% endblocktrans %}
+        </p>
+
+        <blockquote>
+            <a href="{{ domain }}{{ absolute_url }}">{{ title_or_description }}</a>
+        </endblockquote>
+
+        <p>
+            {% blocktrans %}
+                To view this content and comment it, visit
+                <a href="{{ domain }}{{ absolute_url }}">{{ content_title_or_description }}</a>.
+            {% endblocktrans %}
+        </p>
+    
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+{% endblock %}
+

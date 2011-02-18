@@ -105,13 +105,16 @@ class MailHandler(NotifierHandler):
     If it's a community, it will send a message to all members,
     except if the managers_only bool is True (then it's sent to managers only).
     
-    A text_template and/or html_template can be provided. They are paths to templates
+    A text_template and html_template can be provided. They are paths to templates
     (eg. 'email/welcome.txt' and 'email/welcome.html').
     Text template is mandatory, BTW.
     
     The TEXT (and only text) template _can_ provide a Subject: xxx line AS ITS VERY FIRST LINE line.
     But the 'subject' parameter always superseeds this.
     This way, you can use 'Subject:' in your templates to have your subject use variables and translation.
+    
+    One last thing: a signal can overload the templates. Just pass 'text_template' and/or 'html_template' in
+    the signal kw arguments to have the templates overloaded for that particular signal instance.
     """
     def __init__(self, recipient_arg, text_template, subject = None, html_template = None, managers_only = False):
         self.recipient_arg = recipient_arg
@@ -163,6 +166,10 @@ class MailHandler(NotifierHandler):
             else:
                 raise ValueError("Invalid recipient: %s (%s)" % (recipient, type(recipient), ))
                 
+        # Fetch templates
+        text_template = kwargs.get('text_template', self.text_template)
+        html_template = kwargs.get('html_template', self.html_template)
+                
         # Now generate template and send mail for each recipient
         # XXX TODO: See http://docs.djangoproject.com/en/1.2/topics/email/#sending-multiple-e-mails
         # for the good approach to use.
@@ -178,11 +185,11 @@ class MailHandler(NotifierHandler):
             })
         
             # Load both templates and render them with kwargs context
-            text_tpl = get_template(self.text_template)
+            text_tpl = get_template(text_template)
             c = Context(d)
             text_content = text_tpl.render(c).strip()
-            if self.html_template:
-                html_tpl = get_template(self.html_template)
+            if html_template:
+                html_tpl = get_template(html_template)
                 html_content = html_tpl.render(c)
             else:
                 html_content = None

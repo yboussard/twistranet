@@ -80,13 +80,13 @@ urlpatterns = patterns('',
     url(r'^reset/(\w+)/([\w\-@%\._]+)$',        AsPublicView(ResetPassword), name = ResetPassword.name, ),
     
     # Administration pages.
-    url(r'^configuration/$',                   AsView(ConfigurationEdit), name = ConfigurationEdit.name),
+    url(r'^configuration/$',                    AsView(ConfigurationEdit), name = ConfigurationEdit.name),
 
     # Search engine
     (r'^search/',                               include('twistranet.search.urls')),
 
     # Javascript dynamic stuff
-    url(r'^tn_vars.js$',                          'twistranet.twistapp.views.js_vars', name = "twistranet_js_vars",),
+    url(r'^tn_vars.js$',                        'twistranet.twistapp.views.js_vars', name = "twistranet_js_vars",),
 )
 
 

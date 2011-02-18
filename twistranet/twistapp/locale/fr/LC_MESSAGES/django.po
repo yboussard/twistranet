@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: twistranet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 12:50+0100\n"
+"POT-Creation-Date: 2011-02-18 10:37+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre-Julien Grizel <pjgrizel@numericube.com>\n"
 "Language-Team: Numericube\n"
@@ -456,19 +456,19 @@ msgstr "Télécharger %(filename)s"
 msgid "Size: %(filesize)s"
 msgstr "Taille : %(filesize)s"
 
-#: templates/email/basemail.html:520
+#: templates/email/basemail.html:522
 msgid "twistranet on Facebook"
 msgstr "twistranet sur Facebook"
 
-#: templates/email/basemail.html:532
+#: templates/email/basemail.html:534
 msgid "twistranet on Twitter"
 msgstr "@twistranet sur Twitter"
 
-#: templates/email/basemail.html:548
+#: templates/email/basemail.html:550
 msgid "What is twistranet?"
 msgstr "Qu'est-ce que twistranet ?"
 
-#: templates/email/basemail.html:549
+#: templates/email/basemail.html:551
 msgid ""
 "twistranet is an Enterprise Social Network. It's a place where people can "
 "engage together on projects to make teamwork easier."
@@ -477,7 +477,7 @@ msgstr ""
 "se consacrer ensemble à des projets et rendre le travail d'équipe plus "
 "agréable."
 
-#: templates/email/basemail.html:550
+#: templates/email/basemail.html:552
 msgid ""
 "Want to learn more about twistranet? Visit the <a href=\"http://www."
 "twistranet.com\">twistranet homepage</a> or become a <a href=\"http://www."
@@ -488,81 +488,168 @@ msgstr ""
 "www.facebook.com/pages/Twistranet-Reseau-Social-"
 "dEntreprise/194244467261907\">fan sur Facebook</a> !"
 
-#: templates/email/basemail.html:611
+#: templates/email/basemail.html:613
 msgid "This email has been sent automatically. Please do not answer it!"
 msgstr ""
 "Cet email a été envoyé automatiquement. N'y répondez pas s'il vous plaît."
 
-#: templates/email/created_content.html:8
-#: templates/email/created_content.html:32
-#, python-format
-msgid "%(owner)s commented a %(content_type)s."
-msgstr "%(owner)s a commenté un %(content_type)s"
-
-#: templates/email/created_content.html:17
-#: templates/email/created_content.html:35
+#: templates/email/created_content.html:6
+#: templates/email/created_content.html:16
+#: templates/email/created_content.txt:5
 #, python-format
 msgid "%(owner)s published %(content_type)s."
 msgstr "%(owner)s a publié un %(content_type)s"
 
-#: templates/email/created_content.html:38 templates/email/invite_user.html:10
+#: templates/email/created_content.html:18
+#: templates/email/created_content.txt:7
+#: templates/email/created_content_comment.html:26
+#: templates/email/created_content_comment.txt:8
+#: templates/email/created_content_statusupdate.html:19
+#: templates/email/invite_user.html:10 templates/email/invite_user.txt:6
 msgid "Hi,"
 msgstr "Bonjour,"
 
-#: templates/email/created_content.html:46
+#: templates/email/created_content.html:22
 #, python-format
 msgid ""
 "\n"
-"                %(owner)s commented on <a href=\"%(domain)s%(absolute_url)s"
-"\"%(title)s</a>.\n"
+"                %(owner)s published a new %(content_type)s:\n"
 "            "
-msgstr ""
-"\n"
-"                %(owner)s a commenté <a href=\"%(domain)s%(absolute_url)s"
-"\"%(title)s</a>.\n"
-"            "
-
-#: templates/email/created_content.html:51
-#, python-format
-msgid "%(owner)s wrote:"
-msgstr "%(owner)s a écrit :"
-
-#: templates/email/created_content.html:58
-#, python-format
-msgid ""
-"\n"
-"            To view this comment and the content it  and comment it, visit\n"
-"            <a href=\"%(domain)s%(absolute_url)s\">%(title)s</a>.\n"
-"        "
-msgstr ""
-"\n"
-"            Pour voir ce commentaire et le contenu auquel il se rapport, "
-"rendez-vous sur\n"
-"            <a href=\"%(domain)s%(absolute_url)s\">%(title)s</a>.\n"
-"        "
-
-#: templates/email/created_content.html:68
-#, python-format
-msgid ""
-"\n"
-"            %(owner)s published a new %(content_type)s:\n"
-"        "
 msgstr ""
 "\n"
 "            %(owner)s a publié un nouveau %(content_type)s :\n"
 "        "
 
-#: templates/email/created_content.html:78
+#: templates/email/created_content.html:32
+#: templates/email/created_content_statusupdate.html:33
 #, python-format
 msgid ""
 "\n"
-"            To view this content and comment it, visit\n"
+"                To view this content and comment it, visit\n"
+"                <a href=\"%(domain)s%(absolute_url)s\">%(site_name)s</a>.\n"
+"            "
+msgstr ""
+"\n"
+"            Pour voir ce contenu et le commenter, visitez\n"
 "            <a href=\"%(domain)s%(absolute_url)s\">%(site_name)s</a>.\n"
+"        "
+
+#: templates/email/created_content.txt:9
+#, python-format
+msgid ""
+"\n"
+"    %(owner)s published a new %(content_type)s:\n"
+msgstr ""
+"\n"
+"            %(owner)s a publié un nouveau %(content_type)s :\n"
+
+#: templates/email/created_content.txt:15
+#: templates/email/created_content_comment.txt:14
+#, python-format
+msgid ""
+"\n"
+"  You can click here to view and comment it: %(domain)s%(absolute_url)s\n"
+msgstr ""
+"\n"
+"  Cliquez ici pour voir ce contenu et le commenter : %(domain)s%(absolute_url)s\n"
+
+#: templates/email/created_content.txt:19
+#: templates/email/created_content_comment.txt:18
+#: templates/email/invite_user.txt:19
+#: templates/email/request_add_to_network.txt:19
+msgid ""
+"\n"
+"  --\n"
+"  Greetings from twistranet\n"
+msgstr ""
+
+#: templates/email/created_content_comment.html:6
+#, python-format
+msgid "%(owner)s commented a %(content_type)s."
+msgstr "%(owner)s a commenté un %(content_type)s"
+
+#: templates/email/created_content_comment.html:14
+#, python-format
+msgid ""
+"\n"
+"            %(owner)s commented %(content_owner)s's %(content_type)s\n"
 "        "
 msgstr ""
 "\n"
-"            Pour lire ce contenu et le commenter, visitez\n"
-"            <a href=\"%(domain)s%(absolute_url)s\">%(site_name)s</a>.\n"
+"            %(owner)s a commenté le contenu %(content_type)s de "
+"%(content_owner)s\n"
+"        "
+
+#: templates/email/created_content_comment.html:30
+#, python-format
+msgid ""
+"\n"
+"                %(owner)s commented on <a href=\"%(domain)s%(absolute_url)s"
+"\"%(content_title_or_description)s</a>.\n"
+"            "
+msgstr ""
+"\n"
+"                %(owner)s a commenté <a href=\"%(domain)s%(absolute_url)s"
+"\"%(content_title_or_description)s</a>.\n"
+"            "
+
+#: templates/email/created_content_comment.html:36
+#, python-format
+msgid "%(owner)s wrote:"
+msgstr "%(owner)s a écrit :"
+
+#: templates/email/created_content_comment.html:44
+#, python-format
+msgid ""
+"\n"
+"                To view this content and comment it, visit\n"
+"                <a href=\"%(domain)s%(absolute_url)s\">"
+"%(content_title_or_description)s</a>.\n"
+"            "
+msgstr ""
+"\n"
+"            Pour voir ce contenu et le commenter, visitez\n"
+"            <a href=\"%(domain)s%(absolute_url)s\">"
+"%(content_title_or_description)s</a>.\n"
+"        "
+
+#: templates/email/created_content_comment.txt:5
+#, python-format
+msgid "Subject: %(owner)s commented %(content_owner)s's %(content_type)s\n"
+msgstr ""
+"Subject: %(owner)s a commenté le contenu %(content_type)s de "
+"%(content_owner)s\n"
+
+#: templates/email/created_content_comment.txt:10
+#, python-format
+msgid ""
+"\n"
+"    We're happy to tell you that %(owner)s published a new "
+"%(content_type)s:\n"
+msgstr ""
+"\n"
+"            %(owner)s a publié un nouveau %(content_type)s :\n"
+
+#: templates/email/created_content_statusupdate.html:6
+#: templates/email/created_content_statusupdate.txt:5
+#, python-format
+msgid "%(owner)s published on %(published_on)s's wall"
+msgstr "%(owner)s a publié sur le mur de %(published_on)s"
+
+#: templates/email/created_content_statusupdate.html:16
+#, python-format
+msgid "%(owner)s published  on %(published_on)s's wall"
+msgstr "%(owner)s a publié sur le mur de %(published_on)s"
+
+#: templates/email/created_content_statusupdate.html:23
+#, python-format
+msgid ""
+"\n"
+"                %(owner)s published on %(published_on)s's wall :\n"
+"            "
+msgstr ""
+"\n"
+"            %(owner)s a publié sur le mur de %(published_on)s :\n"
 "        "
 
 #: templates/email/invite_user.html:4 templates/email/invite_user.html.py:8
@@ -587,11 +674,32 @@ msgstr "%(inviter_title)s vous envoie ce message :"
 #: templates/email/invite_user.html:22
 #, python-format
 msgid ""
-"Just <a href=\"%(invitation_absolute_url)s\"> follow this link</a> to accept "
-"this invitation, or ignore this mail to decline."
+"Just <a href=\"%(domain)s%(invitation_uri)s\"> follow this link</a> to "
+"accept this invitation, or ignore this mail to decline."
 msgstr ""
-"<a href=\"%(invitation_absolute_url)s\">Suivez ce lien</a> pour accepter "
+"<a href=\"%(domain)s%(invitation_uri)s\">Suivez ce lien</a> pour accepter "
 "cette invitation, ou ignorez-la simplement."
+
+#: templates/email/invite_user.txt:4
+#, python-format
+msgid "%(inviter_title)s invites you to twistranet"
+msgstr "%(inviter_title)s vous invite sur twistranet"
+
+#: templates/email/invite_user.txt:8
+#, python-format
+msgid "You just recieved a request from %(inviter_title)s to join twistranet."
+msgstr ""
+"Vous avez reçu une demande de %(inviter_title)s à rejoindre votre réseau."
+
+#: templates/email/invite_user.txt:11
+#, python-format
+msgid "Here's what %(inviter_title)s tells you:"
+msgstr "%(inviter_title)s vous envoie ce message :"
+
+#: templates/email/invite_user.txt:17
+#, python-format
+msgid "%(domain)s%(invitation_uri)s"
+msgstr "%(domain)s%(invitation_uri)s"
 
 #: templates/email/request_add_to_network.html:4
 #: templates/email/request_add_to_network.html:10
@@ -601,18 +709,21 @@ msgstr ""
 "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
 
 #: templates/email/request_add_to_network.html:12
+#: templates/email/request_add_to_network.txt:8
 #: templates/email/reset_password.html:10
 #, python-format
 msgid "Dear %(target_title)s,"
 msgstr "Cher, Chère %(target_title)s,"
 
 #: templates/email/request_add_to_network.html:15
+#: templates/email/request_add_to_network.txt:10
 #, python-format
 msgid "You just recieved a request from %(client_title)s to join your network."
 msgstr ""
 "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
 
 #: templates/email/request_add_to_network.html:18
+#: templates/email/request_add_to_network.txt:12
 msgid "You have to take an action!"
 msgstr "Vous devez répondre à cette demande."
 
@@ -625,7 +736,23 @@ msgstr ""
 "Visitez <a href=\"%(domain)s%(client_get_absolute_url)s\">la page de "
 "%(client_title)s</a> pour accepter ou ignorer sa demande."
 
+#: templates/email/request_add_to_network.txt:4
+#, python-format
+msgid "%(client_title)s wants to join your network."
+msgstr ""
+"Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
+
+#: templates/email/request_add_to_network.txt:14
+#, python-format
+msgid ""
+"Visit %(domain)s%(client_get_absolute_url)s to accept or decline his/her "
+"request."
+msgstr ""
+"Visitez %(domain)s%(client_get_absolute_url)s pour accepter ou ignorer sa "
+"demande."
+
 #: templates/email/reset_password.html:4 templates/email/reset_password.html:8
+#: templates/email/reset_password.txt:3
 msgid "Password reset"
 msgstr "Réinitialiser le mot de passe"
 
@@ -640,11 +767,11 @@ msgstr ""
 #: templates/email/reset_password.html:16
 #, python-format
 msgid ""
-"To reset your password, just <a href=\"%(domain)s"
-"%(reset_password_absolute_url)s\">follow this link</a>."
+"To reset your password, just <a href=\"%(domain)s%(reset_password_uri)s"
+"\">follow this link</a>."
 msgstr ""
 "Pour réinitialiser votre mot de passe, <a href=\"%(domain)s"
-"%(reset_password_absolute_url)s\">cliquez sur ce lien</a>."
+"%(reset_password_uri)s\">cliquez sur ce lien</a>."
 
 #: templates/email/reset_password.html:19
 msgid ""
@@ -957,69 +1084,69 @@ msgstr "Inviter"
 msgid "This user already exists."
 msgstr "Cet utilisateur existe déjà."
 
-#: views/account_views.py:476
+#: views/account_views.py:471
 msgid "Invitation sent successfuly."
 msgstr "Les invitations sont envoyées."
 
-#: views/account_views.py:490
+#: views/account_views.py:485
 msgid "Join"
 msgstr "Rejoindre"
 
-#: views/account_views.py:528
+#: views/account_views.py:523
 msgid "Password and confirmation do not match"
 msgstr "Le mot de passe et la confirmation ne correspondent pas."
 
-#: views/account_views.py:530
+#: views/account_views.py:525
 msgid "A user with this name already exists."
 msgstr "Un utilisateur avec ce nom existe déjà."
 
-#: views/account_views.py:554
+#: views/account_views.py:549
 msgid "Your account is now created. You can login to twistranet."
 msgstr ""
 "Votre compte est créé. Vous pouvez maintenant vous connecter à twistranet."
 
-#: views/account_views.py:560
+#: views/account_views.py:555
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/account_views.py:603
+#: views/account_views.py:598
 msgid "Sorry, that's not a valid username or password"
 msgstr ""
 "Désolé, le nom d'utilisateur et/ou le mot de passe ne sont pas valides."
 
-#: views/account_views.py:621
+#: views/account_views.py:616
 msgid "Forgot your password"
 msgstr "Mot de passe oublié"
 
-#: views/account_views.py:655
+#: views/account_views.py:645
 msgid "We've sent you a password reset email."
 msgstr "Nous vous avons envoyé un lien pour réinitialiser votre mot de passe."
 
-#: views/account_views.py:666
+#: views/account_views.py:656
 msgid "Reset your password"
 msgstr "Réinitalisez votre mot de passer"
 
-#: views/account_views.py:680
+#: views/account_views.py:670
 msgid "Can't set password on this user."
 msgstr "On ne peut pas donner de mot de passe à cet utilisateur."
 
-#: views/account_views.py:691
+#: views/account_views.py:681
 msgid "Your password is set to its new value. You can now login."
 msgstr "Votre mot de passe est changé. Vous pouvez vos connecter maintenant."
 
-#: views/account_views.py:702
+#: views/account_views.py:692
 msgid "Change your password"
 msgstr "Changer de mot de passe"
 
-#: views/account_views.py:730
+#: views/account_views.py:720
 msgid "New password set."
 msgstr "Nouveau mot de passe enregistré."
 
-#: views/account_views.py:739
+#: views/account_views.py:729
 msgid "Logged out"
 msgstr "Déconnecté."
 
-#: views/account_views.py:742
+#: views/account_views.py:732
 msgid ""
 "You are now logged out.<br />Thanks for spending some quality time on "
 "Twistranet."
@@ -1198,21 +1325,21 @@ msgstr "Supprimer la communauté"
 msgid "'%(name)s' community has been deleted."
 msgstr "La communauté %(name)s a été supprimée."
 
-#: views/content_views.py:82
+#: views/content_views.py:83
 msgid "New content"
 msgstr "Nouveau contenu"
 
-#: views/content_views.py:84
+#: views/content_views.py:85
 #, python-format
 msgid "Edit %(model_name)s"
 msgstr "Modifier %(model_name)s"
 
-#: views/content_views.py:165
+#: views/content_views.py:166
 #, python-format
 msgid "Delete %(model_name)s"
 msgstr "Supprimer %(model_name)s"
 
-#: views/content_views.py:175
+#: views/content_views.py:176
 #, python-format
 msgid ""
 "Do you really want to delete '%(name)s'?<br />This action cannot be undone."
@@ -1220,11 +1347,11 @@ msgstr ""
 "Voulez-vous vraiment supprimer '%(name)s'&nbsp;?<br />Cette action est "
 "irréversible&nbsp;!"
 
-#: views/content_views.py:177
+#: views/content_views.py:178
 msgid "Do you really want to delete this?"
 msgstr "Voulez-vous supprimer ce contenu ?"
 
-#: views/content_views.py:187
+#: views/content_views.py:188
 #, python-format
 msgid "'%(name)s' has been deleted."
 msgstr "Le contenu '%(name)s' est supprimé."
@@ -1294,47 +1421,61 @@ msgstr ""
 msgid "Unexpected error, please use the 'Browse' button."
 msgstr "Erreur lors de l'envoi, utilisez le bouton 'Parcourir'."
 
-#: views/resource_views.py:501
+#: views/resource_views.py:506
 msgid "Small size"
 msgstr "Grande taille"
 
-#: views/resource_views.py:501
+#: views/resource_views.py:506
 msgid "Medium size"
 msgstr "Taille moyenne"
 
-#: views/resource_views.py:501
+#: views/resource_views.py:506
 msgid "Full size"
 msgstr "Grande taille"
 
 #~ msgid ""
 #~ "\n"
-#~ "    We're happy to tell you that %(owner)s published a new "
-#~ "%(content_type)s:\n"
+#~ "                %(owner)s commented on <a href=\"%(domain)s"
+#~ "%(absolute_url)s\"%(title)s</a>.\n"
+#~ "            "
+#~ msgstr ""
+#~ "\n"
+#~ "                %(owner)s a commenté <a href=\"%(domain)s%(absolute_url)s"
+#~ "\"%(title)s</a>.\n"
+#~ "            "
+
+#~ msgid ""
+#~ "\n"
+#~ "            To view this comment and the content it  and comment it, "
+#~ "visit\n"
+#~ "            <a href=\"%(domain)s%(absolute_url)s\">%(title)s</a>.\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "            Pour voir ce commentaire et le contenu auquel il se rapport, "
+#~ "rendez-vous sur\n"
+#~ "            <a href=\"%(domain)s%(absolute_url)s\">%(title)s</a>.\n"
+#~ "        "
+
+#~ msgid ""
+#~ "\n"
+#~ "            %(owner)s published a new %(content_type)s:\n"
+#~ "        "
 #~ msgstr ""
 #~ "\n"
 #~ "            %(owner)s a publié un nouveau %(content_type)s :\n"
 #~ "        "
 
-#~ msgid "%(inviter_title)s invites you to twistranet"
-#~ msgstr "%(inviter_title)s vous invite sur %(site_name)s"
-
 #~ msgid ""
-#~ "You just recieved a request from %(inviter_title)s to join twistranet."
+#~ "\n"
+#~ "            To view this content and comment it, visit\n"
+#~ "            <a href=\"%(domain)s%(absolute_url)s\">%(site_name)s</a>.\n"
+#~ "        "
 #~ msgstr ""
-#~ "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
-
-#~ msgid "Here's what %(inviter_title)s tells you:"
-#~ msgstr "%(inviter_title)s vous envoie ce message :"
-
-#~ msgid "%(client_title)s wants to join your network."
-#~ msgstr ""
-#~ "Vous avez reçu une demande de %(client_title)s à rejoindre votre réseau."
-
-#~ msgid ""
-#~ "Visit %(client_get_absolute_url)s to accept or decline his/her request."
-#~ msgstr ""
-#~ "Visitez <a href=\"%(domain)s%(client_get_absolute_url)s\">la page de "
-#~ "%(client_title)s</a> pour accepter ou ignorer sa demande."
+#~ "\n"
+#~ "            Pour lire ce contenu et le commenter, visitez\n"
+#~ "            <a href=\"%(domain)s%(absolute_url)s\">%(site_name)s</a>.\n"
+#~ "        "
 
 #~ msgid "Upload a file:"
 #~ msgstr "Envoyer un fichier :"
