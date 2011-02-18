@@ -51,6 +51,24 @@ class Comment(StatusUpdate):
 
         # Ok; regular saving otherwise
         super(Comment, self).save(*args, **kw)
+        
+        # Additional notifications for comments (we don't care about checking if we're
+        # in the creation mode, as comments should never be edited).
+        listener_ids = [ l.id for l in self.listeners ]
+        current = self.in_reply_to
+        additional_listeners = []
+        while current.id != self.root_content.id:
+            for l in current.listeners:
+                if not l.id in listener_ids and not l.id in additional_listeners:
+                    additional_listeners.append(l)
+        if additional_listeners:
+            content_created.send(
+                sender = self.__class__, 
+                instance = self, 
+                target = additional_listeners,
+                text_template = self.model_class.type_text_template_creation,
+                html_template = self.model_class.type_html_template_creation,
+            )
     
     class Meta:
         app_label = 'twistapp'
