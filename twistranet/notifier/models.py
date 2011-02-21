@@ -21,6 +21,10 @@ class Notification(Content):
     # Parameters as a dict
     _encoded_parameters = models.TextField()
     
+    # Other type configuration stuff
+    type_text_template_creation = None
+    type_html_template_creation = None
+    
     # View / permissions overriding support
     permission_templates = permissions.ephemeral_templates
     type_summary_view = "content/summary.notification.part.html"

@@ -21,6 +21,7 @@ from twistranet.twistapp.models import *
 from twistranet.twistapp.forms import form_registry
 from twistranet.twistapp.lib.log import *
 from twistranet.twistapp.lib import utils
+from twistranet.core import cache_helper
 
 from twistranet.actions import *
 
@@ -137,7 +138,7 @@ class BaseView(object):
         if request:
             self.request = request
             self.path = request and request.path
-            self.auth = Twistable.objects.getCurrentAccount(request)
+            self.auth = self.get_useraccount_cache(request)
             
         if other_view:
             for param in self.template_variables + ['request', 'auth', ]:
@@ -157,6 +158,25 @@ class BaseView(object):
     #                                                                                               #
     #                                           Misc. stuff                                         #
     #                                                                                               #
+
+    def get_useraccount_cache(self, request):
+        """
+        get/set useraccount cache.
+        This is useful to store session-wise informations for the logged-in useraccount.
+        Here, we WRITE in the cache but merely read it. But up to this point we can access / store
+        the cache values for this very user.
+        """        
+        # Fetch auth user
+        auth = Twistable.objects.getCurrentAccount(request)
+        if auth.is_anonymous:
+            return auth
+        
+        # Store cache stuff
+        cache_helper.set(auth)
+        
+        # Return auth status
+        return auth
+        
 
     def get_site_domain(self,):
         """

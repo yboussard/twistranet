@@ -35,6 +35,12 @@ class Account(twistable.Twistable):
     
     _role_cache = {}
     
+    # Other shortcuts
+    @property
+    def is_online(self,):
+        from twistranet.core import cache_helper
+        return not not cache_helper.get(self)
+
     @property
     def media_resource_manager(self,):
         """
@@ -297,7 +303,7 @@ class UserAccount(Account):
     @property
     def last_name(self):
         return self.user.last_name
-
+        
     class Meta:
         app_label = 'twistapp'
 

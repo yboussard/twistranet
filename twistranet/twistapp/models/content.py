@@ -159,15 +159,16 @@ class Content(_AbstractContent):
         #   The comments have one more rule : all the parents that are not in this list are notified
         #   (but this is treated in the Comment class).
         if creation:
-            listeners = self.listeners
-            if listeners:
-                content_created.send(
-                    sender = self.__class__, 
-                    instance = self, 
-                    target = self.listeners,
-                    text_template = self.model_class.type_text_template_creation,
-                    html_template = self.model_class.type_html_template_creation,
-                )
+            if self.model_class.type_text_template_creation:
+                listeners = self.listeners
+                if listeners:
+                    content_created.send(
+                        sender = self.__class__, 
+                        instance = self, 
+                        target = self.listeners,
+                        text_template = self.model_class.type_text_template_creation,
+                        html_template = self.model_class.type_html_template_creation,
+                    )
         return ret
 
     @property
