@@ -274,19 +274,23 @@ gridOnSelect = function(grid) {
 }
 
 
-// TODO in future : remove cache: true
-// and improve ajax request with data (type = image etc ... see ticket #1196,
-// and uploaderid=toto for multiple uploaders in a same page )
+// TODO in future : 
+// uploaderid=toto for multiple uploaders in a same page )
 loadQuickUpload = function(obj) {
     var uploadUrl = home_url + 'resource_quickupload/' ;
     var tnUploader = jq(obj);
+    uploaderdata = '';
+    media_type_selector = jq('input[name=media_type]', tnUploader.parent());
+    if(media_type_selector.length) {
+        uploaderdata = 'media_type=' + media_type_selector.val();
+    }
     jq.ajax({
         type: "GET",
         url: uploadUrl,
         dataType: 'html', 
         contentType: 'text/html; charset=utf-8', 
-        cache: true,
-        data: '',
+        cache: false,
+        data: uploaderdata,
         success: function(content){
             tnUploader.html(content);
         }

@@ -293,7 +293,7 @@ UPLOAD_JS = """
     if (typeof getActivePublisher!='undefined') {
         uploadparams['publisher_id'] = getActivePublisher();
     }
-    uploadparams['csrfmiddlewaretoken'] = '%(ul_csrf_token)s' ;
+    uploadparams['csrfmiddlewaretoken'] = '%(ul_csrf_token)s';
     addUploadFields_%(ul_id)s = function(file, id) {
         var uploader = xhr_%(ul_id)s;
         TwistranetQuickUpload.addUploadFields(uploader, uploader._element, file, id, fillTitles);
@@ -318,7 +318,7 @@ UPLOAD_JS = """
             autoUpload: auto,
             onAfterSelect: addUploadFields_%(ul_id)s,
             onComplete: onUploadComplete_%(ul_id)s,
-            allowedExtensions: %(ul_file_extensions_list)s,
+            allowedExtensions: %(ul_extensions_list)s,
             sizeLimit: %(ul_xhr_size_limit)s,
             simUploadLimit: %(ul_sim_upload_limit)s,
             template: '<div class="qq-uploader">' +
@@ -345,16 +345,54 @@ UPLOAD_JS = """
     jQuery(document).ready(createUploader_%(ul_id)s); 
 """
 
+def _content_types_infos (media_type):
+    """
+    return content types infos depending on media_type
+    media_type could be 'image', 'video', 'audio' or any
+    extensions string like '*.doc;*.pdf'
+    return a tuple (string for flashupload, list for html5 uploader, upload label)
+    """
+    ext = '*.*;'
+    extlist = []
+    msg = u'Choose files to upload'
+    if media_type == 'image' :
+        ext = '*.jpg;*.jpeg;*.gif;*.png;'
+        msg = u'Choose images to upload'
+    elif media_type == 'video' :
+        ext = '*.flv;*.avi;*.wmv;*.mpg;'
+        msg = u'Choose video files to upload'
+    elif media_type == 'audio' :
+        ext = '*.mp3;*.wav;*.ogg;*.mp4;*.wma;*.aif;'
+        msg = u'Choose audio files to upload'
+    elif media_type == 'flash' :
+        ext = '*.swf;'
+        msg = u'Choose flash files to upload'
+    elif media_type and media_type != 'file':
+        # you can also pass a list of extensions in media_type request var
+        # with this syntax '*.aaa;*.bbb;'
+        ext = media_type 
+        msg = u'Choose file for upload : ' + ext 
+    try :
+        extlist = [f.split('.')[1].strip() for f in ext.split(';') if f.strip()]
+    except :
+        ext = '*.*;'
+        extlist = []
+    if extlist==['*'] :
+        extlist = []
+    return ( ext, extlist, _(msg))
+
 
 # This view is rendering html with inline javascript and is called in ajax
 # XXX TODO (JMG), not urgent : call it with a simple include
 @require_access
 def resource_quickupload(request):
+    media_type = str(request.GET.get('media_type',u'file'))
+    content_types_infos = _content_types_infos(media_type)
     qu_settings = dict(
         typeupload             = 'File',
         home_url               =  reverse("twistranet_home"),
         ul_id                  = 'tnuploader', # improve it to get multiple uploader in a same page, change it also in 'resource_quickupload.html'
-        ul_file_extensions_list = '[]', #could be ['jpg,'png','gif']
+        ul_extensions_list     = str(content_types_infos[1]), #could be "['jpg,'png','gif']"
         ul_fill_titles         = settings.QUICKUPLOAD_FILL_TITLES and 'true' or 'false',
         ul_auto_upload         = settings.QUICKUPLOAD_AUTO_UPLOAD and 'true' or 'false',
         ul_xhr_size_limit      = settings.QUICKUPLOAD_SIZE_LIMIT and str(settings.QUICKUPLOAD_SIZE_LIMIT*1024) or '0',
@@ -475,27 +513,32 @@ def resource_by_publisher_json(request, publisher_id):
             raise SuspiciousOperation("Attempted access to '%s' denied." % request_account.slug)
     
     selection = request.GET.get('selection','')  or 0
+    media_type = str(request.GET.get('media_type',u'file'))
     # XXX TODO (JMG) : use haystack for search and batch
-    files = Resource.objects.filter(publisher=request_account)[:30]
+    batch_size = 30
+    files = Resource.objects.filter(publisher=request_account)
     results = []
+    i = 0
     for file_ in files:
         is_image = file_.is_image
         type_ = is_image and 'image' or 'file'
-        is_selected = file_.id == (int(selection) or 0)
-        thumbnails = file_.thumbnails
-        result = {
-                "url":              file_.get_absolute_url(),
-                "thumbnail_url":    is_image and thumbnails['medium'].url or thumbnails['big_icon'].url,
-                "mini_url":         is_image and thumbnails['summary_preview'].url or thumbnails['big_icon'].url,
-                # only used by image size selection (wysiwyg browser)
-                "summary_url":      is_image and thumbnails['summary'].url or '',
-                "preview_url":      is_image and thumbnails['preview'].url or '',
-                "id":               file_.id,
-                "title":            file_.title,
-                "selected":         is_selected and ' checked="checked"' or '',
-                "type":             type_,
-                }
-        results.append(result)
+        if media_type=='file' or (media_type=='image' and type_=='image'):
+            if len(results) <= batch_size:
+                is_selected = file_.id == (int(selection) or 0)
+                thumbnails = file_.thumbnails
+                result = {
+                        "url":              file_.get_absolute_url(),
+                        "thumbnail_url":    is_image and thumbnails['medium'].url or thumbnails['big_icon'].url,
+                        "mini_url":         is_image and thumbnails['summary_preview'].url or thumbnails['big_icon'].url,
+                        # only used by image size selection (wysiwyg browser)
+                        "summary_url":      is_image and thumbnails['summary'].url or '',
+                        "preview_url":      is_image and thumbnails['preview'].url or '',
+                        "id":               file_.id,
+                        "title":            file_.title,
+                        "selected":         is_selected and ' checked="checked"' or '',
+                        "type":             type_,
+                        }
+                results.append(result)
     data = {}
     # XXX TODO : change it for batch
     data['page'] = 1

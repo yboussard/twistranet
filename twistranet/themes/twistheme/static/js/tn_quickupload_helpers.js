@@ -69,12 +69,11 @@ TwistranetQuickUpload.sendDataAndUpload = function(uploader, domelement, typeupl
 TwistranetQuickUpload.onAllUploadsComplete = function(){
     showPreview (lastUploadUrl, lastUploadThumbUrl, lastUploadMiniUrl, lastUploadSummaryUrl, lastUploadPreviewUrl, lastUploadLegend, lastUploadType);
     // fix selector value in a form
-    target_selector = jq('#selector_target');
-    if (target_selector.length) {
+    if (typeof selector != 'undefined') {
         selector.val(lastUploadValue);
         new_selection = lastUploadValue;
         // reload the publisher panel with last upload value if exists
-        if (scopeValue && typeof reloadScope != 'undefined') reloadScope(scopeValue.toString(), lastUploadValue, true);
+        if (scopeValue && typeof reloadScope != 'undefined') reloadScope(scopeValue.toString(), lastUploadValue, true, media_type);
     }
     // XXX FIXME > JMG it's not safe
     // in inline forms after upload

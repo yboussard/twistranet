@@ -61,7 +61,7 @@ class ResourceWidget(forms.MultiWidget):
         - The resource browser.
         """            
         from twistranet.twistapp.models import Resource, Twistable
-
+        media_type = self.media_type
         # Beginning of the super-render() code
         if self.is_localized:
             for widget in self.widgets:
@@ -122,7 +122,7 @@ class ResourceWidget(forms.MultiWidget):
             output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
 
         # Render hidden fields used for upload and browser
-        output.append('<input type="hidden" name="media_type" value="%s" />' %self.media_type)
+        output.append('<input type="hidden" name="media_type" value="%s" />' %media_type)
         output.append('<input type="hidden" name="selector_target" value="id_%s_0" />' %name)
         
         # Render the Quick upload File widget
@@ -153,12 +153,13 @@ class ResourceWidget(forms.MultiWidget):
                     "activeClass":      activeClass,
                 }
                 scope['icons'] = []
-                # XXX TODO (JMG) : use haystack for search only resource with is_image=1
                 images = Resource.objects.filter(publisher=account)
                 for img in images:
-                    if len(scope['icons'])<=9:
-                        icon = img.thumbnails['icon']
-                        scope['icons'].append(icon.url)
+                    # XXX TODO (JMG) : use haystack for search only resource with is_image=1
+                    if media_type=='file' or (media_type=='image' and img.is_image):
+                        if len(scope['icons'])<=9:
+                            icon = img.thumbnails['icon']
+                            scope['icons'].append(icon.url)
                 scopes.append(scope)
 
             c = Context({

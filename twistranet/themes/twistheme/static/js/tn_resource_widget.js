@@ -4,6 +4,7 @@ var default_publisher_id = '';
 var current_selection ='';
 var new_selection='';
 var selector = '';
+var media_type = 'file';
 var Panels = {};
 var allow_browser_selection=0;
 
@@ -193,12 +194,12 @@ loadScopeResources = function(scope_id, selection, media_type) {
 }
 // function called after upload or any change (imagine possible things in future))
 // TODO put a wait loading icon
-reloadScope = function(scope_id, selection, reload) {
+reloadScope = function(scope_id, selection, reload, media_type) {
     jq('.resourcePane').hide();
     jq('.resourcePane').removeClass('activePane');
     jq('#resourcepane-'+scope_id).addClass('activePane');
     if (reload) {
-        loadScopeResources(scope_id, selection);
+        loadScopeResources(scope_id, selection, media_type);
     }
     if (typeof uploadparams != 'undefined') uploadparams.publisher_id = scope_id;
     jq('#resourcepane-'+scope_id).fadeIn(1000);
@@ -235,6 +236,7 @@ jq(
         theform = reswidget.parents('form');
         target_selector = jq('input[name=selector_target]', reswidget);
         target_media_type = jq('input[name=media_type]', reswidget);
+        media_type = target_media_type.val();
         allow_browser_selection_field = jq('#allow_browser_selection');
         if (allow_browser_selection_field.length) allow_browser_selection = parseInt(allow_browser_selection_field.val());
         if (target_selector.length) {
@@ -252,14 +254,14 @@ jq(
             // preload resources in background
             jq('.resourcePaneFiles').each(function(){
                 scope_id = jq('.scopeId', this).val();
-                loadScopeResources(scope_id, current_selection, target_media_type.val());
+                loadScopeResources(scope_id, current_selection, media_type);
             });
             // when selecting a scope (account) we show the good pane
             jq('#resourcepane-main .tnGridItem').click(function(e){
                 var scope_id = jq('>input:hidden', this).val();
                 jq('.resourcePane').hide();
-                if (Panels[scope_id]=='unloaded') reloadScope(scope_id, new_selection, true);
-                else reloadScope(scope_id, new_selection, false);
+                if (Panels[scope_id]=='unloaded') reloadScope(scope_id, new_selection, true, media_type);
+                else reloadScope(scope_id, new_selection, false, media_type);
             })
 
             // back to all accounts action
