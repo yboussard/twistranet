@@ -1,0 +1,45 @@
+Twistranet Home Page Test
+=========================
+
+Use Django test client browser
+
+    >>> from django.test.client import Client
+    >>> browser = Client()
+
+Try to get home page
+
+    >>> response = browser.get('/')
+    >>> response.status_code
+    302
+
+use follow = True to get the possible redirect response
+we must get the login page
+
+    >>> response = browser.get('/', follow=True)
+    >>> 'input type="text" name="username"' in response.content
+    True
+
+Login functional tests cases
+----------------------------
+
+Login as unavailable user
+We must get an error message
+
+    >>> response = browser.post('/login/', {'username': 'toto', 'password': 'dummy'}, follow=True)
+    >>> 'Sorry, that\'s not a valid username or password' in response.content
+    True
+
+login as user A
+
+    >>> response = browser.post('/login/', {'username': 'A', 'password': 'dummy'}, follow=True)
+    >>> 'input type="text" name="username"' in response.content
+    False
+
+Test the homepage wall
+----------------------
+
+Test the wall
+    >>> 'Albert Durand' in response.content
+    True
+    >>> 'Timeline' in response.content
+    True
