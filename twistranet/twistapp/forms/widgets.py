@@ -39,7 +39,7 @@ class ResourceWidget(forms.MultiWidget):
         self.display_renderer = kwargs.pop("display_renderer", True)
         self.allow_select = kwargs.pop("allow_select", True)
         self.allow_upload = kwargs.pop("allow_upload", True)
-        self.media_type = kwargs.pop("media_type", 'file')
+        self.media_type = kwargs.pop("media_type", 'image')
 
     def decompress(self, value):
         """
@@ -122,8 +122,8 @@ class ResourceWidget(forms.MultiWidget):
             output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
 
         # Render hidden fields used for upload and browser
-        output.append('<input type="hidden" id="media_type" name="media_type" value="%s" />' %self.media_type)
-        output.append('<input type="hidden" id="selector_target" name="selector_target" value="id_%s_0" />' %name)
+        output.append('<input type="hidden" name="media_type" value="%s" />' %self.media_type)
+        output.append('<input type="hidden" name="selector_target" value="id_%s_0" />' %name)
         
         # Render the Quick upload File widget
         if self.allow_upload:

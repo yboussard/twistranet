@@ -121,12 +121,12 @@ hidePreview = function() {
 }
 
 // load resources in json for a publisher (scope_id)
-loadScopeResources = function(scope_id, selection) {
+loadScopeResources = function(scope_id, selection, media_type) {
     scopeContainer = jq('#resourcepane-'+scope_id);
     scopeUrl = home_url + 'resource_by_publisher/json/';
     var tnGrid = jq('.tnGrid', scopeContainer);
     tnGrid.empty();
-    jq.get(scopeUrl + scope_id + '?selection=' + selection,
+    jq.get(scopeUrl + scope_id + '?selection=' + selection +'&media_type=' + media_type,
           function(data) {
               dataobject = eval( "(" + data + ")" );
               results = dataobject.results;
@@ -233,8 +233,8 @@ jq(
     function(){
         reswidget = jq('.resource-widget');
         theform = reswidget.parents('form');
-        target_selector = jq('#selector_target', reswidget);
-        target_mediatype = jq('#media_type', reswidget);
+        target_selector = jq('input[name=selector_target]', reswidget);
+        target_media_type = jq('input[name=media_type]', reswidget);
         allow_browser_selection_field = jq('#allow_browser_selection');
         if (allow_browser_selection_field.length) allow_browser_selection = parseInt(allow_browser_selection_field.val());
         if (target_selector.length) {
@@ -245,14 +245,14 @@ jq(
             // remove input fields used by ajax requests only
             theform.bind('submit', function(){
                  target_selector.remove();
-                 target_mediatype.remove();
+                 target_media_type.remove();
                  allow_browser_selection_field.remove();
                  jq('.tnGrid input', reswidget).remove();
             })
             // preload resources in background
             jq('.resourcePaneFiles').each(function(){
                 scope_id = jq('.scopeId', this).val();
-                loadScopeResources(scope_id, current_selection);
+                loadScopeResources(scope_id, current_selection, target_media_type.val());
             });
             // when selecting a scope (account) we show the good pane
             jq('#resourcepane-main .tnGridItem').click(function(e){
