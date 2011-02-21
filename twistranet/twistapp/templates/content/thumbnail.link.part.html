@@ -3,7 +3,7 @@
 {#     thumbnail: the thumbnail from twistranet.thumbnails[xxx] #}
   <a title="{{content.title}}"
      href="{{ content.get_absolute_url }}"
-     class="image-block image-block-thumb image-block-content">
+     class="image-block image-block-thumb image-block-content{% if content.file %}{% if content.file.is_image %} image-block-contentimage{% endif %}{% endif %}">
     <img title="{{content.title}}"
          alt="{{content.title}}"
          src="{{ thumbnail.url }}" />  

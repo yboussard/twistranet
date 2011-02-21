@@ -415,7 +415,6 @@ ul.children li {
 .image-block-thumb img {
   max-width: 120px;
   max-height: 80px;
-  padding: 2px;
 }
 
 .image-block-preview img {
@@ -431,8 +430,13 @@ a.image-block-content {
 
 .image-block-content img {
   position: static;
-  border: 1px solid #ccc;
 }
+
+.image-block-contentimage img {
+  border: 1px solid #ccc;
+  padding: 2px;
+}
+
 .image-block-alone {
   margin: 0 7px 0 0 !important;
 }
