@@ -4,7 +4,7 @@ You can use this to test actual procedures performances as well.
 
 We also test # of queries
 """
-from django.test import TestCase
+from twistranet.twistapp.tests.base import TNBaseTest
 from twistranet.twistapp.models import *
 from twistranet.core import bootstrap
 from django.test.client import Client
@@ -12,25 +12,19 @@ from django.db import connections, DEFAULT_DB_ALIAS
 from django.conf import settings
 import pprint
 
-class ViewsTest(TestCase):
+class ViewsTest(TNBaseTest):
     
     def setUp(self):
         """
         Get A and B users
         """
-        bootstrap.bootstrap()
-        bootstrap.repair()
-        __account__ = SystemAccount.get()
-        self._system = __account__
-        self.B = UserAccount.objects.get(user__username = "B").account_ptr
-        self.A = UserAccount.objects.get(user__username = "A").account_ptr
-        self.admin = UserAccount.objects.get(user__username = "admin").account_ptr
+        super(ViewsTest, self).setUp()
 
         # Perform admin login
         self.admin_client = Client()
         self.admin_client.post("/login/", {'username': 'admin', 'password': 'azerty1234'})
         self.B_client = Client()
-        self.B_client.post("/login/", {'username': 'B', 'password': 'azerty1234'})
+        self.B_client.post("/login/", {'username': 'B', 'password': 'dummy'})
         
         # Enable DB debug mode to allow queries count
         settings.DEBUG = True
