@@ -139,8 +139,9 @@ class BaseView(object):
             self.request = request
             self.path = request and request.path
             self.auth = Twistable.objects.getCurrentAccount(request)
-            self.useraccount_cache = caches.UserAccountCache(self.auth)
-            self.useraccount_cache.online = True            # Set as online
+            if not self.auth.is_anonymous:
+                self.useraccount_cache = caches.UserAccountCache(self.auth)
+                self.useraccount_cache.online = True            # Set as online
             
         if other_view:
             for param in self.template_variables + ['request', 'auth', ]:
