@@ -280,7 +280,7 @@ loadQuickUpload = function(obj) {
     var uploadUrl = home_url + 'resource_quickupload/' ;
     var tnUploader = jq(obj);
     uploaderdata = '';
-    media_type_selector = jq('input[name=media_type]', tnUploader.parent());
+    media_type_selector = jq('input[name=media_type]', tnUploader.parents('form'));
     if(media_type_selector.length) {
         uploaderdata = 'media_type=' + media_type_selector.val();
     }
