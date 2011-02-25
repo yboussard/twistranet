@@ -366,7 +366,6 @@ ul.children li {
     display: block;
     font-size: 10px;
     text-align: center;
-    white-space: pre;
     max-width: 100px;
     overflow: hidden;
     word-wrap: break-word;
