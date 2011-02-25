@@ -1,0 +1,17 @@
+/*----------------------------------------------------------------
+IE7 fixes
+---------------------------------------------------------------- */
+
+
+/* strange float bug on profile box */
+
+.profile-box h2 {
+  position: relative;
+  top: -10px;
+}
+
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend span {
+  float: left;
+  display: block;
+}
