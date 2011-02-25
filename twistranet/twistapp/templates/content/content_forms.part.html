@@ -1,5 +1,6 @@
 {% load i18n %}
 {% for form in content_forms %}
+<a name="form-{{form.getName}}" class="hidden-anchor"></a>
 <fieldset id="form-{{form.getName}}" {% if forloop.counter != 1 %}style="display: none;"{% endif %} class="fieldset-inline-form">
     <legend>
         {% for formhandle in content_forms %}
@@ -8,7 +9,7 @@
                     {{ formhandle.getName }}
                 </span>
             {% else %}
-                <a id="formhandle-{{ formhandle.getName }}" href="form-{{formhandle.getName}}">{{formhandle.getName}}</a>
+                <a id="formhandle-{{ formhandle.getName }}" href="#form-{{formhandle.getName}}">{{formhandle.getName}}</a>
             {% endif %}
         {% endfor %}
     </legend>

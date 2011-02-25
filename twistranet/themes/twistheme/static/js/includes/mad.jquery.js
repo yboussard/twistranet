@@ -11,20 +11,14 @@
 
 jQuery(document).ready(function(){
 
-	// User Menu
-	//
-    // jQuery("#usermenu div.tab").click(function () {
-    //  jQuery("#usermenu div.caption").slideToggle("normal");
-    //  jQuery("#usermenu div.tab a img").toggle();
-    // });
     
     // Forms tab switching
-    jQuery("fieldset legend a").click(function(event){
-        jQuery(this).parents("fieldset").hide();
-        jQuery("#" + jQuery(this).attr('href')).show();
-      
-        // Stop the link click from doing its normal thing
+    jQuery("fieldset.fieldset-inline-form legend a").click(function(event){
         event.preventDefault();
+        event.stopPropagation();
+        jQuery(this).parents("fieldset").hide();
+        jQuery(jQuery(this).attr('href')).show();
+        return false;
     });
     
 
