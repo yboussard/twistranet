@@ -985,23 +985,28 @@ ul.network-actions li.action {
 }
 
 .community_manager_badge {
-  overflow:hidden;
-    float: left;
-  color: #686868;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  background-color: #E0BD00;
-  background: -webkit-gradient(linear, 0 top, 0 bottom, from(#FFDA14), to(#E0BD00));
-  background: -moz-linear-gradient(#FFDA14, #E0BD00);
-  border: 2px #686868 solid;
-  display: block;
-  height: 11px;
-  padding: 1px 4px 2px;
-  position: absolute;
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
-  border-radius: 12px;
-  z-index: 50;
+    -moz-border-radius: 12px 12px 12px 12px;
+    -webkit-border-radius: 12px 12px 12px 12px;
+    border-radius: 12px 12px 12px 12px;
+    -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
+    background: -webkit-gradient(linear, 0 top, 0 bottom, from(#FFDA14), to(#E0BD00));
+    background: -moz-linear-gradient(#FFDA14, #E0BD00);
+    color: #686868 !important;
+    display: block !important;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    height: 11px;
+    left: 1px;
+    overflow: hidden;
+    padding: 1px 0 0 !important;
+    position: absolute;
+    text-align: center;
+    top: 1px;
+    width: 12px;
+    z-index: 50;
+    line-height: 11px;
 }
 
 /* A Firefoxnak megint baja van a padding-gel */
@@ -1035,3 +1040,6 @@ ul.network-actions li.action {
     background: url(../images/icons/network-actions.png) 5px 5px no-repeat;
 }
 
+.relativizer {
+  position: relative;
+}

@@ -6,9 +6,13 @@
 <div class="tnGridItem">
     {% if community %}
         {% if account.id in manager_ids %}
-            <a href="{% url twistranet_home %}">
-                <span class="community_manager_badge" title="{% blocktrans %}Community manager{% endblocktrans %}">*</span>
-            </a>
+            <div class="relativizer">
+                <a class="community_manager_badge" 
+                   href="{% url twistranet_home %}"
+                   title="{% blocktrans %}Community manager{% endblocktrans %}">
+                    *
+                </a>
+            </div>
         {% endif %}
     {% endif %}
     {% include 'account/medium.thumbnail.html' %}
