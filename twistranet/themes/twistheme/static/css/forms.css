@@ -16,6 +16,7 @@ fieldset {
   padding: 10px;
   border-bottom: 1px solid white ;
   clear: both;
+  position: relative;
 }
 
 .fieldWrapper label {
@@ -339,14 +340,16 @@ select.permissions-widget {
 /*                                                  */
 
 .hint {
-  display:none;
-  position: absolute;
-  right: 150px;
-  width: 200px;
-  margin-top: -25px;
-  border: 1px solid #c93;
-  padding: 10px 12px;
-  background-color: #ffc;
+    background-color: #FFFFCC;
+    border: 1px solid #CC9933;
+    display: none;
+    margin-top: -25px;
+    padding: 10px 12px;
+    position: absolute;
+    right: -170px;
+    top: 30px;
+    width: 200px;
+    z-index: 100;
 }
 
 .hint .hint-pointer {
