@@ -22,6 +22,7 @@ from twistranet.twistapp.forms import form_registry
 from twistranet.twistapp.lib.log import *
 from twistranet.twistapp.lib import utils
 from twistranet.core import caches
+from twistranet.content_types.forms import CommentForm
 
 from twistranet.actions import *
 
@@ -103,6 +104,7 @@ class BaseView(object):
         "community/communities.box.html",
     ]
     view_template = None
+    comment_form = None
     available_actions = []      # List of either Action objects or BaseView classes (that will be instanciated and called with view.as_action() method)
     name = None                 # The name that this will be mapped to in url.py. But you can of course override this in url.py.
     # category = GLOBAL_ACTIONS   # Override this if you want to give another default category to this view.
@@ -114,6 +116,7 @@ class BaseView(object):
         "context_boxes",
         "global_boxes",
         "breadcrumb",
+        "comment_form",
     ]
     
     # Some implicit parameters will be passed. They are:
@@ -157,6 +160,8 @@ class BaseView(object):
                 
         # Save domain for use outside a view (eg. in signals)
         self.domain = self.get_site_domain()
+        # initialize empty comment forms
+        self.comment_form = CommentForm()
                 
     #                                                                                               #
     #                                           Misc. stuff                                         #
@@ -300,6 +305,7 @@ class BaseView(object):
         - actions
         - current_account
         """
+          
         # Populate parameters
         params = {}
         for param in self.template_variables:

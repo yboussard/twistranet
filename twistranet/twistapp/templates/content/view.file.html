@@ -42,7 +42,11 @@
               </li>
             </ul>
           </div>
-          <div id="view_comments{{ content.id }}" class="view-comments"></div>
+          <div id="view_comments{{ content.id }}" class="detailview-comments comments-container">
+            {% with content.last_comments as comments %}
+                {% include 'content/comments.part.html' %}
+            {% endwith %}
+          </div>
         </div>
       </div>
     </div>

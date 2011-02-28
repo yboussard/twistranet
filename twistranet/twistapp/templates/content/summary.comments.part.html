@@ -2,14 +2,10 @@
 {% with content.comments.count as comment_count %}
     <div class="comment_ui" id="view{{ content.id }}">
         <a class="view_comments" id="{{ content.id }}" href="">
-            {% if comment_count %}
-                {% blocktrans count comment_count as counter %}
-                    View comment
-                {% plural %}
-                    View {{counter}} comments
-                {% endblocktrans %}
+            {% if comment_count > 2 %}
+                    {% blocktrans %}View all {{comment_count}} comments{% endblocktrans %}
             {% else %}
-                {% if content.publisher.can_publish %}
+                {% if content.publisher.can_publish and  not comment_count %}
                     {% blocktrans %}Comment{% endblocktrans %}
                 {% endif %}
             {% endif %}

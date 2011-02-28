@@ -336,6 +336,7 @@ var twistranet = {
         twistranet.finalizestyles();
         twistranet.showContentActions();
         twistranet.showCommentsActions();
+        twistranet.initCommentForms();
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
         twistranet.formsautofocus();
@@ -438,6 +439,12 @@ var twistranet = {
           jq(this).removeClass('activecomment'); 
           jq(this).parents('.post').addClass('activepost');
         });                                          
+    },
+    initCommentForms: function(e) {
+        jq('.comments-container').each(function(){
+            ID = jq(this).attr('id').replace('view_comments','');
+            commentOnSubmit(this, ID);
+        })
     },
     initconfirmdialogs: function(e){
         if (jq('#tn-dialog-message').length) {
