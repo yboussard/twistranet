@@ -280,7 +280,7 @@ loadQuickUpload = function(obj) {
     var uploadUrl = home_url + 'resource_quickupload/' ;
     var tnUploader = jq(obj);
     uploaderdata = '';
-    media_type_selector = jq('input[name=media_type]', tnUploader.parent());
+    media_type_selector = jq('input[name=media_type]', tnUploader.parents('form'));
     if(media_type_selector.length) {
         uploaderdata = 'media_type=' + media_type_selector.val();
     }
@@ -336,6 +336,7 @@ var twistranet = {
         twistranet.finalizestyles();
         twistranet.showContentActions();
         twistranet.showCommentsActions();
+        twistranet.initCommentForms();
         twistranet.initconfirmdialogs();
         twistranet.initformserrors();
         twistranet.formsautofocus();
@@ -438,6 +439,12 @@ var twistranet = {
           jq(this).removeClass('activecomment'); 
           jq(this).parents('.post').addClass('activepost');
         });                                          
+    },
+    initCommentForms: function(e) {
+        jq('.comments-container').each(function(){
+            ID = jq(this).attr('id').replace('view_comments','');
+            commentOnSubmit(this, ID);
+        })
     },
     initconfirmdialogs: function(e){
         if (jq('#tn-dialog-message').length) {

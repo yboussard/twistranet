@@ -188,6 +188,7 @@ class ContentDelete(BaseObjectActionView):
             _("'%(name)s' has been deleted." % {'name': name})
         )
 
+# XXX TODO JMG refactoring using a single json view
 
 class AjaxCommentsList(ContentView):
     """
@@ -195,7 +196,7 @@ class AjaxCommentsList(ContentView):
     """
     model_lookup = Content
     name = "comment_list_ajax"
-    template = "content/comments.part.html"
+    template = "content/comments.ajax.part.html"
     template_variables = ContentView.template_variables + ['redirect_to', ]
     
     def as_action(self):
@@ -239,9 +240,53 @@ class AjaxCommentsList(ContentView):
                     initial = {"redirect_to": urlquote(self.redirect_to)}
                 )
         else:
-            # We can't publish anyway, so no form available
             self.redirect_to = None
 
 
+class AjaxLastCommentView(ContentView):
+    """
+    Render a single comment
+    """
+    model_lookup = Content
+    name = "comment_latest_ajax"
+    template = "content/comment.single.part.html"
+    comment = None
 
+    def as_action(self):
+        """This is not an action."""
+        return None
+
+    def prepare_view(self, *args, **kw):
+        """
+        Fetch the original content and stuff.
+        Note that the form is add only, never edit.
+        """
+        super(AjaxLastCommentView, self).prepare_view(*args, **kw)
+        
+        # Prepare object and publisher information
+        if not isinstance(self.object, Content):
+            return
+        publisher = self.object.publisher
+        if not isinstance(publisher, Account):
+            return
+
+        # If we can publish, let's go for the form.
+        if publisher.can_publish:
+            self.template_variables = self.template_variables + ["comment", ]
+            if self.request.method == 'POST': # If the form has been submitted...
+                self.form = CommentForm(self.request.POST, self.request.FILES)
+                self.redirect_to = self.request.POST.get('redirect_to', '')
+                if self.form.is_valid(): # All validation rules should pass. We ignore form errors anyway
+                    # Save object and set publisher
+                    comment = self.form.save(commit = False)
+                    comment.publisher = publisher
+                    comment.in_reply_to = self.object
+                    comment.save()
+                    self.form.save_m2m()
+                    self.comment = comment
+                # only in rare situations (no javascript)
+                if self.redirect_to:
+                    raise MustRedirect(urllib.unquote(self.redirect_to))
+        else:
+            self.redirect_to = None
 

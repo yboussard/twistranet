@@ -1,0 +1,72 @@
+/*----------------------------------------------------------------
+IE7 fixes
+---------------------------------------------------------------- */
+
+
+/* strange float bug on profile box */
+
+.profile-box h2 {
+  position: relative;
+  top: -10px;
+}
+
+.fieldset-inline-form legend a,
+.fieldset-inline-form legend span {
+  float: left;
+  display: block;
+}
+
+
+.dd {
+  max-width: 200px !important;
+}
+
+.dd .ddChild {
+  left: 0 !important;
+}
+
+.image-block,
+.image-block img {
+  position: static !important;
+}
+
+.post .summary-thumbnail {
+  display: inline;
+}
+
+.entry {
+  display: inline;
+}
+
+.thumbnail-50-bottom {
+  height: 75px;
+}
+
+
+/* non-sense fix */
+.profile-box .relativizer {
+  position: absolute !important;
+}
+
+.profile-box .community_manager_badge {
+ left: -55px;
+ top: 5px;
+}
+
+.tnGrid {
+ display: block !important;
+}
+
+.tnGrid {
+ display: block !important;
+}
+
+.tnGridRow {
+    display:  block !important;
+}
+
+.tnGridItem {
+    display:  block !important;
+    float: left !important;
+    margin-right: 1px !important;
+}

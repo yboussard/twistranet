@@ -196,16 +196,16 @@
     background-color:   #f7f7f7;
 }
 
-.view-comments {
+.detailview-comments {
   width: 500px;
   margin-top: 10px;
 }
 
-.view-comments textarea {
+.detailview-comments textarea {
   width: 483px !important;
 }
 
-.view-comments .comment {
+.detailview-comments .comment {
   width: 486px !important;
 }
 

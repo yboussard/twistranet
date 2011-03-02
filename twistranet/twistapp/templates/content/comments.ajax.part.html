@@ -1,8 +1,12 @@
 {% load i18n %}
 {% load wiki %}
-{% for comment in comments %}
+{% for comment in content.comments.all %}
     {% include 'content/comment.single.part.html' %}
 {% endfor %}
-{% if comments %}
+{# Display the comment form if it's available #}
+{% with form as comment_form %}
     {% include 'content/comments.form.part.html' %} 
-{% endif %}
+{% endwith %}
+
+
+

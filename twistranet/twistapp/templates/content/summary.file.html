@@ -66,7 +66,11 @@
                 <!-- {{ content.id }} -->
             </ul>
         </div>
-        <div id="view_comments{{ content.id }}"></div>
+        <div id="view_comments{{ content.id }}" class="comments-container">
+            {% with content.last_comments as comments %}
+                {% include 'content/comments.part.html' %}
+            {% endwith %}
+        </div>
     </div>
     <div class="clearfix"><!-- --></div>
 </div>

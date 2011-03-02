@@ -110,7 +110,7 @@ def escape_wiki(text, lookup = False, autoescape=None):
         text = regex.sub(subf, text)
     
     # Return text
-    return mark_safe(text)
+    return mark_safe(text.replace('\n', '<br />'))
     
 
 

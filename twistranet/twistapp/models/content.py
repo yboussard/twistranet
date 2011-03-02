@@ -111,6 +111,13 @@ class Content(_AbstractContent):
     @property
     def detail_link(self,):
         return self.model_class.type_detail_link
+
+    @property
+    def last_comments(self,):
+        if hasattr(self, 'comments'):
+            comments = list(self.comments.order_by('-id')[:2])
+            comments.reverse()
+            return comments
         
     class Meta:
         app_label = 'twistapp'

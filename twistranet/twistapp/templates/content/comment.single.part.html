@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load wiki %}
+<div class="comment" id="post-{{comment.id}}">
+    <div class="comment-thumbnail">
+        {% with comment.owner_for_display as account %}
+            {% include 'account/small.thumbnail.alone.html' %}
+        {% endwith %}
+    </div>
+    {% with comment as content %}
+    <div class="entry">
+        <div class="content-actions">
+            {% include 'actions/content_summary.part.html' %}
+        </div>
+        <div class="entry-main">
+            <div class="publisher">
+                <a href="{{ content.owner.get_absolute_url }}">
+                    {{ content.owner.title }}
+                </a>
+            </div>
+            <span class="headline">
+                {{ content.title_or_description|fullwiki }}
+            </span>
+        </div>
+        <div class="postmetadata">
+            <ul>
+                {% if not content.owner_for_display == content.owner %}
+                    <li class="author">{{ content.owner.title }}</li>
+                {% endif %}
+                <li class="date">{{ content.created_at|timesince }}</li>
+                {% if content.language %}<li class="lang">{{ content.language }}</li>{%endif%}
+                <!-- {{ content.id }} -->
+            </ul>
+        </div>
+    </div>
+    {% endwith %}
+    <div class="clearfix"><!-- --></div>
+</div>

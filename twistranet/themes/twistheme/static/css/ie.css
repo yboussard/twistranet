@@ -1,17 +1,24 @@
 /*----------------------------------------------------------------
-IE6 && IE7 fixes
+IE7 && IE9 fixes
 ---------------------------------------------------------------- */
 
 
-/* strange float bug on profile box */
-
-.profile-box h2 {
-  position: relative;
-  top: -10px;
+#mainmenu ul li a:link,
+#mainmenu ul li a:visited {
+    background-color: #a8a8a8;
 }
 
-.fieldset-inline-form legend a,
-.fieldset-inline-form legend span {
-  float: left;
-  display: block;
+#mainmenu ul li.selected > a,
+#mainmenu ul li.sfHover > a,
+#mainmenu ul li a:active,
+#mainmenu ul li a:hover {
+    background-color: #e00023;
+}
+
+.community_manager_badge {
+    background-color: #edc908;
+}
+
+.comment-form ul.inline-form textarea {
+    width: 420px;
 }

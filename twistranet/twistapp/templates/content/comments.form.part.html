@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load wiki %}
+{% if comment_form %}
+    <form class="comment-form" 
+          action="{% url comment_latest_ajax content.id %}"
+          method="post"
+          enctype="multipart/form-data">
+        <ul class="inline-form">
+            {{ comment_form.as_ul }}
+            <li>
+                {% csrf_token %}
+                <label>&nbsp;</label>
+                <input type="submit" value="{% trans 'Send' %}" />
+            </li>
+        </ul>
+    </form>
+{% endif %}
