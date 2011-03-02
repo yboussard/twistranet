@@ -118,7 +118,6 @@ class BaseView(object):
     
     # Some implicit parameters will be passed. They are:
     # - actions: the list of actions defined for this view
-    
     def __init__(self, request = None, other_view = None, ):
         """
         Instanciate a view, either from the main controller or from another view.

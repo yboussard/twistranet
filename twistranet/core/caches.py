@@ -6,7 +6,6 @@ from django.core.cache import cache
 DEFAULT_CACHE_DELAY = 60 * 60           # Default cache delay is 1hour. It's quite long.
 USERACCOUNT_CACHE_DELAY = 60 * 3        # 3 minutes here. This is used to know if a user is online or not.
 
-
 class _AbstractCache(object):
     """
     Abstract cache management class.
