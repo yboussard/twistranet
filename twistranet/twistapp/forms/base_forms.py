@@ -2,6 +2,11 @@ from django import forms
 from django.db import models
 from django.forms import widgets
 
+from django.utils.translation import ugettext as _
+
+from twistranet.tagging.fields import TagsFormField
+from twistranet.tagging.models import Tag
+
 from twistranet.twistapp.forms.widgets import PermissionsWidget
 from twistranet.twistapp.forms.fields import PermissionsFormField
 from twistranet.twistapp.lib.log import log
@@ -100,11 +105,18 @@ class BaseInlineForm(BaseForm):
         
 class BaseRegularForm(BaseForm):
     """
-    A regular form is a form which is displayed on a full page
+    A regular form is a form which is displayed on a full page.
     """
     is_inline = False
     allow_creation = True
     allow_edition = True
+
+    tags = TagsFormField(
+        label = "Keywords",
+        help_text = "Enter relevant keywords about your content.",
+        required = False,
+        queryset = Tag.objects.all(),
+    )
         
     class Meta:
         fields = ('text', 'permissions', )

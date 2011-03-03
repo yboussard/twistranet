@@ -61,12 +61,11 @@ class TagsWidget(forms.SelectMultiple):
             });
         </script>""" % final_attrs
         return mark_safe(rendered)
-        
-        
+                
     def value_from_datadict(self, data, files, name):
         """
         Return data from the name[] field (with brackets added by FCBKcomplete)
         """
-        data.setlist(name, data.getlist("%s[]" % name))
-        return super(TagsWidget, self).value_from_datadict(data, files, name)
+        return data.getlist("%s[]" % name)
+        # return super(TagsWidget, self).value_from_datadict(data, files, name)
 

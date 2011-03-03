@@ -45,7 +45,7 @@ class QuickDocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document
         model = Document
-        fields = ('title', 'description', 'resources', ) + BaseRegularForm.Meta.fields
+        fields = ('title', 'description', 'tags', 'resources', ) + BaseRegularForm.Meta.fields
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
             'text':         TinyMCE(attrs = {'rows': 20, 'cols': 100}),
@@ -77,7 +77,7 @@ class DocumentForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import Document
         model = Document
-        fields = ('title', 'description', ) + BaseRegularForm.Meta.fields
+        fields = ('title', 'description', 'tags', ) + BaseRegularForm.Meta.fields
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
             'text':         TinyMCE(attrs = {'rows': 30, 'cols': 120}),
@@ -93,7 +93,7 @@ class FileForm(BaseRegularForm):
     class Meta(BaseRegularForm.Meta):
         from twistranet.content_types.models import File
         model = File
-        fields = ('title', 'description', 'file', 'permissions', )
+        fields = ('title', 'description', 'file', 'tags', 'permissions', )
         widgets = {
             'description':  widgets.Textarea(attrs = {'rows': 3, 'cols': 60}),
         }

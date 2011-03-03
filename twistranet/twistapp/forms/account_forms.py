@@ -10,7 +10,6 @@ from twistranet.twistapp.forms.widgets import ResourceWidget
 from twistranet.twistapp.models import UserAccount, Account
 from twistranet.twistapp.forms.base_forms import BaseForm
 from twistranet.tagging.fields import TagsFormField
-
 from twistranet.tagging.models import Tag
 
 class UserAccountForm(BaseForm):
