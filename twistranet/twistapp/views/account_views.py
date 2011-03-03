@@ -50,6 +50,8 @@ class UserAccountView(BaseWallView):
         """
         # Regular creation
         super(UserAccountView, self).prepare_view(*args, **kw)
+        if not hasattr(self, "useraccount"):
+            self.useraccount = self.auth
         self.account = self.useraccount
         self.n_communities = self.account and self.account.communities.count() or False
         self.n_network_members = self.account and self.account.network.count() or False

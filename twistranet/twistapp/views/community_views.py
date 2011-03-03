@@ -63,15 +63,12 @@ class CommunityView(UserAccountView):
         self.members = self.community and self.community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
         self.managers = self.community and self.community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []  
         self.n_managers = self.community and self.community.managers.count() or 0
-        self.n_communities = []
-        self.n_network_members = []
-
         
     def prepare_view(self, *args, **kw):
         """
         Prepare community view
         """
-        super(UserAccountView, self).prepare_view(*args, **kw)
+        super(CommunityView, self).prepare_view(*args, **kw)
         self.set_community_vars()
         # Check if there is content, display a pretty message if there's not
         if not len(self.latest_content_list):
