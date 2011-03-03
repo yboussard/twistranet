@@ -2,6 +2,8 @@
 Current Head
 =============
 
+- Implemented TAGS for Twistable objects. Now you can tag your objects to specify what they represent.
+
 - Fixed misplaced community manager badges (JMG)
 
 - Better Ajax comments (ala Facebook) (JMG)
