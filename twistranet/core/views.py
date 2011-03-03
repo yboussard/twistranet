@@ -404,6 +404,7 @@ class BaseIndividualView(BaseView):
                     publisher = Account.objects.get_query_set(request = self.request).get(id = publisher_id)    # Will raise if unauthorized
                 else:
                     publisher = None
+                self.form.full_clean()
                 if self.form.is_valid(): # All validation rules pass.
                     self.form_is_valid = True
                     if hasattr(form_class, '_meta') and hasattr(form_class._meta, "model"):                    

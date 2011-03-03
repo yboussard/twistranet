@@ -335,6 +335,15 @@ select.permissions-widget {
     padding: 5px;
 }
 
+
+/*                                                  */
+/*                  Our tags widget                 */
+/*                                                  */
+
+ul.holder {
+    width: 350px;
+}
+
 /*                                                  */
 /*                   Form Tooltips                  */
 /*                                                  */

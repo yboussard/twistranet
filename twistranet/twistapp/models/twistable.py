@@ -238,6 +238,7 @@ class Twistable(_AbstractTwistable):
     default_picture_resource_slug = None
     # XXX TODO PJ : the widget params are never rendered
     picture = ResourceField( media_type='image', null = True, blank = True, related_name = "picture_of")
+    tags = models.ManyToManyField("Tag", related_name = "tagged")
     
     # These are two security flags.
     #  The account this content is published for. 'NULL' means visible to AnonymousAccount.
@@ -261,6 +262,9 @@ class Twistable(_AbstractTwistable):
     _p_can_join = models.IntegerField(default = 16, db_index = True)
     _p_can_leave = models.IntegerField(default = 16, db_index = True)
     _p_can_create = models.IntegerField(default = 16, db_index = True)
+    
+    # Other configuration stuff
+    _ALLOW_NO_PUBLISHER = False         # Prohibit creation of an object of this class with publisher = None.
     
     @property
     def kind(self):
@@ -402,7 +406,7 @@ class Twistable(_AbstractTwistable):
             
         # Check if publisher is set. Only GlobalCommunity may have its publisher to None to make a site visible on the internet.
         if not self.publisher_id:
-            if not isinstance(self, community.GlobalCommunity) and not isinstance(self, account.SystemAccount):
+            if not self.__class__._ALLOW_NO_PUBLISHER:
                 raise ValueError("Only the Global Community can have no publisher, not %s" % self)
     
         # Set permissions; we will apply them last to ensure we have an id

@@ -85,6 +85,9 @@ urlpatterns = patterns('',
 
     # Search engine
     (r'^search/',                               include('twistranet.search.urls')),
+    
+    # Tags management
+    (r'^tags/',                                 include('twistranet.tagging.urls')),
 
     # Javascript dynamic stuff
     url(r'^tn_vars.js$',                        'twistranet.twistapp.views.js_vars', name = "twistranet_js_vars",),

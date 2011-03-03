@@ -274,6 +274,7 @@ class SystemAccount(Account):
     """
     default_picture_resource_slug = "default_systemaccount_picture"
     SYSTEMACCOUNT_ID = 1       # Global SystemAccount id. Should always be 1 as it's the first account created in the fixture.
+    _ALLOW_NO_PUBLISHER = True
     
     class Meta:
         app_label = 'twistapp'

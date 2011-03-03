@@ -5,6 +5,7 @@ from modeltranslation.translator import translator, TranslationOptions
 from twistranet.twistapp import Twistable, Account, Content, Community, \
     GlobalCommunity, AdminCommunity, SystemAccount, UserAccount, Resource
 from twistranet.content_types import Document, StatusUpdate, Comment, File
+from twistranet.tagging.models import Tag
 
 # (oh, by the way, 'TO' stands for TranslationOptions)
 
@@ -37,6 +38,11 @@ translator.register(GlobalCommunity, _GlobalCommunityTO)
 class _AdminCommunityTO(TranslationOptions):
     fields = _CommunityTO.fields
 translator.register(AdminCommunity, _AdminCommunityTO)
+    
+# Tags
+class _TagTO(TranslationOptions):
+    fields = _TwistableTO.fields
+translator.register(Tag, _TagTO)
     
 # Content and like
 class _ResourceTO(TranslationOptions):

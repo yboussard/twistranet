@@ -9,6 +9,9 @@ from twistranet.twistapp.lib import permissions
 from twistranet.twistapp.forms.widgets import ResourceWidget
 from twistranet.twistapp.models import UserAccount, Account
 from twistranet.twistapp.forms.base_forms import BaseForm
+from twistranet.tagging.fields import TagsFormField
+
+from twistranet.tagging.models import Tag
 
 class UserAccountForm(BaseForm):
     """
@@ -18,15 +21,23 @@ class UserAccountForm(BaseForm):
         label = _("Your name"),
         help_text = _("Enter your full name (eg. Firstname Lastname) as you want it to be displayed to other users."),
     )
+    
     description = fields.CharField(
         label = _("About you"),
         help_text = _("Present yourself in a few lines. What are you working on? What do you like besides work?"),
         widget = widgets.Textarea(),
     )
+    
+    tags = TagsFormField(
+        label = _("Keywords about you"),
+        help_text = _("Enter what you do, what you like, ..."),
+        required = False,
+        queryset = Tag.objects.all(),
+    )
 
     class Meta:
         model = UserAccount
-        fields = ('title', 'description', 'picture', )
+        fields = ('title', 'description', 'picture', 'tags', )
         widgets = {
             "picture":          ResourceWidget(),
         }

@@ -313,6 +313,7 @@ class GlobalCommunity(Community):
         app_label = 'twistapp'
 
     permission_templates = permissions.global_community_templates
+    _ALLOW_NO_PUBLISHER = True
     
     site_name = models.CharField(
         max_length = 64,

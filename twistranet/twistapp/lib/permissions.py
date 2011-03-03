@@ -47,7 +47,21 @@ class PermissionTemplate:
 # "name" is the name as it will be shown in the permissions dropbox
 # "description" is an explicative text shown beside the dropbox or in the info box of a content/account.
 # The other fields are permissions.
-        
+
+# 100%-public template (no choice).
+# Used for TAGS for example.
+public_template = PermissionTemplate((
+    {
+        "id":               "public",
+        "name":             "Public",
+        "description":      "Always public.",
+        can_list:           public,
+        can_view:           public,
+        can_edit:           owner,
+        can_delete:         owner,
+    },
+))
+
 # Regular content permissions
 content_templates = PermissionTemplate((
     {
