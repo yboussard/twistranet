@@ -36,7 +36,8 @@ class CommunityView(UserAccountView):
         'community/members.box.html',
     ]
     template = "community/view.html"
-    template_variables = UserAccountView.template_variables + [
+    template_variables = BaseWallView.template_variables + [
+        "account",
         "community",
         "n_members",  
         "n_managers",
@@ -63,6 +64,7 @@ class CommunityView(UserAccountView):
         self.members = self.community and self.community.members_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []
         self.managers = self.community and self.community.managers_for_display[:settings.TWISTRANET_DISPLAYED_COMMUNITY_MEMBERS] or []  
         self.n_managers = self.community and self.community.managers.count() or 0
+
         
     def prepare_view(self, *args, **kw):
         """
