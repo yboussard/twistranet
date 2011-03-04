@@ -132,19 +132,21 @@ class ResourceWidget(forms.MultiWidget):
         # Display browser resources in all selectable accounts
         if self.allow_select:
             auth = Twistable.objects._getAuthenticatedAccount()
-            default_publisher = getattr(self, 'publisher', None)
-            if default_publisher is None:
-                default_publisher = auth
+            publisher = getattr(self, 'publisher', None)
+            publisher_id = getattr(self, 'publisher_id', '')
+            if publisher is None or not publisher_id:
+                publisher = auth
+                publisher_id = auth.id
             selectable_accounts = Resource.objects.selectable_accounts(auth)
             sids = [s.id for s in selectable_accounts]
-            if default_publisher.id and default_publisher.id not in sids:
-                selectable_accounts.insert(0, default_publisher)
+            if publisher_id not in sids:
+                selectable_accounts.insert(0, publisher)
             t = loader.get_template('resource/resource_browser.html')
             scopes = []
             for account in selectable_accounts:
                 img = account.forced_picture
                 icon = img.thumbnails['icon']
-                activeClass = account.id == default_publisher.id and ' activePane' or ''
+                activeClass = account.id == publisher_id and ' activePane' or ''
                 scope = {
                     "url":              account.get_absolute_url(),
                     "icon_url":         icon.url,
@@ -165,7 +167,7 @@ class ResourceWidget(forms.MultiWidget):
             c = Context({
                 'name': name, 
                 'scopes': scopes,
-                'publisher_id': self.publisher_id,      # Default publisher id
+                'publisher_id': publisher_id,
             })
             output.append (t.render(c))
 
