@@ -52,11 +52,8 @@
     overflow: hidden;
 }
 
-<<<<<<< HEAD
-.qq-upload-spinner {display:none; background: url("../images/icons/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
-=======
-.qq-upload-spinner {display:none; background: url("../images/loading.gif"); width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
->>>>>>> 692a4f62be7869701136d9ff32fa22b343446f06
+
+.qq-upload-spinner {display:none; background: transparent url("../images/icons/loading.gif") top left no-repeat; width:15px; height:15px; vertical-align:text-bottom; margin-left: 10px}
 .qq-upload-size,.qq-upload-cancel {font-size:11px;}
 
 .qq-upload-list .qq-upload-cancel,
