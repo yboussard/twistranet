@@ -332,28 +332,28 @@ var twistranet = {
     browser_height: 0,
     __init__: function(e) {
         /* finalize styles */
-        twistranet.setBrowserProperties();
-        twistranet.finalizestyles();
-        twistranet.showContentActions();
-        twistranet.showCommentsActions();
-        twistranet.initCommentForms();
-        twistranet.initconfirmdialogs();
-        twistranet.initformserrors();
-        twistranet.formsautofocus();
-        twistranet.setEmptyCols(); 
-        twistranet.enableLiveSearch();
-        twistranet.prettyCombosLists(); 
-        twistranet.tnGridActions();
-        twistranet.formUndo(); 
-        twistranet.formProtection();
-        twistranet.formInputsHints();
-        twistranet.loadUploaders();
-        twistranet.initWysiwygBrowser();
+        this.setBrowserProperties();
+        this.finalizestyles();
+        this.showContentActions();
+        this.showCommentsActions();
+        this.initCommentForms();
+        this.initconfirmdialogs();
+        this.initformserrors();
+        this.formsautofocus();
+        this.setEmptyCols(); 
+        this.enableLiveSearch();
+        this.prettyCombosLists(); 
+        this.tnGridActions();
+        this.formUndo(); 
+        this.formProtection();
+        this.formInputsHints();
+        this.loadUploaders();
+        this.initWysiwygBrowser();
     },
     setBrowserProperties : function(e) {
-        if (! twistranet.browser_width){
-            twistranet.browser_width = jq(window).width();
-            twistranet.browser_height = jq(window).height();
+        if (! this.browser_width){
+            this.browser_width = jq(window).width();
+            this.browser_height = jq(window).height();
         } 
     },
     prettyCombosLists: function(e) {
@@ -362,7 +362,7 @@ var twistranet = {
         // remove the forced width (see also.dd .ddTitle in css) 
         jq(document).ready(function(){jq('.dd').css('width','auto')});
         // permission description after all
-        jq(document).ready(twistranet.displayPermissionsDescriptions);
+        jq(document).ready(this.displayPermissionsDescriptions);
     },
     displayPermissionsDescriptions: function(e) {
         jq('.permissions-widget').each(function(){
@@ -529,8 +529,8 @@ var twistranet = {
     },
     tinymceBrowser: function(field_name, url, type, win) {
         var cmsURL = home_url + 'resource_browser/?allow_browser_selection=1&type=' + type;    // script URL - use an absolute path!
-        var browser_width = parseInt(twistranet.browser_width*70/100);     
-        var browser_height = parseInt(twistranet.browser_height*90/100);
+        var browser_width = parseInt(this.browser_width*70/100);     
+        var browser_height = parseInt(this.browser_height*90/100);
         tinyMCE.activeEditor.windowManager.open({
             file : cmsURL,
             title : 'Twistranet Browser',
@@ -551,4 +551,6 @@ var twistranet = {
     }
 }
 
-jq(document).ready(twistranet.__init__)
+tn_start = function() { twistranet.__init__() }
+
+jq(document).ready(tn_start);
