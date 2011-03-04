@@ -4,7 +4,7 @@
     <li class="tn-box relations-box">
         <h3 class="community-actions">
             <span>{% blocktrans %}My Communities{% endblocktrans %}</span>    
-          <span><a href="{% url account_communities current_account.id %}" class="nb-link">({{n_communities}})</a></span>
+          <span><a href="{% url account_communities current_account.id %}" class="nb-link">({{current_account.communities.count}})</a></span>
         </h3>         
         <div class="tn-box-content">  
           <ul class="thumbnails-inner">
