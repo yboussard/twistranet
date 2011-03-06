@@ -36,7 +36,7 @@ class UserAccountForm(BaseForm):
 
     class Meta:
         model = UserAccount
-        fields = ('title', 'description', 'picture', 'tags', )
+        fields = ('title', 'description', 'tags', 'picture', )
         widgets = {
             "picture":          ResourceWidget(),
         }

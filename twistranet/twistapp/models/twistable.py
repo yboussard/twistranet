@@ -263,8 +263,9 @@ class Twistable(_AbstractTwistable):
     _p_can_leave = models.IntegerField(default = 16, db_index = True)
     _p_can_create = models.IntegerField(default = 16, db_index = True)
     
-    # Other configuration stuff
+    # Other configuration stuff (class-wise)
     _ALLOW_NO_PUBLISHER = False         # Prohibit creation of an object of this class with publisher = None.
+    _FORCE_SLUG_CREATION = True         # Force creation of a slug if it doesn't exist
     
     @property
     def kind(self):
@@ -432,7 +433,7 @@ class Twistable(_AbstractTwistable):
             created = True
                 
         # Generate slug (or not !)
-        if not self.slug:
+        if not self.slug and self.__class__._FORCE_SLUG_CREATION:
             if self.title:
                 self.slug = slugify(self.title)
             elif self.description:
@@ -440,7 +441,7 @@ class Twistable(_AbstractTwistable):
             else:
                 self.slug = slugify(self.model_name)
             self.slug = self.slug[:40]
-        if created:
+        if created and self.__class__._FORCE_SLUG_CREATION:
             while Twistable.objects.__booster__.filter(slug = self.slug).exists():
                 match = re.search("_(?P<num>[0-9]+)$", self.slug)
                 if match:

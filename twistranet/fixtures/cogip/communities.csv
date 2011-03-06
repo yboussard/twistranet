@@ -1,15 +1,15 @@
-DG;La Direction;workgroup;martemons,hvernon,glaballe
-CODIR;Le comité de Direction;private;martemons,hvernon,olebeau,ibellamie,jmichart,epassard,czaraski,amcdonald
-CE;Membres du comité d'entreprise;blog;sazla,sguidon
-Marketing;L'espace de l'Equipe Marketing;workgroup;olebeau,pjulienne,jcarat
-Projet Astral;Notre prochain produit, TOP SECRET !;private;martemons,hvernon,sribocha,glarmet,jmichart,amcdonald
+DG;La Direction;workgroup;Direction;artemons,vernon,laballe
+CODIR;Le comité de Direction;private;Direction,Management;artemons,vernon,lebeau,bellamie,michart,passard,zaraski,mcdonald
+CE;Membres du comité d'entreprise;blog;;azla,guidon
+Marketing;L'espace de l'Equipe Marketing;workgroup;Marketing;lebeau,julienne,carat
+Projet Astral;Notre prochain produit, TOP SECRET !;private;Secret;artemons,vernon,ribocha,larmet,michart,mcdonald
 Projet Eye;Nouveau Service;
 Projet Constellation;;
-Repas Noel 2010;Organisation du repas de Noel 2010;blog;hvernon,ltoleti,sribocha,vlacroix,jlee
+Repas Noel 2010;Organisation du repas de Noel 2010;blog;Fête;vernon,toleti,ribocha,lacroix,lee
 Parking;Gestion du parking;
-Ventes;Équipes Vente;workgroup;jnenerta,nbaffoi,sazla,edebouze,glarmet
+Ventes;Équipes Vente;workgroup;Commerce,Techniques de vente;nenerta,baffoi,azla,debouze,larmet
 R&D;Espace R&D;
 Production;Gestion de la production;
 Qualité;Démarchez Qualité;
-Assistantes;Notre espace rien qu'à nous, les filles !;workgroup;glaballe,cblot,ffazza,jlee
-Basket Club;Le Basket Club de la COGIP. Rejoignez-nous !;interest;sribocha,jlee,jalberti
+Assistantes;Notre espace rien qu'à nous, les filles !;workgroup;Fun;laballe,blot,fazza,lee
+Basket Club;Le Basket Club de la COGIP. Rejoignez-nous !;interest;Sport,Basket;ribocha,lee,alberti

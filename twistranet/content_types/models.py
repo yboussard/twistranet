@@ -17,6 +17,7 @@ class StatusUpdate(Content):
     type_detail_link = False
     type_text_template_creation = "email/created_content_statusupdate.txt"
     type_html_template_creation = "email/created_content_statusupdate.html"
+    _FORCE_SLUG_CREATION = False
 
     class Meta:
         app_label = 'twistapp'

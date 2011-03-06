@@ -10,10 +10,31 @@ from twistranet.content_types.models import *
 from twistranet.twistapp.lib.python_fixture import Fixture
 from twistranet.twistapp.lib.slugify import slugify
 from twistranet.twistapp.lib.log import *
+from twistranet.tagging.models import *
 from django.contrib.auth.models import User
 from django.core.files import File as DjangoFile
 
 HERE_COGIP = os.path.abspath(os.path.dirname(__file__))
+
+
+def generate_tags(flat_list):
+    """
+    Generate a tags list from a flat list.
+    Return a list of Tag objects.
+    """
+    ret = []
+    if not flat_list:
+        return ret
+    tags = [ t.strip() for t in flat_list.split(",") ]
+    for t in tags:
+        if not Tag.objects.filter(title = t).exists():
+            log.debug("Creating tag %s" % t)
+            tag = Tag(title = t)
+            tag.save()
+        else:
+            tag = Tag.objects.get(title = t)
+        ret.append(tag)
+    return ret
 
 def load_cogip():
     """
@@ -23,15 +44,17 @@ def load_cogip():
     # Just to be sure, we log as system account
     __account__ = SystemAccount.get()
 
+    # Create tags
+
     # Import the whole file, creating all needed fixtures, including Service as communities.
     f = open(os.path.join(HERE_COGIP, "cogip.csv"), "rU")
-    c = csv.DictReader(f, delimiter = ';', fieldnames = ['firstname', 'lastname', 'sex', 'service', 'function', 'email', 'picture_file', 'network'])
+    c = csv.DictReader(f, delimiter = ';', fieldnames = ['firstname', 'lastname', 'sex', 'service', 'function', 'email', 'picture_file', 'tags', 'network'])
     services = []
     for useraccount in c:
         # Create the user if necessary
-        username = slugify("%s%s" % (useraccount['firstname'][0].decode('utf-8'), useraccount['lastname'].decode('utf-8'), ))
-        username = username.lower()
-        password = slugify(useraccount['lastname']).lower()
+        username = slugify("%s" % (useraccount['lastname'].decode('utf-8'), ))
+        # username = slugify(useraccount['lastname']).lower()
+        password = username
         if not User.objects.filter(username = username).exists():
             u = User.objects.create(
                 username = username,
@@ -39,9 +62,9 @@ def load_cogip():
             )
             u.set_password(password)
             u.save()
-        
+    
         # Create the user account
-        Fixture(
+        u = Fixture(
             UserAccount,
             slug = username,
             title = "%s %s" % (useraccount['firstname'], useraccount['lastname'], ),
@@ -50,7 +73,7 @@ def load_cogip():
             user = User.objects.get(username = username),
             force_update = True,
         ).apply()
-        
+    
         # Create a community matching user's service or make him join the service. And put it in a menu!
         service_slug = slugify(useraccount['service'])
         if not service_slug in services:
@@ -63,7 +86,7 @@ def load_cogip():
                 logged_account = username,
                 force_update = True,
             ).apply()
-            
+        
             # Add default picture in the community
             source_fn = os.path.join(HERE_COGIP, 'cogip.png')
             r = Resource(
@@ -73,7 +96,7 @@ def load_cogip():
             r.save()
             service.picture = r
             service.save()
-            
+        
             # Create the menu item
             if not MenuItem.objects.filter(slug = "cogip_menu").exists():
                 cogip_menu = MenuItem.objects.create(
@@ -90,6 +113,10 @@ def load_cogip():
             item.save()
         else:
             Community.objects.get(slug = service_slug).join(UserAccount.objects.get(slug = username))
+            
+        # Set tags
+        for tag in generate_tags(useraccount['tags']):
+            u.tags.add(tag)
 
         # Create / Replace the profile picture if the image file is available.
         source_fn = os.path.join(HERE_COGIP, useraccount['picture_file'])
@@ -105,7 +132,7 @@ def load_cogip():
             u = UserAccount.objects.get(slug = username)
             u.picture = Resource.objects.get(slug = picture_slug)
             u.save()
-            
+        
         # Add friends in the network (with pending request status)
         if useraccount['network']:
             for friend in [ s.strip() for s in useraccount['network'].split(',') ]:
@@ -126,7 +153,7 @@ def load_cogip():
 
     # Create communities and join ppl from there
     f = open(os.path.join(HERE_COGIP, "communities.csv"), "rU")
-    c = csv.DictReader(f, delimiter = ';', fieldnames = ['title', 'description', 'permissions', 'members', ])
+    c = csv.DictReader(f, delimiter = ';', fieldnames = ['title', 'description', 'permissions', 'tags', 'members', ])
     for community in c:
         if not community['members']:
             continue
@@ -142,17 +169,22 @@ def load_cogip():
             permissions = community['permissions'],
             logged_account = member_slugs[0],
         ).apply()
-        
+    
         for member in member_slugs:
             log.debug("Make %s join %s" % (member, com.slug))
             com.join(UserAccount.objects.get(slug = member))
 
+        # Set tags
+        for tag in generate_tags(community['tags']):
+            com.tags.add(tag)
+
     # Create content updates
     f = open(os.path.join(HERE_COGIP, "content.csv"), "rU")
-    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', 'filename'])
+    contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', 'filename', 'tags', ])
     for content in contents:
         __account__ = UserAccount.objects.get(slug = content['owner'])
         if content['type'].lower() == "status":
+            log.debug("Publisher: %s" % content['publisher'])
             status = StatusUpdate(
                 publisher = Account.objects.get(slug = content['publisher']),
                 permissions = content['permissions'],
@@ -170,6 +202,8 @@ def load_cogip():
                 permissions = content['permissions'],
                 text = f.read(),
             )
+            for tag in generate_tags(content['tags']):
+                article.tags.add(tag)
         elif content['type'].lower() == "comment":
             comment = Comment.objects.create(in_reply_to = status, description = content['text'], )
         else:
@@ -181,4 +215,3 @@ def load_cogip():
     cogip_menu.target = Document.objects.get(slug = "presentation_cogip_html")
     cogip_menu.link_url = None
     cogip_menu.save()
-
