@@ -242,6 +242,7 @@ _INSTALLED_APPS = (
     'twistranet.content_types',
     'twistranet.notifier',
     'twistranet.twistorage',
+    'twistranet.tagging',
 
     # 3rd party modules - must be loaded AFTER TN
     'haystack',

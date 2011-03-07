@@ -273,6 +273,7 @@ class Twistable(_AbstractTwistable):
         Return the kind of object it is (as a lower-cased string).
         """
         from twistranet.twistapp.models import Content, Account, Community, Resource
+        from twistranet.tagging.models import Tag
         mc = self.model_class
         if issubclass(mc, Content):
             return 'content'
@@ -282,6 +283,8 @@ class Twistable(_AbstractTwistable):
             return 'account'
         elif issubclass(mc, Resource):
             return 'resource'
+        elif issubclass(mc, Tag):
+            return 'tag'
         raise NotImplementedError("Can't get twistable category for object %s" % self)
 
     @models.permalink

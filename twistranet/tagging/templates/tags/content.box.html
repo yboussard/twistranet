@@ -1,0 +1,17 @@
+{# This is a way of presenting tags associated to a content. #}
+{% load i18n %}
+
+<li id="content-tags-box" class="tn-box tags-box">
+    {# {% with content.title as title %} #}
+    {#     <h3>{% blocktrans %}About this page...{% endblocktrans %}</h3> #}
+    {# {% endwith %} #}
+    <div class="tn-box-content">
+        {% for tag in content.tags.all %}
+            <a 
+                href="{{ tag.get_absolute_url }}"
+                title="{{ tag.title_or_description }}"
+                >{{ tag.title }}</a>
+        {% endfor %}
+    </div>
+</li>
+

@@ -1,0 +1,23 @@
+{% load i18n %}
+{% if tag.get_experts %}
+    <li id="tag-experts-box" class="tn-box members-box">
+        <h3>
+            <span>{% blocktrans %}Experts on this field{% endblocktrans %}</span>
+            {# <span><a href="{% url community_members community.id %}" class="nb-link">({{n_members}})</a></span> #}
+        </h3>
+        <div class="tn-box-content">
+          <ul class="thumbnails-inner">
+            {% for account in tag.get_experts %}
+                {% include "account/medium.thumbnail.html" %}
+            {% endfor %}
+          </ul>
+          <div class="clearfix"><!-- --></div>
+        </div>
+        <div class="tn-box-footer">
+          {# <a href="{% url community_members community.id %}" #}
+             {# class="more"> #}
+            {# {% blocktrans %}See all{% endblocktrans %} #}
+          {# </a> #}
+        </div>
+    </li>
+{% endif %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load wiki %}
+
+{% block content %}
+    <div class="content-summary">
+        {{ tag.description|safe|fullwiki }}
+    </div>
+
+    {% for result in page.object_list %}
+        <p>
+            <a href="{{ result.object.get_absolute_url }}">
+                {% include "summary.search.part.html" %}
+            </a>
+        </p>
+    {% empty %}
+        <p>{% blocktrans %}No results found.{% endblocktrans %}</p>
+    {% endfor %}
+
+    {% if page.has_previous or page.has_next %}
+        <div class="batch-bar">
+            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+            |
+            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+        </div>
+        <div class="clear"><!-- --></div>
+    {% endif %}
+    
+{% endblock %}

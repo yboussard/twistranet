@@ -1,0 +1,15 @@
+{% load i18n %}
+<li id="tag-profile-box" class="tn-box profile-box">
+    {% with tag as account %}
+        {% include 'account/medium.thumbnail.alone.html' %}
+    {% endwith %}
+    <h2 class="box-header">
+        <a href="{{ tag.get_absolute_url }}">
+            {{ tag.title }}
+        </a>
+    </h2>
+    <p class="discreet">
+        {{ tag.description }}
+    </p>
+    <div class="clear"></div>
+</li>

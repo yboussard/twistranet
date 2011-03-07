@@ -19,7 +19,8 @@ class ContentView(BaseIndividualView):
     Individual Content View.
     """
     context_boxes = [
-        'content/publisher.box.html',    
+        'content/publisher.box.html',
+        'tags/content.box.html',
         'actions/context.box.html', 
         'content/metadata.box.html', 
     ]

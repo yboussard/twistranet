@@ -32,6 +32,7 @@ class Tag(Twistable):
     objects = models.Manager()
     _ALLOW_NO_PUBLISHER = True
     permission_templates = permissions.public_template
+    default_picture_resource_slug = "default_menu_picture"
     
     # Behaviour overload
     def getDefaultPublisher(self,):
