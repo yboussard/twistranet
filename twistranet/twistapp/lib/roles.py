@@ -12,3 +12,13 @@ network = 2
 manager = 4
 owner = 8
 system = 16
+
+# Special 'intelligent' roles.
+# NEVER compare to this, they're just used to be resolved at save-time.
+
+# If publisher is a community => Network. Else, Owner.
+def owner_or_network_role(object):
+    from twistranet.twistapp.models import Community
+    if isinstance(object.publisher.model_class, Community):
+        return network
+    return owner

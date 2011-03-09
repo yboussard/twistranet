@@ -413,7 +413,8 @@ class Twistable(_AbstractTwistable):
             if not self.__class__._ALLOW_NO_PUBLISHER:
                 raise ValueError("Only the Global Community can have no publisher, not %s" % self)
     
-        # Set permissions; we will apply them last to ensure we have an id
+        # Set permissions; we will apply them last to ensure we have an id.
+        # We also ensure that the right permissions are set on the right object
         if not self.permissions:
             perm_template = self.model_class.permission_templates
             if not perm_template:
@@ -425,15 +426,18 @@ class Twistable(_AbstractTwistable):
             tpl = [ t for t in self.permission_templates.permissions() if t["id"] == self.model_class.permission_templates.get_default() ]
             log.warning("Restoring default permissions. Problem here.")
             log.warning("Unable to find %s permission template %s in %s" % (self, self.permissions, self.permission_templates.perm_dict))
+        if tpl[0].get("disabled_for_community") and issubclass(self.publisher.model_class, community.Community):
+            raise ValueError("Invalid permission setting %s for this object (%s/%s)" % (tpl, self, self.title_or_description))
+        elif tpl[0].get("disabled_for_useraccount") and issubclass(self.publisher.model_class, account.UserAccount):
+            raise ValueError("Invalid permission setting %s for this object (%s/%s)" % (tpl, self, self.title_or_description))
         for perm, role in tpl[0].items():
             if perm.startswith("can_"):
+                if callable(role):
+                    role = role(self)
                 setattr(self, "_p_%s" % perm, role)
 
         # Check if we're creating or not
-        if self.id:
-            created = False
-        else:
-            created = True
+        created = not self.id
                 
         # Generate slug (or not !)
         if not self.slug and self.__class__._FORCE_SLUG_CREATION:

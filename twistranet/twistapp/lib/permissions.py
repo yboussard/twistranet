@@ -70,8 +70,8 @@ content_templates = PermissionTemplate((
         "description":      "Content visible to people who can view this account.",
         can_list:           public,
         can_view:           public,
-        can_edit:           owner,
-        can_delete:         owner,
+        can_edit:           owner_or_network_role,
+        can_delete:         owner_or_network_role,
     },
     {
         "id":               "network",
@@ -89,8 +89,8 @@ content_templates = PermissionTemplate((
         "description":      "Content visible only for community members.",
         can_list:           network,
         can_view:           network,
-        can_edit:           owner,
-        can_delete:         owner,
+        can_edit:           network,
+        can_delete:         network,
         "disabled_for_useraccount":  True,
     },
     {
@@ -103,6 +103,7 @@ content_templates = PermissionTemplate((
         can_delete:         owner,
     },
 ))
+
 
 # Ephemeral (ie. non-editable after writing) content permissions
 ephemeral_templates = PermissionTemplate((
