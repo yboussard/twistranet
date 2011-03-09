@@ -119,7 +119,7 @@ def load_cogip():
             u.tags.add(tag)
 
         # Create / Replace the profile picture if the image file is available.
-        source_fn = os.path.join(HERE_COGIP, useraccount['picture_file'])
+        source_fn = os.path.join(HERE_COGIP, "images", useraccount['picture_file'])
         if os.path.isfile(source_fn):
             picture_slug = slugify("pict_%s" % useraccount['picture_file'])
             Resource.objects.filter(slug = picture_slug).delete()
@@ -182,6 +182,7 @@ def load_cogip():
     f = open(os.path.join(HERE_COGIP, "content.csv"), "rU")
     contents = csv.DictReader(f, delimiter = ';', fieldnames = ['type', 'owner', 'publisher', 'permissions', 'text', 'filename', 'tags', ])
     for content in contents:
+        log.debug("Importing %s" % content)
         __account__ = UserAccount.objects.get(slug = content['owner'])
         if content['type'].lower() == "status":
             log.debug("Publisher: %s" % content['publisher'])
@@ -193,14 +194,17 @@ def load_cogip():
             status.save()
             log.debug("Adding status update: %s" % status)
         elif content['type'].lower() == 'document':
-            source_fn = os.path.join(HERE_COGIP, content['filename'])
-            f = open(source_fn, 'rU')
+            source_fn = os.path.join(HERE_COGIP, "documents", content['filename'])
+            file_content = ""
+            if os.path.isfile(source_fn):
+                f = open(source_fn, 'rU')
+                file_content = f.read()
             article = Document.objects.create(
                 slug = slugify(content['filename']),
                 title = content['text'],
                 publisher = Account.objects.get(slug = content['publisher']),
                 permissions = content['permissions'],
-                text = f.read(),
+                text = file_content or "(empty file)",
             )
             for tag in generate_tags(content['tags']):
                 article.tags.add(tag)

@@ -1,7 +1,7 @@
 {% load thumbnail %}
 {% load i18n %}
 {% if account.model_class.is_community %}
-    {% if account.is_manager %}
+    {% if account.object.is_manager %}
         <div class="relativizer">
             <a class="community_manager_badge" 
                href="{% url twistranet_home %}"

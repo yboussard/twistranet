@@ -3,17 +3,27 @@ comment;azla;;;Bienvenue à toi ! Tu trouveras sur notre intranet toutes les inf
 comment;bellamie;;public;Bienvenue à notre nouvelle recrue. Donnez le meilleur de vous-même.
 status;azla;ce;public;Le CE vous rappelle que des tickets de réduction pour le théâtre sont disponible dans le local ! Venez nombreux !
 status;guidon;ce;public;Le CE vous offre un chèque cadeau de 10€ pour Noël !
-status;guidon;ce;network;Les filles, vous êtes sûres que c'est 10€ ? J'ai un gros doute !!
+status;guidon;ce;members;Les filles, vous êtes sûres que c'est 10€ ? J'ai un gros doute !!
 comment;azla;;;Oui oui c'est bien 10€, j'ai vérifié.
 comment;guidon;;;Merci ma belle !
 status;artemons;artemons;public;Bonjour à tous, c'est un plaisir de vous retrouver sur notre Intranet flambant neuf !
 status;artemons;artemons;public;N'hésitez pas à me solliciter si vous avez besoin de quoi que ce soit.
 comment;lebeau;;;...ou à parler à votre manager bien entendu...
 document;lebeau;direction;public;Présentation COGIP;presentation_cogip.html;Aide,Management
-document;ribocha;baskey_club;public;Présentation Basket-Club;presentation_cogip.html
+document;ribocha;basket_club;public;Présentation Basket-Club;presentation_basket_club.html
 status;vidal;vidal;network;Pfff... je galère dans mon secteur, vous avez pas des tuyaux ?
 comment;larmet;;;Tu as quoi comme problème ? Manque de clients ?
 comment;vidal;;;J'arrive pas à prospecter, on me traite de parisienne !
 comment;azla;;;Et en essayant de prendre l'accent ? Ça passe mieux ?
 comment;vidal;;;Je viens d'essayer et ça marche nickel ! Merci Sab !
+document;vernon;ressources_humaines;public;Modèle de demande de congés;modele_demande_conges.html;Congés
+document;vernon;ressources_humaines;public;Modèle de remboursement de frais;modele_remboursement_frais.html;Frais,Déplacements
+status;vernon;ressources_humaines;public;Nous recherchons une assistante RH. Si vous êtes intéressés ou si vous connaissez quelqu'un qui pourrait l'être, contactez-moi directement. Merci !
+comment;bellamie;;;Je fais passer à mon réseau. Merci Henri !
+document;julienne;julienne;public;Comparatif des principaux modèles d'agrafeuse de la concurrence;comparatif_agrafeuses.html;Agrafeuse,Appareillage,Outils
+document;alberti;alberti;public;Comment étalonner une agrafeuse ?;etalonner_agrafeusee.html;Agrafeuse,G-824
+document;alberti;alberti;public;Notice d'utilisation de la G-824;notice_g824.html;Agrafeuse,Notice,G-824
+document;otin;projet_astral;members;Création d'une clouteuse;creation_clouteuse.html;Agrafeuse,Clou,R&D
+document;mcdonald;projet_astral;members;Business model;business_model_clouteuse.html;Clou,R&D,Business Model
+
 

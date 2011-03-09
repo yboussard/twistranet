@@ -26,7 +26,7 @@ class Notification(Content):
     type_html_template_creation = None
     
     # View / permissions overriding support
-    permission_templates = permissions.ephemeral_templates
+    permission_templates = permissions.content_templates
     type_summary_view = "content/summary.notification.part.html"
     type_detail_view = None
 
